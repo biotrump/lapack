@@ -11,7 +11,7 @@ all: install lib testing blas_testing timing blas_timing
 lib: lapacklib tmglib
 #lib: blaslib lapacklib tmglib
 
-clean: cleanlib cleantesting cleantiming
+clean: cleanlib cleantesting cleanblas_testing cleantiming
 
 install:
 	( cd INSTALL; $(MAKE); ./testlsame; ./testslamch; \
@@ -34,22 +34,28 @@ testing:
 
 blas_testing:
 	( cd BLAS/TESTING; $(MAKE) -f Makeblat1 )
-	( cd BLAS; ./xblat1s > sblat1.out; \
-	           ./xblat1d > dblat1.out; \
-	           ./xblat1c > cblat1.out; \
-	           ./xblat1z > zblat1.out )
-
+	( cd BLAS; ./xblat1s > sblat1.out    ; \
+	           ./xblat1d > dblat1.out    ; \
+	           ./xblat1c > cblat1.out    ; \
+	           ./xblat1z > zblat1.out    ) 
 	( cd BLAS/TESTING; $(MAKE) -f Makeblat2 )
-	( cd BLAS; ./xblat2s < sblat2.in ; \
-	           ./xblat2d < dblat2.in ; \
-	           ./xblat2c < cblat2.in ; \
-	           ./xblat2z < zblat2.in )
-
+	( cd BLAS; ./xblat2s < sblat2.in     ; \
+	           mv SBLAT2.SUMM sblat2.out ; \
+	           ./xblat2d < dblat2.in     ; \
+	           mv DBLAT2.SUMM dblat2.out ; \
+	           ./xblat2c < cblat2.in     ; \
+	           mv CBLAT2.SUMM cblat2.out ; \
+	           ./xblat2z < zblat2.in     ; \
+	           mv ZBLAT2.SUMM zblat2.out )
 	( cd BLAS/TESTING; $(MAKE) -f Makeblat3 )
-	( cd BLAS; ./xblat3s < sblat3.in ; \
-	           ./xblat3d < dblat3.in ; \
-	           ./xblat3c < cblat3.in ; \
-	           ./xblat3z < zblat3.in )
+	( cd BLAS; ./xblat3s < sblat3.in     ; \
+	           mv SBLAT3.SUMM sblat3.out ; \
+	           ./xblat3d < dblat3.in     ; \
+	           mv DBLAT3.SUMM dblat3.out ; \
+	           ./xblat3c < cblat3.in     ; \
+	           mv CBLAT3.SUMM cblat3.out ; \
+	           ./xblat3z < zblat3.in     ; \
+	           mv ZBLAT3.SUMM zblat3.out )
 
 timing:
 	( cd TIMING; $(MAKE) )
@@ -75,14 +81,20 @@ cleanlib:
 	( cd SRC; $(MAKE) clean )
 	( cd TESTING/MATGEN; $(MAKE) clean )
 
+cleanblas_testing:	
+	( cd BLAS/TESTING; $(MAKE) -f Makeblat1 clean )
+	( cd BLAS/TESTING; $(MAKE) -f Makeblat2 clean )
+	( cd BLAS/TESTING; $(MAKE) -f Makeblat3 clean )
+	( cd BLAS; rm -f *.SUMM xblat* )
+
 cleantesting:
 	( cd TESTING/LIN; $(MAKE) clean )
 	( cd TESTING/EIG; $(MAKE) clean )
-	( cd TESTING; rm xlin* xeig* )
+	( cd TESTING; rm -f xlin* xeig* )
 
 cleantiming:
 	( cd TIMING/LIN; $(MAKE) clean )
 	( cd TIMING/LIN/LINSRC; $(MAKE) clean )
 	( cd TIMING/EIG; $(MAKE) clean )
 	( cd TIMING/EIG/EIGSRC; $(MAKE) clean )
-	( cd TIMING; rm xlin* xeig* )
+	( cd TIMING; rm -f xlin* xeig* )
