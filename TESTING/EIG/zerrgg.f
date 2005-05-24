@@ -518,11 +518,11 @@
          CALL CHKXER( 'ZGGRQF', INFOT, NOUT, LERR, OK )
          NT = NT + 6
 *
-*     Test error exits for the CGS, CGV, CGX, and CXV paths.
+*     Test error exits for the ZGS, ZGV, ZGX, and ZXV paths.
 *
-      ELSE IF( LSAMEN( 3, PATH, 'CGS' ) .OR.
-     $         LSAMEN( 3, PATH, 'CGV' ) .OR.
-     $         LSAMEN( 3, PATH, 'CGX' ) .OR. LSAMEN( 3, PATH, 'CXV' ) )
+      ELSE IF( LSAMEN( 3, PATH, 'ZGS' ) .OR.
+     $         LSAMEN( 3, PATH, 'ZGV' ) .OR.
+     $         LSAMEN( 3, PATH, 'ZGX' ) .OR. LSAMEN( 3, PATH, 'ZXV' ) )
      $          THEN
 *
 *        ZGGES

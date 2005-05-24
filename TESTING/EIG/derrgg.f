@@ -501,11 +501,11 @@
          CALL CHKXER( 'DGGRQF', INFOT, NOUT, LERR, OK )
          NT = NT + 6
 *
-*     Test error exits for the SGS, SGV, SGX, and SXV paths.
+*     Test error exits for the DGS, DGV, DGX, and DXV paths.
 *
-      ELSE IF( LSAMEN( 3, PATH, 'SGS' ) .OR.
-     $         LSAMEN( 3, PATH, 'SGV' ) .OR.
-     $         LSAMEN( 3, PATH, 'SGX' ) .OR. LSAMEN( 3, PATH, 'SXV' ) )
+      ELSE IF( LSAMEN( 3, PATH, 'DGS' ) .OR.
+     $         LSAMEN( 3, PATH, 'DGV' ) .OR.
+     $         LSAMEN( 3, PATH, 'DGX' ) .OR. LSAMEN( 3, PATH, 'DXV' ) )
      $          THEN
 *
 *        DGGES
