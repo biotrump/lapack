@@ -804,8 +804,9 @@
 *                 Copy R to VT, zeroing out below it
 *
                   CALL SLACPY( 'U', N, N, A, LDA, VT, LDVT )
-                  CALL SLASET( 'L', N-1, N-1, ZERO, ZERO, VT( 2, 1 ),
-     $                         LDVT )
+                  IF( N.GT.1 )
+     $               CALL SLASET( 'L', N-1, N-1, ZERO, ZERO,
+     $                            VT( 2, 1 ), LDVT )
 *
 *                 Generate Q in A
 *                 (Workspace: need N*N+2*N, prefer N*N+N+N*NB)
@@ -878,8 +879,9 @@
 *                 Copy R to VT, zeroing out below it
 *
                   CALL SLACPY( 'U', N, N, A, LDA, VT, LDVT )
-                  CALL SLASET( 'L', N-1, N-1, ZERO, ZERO, VT( 2, 1 ),
-     $                         LDVT )
+                  IF( N.GT.1 )
+     $               CALL SLASET( 'L', N-1, N-1, ZERO, ZERO,
+     $                            VT( 2, 1 ), LDVT )
 *
 *                 Generate Q in A
 *                 (Workspace: need 2*N, prefer N+N*NB)
@@ -1340,8 +1342,9 @@
 *                    Copy R to VT, zeroing out below it
 *
                      CALL SLACPY( 'U', N, N, A, LDA, VT, LDVT )
-                     CALL SLASET( 'L', N-1, N-1, ZERO, ZERO, VT( 2, 1 ),
-     $                            LDVT )
+                     IF( N.GT.1 )
+     $                  CALL SLASET( 'L', N-1, N-1, ZERO, ZERO,
+     $                               VT( 2, 1 ), LDVT )
                      IE = ITAU
                      ITAUQ = IE + N
                      ITAUP = ITAUQ + N
@@ -1816,8 +1819,9 @@
 *                    Copy R from A to VT, zeroing out below it
 *
                      CALL SLACPY( 'U', N, N, A, LDA, VT, LDVT )
-                     CALL SLASET( 'L', N-1, N-1, ZERO, ZERO, VT( 2, 1 ),
-     $                            LDVT )
+                     IF( N.GT.1 )
+     $                  CALL SLASET( 'L', N-1, N-1, ZERO, ZERO,
+     $                               VT( 2, 1 ), LDVT )
                      IE = ITAU
                      ITAUQ = IE + N
                      ITAUP = ITAUQ + N

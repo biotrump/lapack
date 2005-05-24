@@ -804,8 +804,9 @@
 *                 Copy R to VT, zeroing out below it
 *
                   CALL ZLACPY( 'U', N, N, A, LDA, VT, LDVT )
-                  CALL ZLASET( 'L', N-1, N-1, CZERO, CZERO, VT( 2, 1 ),
-     $                         LDVT )
+                  IF( N.GT.1 )
+     $               CALL ZLASET( 'L', N-1, N-1, CZERO, CZERO,
+     $                            VT( 2, 1 ), LDVT )
 *
 *                 Generate Q in A
 *                 (CWorkspace: need N*N+2*N, prefer N*N+N+N*NB)
@@ -885,8 +886,9 @@
 *                 Copy R to VT, zeroing out below it
 *
                   CALL ZLACPY( 'U', N, N, A, LDA, VT, LDVT )
-                  CALL ZLASET( 'L', N-1, N-1, CZERO, CZERO, VT( 2, 1 ),
-     $                         LDVT )
+                  IF( N.GT.1 )
+     $               CALL ZLASET( 'L', N-1, N-1, CZERO, CZERO,
+     $                            VT( 2, 1 ), LDVT )
 *
 *                 Generate Q in A
 *                 (CWorkspace: need 2*N, prefer N+N*NB)
@@ -1388,8 +1390,9 @@
 *                    Copy R to VT, zeroing out below it
 *
                      CALL ZLACPY( 'U', N, N, A, LDA, VT, LDVT )
-                     CALL ZLASET( 'L', N-1, N-1, CZERO, CZERO,
-     $                            VT( 2, 1 ), LDVT )
+                     IF( N.GT.1 )
+     $                  CALL ZLASET( 'L', N-1, N-1, CZERO, CZERO,
+     $                               VT( 2, 1 ), LDVT )
                      IE = 1
                      ITAUQ = ITAU
                      ITAUP = ITAUQ + N
@@ -1902,8 +1905,9 @@
 *                    Copy R from A to VT, zeroing out below it
 *
                      CALL ZLACPY( 'U', N, N, A, LDA, VT, LDVT )
-                     CALL ZLASET( 'L', N-1, N-1, CZERO, CZERO,
-     $                            VT( 2, 1 ), LDVT )
+                     IF( N.GT.1 )
+     $                  CALL ZLASET( 'L', N-1, N-1, CZERO, CZERO,
+     $                               VT( 2, 1 ), LDVT )
                      IE = 1
                      ITAUQ = ITAU
                      ITAUP = ITAUQ + N
