@@ -18,7 +18,7 @@
 *  Purpose
 *  =======
 *
-*  CLAQHB equilibrates a symmetric band matrix A using the scaling
+*  CLAQHB equilibrates an Hermitian band matrix A using the scaling
 *  factors in the vector S.
 *
 *  Arguments
