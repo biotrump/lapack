@@ -212,11 +212,11 @@
             IF (ICASE.EQ.7) THEN
 *              .. DNRM2 ..
                STEMP(1) = DTRUE1(NP1)
-               CALL STEST1(DNRM2(N,SX,INCX),STEMP,STEMP,SFAC)
+               CALL STEST1(DNRM2(N,SX,INCX),STEMP(1),STEMP,SFAC)
             ELSE IF (ICASE.EQ.8) THEN
 *              .. DASUM ..
                STEMP(1) = DTRUE3(NP1)
-               CALL STEST1(DASUM(N,SX,INCX),STEMP,STEMP,SFAC)
+               CALL STEST1(DASUM(N,SX,INCX),STEMP(1),STEMP,SFAC)
             ELSE IF (ICASE.EQ.9) THEN
 *              .. DSCAL ..
                CALL DSCAL(N,SA((INCX-1)*5+NP1),SX,INCX)
