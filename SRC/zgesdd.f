@@ -54,11 +54,11 @@
 *                  min(M,N) rows of V**H are returned in the arrays U
 *                  and VT;
 *          = 'O':  If M >= N, the first N columns of U are overwritten
-*                  on the array A and all rows of V**H are returned in
+*                  in the array A and all rows of V**H are returned in
 *                  the array VT;
 *                  otherwise, all columns of U are returned in the
 *                  array U and the first M rows of V**H are overwritten
-*                  in the array VT;
+*                  in the array A;
 *          = 'N':  no columns of U or rows of V**H are computed.
 *
 *  M       (input) INTEGER
