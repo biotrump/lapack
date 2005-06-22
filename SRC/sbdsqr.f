@@ -72,13 +72,13 @@
 *          On exit, if INFO=0, the singular values of B in decreasing
 *          order.
 *
-*  E       (input/output) REAL array, dimension (N)
+*  E       (input/output) REAL array, dimension (N-1)
 *          On entry, the N-1 offdiagonal elements of the bidiagonal
 *          matrix B.
 *          On exit, if INFO = 0, E is destroyed; if INFO > 0, D and E
 *          will contain the diagonal and superdiagonal elements of a
 *          bidiagonal matrix orthogonally equivalent to the one given
-*          as input. E(N) is used for workspace.
+*          as input.
 *
 *  VT      (input/output) REAL array, dimension (LDVT, NCVT)
 *          On entry, an N-by-NCVT matrix VT.
