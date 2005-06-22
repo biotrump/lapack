@@ -1,4 +1,4 @@
-      SUBROUTINE DGGES( JOBVSL, JOBVSR, SORT, DELCTG, N, A, LDA, B, LDB,
+      SUBROUTINE DGGES( JOBVSL, JOBVSR, SORT, SELCTG, N, A, LDA, B, LDB,
      $                  SDIM, ALPHAR, ALPHAI, BETA, VSL, LDVSL, VSR,
      $                  LDVSR, WORK, LWORK, BWORK, INFO )
 *
@@ -18,8 +18,8 @@
      $                   VSR( LDVSR, * ), WORK( * )
 *     ..
 *     .. Function Arguments ..
-      LOGICAL            DELCTG
-      EXTERNAL           DELCTG
+      LOGICAL            SELCTG
+      EXTERNAL           SELCTG
 *     ..
 *
 *  Purpose
@@ -74,20 +74,20 @@
 *          Specifies whether or not to order the eigenvalues on the
 *          diagonal of the generalized Schur form.
 *          = 'N':  Eigenvalues are not ordered;
-*          = 'S':  Eigenvalues are ordered (see DELZTG);
+*          = 'S':  Eigenvalues are ordered (see SELCTG);
 *
-*  DELZTG  (input) LOGICAL FUNCTION of three DOUBLE PRECISION arguments
-*          DELZTG must be declared EXTERNAL in the calling subroutine.
-*          If SORT = 'N', DELZTG is not referenced.
-*          If SORT = 'S', DELZTG is used to select eigenvalues to sort
+*  SELCTG  LOGICAL FUNCTION of three DOUBLE PRECISION arguments
+*          SELCTG must be declared EXTERNAL in the calling subroutine.
+*          If SORT = 'N', SELCTG is not referenced.
+*          If SORT = 'S', SELCTG is used to select eigenvalues to sort
 *          to the top left of the Schur form.
 *          An eigenvalue (ALPHAR(j)+ALPHAI(j))/BETA(j) is selected if
-*          DELZTG(ALPHAR(j),ALPHAI(j),BETA(j)) is true; i.e. if either
+*          SELCTG(ALPHAR(j),ALPHAI(j),BETA(j)) is true; i.e. if either
 *          one of a complex conjugate pair of eigenvalues is selected,
 *          then both complex eigenvalues are selected.
 *
 *          Note that in the ill-conditioned case, a selected complex
-*          eigenvalue may no longer satisfy DELZTG(ALPHAR(j),ALPHAI(j),
+*          eigenvalue may no longer satisfy SELCTG(ALPHAR(j),ALPHAI(j),
 *          BETA(j)) = .TRUE. after ordering. INFO is to be set to N+2
 *          in this case.
 *
@@ -113,8 +113,8 @@
 *  SDIM    (output) INTEGER
 *          If SORT = 'N', SDIM = 0.
 *          If SORT = 'S', SDIM = number of eigenvalues (after sorting)
-*          for which DELZTG is true.  (Complex conjugate pairs for which
-*          DELZTG is true for either eigenvalue count as 2.)
+*          for which SELCTG is true.  (Complex conjugate pairs for which
+*          SELCTG is true for either eigenvalue count as 2.)
 *
 *  ALPHAR  (output) DOUBLE PRECISION array, dimension (N)
 *  ALPHAI  (output) DOUBLE PRECISION array, dimension (N)
@@ -179,7 +179,7 @@
 *                =N+2: after reordering, roundoff changed values of
 *                      some complex eigenvalues so that leading
 *                      eigenvalues in the Generalized Schur form no
-*                      longer satisfy DELZTG=.TRUE.  This could also
+*                      longer satisfy SELCTG=.TRUE.  This could also
 *                      be caused due to scaling.
 *                =N+3: reordering failed in DTGSEN.
 *
@@ -416,7 +416,7 @@
       SDIM = 0
       IF( WANTST ) THEN
 *
-*        Undo scaling on eigenvalues before DELZTGing
+*        Undo scaling on eigenvalues before SELCTGing
 *
          IF( ILASCL ) THEN
             CALL DLASCL( 'G', 0, 0, ANRMTO, ANRM, N, 1, ALPHAR, N,
@@ -430,7 +430,7 @@
 *        Select eigenvalues
 *
          DO 10 I = 1, N
-            BWORK( I ) = DELCTG( ALPHAR( I ), ALPHAI( I ), BETA( I ) )
+            BWORK( I ) = SELCTG( ALPHAR( I ), ALPHAI( I ), BETA( I ) )
    10    CONTINUE
 *
          CALL DTGSEN( 0, ILVSL, ILVSR, BWORK, N, A, LDA, B, LDB, ALPHAR,
@@ -515,7 +515,7 @@
          SDIM = 0
          IP = 0
          DO 40 I = 1, N
-            CURSL = DELCTG( ALPHAR( I ), ALPHAI( I ), BETA( I ) )
+            CURSL = SELCTG( ALPHAR( I ), ALPHAI( I ), BETA( I ) )
             IF( ALPHAI( I ).EQ.ZERO ) THEN
                IF( CURSL )
      $            SDIM = SDIM + 1

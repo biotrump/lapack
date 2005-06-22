@@ -1,4 +1,4 @@
-      SUBROUTINE ZGGESX( JOBVSL, JOBVSR, SORT, DELCTG, SENSE, N, A, LDA,
+      SUBROUTINE ZGGESX( JOBVSL, JOBVSR, SORT, SELCTG, SENSE, N, A, LDA,
      $                   B, LDB, SDIM, ALPHA, BETA, VSL, LDVSL, VSR,
      $                   LDVSR, RCONDE, RCONDV, WORK, LWORK, RWORK,
      $                   IWORK, LIWORK, BWORK, INFO )
@@ -23,8 +23,8 @@
      $                   WORK( * )
 *     ..
 *     .. Function Arguments ..
-      LOGICAL            DELCTG
-      EXTERNAL           DELCTG
+      LOGICAL            SELCTG
+      EXTERNAL           SELCTG
 *     ..
 *
 *  Purpose
@@ -73,15 +73,15 @@
 *          Specifies whether or not to order the eigenvalues on the
 *          diagonal of the generalized Schur form.
 *          = 'N':  Eigenvalues are not ordered;
-*          = 'S':  Eigenvalues are ordered (see DELZTG).
+*          = 'S':  Eigenvalues are ordered (see SELCTG).
 *
-*  DELZTG  (input) LOGICAL FUNCTION of two COMPLEX*16 arguments
-*          DELZTG must be declared EXTERNAL in the calling subroutine.
-*          If SORT = 'N', DELZTG is not referenced.
-*          If SORT = 'S', DELZTG is used to select eigenvalues to sort
+*  SELCTG  LOGICAL FUNCTION of two COMPLEX*16 arguments
+*          SELCTG must be declared EXTERNAL in the calling subroutine.
+*          If SORT = 'N', SELCTG is not referenced.
+*          If SORT = 'S', SELCTG is used to select eigenvalues to sort
 *          to the top left of the Schur form.
 *          Note that a selected complex eigenvalue may no longer satisfy
-*          DELZTG(ALPHA(j),BETA(j)) = .TRUE. after ordering, since
+*          SELCTG(ALPHA(j),BETA(j)) = .TRUE. after ordering, since
 *          ordering may change the value of complex eigenvalues
 *          (especially if the eigenvalue is ill-conditioned), in this
 *          case INFO is set to N+3 see INFO below).
@@ -116,7 +116,7 @@
 *  SDIM    (output) INTEGER
 *          If SORT = 'N', SDIM = 0.
 *          If SORT = 'S', SDIM = number of eigenvalues (after sorting)
-*          for which DELZTG is true.
+*          for which SELCTG is true.
 *
 *  ALPHA   (output) COMPLEX*16 array, dimension (N)
 *  BETA    (output) COMPLEX*16 array, dimension (N)
@@ -196,7 +196,7 @@
 *                =N+2: after reordering, roundoff changed values of
 *                      some complex eigenvalues so that leading
 *                      eigenvalues in the Generalized Schur form no
-*                      longer satisfy DELZTG=.TRUE.  This could also
+*                      longer satisfy SELCTG=.TRUE.  This could also
 *                      be caused due to scaling.
 *                =N+3: reordering failed in ZTGSEN.
 *
@@ -463,7 +463,7 @@
 *
       IF( WANTST ) THEN
 *
-*        Undo scaling on eigenvalues before DELZTGing
+*        Undo scaling on eigenvalues before SELCTGing
 *
          IF( ILASCL )
      $      CALL ZLASCL( 'G', 0, 0, ANRMTO, ANRM, N, 1, ALPHA, N, IERR )
@@ -473,7 +473,7 @@
 *        Select eigenvalues
 *
          DO 10 I = 1, N
-            BWORK( I ) = DELCTG( ALPHA( I ), BETA( I ) )
+            BWORK( I ) = SELCTG( ALPHA( I ), BETA( I ) )
    10    CONTINUE
 *
 *        Reorder eigenvalues, transform Generalized Schur vectors, and
@@ -536,7 +536,7 @@
          LASTSL = .TRUE.
          SDIM = 0
          DO 30 I = 1, N
-            CURSL = DELCTG( ALPHA( I ), BETA( I ) )
+            CURSL = SELCTG( ALPHA( I ), BETA( I ) )
             IF( CURSL )
      $         SDIM = SDIM + 1
             IF( CURSL .AND. .NOT.LASTSL )

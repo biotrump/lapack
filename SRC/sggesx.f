@@ -82,7 +82,7 @@
 *          = 'N':  Eigenvalues are not ordered;
 *          = 'S':  Eigenvalues are ordered (see SELCTG).
 *
-*  SELCTG  (input) LOGICAL FUNCTION of three REAL arguments
+*  SELCTG  LOGICAL FUNCTION of three REAL arguments
 *          SELCTG must be declared EXTERNAL in the calling subroutine.
 *          If SORT = 'N', SELCTG is not referenced.
 *          If SORT = 'S', SELCTG is used to select eigenvalues to sort
