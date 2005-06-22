@@ -34,7 +34,7 @@
 *  It could conceivably fail on hexadecimal or decimal machines
 *  without guard digits, but we know of none.  See SLASD3 for details.
 *
-*  The code currently call SLASDQ if singular values only are desired.
+*  The code currently calls SLASDQ if singular values only are desired.
 *  However, it can be slightly modified to compute singular values
 *  using the divide and conquer method.
 *
