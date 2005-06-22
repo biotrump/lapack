@@ -6,7 +6,6 @@
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
 *     June 30, 1999
-*     8-15-00:  Improve consistency of WS calculations (eca)
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBVSL, JOBVSR, SORT
@@ -146,9 +145,10 @@
 *          The dimension of the array WORK.  LWORK >= max(1,2*N).
 *          For good performance, LWORK must generally be larger.
 *
-*          If LWORK = -1, a workspace query is assumed.  The optimal
-*          size for the WORK array is calculated and stored in WORK(1),
-*          and no other work except argument checking is performed.
+*          If LWORK = -1, then a workspace query is assumed; the routine
+*          only calculates the optimal size of the WORK array, returns
+*          this value as the first entry of the WORK array, and no error
+*          message related to LWORK is issued by XERBLA.
 *
 *  RWORK   (workspace) REAL array, dimension (8*N)
 *
@@ -173,8 +173,6 @@
 *  =====================================================================
 *
 *     .. Parameters ..
-      INTEGER            LQUERV
-      PARAMETER          ( LQUERV = -1 )
       REAL               ZERO, ONE
       PARAMETER          ( ZERO = 0.0E0, ONE = 1.0E0 )
       COMPLEX            CZERO, CONE
@@ -183,7 +181,7 @@
 *     ..
 *     .. Local Scalars ..
       LOGICAL            CURSL, ILASCL, ILBSCL, ILVSL, ILVSR, LASTSL,
-     $                   WANTST
+     $                   LQUERY, WANTST
       INTEGER            I, ICOLS, IERR, IHI, IJOBVL, IJOBVR, ILEFT,
      $                   ILO, IRIGHT, IROWS, IRWRK, ITAU, IWRK, LWKMIN,
      $                   LWKOPT
@@ -239,6 +237,7 @@
 *     Test the input arguments
 *
       INFO = 0
+      LQUERY = ( LWORK.EQ.-1 )
       IF( IJOBVL.LE.0 ) THEN
          INFO = -1
       ELSE IF( IJOBVR.LE.0 ) THEN
@@ -264,26 +263,28 @@
 *       NB refers to the optimal block size for the immediately
 *       following subroutine, as returned by ILAENV.)
 *
-      LWKMIN = 1
       IF( INFO.EQ.0 ) THEN
          LWKMIN = MAX( 1, 2*N )
-         LWKOPT = N + N*ILAENV( 1, 'CGEQRF', ' ', N, 1, N, 0 )
+         LWKOPT = MAX( 1, N + N*ILAENV( 1, 'CGEQRF', ' ', N, 1, N, 0 ) )
          IF( ILVSL ) THEN
-            LWKOPT = MAX( LWKOPT, N+N*ILAENV( 1, 'CUNGQR', ' ', N, 1, N,
-     $               -1 ) )
+            LWKOPT = MAX( LWKOPT, N +
+     $                    N*ILAENV( 1, 'CUNGQR', ' ', N, 1, N, -1 ) )
          END IF
          WORK( 1 ) = LWKOPT
-         IF( LWORK.LT.LWKMIN .AND. LWORK.NE.LQUERV )
+*
+         IF( LWORK.LT.LWKMIN .AND. .NOT.LQUERY )
      $      INFO = -18
       END IF
-*
-*     Quick return if possible
 *
       IF( INFO.NE.0 ) THEN
          CALL XERBLA( 'CGGES ', -INFO )
          RETURN
+      ELSE IF( LQUERY ) THEN
+         RETURN
       END IF
-      IF( LWORK.EQ.LQUERV ) RETURN
+*
+*     Quick return if possible
+*
       IF( N.EQ.0 ) THEN
          SDIM = 0
          RETURN
@@ -359,8 +360,10 @@
 *
       IF( ILVSL ) THEN
          CALL CLASET( 'Full', N, N, CZERO, CONE, VSL, LDVSL )
-         CALL CLACPY( 'L', IROWS-1, IROWS-1, B( ILO+1, ILO ), LDB,
-     $                VSL( ILO+1, ILO ), LDVSL )
+         IF( IROWS.GT.1 ) THEN
+            CALL CLACPY( 'L', IROWS-1, IROWS-1, B( ILO+1, ILO ), LDB,
+     $                   VSL( ILO+1, ILO ), LDVSL )
+         END IF
          CALL CUNGQR( IROWS, IROWS, IROWS, VSL( ILO, ILO ), LDVSL,
      $                WORK( ITAU ), WORK( IWRK ), LWORK+1-IWRK, IERR )
       END IF
