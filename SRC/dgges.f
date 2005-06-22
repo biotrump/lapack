@@ -6,7 +6,6 @@
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
 *     June 30, 1999
-*     8-15-00:  Improve consistency of WS calculations (eca)
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBVSL, JOBVSR, SORT
@@ -157,11 +156,14 @@
 *          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER
-*          The dimension of the array WORK.  LWORK >= 8*N+16.
+*          The dimension of the array WORK.
+*          If N = 0, LWORK >= 1, else LWORK >= 8*N+16.
+*          For good performance , LWORK must generally be larger.
 *
-*          If LWORK = -1, a workspace query is assumed.  The optimal
-*          size for the WORK array is calculated and stored in WORK(1),
-*          and no other work except argument checking is performed.
+*          If LWORK = -1, then a workspace query is assumed; the routine
+*          only calculates the optimal size of the WORK array, returns
+*          this value as the first entry of the WORK array, and no error
+*          message related to LWORK is issued by XERBLA.
 *
 *  BWORK   (workspace) LOGICAL array, dimension (N)
 *          Not referenced if SORT = 'N'.
@@ -184,14 +186,12 @@
 *  =====================================================================
 *
 *     .. Parameters ..
-      INTEGER            LQUERV
-      PARAMETER          ( LQUERV = -1 )
       DOUBLE PRECISION   ZERO, ONE
       PARAMETER          ( ZERO = 0.0D+0, ONE = 1.0D+0 )
 *     ..
 *     .. Local Scalars ..
       LOGICAL            CURSL, ILASCL, ILBSCL, ILVSL, ILVSR, LASTSL,
-     $                   LST2SL, WANTST
+     $                   LQUERY, LST2SL, WANTST
       INTEGER            I, ICOLS, IERR, IHI, IJOBVL, IJOBVR, ILEFT,
      $                   ILO, IP, IRIGHT, IROWS, ITAU, IWRK, MAXWRK,
      $                   MINWRK
@@ -247,6 +247,7 @@
 *     Test the input arguments
 *
       INFO = 0
+      LQUERY = ( LWORK.EQ.-1 )
       IF( IJOBVL.LE.0 ) THEN
          INFO = -1
       ELSE IF( IJOBVR.LE.0 ) THEN
@@ -272,28 +273,33 @@
 *       NB refers to the optimal block size for the immediately
 *       following subroutine, as returned by ILAENV.)
 *
-      MINWRK = 1
       IF( INFO.EQ.0 ) THEN
-         MINWRK = 7*( N+1 ) + 16
-         MAXWRK = 7*( N+1 ) + N*ILAENV( 1, 'DGEQRF', ' ', N, 1, N, 0 ) +
-     $            16
-         IF( ILVSL ) THEN
-            MAXWRK = MAX( MAXWRK, 7*( N+1 )+N*
-     $               ILAENV( 1, 'DORGQR', ' ', N, 1, N, -1 ) )
+         IF( N.GT.0 )THEN
+            MINWRK = 8*N + 16
+            MAXWRK = 8*N + 16 + N*ILAENV( 1, 'DGEQRF', ' ', N, 1, N, 0 )
+            IF( ILVSL ) THEN
+               MAXWRK = MAX( MAXWRK, 8*N + 16 +
+     $                       N*ILAENV( 1, 'DORGQR', ' ', N, 1, N, -1 ) )
+            END IF
+         ELSE
+            MINWRK = 1
+            MAXWRK = 1
          END IF
          WORK( 1 ) = MAXWRK
-         IF( LWORK.LT.MINWRK .AND. LWORK.NE.LQUERV )
+*
+         IF( LWORK.LT.MINWRK .AND. .NOT.LQUERY )
      $      INFO = -19
       END IF
-*
-*     Quick returns
 *
       IF( INFO.NE.0 ) THEN
          CALL XERBLA( 'DGGES ', -INFO )
          RETURN
+      ELSE IF( LQUERY ) THEN
+         RETURN
       END IF
-      IF( LWORK.EQ.LQUERV )
-     $   RETURN
+*
+*     Quick return if possible
+*
       IF( N.EQ.0 ) THEN
          SDIM = 0
          RETURN
@@ -367,8 +373,10 @@
 *
       IF( ILVSL ) THEN
          CALL DLASET( 'Full', N, N, ZERO, ONE, VSL, LDVSL )
-         CALL DLACPY( 'L', IROWS-1, IROWS-1, B( ILO+1, ILO ), LDB,
-     $                VSL( ILO+1, ILO ), LDVSL )
+         IF( IROWS.GT.1 ) THEN
+            CALL DLACPY( 'L', IROWS-1, IROWS-1, B( ILO+1, ILO ), LDB,
+     $                   VSL( ILO+1, ILO ), LDVSL )
+         END IF
          CALL DORGQR( IROWS, IROWS, IROWS, VSL( ILO, ILO ), LDVSL,
      $                WORK( ITAU ), WORK( IWRK ), LWORK+1-IWRK, IERR )
       END IF
