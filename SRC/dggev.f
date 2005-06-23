@@ -5,7 +5,6 @@
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
 *     June 30, 1999
-*     8-15-00:  Improve consistency of WS calculations (eca)
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBVL, JOBVR
@@ -94,7 +93,7 @@
 *          u(j) = VL(:,j), the j-th column of VL. If the j-th and
 *          (j+1)-th eigenvalues form a complex conjugate pair, then
 *          u(j) = VL(:,j)+i*VL(:,j+1) and u(j+1) = VL(:,j)-i*VL(:,j+1).
-*          Each eigenvector will be scaled so the largest component have
+*          Each eigenvector is scaled so the largest component has
 *          abs(real part)+abs(imag. part)=1.
 *          Not referenced if JOBVL = 'N'.
 *
@@ -109,7 +108,7 @@
 *          v(j) = VR(:,j), the j-th column of VR. If the j-th and
 *          (j+1)-th eigenvalues form a complex conjugate pair, then
 *          v(j) = VR(:,j)+i*VR(:,j+1) and v(j+1) = VR(:,j)-i*VR(:,j+1).
-*          Each eigenvector will be scaled so the largest component have
+*          Each eigenvector is scaled so the largest component has
 *          abs(real part)+abs(imag. part)=1.
 *          Not referenced if JOBVR = 'N'.
 *
@@ -124,9 +123,10 @@
 *          The dimension of the array WORK.  LWORK >= max(1,8*N).
 *          For good performance, LWORK must generally be larger.
 *
-*          If LWORK = -1, a workspace query is assumed.  The optimal
-*          size for the WORK array is calculated and stored in WORK(1),
-*          and no other work except argument checking is performed.
+*          If LWORK = -1, then a workspace query is assumed; the routine
+*          only calculates the optimal size of the WORK array, returns
+*          this value as the first entry of the WORK array, and no error
+*          message related to LWORK is issued by XERBLA.
 *
 *  INFO    (output) INTEGER
 *          = 0:  successful exit
@@ -141,13 +141,11 @@
 *  =====================================================================
 *
 *     .. Parameters ..
-      INTEGER            LQUERV
-      PARAMETER          ( LQUERV = -1 )
       DOUBLE PRECISION   ZERO, ONE
       PARAMETER          ( ZERO = 0.0D+0, ONE = 1.0D+0 )
 *     ..
 *     .. Local Scalars ..
-      LOGICAL            ILASCL, ILBSCL, ILV, ILVL, ILVR
+      LOGICAL            ILASCL, ILBSCL, ILV, ILVL, ILVR, LQUERY
       CHARACTER          CHTEMP
       INTEGER            ICOLS, IERR, IHI, IJOBVL, IJOBVR, ILEFT, ILO,
      $                   IN, IRIGHT, IROWS, ITAU, IWRK, JC, JR, MAXWRK,
@@ -160,7 +158,7 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           DGEQRF, DGGBAK, DGGBAL, DGGHRD, DHGEQZ, DLABAD,
-     $                   DLACPY, DLASCL, DLASET, DORGQR, DORMQR, DTGEVC,
+     $                   DLACPY,DLASCL, DLASET, DORGQR, DORMQR, DTGEVC,
      $                   XERBLA
 *     ..
 *     .. External Functions ..
@@ -202,6 +200,7 @@
 *     Test the input arguments
 *
       INFO = 0
+      LQUERY = ( LWORK.EQ.-1 )
       IF( IJOBVL.LE.0 ) THEN
          INFO = -1
       ELSE IF( IJOBVR.LE.0 ) THEN
@@ -226,23 +225,31 @@
 *       following subroutine, as returned by ILAENV. The workspace is
 *       computed assuming ILO = 1 and IHI = N, the worst case.)
 *
-      MINWRK = 1
       IF( INFO.EQ.0 ) THEN
-         MAXWRK = 7*N + N*ILAENV( 1, 'DGEQRF', ' ', N, 1, N, 0 )
          MINWRK = MAX( 1, 8*N )
+         MAXWRK = MAX( 1, N*( 7 +
+     $                 ILAENV( 1, 'DGEQRF', ' ', N, 1, N, 0 ) ) )
+         MAXWRK = MAX( MAXWRK, N*( 7 +
+     $                 ILAENV( 1, 'DORMQR', ' ', N, 1, N, 0 ) ) )
+         IF( ILVL ) THEN
+            MAXWRK = MAX( MAXWRK, N*( 7 +
+     $                    ILAENV( 1, 'DORGQR', ' ', N, 1, N, -1 ) )
+         END IF
          WORK( 1 ) = MAXWRK
-         IF( LWORK.LT.MINWRK .AND. LWORK.NE.LQUERV )
+*
+         IF( LWORK.LT.MINWRK .AND. .NOT.LQUERY )
      $      INFO = -16
       END IF
-*
-*     Quick returns
 *
       IF( INFO.NE.0 ) THEN
          CALL XERBLA( 'DGGEV ', -INFO )
          RETURN
+      ELSE IF( LQUERY ) THEN
+         RETURN
       END IF
-      IF( LWORK.EQ.LQUERV )
-     $   RETURN
+*
+*     Quick return if possible
+*
       IF( N.EQ.0 )
      $   RETURN
 *
@@ -318,8 +325,10 @@
 *
       IF( ILVL ) THEN
          CALL DLASET( 'Full', N, N, ZERO, ONE, VL, LDVL )
-         CALL DLACPY( 'L', IROWS-1, IROWS-1, B( ILO+1, ILO ), LDB,
-     $                VL( ILO+1, ILO ), LDVL )
+         IF( IROWS.GT.1 ) THEN
+            CALL DLACPY( 'L', IROWS-1, IROWS-1, B( ILO+1, ILO ), LDB,
+     $                   VL( ILO+1, ILO ), LDVL )
+         END IF
          CALL DORGQR( IROWS, IROWS, IROWS, VL( ILO, ILO ), LDVL,
      $                WORK( ITAU ), WORK( IWRK ), LWORK+1-IWRK, IERR )
       END IF

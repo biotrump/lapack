@@ -5,7 +5,6 @@
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
 *     June 30, 1999
-*     8-15-00:  Improve consistency of WS calculations (eca)
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBVL, JOBVR
@@ -87,8 +86,8 @@
 *          If JOBVL = 'V', the left generalized eigenvectors u(j) are
 *          stored one after another in the columns of VL, in the same
 *          order as their eigenvalues.
-*          Each eigenvector will be scaled so the largest component
-*          will have abs(real part) + abs(imag. part) = 1.
+*          Each eigenvector is scaled so the largest component has
+*          abs(real part) + abs(imag. part) = 1.
 *          Not referenced if JOBVL = 'N'.
 *
 *  LDVL    (input) INTEGER
@@ -99,8 +98,8 @@
 *          If JOBVR = 'V', the right generalized eigenvectors v(j) are
 *          stored one after another in the columns of VR, in the same
 *          order as their eigenvalues.
-*          Each eigenvector will be scaled so the largest component
-*          will have abs(real part) + abs(imag. part) = 1.
+*          Each eigenvector is scaled so the largest component has
+*          abs(real part) + abs(imag. part) = 1.
 *          Not referenced if JOBVR = 'N'.
 *
 *  LDVR    (input) INTEGER
@@ -114,9 +113,10 @@
 *          The dimension of the array WORK.  LWORK >= max(1,2*N).
 *          For good performance, LWORK must generally be larger.
 *
-*          If LWORK = -1, a workspace query is assumed.  The optimal
-*          size for the WORK array is calculated and stored in WORK(1),
-*          and no other work except argument checking is performed.
+*          If LWORK = -1, then a workspace query is assumed; the routine
+*          only calculates the optimal size of the WORK array, returns
+*          this value as the first entry of the WORK array, and no error
+*          message related to LWORK is issued by XERBLA.
 *
 *  RWORK   (workspace/output) DOUBLE PRECISION array, dimension (8*N)
 *
@@ -133,8 +133,6 @@
 *  =====================================================================
 *
 *     .. Parameters ..
-      INTEGER            LQUERV
-      PARAMETER          ( LQUERV = -1 )
       DOUBLE PRECISION   ZERO, ONE
       PARAMETER          ( ZERO = 0.0D0, ONE = 1.0D0 )
       COMPLEX*16         CZERO, CONE
@@ -142,7 +140,7 @@
      $                   CONE = ( 1.0D0, 0.0D0 ) )
 *     ..
 *     .. Local Scalars ..
-      LOGICAL            ILASCL, ILBSCL, ILV, ILVL, ILVR
+      LOGICAL            ILASCL, ILBSCL, ILV, ILVL, ILVR, LQUERY
       CHARACTER          CHTEMP
       INTEGER            ICOLS, IERR, IHI, IJOBVL, IJOBVR, ILEFT, ILO,
      $                   IN, IRIGHT, IROWS, IRWRK, ITAU, IWRK, JC, JR,
@@ -204,6 +202,7 @@
 *     Test the input arguments
 *
       INFO = 0
+      LQUERY = ( LWORK.EQ.-1 )
       IF( IJOBVL.LE.0 ) THEN
          INFO = -1
       ELSE IF( IJOBVR.LE.0 ) THEN
@@ -228,23 +227,30 @@
 *       following subroutine, as returned by ILAENV. The workspace is
 *       computed assuming ILO = 1 and IHI = N, the worst case.)
 *
-      LWKMIN = 1
       IF( INFO.EQ.0 ) THEN
-         LWKOPT = N + N*ILAENV( 1, 'ZGEQRF', ' ', N, 1, N, 0 )
          LWKMIN = MAX( 1, 2*N )
+         LWKOPT = MAX( 1, N + N*ILAENV( 1, 'ZGEQRF', ' ', N, 1, N, 0 ) )
+         LWKOPT = MAX( LWKOPT, N +
+     $                 N*ILAENV( 1, 'ZUNMQR', ' ', N, 1, N, 0 ) ) )
+         IF( ILVL ) THEN
+            LWKOPT = MAX( LWKOPT, N +
+     $                    N*ILAENV( 1, 'ZUNGQR', ' ', N, 1, N, -1 ) )
+         END IF
          WORK( 1 ) = LWKOPT
-         IF( LWORK.LT.LWKMIN .AND. LWORK.NE.LQUERV )
+*
+         IF( LWORK.LT.LWKMIN .AND. .NOT.LQUERY )
      $      INFO = -15
       END IF
-*
-*     Quick returns
 *
       IF( INFO.NE.0 ) THEN
          CALL XERBLA( 'ZGGEV ', -INFO )
          RETURN
+      ELSE IF( LQUERY ) THEN
+         RETURN
       END IF
-      IF( LWORK.EQ.LQUERV )
-     $   RETURN
+*
+*     Quick return if possible
+*
       IF( N.EQ.0 )
      $   RETURN
 *
@@ -320,8 +326,10 @@
 *
       IF( ILVL ) THEN
          CALL ZLASET( 'Full', N, N, CZERO, CONE, VL, LDVL )
-         CALL ZLACPY( 'L', IROWS-1, IROWS-1, B( ILO+1, ILO ), LDB,
-     $                VL( ILO+1, ILO ), LDVL )
+         IF( IROWS.GT.1 ) THEN
+            CALL ZLACPY( 'L', IROWS-1, IROWS-1, B( ILO+1, ILO ), LDB,
+     $                   VL( ILO+1, ILO ), LDVL )
+         END IF
          CALL ZUNGQR( IROWS, IROWS, IROWS, VL( ILO, ILO ), LDVL,
      $                WORK( ITAU ), WORK( IWRK ), LWORK+1-IWRK, IERR )
       END IF
