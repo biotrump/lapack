@@ -7,7 +7,6 @@
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
 *     June 30, 1999
-*     8-15-00:  Do WS calculations if LWORK = -1 (eca)
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBVSL, JOBVSR, SENSE, SORT
@@ -164,23 +163,38 @@
 *          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER
-*          The dimension of the array WORK.  LWORK >= 2*N.
-*          If SENSE = 'E', 'V', or 'B',
-*          LWORK >= MAX(2*N, 2*SDIM*(N-SDIM)).
+*          The dimension of the array WORK.
+*          If N = 0, LWORK >= 1, else if SENSE = 'E', 'V', or 'B',
+*          LWORK >= MAX(1,2*N,2*SDIM*(N-SDIM)), else
+*          LWORK >= MAX(1,2*N).  Note that 2*SDIM*(N-SDIM) <= N*N/2.
+*          Note also that an error is only returned if
+*          LWORK < MAX(1,2*N), but if SENSE = 'E' or 'V' or 'B' this may
+*          not be large enough.
 *
-*          If LWORK = -1, a workspace query is assumed.  The optimal
-*          size for the WORK array is calculated and stored in WORK(1),
-*          and no other work except argument checking is performed.
+*          If LWORK = -1, then a workspace query is assumed; the routine
+*          only calculates the bound on the optimal size of the WORK
+*          array and the minimum size of the IWORK array, returns these
+*          values as the first entries of the WORK and IWORK arrays, and
+*          no error message related to LWORK or LIWORK is issued by
+*          XERBLA.
 *
 *  RWORK   (workspace) DOUBLE PRECISION array, dimension ( 8*N )
 *          Real workspace.
 *
 *  IWORK   (workspace/output) INTEGER array, dimension (LIWORK)
-*          Not referenced if SENSE = 'N'.
-*          On exit, if INFO = 0, IWORK(1) returns the optimal LIWORK.
+*          On exit, if INFO = 0, IWORK(1) returns the minimum LIWORK.
 *
 *  LIWORK  (input) INTEGER
-*          The dimension of the array WORK. LIWORK >= N+2.
+*          The dimension of the array IWORK.
+*          If SENSE = 'N' or N = 0, LIWORK >= 1, otherwise
+*          LIWORK >= N+2.
+*
+*          If LIWORK = -1, then a workspace query is assumed; the
+*          routine only calculates the bound on the optimal size of the
+*          WORK array and the minimum size of the IWORK array, returns
+*          these values as the first entries of the WORK and IWORK
+*          arrays, and no error message related to LWORK or LIWORK is
+*          issued by XERBLA.
 *
 *  BWORK   (workspace) LOGICAL array, dimension (N)
 *          Not referenced if SORT = 'N'.
@@ -203,8 +217,6 @@
 *  =====================================================================
 *
 *     .. Parameters ..
-      INTEGER            LQUERV
-      PARAMETER          ( LQUERV = -1 )
       DOUBLE PRECISION   ZERO, ONE
       PARAMETER          ( ZERO = 0.0D+0, ONE = 1.0D+0 )
       COMPLEX*16         CZERO, CONE
@@ -213,10 +225,10 @@
 *     ..
 *     .. Local Scalars ..
       LOGICAL            CURSL, ILASCL, ILBSCL, ILVSL, ILVSR, LASTSL,
-     $                   WANTSB, WANTSE, WANTSN, WANTST, WANTSV
+     $                   LQUERY, WANTSB, WANTSE, WANTSN, WANTST, WANTSV
       INTEGER            I, ICOLS, IERR, IHI, IJOB, IJOBVL, IJOBVR,
      $                   ILEFT, ILO, IRIGHT, IROWS, IRWRK, ITAU, IWRK,
-     $                   LIWMIN, MAXWRK, MINWRK
+     $                   LIWMIN, LWRK, MAXWRK, MINWRK
       DOUBLE PRECISION   ANRM, ANRMTO, BIGNUM, BNRM, BNRMTO, EPS, PL,
      $                   PR, SMLNUM
 *     ..
@@ -268,9 +280,9 @@
       WANTSE = LSAME( SENSE, 'E' )
       WANTSV = LSAME( SENSE, 'V' )
       WANTSB = LSAME( SENSE, 'B' )
+      LQUERY = ( LWORK.EQ.-1 .OR. LIWORK.EQ.-1 )
       IF( WANTSN ) THEN
          IJOB = 0
-         IWORK( 1 ) = 1
       ELSE IF( WANTSE ) THEN
          IJOB = 1
       ELSE IF( WANTSV ) THEN
@@ -310,43 +322,48 @@
 *       NB refers to the optimal block size for the immediately
 *       following subroutine, as returned by ILAENV.)
 *
-      MINWRK = 1
       IF( INFO.EQ.0 ) THEN
-         MINWRK = MAX( 1, 2*N )
-         MAXWRK = N + N*ILAENV( 1, 'ZGEQRF', ' ', N, 1, N, 0 )
-         IF( ILVSL ) THEN
-            MAXWRK = MAX( MAXWRK, N+N*ILAENV( 1, 'ZUNGQR', ' ', N, 1, N,
-     $               -1 ) )
+         IF( N.GT.0) THEN
+            MINWRK = 2*N
+            MAXWRK = N*(1 + ILAENV( 1, 'ZGEQRF', ' ', N, 1, N, 0 ) )
+            MAXWRK = MAX( MAXWRK, N*( 1 + ILAENV( 1, 'ZUNMQR', ' ',
+     $                    N, 1, N, -1 ) ) )
+            IF( ILVSL ) THEN
+               MAXWRK = MAX( MAXWRK, N*( 1 + ILAENV( 1, 'ZUNGQR', ' ',
+     $                       N, 1, N, -1 ) ) )
+            END IF
+            LWRK = MAXWRK
+            IF( IJOB.GE.1 )
+     $         LWRK = MAX( LWRK, N*N/2 )
+         ELSE
+            MINWRK = 1
+            MAXWRK = 1
+            LWRK   = 1
          END IF
-*
-*        Estimate the workspace needed by ZTGSEN.
-*
-         IF( WANTST ) THEN
-            MAXWRK = MAX( MAXWRK, ( N*N+1 ) / 2 )
+         WORK( 1 ) = LWRK
+         IF( WANTSN .OR. N.EQ.0 ) THEN
+            LIWMIN = 1
+         ELSE
+            LIWMIN = N + 2
          END IF
-         WORK( 1 ) = MAXWRK
-         IF( LWORK.LT.MINWRK .AND. LWORK.NE.LQUERV )
-     $      INFO = -21
-      END IF
-      IF( .NOT.WANTSN ) THEN
-         LIWMIN = N + 2
-      ELSE
-         LIWMIN = 1
-      END IF
-      IWORK( 1 ) = LIWMIN
-      IF( INFO.EQ.0 .AND. IJOB.GE.1 ) THEN
-         IF( LIWORK.LT.LIWMIN )
-     $      INFO = -24
-      END IF
+         IWORK( 1 ) = LIWMIN
 *
-*     Quick returns
+         IF( LWORK.LT.MINWRK .AND. .NOT.LQUERY ) THEN
+            INFO = -21
+         ELSE IF( LIWORK.LT.LIWMIN  .AND. .NOT.LQUERY) THEN
+            INFO = -24
+         END IF
+      END IF
 *
       IF( INFO.NE.0 ) THEN
          CALL XERBLA( 'ZGGESX', -INFO )
          RETURN
+      ELSE IF (LQUERY) THEN
+         RETURN
       END IF
-      IF( LWORK.EQ.LQUERV )
-     $   RETURN
+*
+*     Quick return if possible
+*
       IF( N.EQ.0 ) THEN
          SDIM = 0
          RETURN
@@ -420,8 +437,10 @@
 *
       IF( ILVSL ) THEN
          CALL ZLASET( 'Full', N, N, CZERO, CONE, VSL, LDVSL )
-         CALL ZLACPY( 'L', IROWS-1, IROWS-1, B( ILO+1, ILO ), LDB,
-     $                VSL( ILO+1, ILO ), LDVSL )
+         IF( IROWS.GT.1 ) THEN
+            CALL ZLACPY( 'L', IROWS-1, IROWS-1, B( ILO+1, ILO ), LDB,
+     $                   VSL( ILO+1, ILO ), LDVSL )
+         END IF
          CALL ZUNGQR( IROWS, IROWS, IROWS, VSL( ILO, ILO ), LDVSL,
      $                WORK( ITAU ), WORK( IWRK ), LWORK+1-IWRK, IERR )
       END IF
@@ -494,10 +513,14 @@
 *
             INFO = -21
          ELSE
-            RCONDE( 1 ) = PL
-            RCONDE( 2 ) = PL
-            RCONDV( 1 ) = DIF( 1 )
-            RCONDV( 2 ) = DIF( 2 )
+            IF( IJOB.EQ.1 .OR. IJOB.EQ.4 ) THEN
+               RCONDE( 1 ) = PL
+               RCONDE( 2 ) = PR
+            END IF
+            IF( IJOB.EQ.2 .OR. IJOB.EQ.4 ) THEN
+               RCONDV( 1 ) = DIF( 1 )
+               RCONDV( 2 ) = DIF( 2 )
+            END IF
             IF( IERR.EQ.1 )
      $         INFO = N + 3
          END IF
@@ -526,8 +549,6 @@
          CALL ZLASCL( 'U', 0, 0, BNRMTO, BNRM, N, N, B, LDB, IERR )
          CALL ZLASCL( 'G', 0, 0, BNRMTO, BNRM, N, 1, BETA, N, IERR )
       END IF
-*
-   20 CONTINUE
 *
       IF( WANTST ) THEN
 *
