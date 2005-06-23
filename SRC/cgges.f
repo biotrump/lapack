@@ -266,6 +266,8 @@
       IF( INFO.EQ.0 ) THEN
          LWKMIN = MAX( 1, 2*N )
          LWKOPT = MAX( 1, N + N*ILAENV( 1, 'CGEQRF', ' ', N, 1, N, 0 ) )
+         LWKOPT = MAX( LWKOPT, N +
+     $                 N*ILAENV( 1, 'CUNMQR', ' ', N, 1, N, -1 ) )
          IF( ILVSL ) THEN
             LWKOPT = MAX( LWKOPT, N +
      $                    N*ILAENV( 1, 'CUNGQR', ' ', N, 1, N, -1 ) )

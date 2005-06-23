@@ -354,12 +354,12 @@
       IF( INFO.EQ.0 ) THEN
          IF( N.GT.0) THEN
             MINWRK = MAX( 8*N, 6*N + 16 )
-            MAXWRK = MINWRK +
+            MAXWRK = MINWRK - N +
      $               N*ILAENV( 1, 'SGEQRF', ' ', N, 1, N, 0 )
-            MAXWRK = MAX( MAXWRK, MINWRK +
+            MAXWRK = MAX( MAXWRK, MINWRK - N +
      $               N*ILAENV( 1, 'SORMQR', ' ', N, 1, N, -1 ) )
             IF( ILVSL ) THEN
-               MAXWRK = MAX( MAXWRK, MINWRK +
+               MAXWRK = MAX( MAXWRK, MINWRK - N +
      $                  N*ILAENV( 1, 'SORGQR', ' ', N, 1, N, -1 ) )
             END IF
             LWRK = MAXWRK

@@ -326,11 +326,11 @@
          IF( N.GT.0) THEN
             MINWRK = 2*N
             MAXWRK = N*(1 + ILAENV( 1, 'CGEQRF', ' ', N, 1, N, 0 ) )
-            MAXWRK = MAX( MAXWRK, N*( 1 + ILAENV( 1, 'CUNMQR', ' ',
-     $                    N, 1, N, -1 ) ) )
+            MAXWRK = MAX( MAXWRK, N*( 1 +
+     $                    ILAENV( 1, 'CUNMQR', ' ', N, 1, N, -1 ) ) )
             IF( ILVSL ) THEN
-               MAXWRK = MAX( MAXWRK, N*( 1 + ILAENV( 1, 'CUNGQR', ' ',
-     $                       N, 1, N, -1 ) ) )
+               MAXWRK = MAX( MAXWRK, N*( 1 +
+     $                       ILAENV( 1, 'CUNGQR', ' ', N, 1, N, -1 ) ) )
             END IF
             LWRK = MAXWRK
             IF( IJOB.GE.1 )
