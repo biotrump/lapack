@@ -173,25 +173,23 @@
 *
 *  RCONDE  (output) REAL array, dimension (N)
 *          If SENSE = 'E' or 'B', the reciprocal condition numbers of
-*          the selected eigenvalues, stored in consecutive elements of
-*          the array.
-*          If SENSE = 'V', RCONDE is not referenced.
+*          the eigenvalues, stored in consecutive elements of the array.
+*          If SENSE = 'N' or 'V', RCONDE is not referenced.
 *
 *  RCONDV  (output) REAL array, dimension (N)
-*          If JOB = 'V' or 'B', the estimated reciprocal condition
-*          numbers of the selected eigenvectors, stored in consecutive
-*          elements of the array. If the eigenvalues cannot be reordered
-*          to compute RCONDV(j), RCONDV(j) is set to 0; this can only
-*          occur when the true value would be very small anyway.
-*          If SENSE = 'E', RCONDV is not referenced.
-*          Not referenced if JOB = 'E'.
+*          If SENSE = 'V' or 'B', the estimated reciprocal condition
+*          numbers of the eigenvectors, stored in consecutive elements
+*          of the array. If the eigenvalues cannot be reordered to
+*          compute RCONDV(j), RCONDV(j) is set to 0; this can only occur
+*          when the true value would be very small anyway. 
+*          If SENSE = 'N' or 'E', RCONDV is not referenced.
 *
 *  WORK    (workspace/output) COMPLEX array, dimension (LWORK)
 *          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER
-*          The dimension of the array WORK. LWORK >= max(1,3*N).
-*          If SENSE = 'N' or 'E', LWORK >= max(1,3*N).
+*          The dimension of the array WORK. LWORK >= max(1,2*N).
+*          If SENSE = 'E', LWORK >= max(1,4*N).
 *          If SENSE = 'V' or 'B', LWORK >= max(1,2*N*N+2*N).
 *
 *          If LWORK = -1, then a workspace query is assumed; the routine
@@ -199,7 +197,9 @@
 *          this value as the first entry of the WORK array, and no error
 *          message related to LWORK is issued by XERBLA.
 *
-*  RWORK   (workspace) REAL array, dimension (6*N)
+*  RWORK   (workspace) REAL array, dimension (lrwork)
+*          lrwork must be at least max(1,6*N) if BALANC = 'S' or 'B',
+*          and at least max(1,2*N) otherwise.
 *          Real workspace.
 *
 *  IWORK   (workspace) INTEGER array, dimension (N+2)
@@ -244,12 +244,6 @@
 *  For further explanation of the reciprocal condition numbers RCONDE
 *  and RCONDV, see section 4.11 of LAPACK User's Guide.
 *
-*  =====================================================================
-*  Corrected workspace requirement. Since LWORK needs to be max(1,N) for
-*  CTGSNA, here we need max(1,3*N) rather than max(1,2*N).
-*  Sven 16 Feb 05.
-*  =====================================================================
-*
 *     .. Parameters ..
       REAL               ZERO, ONE
       PARAMETER          ( ZERO = 0.0E+0, ONE = 1.0E+0 )
@@ -258,7 +252,7 @@
      $                   CONE = ( 1.0E+0, 0.0E+0 ) )
 *     ..
 *     .. Local Scalars ..
-      LOGICAL            ILASCL, ILBSCL, ILV, ILVL, ILVR, LQUERY,
+      LOGICAL            ILASCL, ILBSCL, ILV, ILVL, ILVR, LQUERY, NOSCL,
      $                   WANTSB, WANTSE, WANTSN, WANTSV
       CHARACTER          CHTEMP
       INTEGER            I, ICOLS, IERR, IJOBVL, IJOBVR, IN, IROWS,
@@ -317,6 +311,7 @@
       END IF
       ILV = ILVL .OR. ILVR
 *
+      NOSCL  = LSAME( BALANC, 'N' ) .OR. LSAME( BALANC, 'P' )
       WANTSN = LSAME( SENSE, 'N' )
       WANTSE = LSAME( SENSE, 'E' )
       WANTSV = LSAME( SENSE, 'V' )
@@ -326,9 +321,8 @@
 *
       INFO = 0
       LQUERY = ( LWORK.EQ.-1 )
-      IF( .NOT.( LSAME( BALANC, 'N' ) .OR. LSAME( BALANC,
-     $    'S' ) .OR. LSAME( BALANC, 'P' ) .OR. LSAME( BALANC, 'B' ) ) )
-     $     THEN
+      IF( .NOT.( NOSCL .OR. LSAME( BALANC,'S' ) .OR.
+     $    LSAME( BALANC, 'B' ) ) ) THEN
          INFO = -1
       ELSE IF( IJOBVL.LE.0 ) THEN
          INFO = -2
@@ -362,15 +356,20 @@
             MINWRK = 1
             MAXWRK = 1
          ELSE
-            MAXWRK = N + N*ILAENV( 1, 'CGEQRF', ' ', N, 1, N, 0 )
-            IF( WANTSE.OR.WANTSN ) THEN
-               MINWRK = 3*N
+            MINWRK = 2*N
+            IF( WANTSE ) THEN
+               MINWRK = 4*N
             ELSE IF( WANTSV .OR. WANTSB ) THEN
                MINWRK = 2*N*( N + 1)
-            ELSE 
-               MINWRK = 1
             END IF
-            MAXWRK = MAX( MINWRK, MAXWRK )
+            MAXWRK = MINWRK
+            MAXWRK = MAX( MAXWRK,
+     $                    N + N*ILAENV( 1, 'CGEQRF', ' ', N, 1, N, 0 ) )
+            MAXWRK = MAX( MAXWRK,
+     $                    N + N*ILAENV( 1, 'CUNMQR', ' ', N, 1, N, 0 ) )
+            IF( ILVL ) THEN
+               MAXWRK = MAX( MAXWRK, N +
+     $                       N*ILAENV( 1, 'CUNGQR', ' ', N, 1, N, 0 ) )
          END IF
          WORK( 1 ) = MAXWRK
 *
@@ -429,7 +428,7 @@
      $   CALL CLASCL( 'G', 0, 0, BNRM, BNRMTO, N, N, B, LDB, IERR )
 *
 *     Permute and/or balance the matrix pair (A,B)
-*     (Real Workspace: need 6*N)
+*     (Real Workspace: need 6*N if BALANC = 'S' or 'B', 1 otherwise)
 *
       CALL CGGBAL( BALANC, N, A, LDA, B, LDB, ILO, IHI, LSCALE, RSCALE,
      $             RWORK, IERR )
