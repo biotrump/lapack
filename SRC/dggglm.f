@@ -101,7 +101,8 @@
 *     ..
 *     .. Local Scalars ..
       LOGICAL            LQUERY
-      INTEGER            I, LOPT, LWKOPT, NB, NB1, NB2, NB3, NB4, NP
+      INTEGER            I, LOPT, LWKMIN, LWKOPT, NB, NB1, NB2, NB3,
+     $                   NB4, NP
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           DCOPY, DGEMV, DGGQRF, DORMQR, DORMRQ, DTRSV,
@@ -120,13 +121,6 @@
 *
       INFO = 0
       NP = MIN( N, P )
-      NB1 = ILAENV( 1, 'DGEQRF', ' ', N, M, -1, -1 )
-      NB2 = ILAENV( 1, 'DGERQF', ' ', N, M, -1, -1 )
-      NB3 = ILAENV( 1, 'DORMQR', ' ', N, M, P, -1 )
-      NB4 = ILAENV( 1, 'DORMRQ', ' ', N, M, P, -1 )
-      NB = MAX( NB1, NB2, NB3, NB4 )
-      LWKOPT = M + NP + MAX( N, P )*NB
-      WORK( 1 ) = LWKOPT
       LQUERY = ( LWORK.EQ.-1 )
       IF( N.LT.0 ) THEN
          INFO = -1
@@ -138,9 +132,30 @@
          INFO = -5
       ELSE IF( LDB.LT.MAX( 1, N ) ) THEN
          INFO = -7
-      ELSE IF( LWORK.LT.MAX( 1, N+M+P ) .AND. .NOT.LQUERY ) THEN
-         INFO = -12
       END IF
+*
+*     Calculate workspace
+*
+      IF( INFO.EQ.0) THEN
+         IF( N.EQ.0 ) THEN
+            LWKMIN = 1
+            LWKOPT = 1
+         ELSE
+            NB1 = ILAENV( 1, 'DGEQRF', ' ', N, M, -1, -1 )
+            NB2 = ILAENV( 1, 'DGERQF', ' ', N, M, -1, -1 )
+            NB3 = ILAENV( 1, 'DORMQR', ' ', N, M, P, -1 )
+            NB4 = ILAENV( 1, 'DORMRQ', ' ', N, M, P, -1 )
+            NB = MAX( NB1, NB2, NB3, NB4 )
+            LWKMIN = M + N + P
+            LWKOPT = M + NP + MAX( N, P )*NB
+         END IF
+         WORK( 1 ) = LWKOPT
+*
+         IF( LWORK.LT.LWKMIN .AND. .NOT.LQUERY ) THEN
+            INFO = -12
+         END IF
+      END IF
+*
       IF( INFO.NE.0 ) THEN
          CALL XERBLA( 'DGGGLM', -INFO )
          RETURN
