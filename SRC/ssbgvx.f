@@ -148,7 +148,7 @@
 *
 *  IWORK   (workspace/output) INTEGER array, dimension (5N)
 *
-*  IFAIL   (input) INTEGER array, dimension (M)
+*  IFAIL   (output) INTEGER array, dimension (M)
 *          If JOBZ = 'V', then if INFO = 0, the first M elements of
 *          IFAIL are zero.  If INFO > 0, then IFAIL contains the
 *          indices of the eigenvalues that failed to converge.
@@ -178,7 +178,7 @@
       PARAMETER          ( ZERO = 0.0E+0, ONE = 1.0E+0 )
 *     ..
 *     .. Local Scalars ..
-      LOGICAL            ALLEIG, INDEIG, UPPER, VALEIG, WANTZ
+      LOGICAL            ALLEIG, INDEIG, TEST, UPPER, VALEIG, WANTZ
       CHARACTER          ORDER, VECT
       INTEGER            I, IINFO, INDD, INDE, INDEE, INDIBL, INDISP,
      $                   INDIWO, INDWRK, ITMP1, J, JJ, NSPLIT
@@ -222,16 +222,24 @@
          INFO = -8
       ELSE IF( LDBB.LT.KB+1 ) THEN
          INFO = -10
-      ELSE IF( LDQ.LT.1 ) THEN
+      ELSE IF( LDQ.LT.1 .OR. ( WANTZ .AND. LDQ.LT.N ) ) THEN
          INFO = -12
-      ELSE IF( VALEIG .AND. N.GT.0 .AND. VU.LE.VL ) THEN
-         INFO = -14
-      ELSE IF( INDEIG .AND. IL.LT.1 ) THEN
-         INFO = -15
-      ELSE IF( INDEIG .AND. ( IU.LT.MIN( N, IL ) .OR. IU.GT.N ) ) THEN
-         INFO = -16
-      ELSE IF( LDZ.LT.1 .OR. ( WANTZ .AND. LDZ.LT.N ) ) THEN
-         INFO = -21
+      ELSE
+         IF( VALEIG ) THEN
+            IF( N.GT.0 .AND. VU.LE.VL )
+     $         INFO = -14
+         ELSE IF( INDEIG ) THEN
+            IF( IL.LT.1 .OR. IL.GT.MAX( 1, N ) ) THEN
+               INFO = -15
+            ELSE IF ( IU.LT.MIN( N, IL ) .OR. IU.GT.N ) THEN
+               INFO = -16
+            END IF
+         END IF
+      END IF
+      IF( INFO.EQ.0) THEN
+         IF( LDZ.LT.1 .OR. ( WANTZ .AND. LDZ.LT.N ) ) THEN
+            INFO = -21
+         END IF
       END IF
 *
       IF( INFO.NE.0 ) THEN
@@ -242,10 +250,8 @@
 *     Quick return if possible
 *
       M = 0
-      IF( N.EQ.0 ) THEN
-         WORK( 1 ) = 1
-         RETURN
-      END IF
+      IF( N.EQ.0 )
+     $   RETURN
 *
 *     Form a split Cholesky factorization of B.
 *
@@ -277,8 +283,13 @@
 *     to zero, then call SSTERF or SSTEQR.  If this fails for some
 *     eigenvalue, then try SSTEBZ.
 *
-      IF( ( ALLEIG .OR. ( INDEIG .AND. IL.EQ.1 .AND. IU.EQ.N ) ) .AND.
-     $    ( ABSTOL.LE.ZERO ) ) THEN
+      TEST = .FALSE.
+      IF( INDEIG ) THEN
+         IF( IL.EQ.1 .AND. IU.EQ.N ) THEN
+            TEST = .TRUE.
+         END IF
+      END IF
+      IF( ( ALLEIG .OR. TEST ) .AND. ( ABSTOL.LE.ZERO ) ) THEN
          CALL SCOPY( N, WORK( INDD ), 1, W, 1 )
          INDEE = INDWRK + 2*N
          CALL SCOPY( N-1, WORK( INDE ), 1, WORK( INDEE ), 1 )
