@@ -21,12 +21,13 @@
 *  =======
 *
 *  SSYEVR computes selected eigenvalues and, optionally, eigenvectors
-*  of a real symmetric matrix T.  Eigenvalues and eigenvectors can be
+*  of a real symmetric matrix A.  Eigenvalues and eigenvectors can be
 *  selected by specifying either a range of values or a range of
 *  indices for the desired eigenvalues.
 *
-*  Whenever possible, SSYEVR calls SSTEGR to compute the
-*  eigenspectrum using Relatively Robust Representations.  SSTEGR
+*  SSYEVR first reduces the matrix A to tridiagonal form T with a call
+*  to SSYTRD.  Then, whenever possible, SSYEVR calls SSTEGR to compute
+*  the eigenspectrum using Relatively Robust Representations.  SSTEGR
 *  computes eigenvalues by the dqds algorithm, while orthogonal
 *  eigenvectors are computed from various "good" L D L^T representations
 *  (also known as Relatively Robust Representations). Gram-Schmidt
@@ -176,9 +177,10 @@
 *          returned by ILAENV.
 *
 *          If LWORK = -1, then a workspace query is assumed; the routine
-*          only calculates the optimal size of the WORK array, returns
-*          this value as the first entry of the WORK array, and no error
-*          message related to LWORK is issued by XERBLA.
+*          only calculates the optimal sizes of the WORK and IWORK
+*          arrays, returns these values as the first entries of the WORK
+*          and IWORK arrays, and no error message related to LWORK or
+*          LIWORK is issued by XERBLA.
 *
 *  IWORK   (workspace/output) INTEGER array, dimension (LIWORK)
 *          On exit, if INFO = 0, IWORK(1) returns the optimal LWORK.
@@ -187,9 +189,10 @@
 *          The dimension of the array IWORK.  LIWORK >= max(1,10*N).
 *
 *          If LIWORK = -1, then a workspace query is assumed; the
-*          routine only calculates the optimal size of the IWORK array,
-*          returns this value as the first entry of the IWORK array, and
-*          no error message related to LIWORK is issued by XERBLA.
+*          routine only calculates the optimal sizes of the WORK and
+*          IWORK arrays, returns these values as the first entries of
+*          the WORK and IWORK arrays, and no error message related to
+*          LWORK or LIWORK is issued by XERBLA.
 *
 *  INFO    (output) INTEGER
 *          = 0:  successful exit
@@ -212,7 +215,8 @@
       PARAMETER          ( ZERO = 0.0E+0, ONE = 1.0E+0 )
 *     ..
 *     .. Local Scalars ..
-      LOGICAL            ALLEIG, INDEIG, LOWER, LQUERY, VALEIG, WANTZ
+      LOGICAL            ALLEIG, INDEIG, LOWER, LQUERY, TEST, VALEIG,
+     $                   WANTZ
       CHARACTER          ORDER
       INTEGER            I, IEEEOK, IINFO, IMAX, INDD, INDDD, INDE,
      $                   INDEE, INDIBL, INDIFL, INDISP, INDIWO, INDTAU,
@@ -277,10 +281,6 @@
       IF( INFO.EQ.0 ) THEN
          IF( LDZ.LT.1 .OR. ( WANTZ .AND. LDZ.LT.N ) ) THEN
             INFO = -15
-         ELSE IF( LWORK.LT.LWMIN .AND. .NOT.LQUERY ) THEN
-            INFO = -18
-         ELSE IF( LIWORK.LT.LIWMIN .AND. .NOT.LQUERY ) THEN
-            INFO = -20
          END IF
       END IF
 *
@@ -290,6 +290,12 @@
          LWKOPT = MAX( ( NB+1 )*N, LWMIN )
          WORK( 1 ) = LWKOPT
          IWORK( 1 ) = LIWMIN
+*
+         IF( LWORK.LT.LWMIN .AND. .NOT.LQUERY ) THEN
+            INFO = -18
+         ELSE IF( LIWORK.LT.LIWMIN .AND. .NOT.LQUERY ) THEN
+            INFO = -20
+         END IF
       END IF
 *
       IF( INFO.NE.0 ) THEN
@@ -308,7 +314,7 @@
       END IF
 *
       IF( N.EQ.1 ) THEN
-         WORK( 1 ) = 7
+         WORK( 1 ) = 26
          IF( ALLEIG .OR. INDEIG ) THEN
             M = 1
             W( 1 ) = A( 1, 1 )
@@ -336,8 +342,10 @@
 *
       ISCALE = 0
       ABSTLL = ABSTOL
-      VLL = VL
-      VUU = VU
+      IF (VALEIG) THEN
+         VLL = VL
+         VUU = VU
+      END IF
       ANRM = SLANSY( 'M', UPLO, N, A, LDA, WORK )
       IF( ANRM.GT.ZERO .AND. ANRM.LT.RMIN ) THEN
          ISCALE = 1
@@ -380,8 +388,13 @@
 *     If all eigenvalues are desired
 *     then call SSTERF or SSTEGR and SORMTR.
 *
-      IF( ( ALLEIG .OR. ( INDEIG .AND. IL.EQ.1 .AND. IU.EQ.N ) ) .AND.
-     $    IEEEOK.EQ.1 ) THEN
+      TEST = .FALSE.
+      IF( INDEIG ) THEN
+         IF( IL.EQ.1 .AND. IU.EQ.N ) THEN
+            TEST = .TRUE.
+         END IF
+      END IF
+      IF( ( ALLEIG.OR.TEST ) .AND. ( IEEEOK.EQ.1 ) ) THEN
          IF( .NOT.WANTZ ) THEN
             CALL SCOPY( N, WORK( INDD ), 1, W, 1 )
             CALL SCOPY( N-1, WORK( INDE ), 1, WORK( INDEE ), 1 )

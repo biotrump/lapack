@@ -23,12 +23,13 @@
 *  =======
 *
 *  CHEEVR computes selected eigenvalues and, optionally, eigenvectors
-*  of a complex Hermitian matrix T.  Eigenvalues and eigenvectors can
+*  of a complex Hermitian matrix A.  Eigenvalues and eigenvectors can
 *  be selected by specifying either a range of values or a range of
 *  indices for the desired eigenvalues.
 *
-*  Whenever possible, CHEEVR calls CSTEGR to compute the
-*  eigenspectrum using Relatively Robust Representations.  CSTEGR
+*  CHEEVR first reduces the matrix A to tridiagonal form T with a call
+*  to CHETRD.  Then, whenever possible, CHEEVR calls CSTEGR to compute
+*  the eigenspectrum using Relatively Robust Representations.  CSTEGR
 *  computes eigenvalues by the dqds algorithm, while orthogonal
 *  eigenvectors are computed from various "good" L D L^T representations
 *  (also known as Relatively Robust Representations). Gram-Schmidt
@@ -178,33 +179,36 @@
 *          CUNMTR as returned by ILAENV.
 *
 *          If LWORK = -1, then a workspace query is assumed; the routine
-*          only calculates the optimal size of the WORK array, returns
-*          this value as the first entry of the WORK array, and no error
-*          message related to LWORK is issued by XERBLA.
+*          only calculates the optimal sizes of the WORK, RWORK and
+*          IWORK arrays, returns these values as the first entries of
+*          the WORK, RWORK and IWORK arrays, and no error message
+*          related to LWORK or LRWORK or LIWORK is issued by XERBLA.
 *
 *  RWORK   (workspace/output) REAL array, dimension (LRWORK)
 *          On exit, if INFO = 0, RWORK(1) returns the optimal
 *          (and minimal) LRWORK.
 *
-* LRWORK  (input) INTEGER
-*         The length of the array RWORK.  LRWORK >= max(1,24*N).
+* LRWORK   (input) INTEGER
+*          The length of the array RWORK.  LRWORK >= max(1,24*N).
 *
-*         If LRWORK = -1, then a workspace query is assumed; the routine
-*         only calculates the optimal size of the RWORK array, returns
-*         this value as the first entry of the RWORK array, and no error
-*         message related to LRWORK is issued by XERBLA.
+*          If LRWORK = -1, then a workspace query is assumed; the
+*          routine only calculates the optimal sizes of the WORK, RWORK
+*          and IWORK arrays, returns these values as the first entries
+*          of the WORK, RWORK and IWORK arrays, and no error message
+*          related to LWORK or LRWORK or LIWORK is issued by XERBLA.
 *
 *  IWORK   (workspace/output) INTEGER array, dimension (LIWORK)
 *          On exit, if INFO = 0, IWORK(1) returns the optimal
 *          (and minimal) LIWORK.
 *
-* LIWORK  (input) INTEGER
-*         The dimension of the array IWORK.  LIWORK >= max(1,10*N).
+* LIWORK   (input) INTEGER
+*          The dimension of the array IWORK.  LIWORK >= max(1,10*N).
 *
-*         If LIWORK = -1, then a workspace query is assumed; the
-*         routine only calculates the optimal size of the IWORK array,
-*         returns this value as the first entry of the IWORK array, and
-*         no error message related to LIWORK is issued by XERBLA.
+*          If LIWORK = -1, then a workspace query is assumed; the
+*          routine only calculates the optimal sizes of the WORK, RWORK
+*          and IWORK arrays, returns these values as the first entries
+*          of the WORK, RWORK and IWORK arrays, and no error message
+*          related to LWORK or LRWORK or LIWORK is issued by XERBLA.
 *
 *  INFO    (output) INTEGER
 *          = 0:  successful exit
@@ -227,7 +231,8 @@
       PARAMETER          ( ZERO = 0.0E+0, ONE = 1.0E+0 )
 *     ..
 *     .. Local Scalars ..
-      LOGICAL            ALLEIG, INDEIG, LOWER, LQUERY, VALEIG, WANTZ
+      LOGICAL            ALLEIG, INDEIG, LOWER, LQUERY, TEST, VALEIG,
+     $                   WANTZ
       CHARACTER          ORDER
       INTEGER            I, IEEEOK, IINFO, IMAX, INDIBL, INDIFL, INDISP,
      $                   INDIWO, INDRD, INDRDD, INDRE, INDREE, INDRWK,
@@ -295,12 +300,6 @@
       IF( INFO.EQ.0 ) THEN
          IF( LDZ.LT.1 .OR. ( WANTZ .AND. LDZ.LT.N ) ) THEN
             INFO = -15
-         ELSE IF( LWORK.LT.LWMIN .AND. .NOT.LQUERY ) THEN
-            INFO = -18
-         ELSE IF( LRWORK.LT.LRWMIN .AND. .NOT.LQUERY ) THEN
-            INFO = -20
-         ELSE IF( LIWORK.LT.LIWMIN .AND. .NOT.LQUERY ) THEN
-            INFO = -22
          END IF
       END IF
 *
@@ -311,6 +310,14 @@
          WORK( 1 ) = LWKOPT
          RWORK( 1 ) = LRWMIN
          IWORK( 1 ) = LIWMIN
+*
+         IF( LWORK.LT.LWMIN .AND. .NOT.LQUERY ) THEN
+            INFO = -18
+         ELSE IF( LRWORK.LT.LRWMIN .AND. .NOT.LQUERY ) THEN
+            INFO = -20
+         ELSE IF( LIWORK.LT.LIWMIN .AND. .NOT.LQUERY ) THEN
+            INFO = -22
+         END IF
       END IF
 *
       IF( INFO.NE.0 ) THEN
@@ -329,7 +336,7 @@
       END IF
 *
       IF( N.EQ.1 ) THEN
-         WORK( 1 ) = 7
+         WORK( 1 ) = 2
          IF( ALLEIG .OR. INDEIG ) THEN
             M = 1
             W( 1 ) = REAL( A( 1, 1 ) )
@@ -358,8 +365,10 @@
 *
       ISCALE = 0
       ABSTLL = ABSTOL
-      VLL = VL
-      VUU = VU
+      IF (VALEIG) THEN
+         VLL = VL
+         VUU = VU
+      END IF
       ANRM = CLANSY( 'M', UPLO, N, A, LDA, RWORK )
       IF( ANRM.GT.ZERO .AND. ANRM.LT.RMIN ) THEN
          ISCALE = 1
@@ -403,8 +412,13 @@
 *     If all eigenvalues are desired
 *     then call SSTERF or CSTEGR and CUNMTR.
 *
-      IF( ( ALLEIG .OR. ( INDEIG .AND. IL.EQ.1 .AND. IU.EQ.N ) ) .AND.
-     $    IEEEOK.EQ.1 ) THEN
+      TEST = .FALSE.
+      IF( INDEIG ) THEN
+         IF( IL.EQ.1 .AND. IU.EQ.N ) THEN
+            TEST = .TRUE.
+         END IF
+      END IF
+      IF( ( ALLEIG.OR.TEST ) .AND. ( IEEEOK.EQ.1 ) ) THEN
          IF( .NOT.WANTZ ) THEN
             CALL SCOPY( N, RWORK( INDRD ), 1, W, 1 )
             CALL SCOPY( N-1, RWORK( INDRE ), 1, RWORK( INDREE ), 1 )
@@ -415,13 +429,12 @@
 *
             CALL CSTEGR( JOBZ, 'A', N, RWORK( INDRDD ),
      $                   RWORK( INDREE ), VL, VU, IL, IU, ABSTOL, M, W,
-     $                   Z, LDZ, ISUPPZ, RWORK( INDRWK ), LWORK, IWORK,
-     $                   LIWORK, INFO )
+     $                   Z, LDZ, ISUPPZ,
+     $                   RWORK( INDRWK ), LRWORK-INDRWK+1,
+     $                   IWORK, LIWORK, INFO )
 *
-*
-*
-*        Apply unitary matrix used in reduction to tridiagonal
-*        form to eigenvectors returned by CSTEIN.
+*           Apply unitary matrix used in reduction to tridiagonal
+*           form to eigenvectors returned by CSTEIN.
 *
             IF( WANTZ .AND. INFO.EQ.0 ) THEN
                INDWKN = INDWK

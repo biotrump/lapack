@@ -21,12 +21,13 @@
 *  =======
 *
 *  DSYEVR computes selected eigenvalues and, optionally, eigenvectors
-*  of a real symmetric matrix T.  Eigenvalues and eigenvectors can be
+*  of a real symmetric matrix A.  Eigenvalues and eigenvectors can be
 *  selected by specifying either a range of values or a range of
 *  indices for the desired eigenvalues.
 *
-*  Whenever possible, DSYEVR calls DSTEGR to compute the
-*  eigenspectrum using Relatively Robust Representations.  DSTEGR
+*  DSYEVR first reduces the matrix A to tridiagonal form T with a call
+*  to DSYTRD.  Then, whenever possible, DSYEVR calls DSTEGR to compute
+*  the eigenspectrum using Relatively Robust Representations.  DSTEGR
 *  computes eigenvalues by the dqds algorithm, while orthogonal
 *  eigenvectors are computed from various "good" L D L^T representations
 *  (also known as Relatively Robust Representations). Gram-Schmidt
