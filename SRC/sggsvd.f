@@ -144,7 +144,7 @@
 *          See Purpose for details.
 *
 *  LDB     (input) INTEGER
-*          The leading dimension of the array B. LDA >= max(1,P).
+*          The leading dimension of the array B. LDB >= max(1,P).
 *
 *  ALPHA   (output) REAL array, dimension (N)
 *  BETA    (output) REAL array, dimension (N)
