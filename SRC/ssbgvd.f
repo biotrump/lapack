@@ -105,9 +105,10 @@
 *          If JOBZ = 'V' and N > 1, LWORK >= 1 + 5*N + 2*N**2.
 *
 *          If LWORK = -1, then a workspace query is assumed; the routine
-*          only calculates the optimal size of the WORK array, returns
-*          this value as the first entry of the WORK array, and no error
-*          message related to LWORK is issued by XERBLA.
+*          only calculates the optimal sizes of the WORK and IWORK
+*          arrays, returns these values as the first entries of the WORK
+*          and IWORK arrays, and no error message related to LWORK or
+*          LIWORK is issued by XERBLA.
 *
 *  IWORK   (workspace/output) INTEGER array, dimension (LIWORK)
 *          On exit, if LIWORK > 0, IWORK(1) returns the optimal LIWORK.
@@ -118,9 +119,10 @@
 *          If JOBZ  = 'V' and N > 1, LIWORK >= 3 + 5*N.
 *
 *          If LIWORK = -1, then a workspace query is assumed; the
-*          routine only calculates the optimal size of the IWORK array,
-*          returns this value as the first entry of the IWORK array, and
-*          no error message related to LIWORK is issued by XERBLA.
+*          routine only calculates the optimal sizes of the WORK and
+*          IWORK arrays, returns these values as the first entries of
+*          the WORK and IWORK arrays, and no error message related to
+*          LWORK or LIWORK is issued by XERBLA.
 *
 *  INFO    (output) INTEGER
 *          = 0:  successful exit
@@ -172,14 +174,12 @@
       IF( N.LE.1 ) THEN
          LIWMIN = 1
          LWMIN = 1
+      ELSE IF( WANTZ ) THEN
+         LIWMIN = 3 + 5*N
+         LWMIN = 1 + 5*N + 2*N**2
       ELSE
-         IF( WANTZ ) THEN
-            LIWMIN = 3 + 5*N
-            LWMIN = 1 + 5*N + 2*N**2
-         ELSE
-            LIWMIN = 1
-            LWMIN = 2*N
-         END IF
+         LIWMIN = 1
+         LWMIN = 2*N
       END IF
 *
       IF( .NOT.( WANTZ .OR. LSAME( JOBZ, 'N' ) ) ) THEN
@@ -198,15 +198,17 @@
          INFO = -9
       ELSE IF( LDZ.LT.1 .OR. ( WANTZ .AND. LDZ.LT.N ) ) THEN
          INFO = -12
-      ELSE IF( LWORK.LT.LWMIN .AND. .NOT.LQUERY ) THEN
-         INFO = -14
-      ELSE IF( LIWORK.LT.LIWMIN .AND. .NOT.LQUERY ) THEN
-         INFO = -16
       END IF
 *
       IF( INFO.EQ.0 ) THEN
          WORK( 1 ) = LWMIN
          IWORK( 1 ) = LIWMIN
+*
+         IF( LWORK.LT.LWMIN .AND. .NOT.LQUERY ) THEN
+            INFO = -14
+         ELSE IF( LIWORK.LT.LIWMIN .AND. .NOT.LQUERY ) THEN
+            INFO = -16
+         END IF
       END IF
 *
       IF( INFO.NE.0 ) THEN
