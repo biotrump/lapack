@@ -249,8 +249,8 @@
 *
 *                 apply plane rotations from the left
 *
-                  CALL ZLACGV( NR, WORK( J1 ), KD1 )
                   IF( NR.GT.0 ) THEN
+                     CALL ZLACGV( NR, WORK( J1 ), KD1 )
                      IF( 2*KD-1.LT.NR ) THEN
 *
 *                    Dependent on the the number of diagonals either
@@ -459,8 +459,8 @@
 *                    Dependent on the the number of diagonals either
 *                    ZLARTV or ZROT is used
 *
-                  CALL ZLACGV( NR, WORK( J1 ), KD1 )
                   IF( NR.GT.0 ) THEN
+                     CALL ZLACGV( NR, WORK( J1 ), KD1 )
                      IF( NR.GT.2*KD-1 ) THEN
                         DO 150 L = 1, KD - 1
                            IF( J2+L.GT.N ) THEN
