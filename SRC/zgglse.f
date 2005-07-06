@@ -99,7 +99,8 @@
 *     ..
 *     .. Local Scalars ..
       LOGICAL            LQUERY
-      INTEGER            LOPT, LWKOPT, MN, NB, NB1, NB2, NB3, NB4, NR
+      INTEGER            LOPT, LWKMIN, LWKOPT, MN, NB, NB1, NB2, NB3,
+     $                   NB4, NR
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           XERBLA, ZAXPY, ZCOPY, ZGEMV, ZGGRQF, ZTRMV,
@@ -118,13 +119,6 @@
 *
       INFO = 0
       MN = MIN( M, N )
-      NB1 = ILAENV( 1, 'ZGEQRF', ' ', M, N, -1, -1 )
-      NB2 = ILAENV( 1, 'ZGERQF', ' ', M, N, -1, -1 )
-      NB3 = ILAENV( 1, 'ZUNMQR', ' ', M, N, P, -1 )
-      NB4 = ILAENV( 1, 'ZUNMRQ', ' ', M, N, P, -1 )
-      NB = MAX( NB1, NB2, NB3, NB4 )
-      LWKOPT = P + MN + MAX( M, N )*NB
-      WORK( 1 ) = LWKOPT
       LQUERY = ( LWORK.EQ.-1 )
       IF( M.LT.0 ) THEN
          INFO = -1
@@ -136,9 +130,30 @@
          INFO = -5
       ELSE IF( LDB.LT.MAX( 1, P ) ) THEN
          INFO = -7
-      ELSE IF( LWORK.LT.MAX( 1, M+N+P ) .AND. .NOT.LQUERY ) THEN
-         INFO = -12
       END IF
+*
+*     Calculate workspace
+*
+      IF( INFO.EQ.0) THEN
+         IF( N.EQ.0 ) THEN
+            LWKMIN = 1
+            LWKOPT = 1
+         ELSE
+            NB1 = ILAENV( 1, 'ZGEQRF', ' ', M, N, -1, -1 )
+            NB2 = ILAENV( 1, 'ZGERQF', ' ', M, N, -1, -1 )
+            NB3 = ILAENV( 1, 'ZUNMQR', ' ', M, N, P, -1 )
+            NB4 = ILAENV( 1, 'ZUNMRQ', ' ', M, N, P, -1 )
+            NB = MAX( NB1, NB2, NB3, NB4 )
+            LWKMIN = M + N + P
+            LWKOPT = P + MN + MAX( M, N )*NB
+         END IF
+         WORK( 1 ) = LWKOPT
+*
+         IF( LWORK.LT.LWKMIN .AND. .NOT.LQUERY ) THEN
+            INFO = -12
+         END IF
+      END IF
+*
       IF( INFO.NE.0 ) THEN
          CALL XERBLA( 'ZGGLSE', -INFO )
          RETURN
@@ -196,14 +211,17 @@
 *
       IF( M.LT.N ) THEN
          NR = M + P - N
-         CALL ZGEMV( 'No transpose', NR, N-M, -CONE, A( N-P+1, M+1 ),
-     $               LDA, D( NR+1 ), 1, CONE, C( N-P+1 ), 1 )
+         IF( NR.GT.0 )
+     $      CALL ZGEMV( 'No transpose', NR, N-M, -CONE, A( N-P+1, M+1 ),
+     $                  LDA, D( NR+1 ), 1, CONE, C( N-P+1 ), 1 )
       ELSE
          NR = P
       END IF
-      CALL ZTRMV( 'Upper', 'No transpose', 'Non unit', NR,
-     $            A( N-P+1, N-P+1 ), LDA, D, 1 )
-      CALL ZAXPY( NR, -CONE, D, 1, C( N-P+1 ), 1 )
+      IF( NR.GT.0 ) THEN
+         CALL ZTRMV( 'Upper', 'No transpose', 'Non unit', NR,
+     $               A( N-P+1, N-P+1 ), LDA, D, 1 )
+         CALL ZAXPY( NR, -CONE, D, 1, C( N-P+1 ), 1 )
+      END IF
 *
 *     Backward transformation x = Q'*x
 *
