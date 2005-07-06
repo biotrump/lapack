@@ -114,14 +114,15 @@
          INFO = -3
       ELSE IF( LDA.LT.MAX( 1, N ) ) THEN
          INFO = -5
-      ELSE IF( LWORK.LT.MAX( 1, 3*N-1 ) .AND. .NOT.LQUERY ) THEN
-         INFO = -8
       END IF
 *
       IF( INFO.EQ.0 ) THEN
          NB = ILAENV( 1, 'SSYTRD', UPLO, N, -1, -1, -1 )
          LWKOPT = MAX( 1, ( NB+2 )*N )
          WORK( 1 ) = LWKOPT
+*
+         IF( LWORK.LT.MAX( 1, 3*N-1 ) .AND. .NOT.LQUERY )
+     $      INFO = -8
       END IF
 *
       IF( INFO.NE.0 ) THEN
@@ -134,13 +135,12 @@
 *     Quick return if possible
 *
       IF( N.EQ.0 ) THEN
-         WORK( 1 ) = 1
          RETURN
       END IF
 *
       IF( N.EQ.1 ) THEN
          W( 1 ) = A( 1, 1 )
-         WORK( 1 ) = 3
+         WORK( 1 ) = 2
          IF( WANTZ )
      $      A( 1, 1 ) = ONE
          RETURN
