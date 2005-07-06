@@ -154,7 +154,7 @@
      $                   SSTERF, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          INT, MAX, REAL, SQRT
+      INTRINSIC          MAX, SQRT
 *     ..
 *     .. Executable Statements ..
 *
@@ -165,27 +165,6 @@
       LQUERY = ( LWORK.EQ.-1 .OR. LRWORK.EQ.-1 .OR. LIWORK.EQ.-1 )
 *
       INFO = 0
-      IF( N.LE.1 ) THEN
-         LWMIN = 1
-         LRWMIN = 1
-         LIWMIN = 1
-         LOPT = LWMIN
-         LROPT = LRWMIN
-         LIOPT = LIWMIN
-      ELSE
-         IF( WANTZ ) THEN
-            LWMIN = 2*N + N*N
-            LRWMIN = 1 + 5*N + 2*N**2
-            LIWMIN = 3 + 5*N
-         ELSE
-            LWMIN = N + 1
-            LRWMIN = N
-            LIWMIN = 1
-         END IF
-         LOPT = LWMIN
-         LROPT = LRWMIN
-         LIOPT = LIWMIN
-      END IF
       IF( .NOT.( WANTZ .OR. LSAME( JOBZ, 'N' ) ) ) THEN
          INFO = -1
       ELSE IF( .NOT.( LOWER .OR. LSAME( UPLO, 'U' ) ) ) THEN
@@ -197,6 +176,28 @@
       END IF
 *
       IF( INFO.EQ.0 ) THEN
+         IF( N.LE.1 ) THEN
+            LWMIN = 1
+            LRWMIN = 1
+            LIWMIN = 1
+            LOPT = LWMIN
+            LROPT = LRWMIN
+            LIOPT = LIWMIN
+         ELSE
+            IF( WANTZ ) THEN
+               LWMIN = 2*N + N*N
+               LRWMIN = 1 + 5*N + 2*N**2
+               LIWMIN = 3 + 5*N
+            ELSE
+               LWMIN = N + 1
+               LRWMIN = N
+               LIWMIN = 1
+            END IF
+            LOPT = MAX( LWMIN, N +
+     $                  ILAENV( 1, 'CHETRD', UPLO, N, -1, -1, -1 ) )
+            LROPT = LRWMIN
+            LIOPT = LIWMIN
+         END IF
          WORK( 1 ) = LOPT
          RWORK( 1 ) = LROPT
          IWORK( 1 ) = LIOPT
@@ -264,7 +265,6 @@
       LLRWK = LRWORK - INDRWK + 1
       CALL CHETRD( UPLO, N, A, LDA, W, RWORK( INDE ), WORK( INDTAU ),
      $             WORK( INDWRK ), LLWORK, IINFO )
-      LOPT = MAX( REAL( LOPT ), REAL( N )+REAL( WORK( INDWRK ) ) )
 *
 *     For eigenvalues only, call SSTERF.  For eigenvectors, first call
 *     CSTEDC to generate the eigenvector matrix, WORK(INDWRK), of the
@@ -281,7 +281,6 @@
          CALL CUNMTR( 'L', UPLO, 'N', N, N, A, LDA, WORK( INDTAU ),
      $                WORK( INDWRK ), N, WORK( INDWK2 ), LLWRK2, IINFO )
          CALL CLACPY( 'A', N, N, WORK( INDWRK ), N, A, LDA )
-         LOPT = MAX( LOPT, N+N**2+INT( WORK( INDWK2 ) ) )
       END IF
 *
 *     If matrix was scaled, then rescale eigenvalues appropriately.
