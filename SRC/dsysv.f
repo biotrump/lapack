@@ -86,7 +86,7 @@
 *
 *  LWORK   (input) INTEGER
 *          The length of WORK.  LWORK >= 1, and for best performance
-*          LWORK >= N*NB, where NB is the optimal blocksize for
+*          LWORK >= max(1,N*NB), where NB is the optimal blocksize for
 *          DSYTRF.
 *
 *          If LWORK = -1, then a workspace query is assumed; the routine
@@ -139,8 +139,12 @@
       END IF
 *
       IF( INFO.EQ.0 ) THEN
-         NB = ILAENV( 1, 'DSYTRF', UPLO, N, -1, -1, -1 )
-         LWKOPT = N*NB
+         IF( N.EQ.0 ) THEN
+            LWKOPT = 1
+         ELSE
+            NB = ILAENV( 1, 'DSYTRF', UPLO, N, -1, -1, -1 )
+            LWKOPT = N*NB
+         END IF
          WORK( 1 ) = LWKOPT
       END IF
 *
