@@ -88,7 +88,7 @@
 *          JOBZ = 'V', LDZ >= max(1,N).
 *
 *  WORK    (workspace/output) REAL array, dimension (LWORK)
-*          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
+*          On exit, if INFO = 0, WORK(1) returns the required LWORK.
 *
 *  LWORK   (input) INTEGER
 *          The dimension of the array WORK.
@@ -97,12 +97,13 @@
 *          If JOBZ = 'V' and N > 1, LWORK >= 1 + 6*N + 2*N**2.
 *
 *          If LWORK = -1, then a workspace query is assumed; the routine
-*          only calculates the optimal size of the WORK array, returns
-*          this value as the first entry of the WORK array, and no error
-*          message related to LWORK is issued by XERBLA.
+*          only calculates the required sizes of the WORK and IWORK
+*          arrays, returns these values as the first entries of the WORK
+*          and IWORK arrays, and no error message related to LWORK or
+*          LIWORK is issued by XERBLA.
 *
 *  IWORK   (workspace/output) INTEGER array, dimension (LIWORK)
-*          On exit, if INFO = 0, IWORK(1) returns the optimal LIWORK.
+*          On exit, if INFO = 0, IWORK(1) returns the required LIWORK.
 *
 *  LIWORK  (input) INTEGER
 *          The dimension of the array IWORK.
@@ -110,9 +111,10 @@
 *          If JOBZ  = 'V' and N > 1, LIWORK >= 3 + 5*N.
 *
 *          If LIWORK = -1, then a workspace query is assumed; the
-*          routine only calculates the optimal size of the IWORK array,
-*          returns this value as the first entry of the IWORK array, and
-*          no error message related to LIWORK is issued by XERBLA.
+*          routine only calculates the required sizes of the WORK and
+*          IWORK arrays, returns these values as the first entries of
+*          the WORK and IWORK arrays, and no error message related to
+*          LWORK or LIWORK is issued by XERBLA.
 *
 *  INFO    (output) INTEGER
 *          = 0:  successful exit
@@ -141,7 +143,7 @@
 *     .. Local Scalars ..
       LOGICAL            LQUERY, UPPER, WANTZ
       CHARACTER          TRANS
-      INTEGER            J, LGN, LIWMIN, LWMIN, NEIG
+      INTEGER            J, LIWMIN, LWMIN, NEIG
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
@@ -151,7 +153,7 @@
       EXTERNAL           SPPTRF, SSPEVD, SSPGST, STPMV, STPSV, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          INT, LOG, MAX, REAL
+      INTRINSIC          MAX, REAL
 *     ..
 *     .. Executable Statements ..
 *
@@ -162,26 +164,7 @@
       LQUERY = ( LWORK.EQ.-1 .OR. LIWORK.EQ.-1 )
 *
       INFO = 0
-      IF( N.LE.1 ) THEN
-         LGN = 0
-         LIWMIN = 1
-         LWMIN = 1
-      ELSE
-         LGN = INT( LOG( REAL( N ) ) / LOG( TWO ) )
-         IF( 2**LGN.LT.N )
-     $      LGN = LGN + 1
-         IF( 2**LGN.LT.N )
-     $      LGN = LGN + 1
-         IF( WANTZ ) THEN
-            LIWMIN = 3 + 5*N
-            LWMIN = 1 + 5*N + 2*N*LGN + 2*N**2
-         ELSE
-            LIWMIN = 1
-            LWMIN = 2*N
-         END IF
-      END IF
-*
-      IF( ITYPE.LT.0 .OR. ITYPE.GT.3 ) THEN
+      IF( ITYPE.LT.1 .OR. ITYPE.GT.3 ) THEN
          INFO = -1
       ELSE IF( .NOT.( WANTZ .OR. LSAME( JOBZ, 'N' ) ) ) THEN
          INFO = -2
@@ -189,7 +172,7 @@
          INFO = -3
       ELSE IF( N.LT.0 ) THEN
          INFO = -4
-      ELSE IF( LDZ.LT.MAX( 1, N ) ) THEN
+      ELSE IF( LDZ.LT.1 .OR. ( WANTZ .AND. LDZ.LT.N ) ) THEN
          INFO = -9
       ELSE IF( LWORK.LT.LWMIN .AND. .NOT.LQUERY ) THEN
          INFO = -11
@@ -198,6 +181,19 @@
       END IF
 *
       IF( INFO.EQ.0 ) THEN
+         IF( N.LE.1 ) THEN
+            LIWMIN = 1
+            LWMIN = 1
+         ELSE
+            IF( WANTZ ) THEN
+               LIWMIN = 3 + 5*N
+               LWMIN = 1 + 6*N + 2*N**2
+            ELSE
+               LIWMIN = 1
+               LWMIN = 2*N
+            END IF
+         END IF
+*
          WORK( 1 ) = LWMIN
          IWORK( 1 ) = LIWMIN
       END IF
