@@ -113,7 +113,7 @@
 *     .. Local Scalars ..
       LOGICAL            LQUERY, UPPER, WANTZ
       CHARACTER          TRANS
-      INTEGER            LWKOPT, NB, NEIG
+      INTEGER            LWKMIN, LWKOPT, NB, NEIG
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
@@ -147,14 +147,17 @@
          INFO = -6
       ELSE IF( LDB.LT.MAX( 1, N ) ) THEN
          INFO = -8
-      ELSE IF( LWORK.LT.MAX( 1, 3*N-1 ) .AND. .NOT.LQUERY ) THEN
-         INFO = -11
       END IF
 *
       IF( INFO.EQ.0 ) THEN
+         LWKMIN = MAX( 1, 3*N - 1 )
          NB = ILAENV( 1, 'SSYTRD', UPLO, N, -1, -1, -1 )
-         LWKOPT = ( NB+2 )*N
+         LWKOPT = MAX( LWKMIN, ( NB + 2 )*N )
          WORK( 1 ) = LWKOPT
+*
+         IF( LWORK.LT.LWKMIN .AND. .NOT.LQUERY ) THEN
+            INFO = -11
+         END IF
       END IF
 *
       IF( INFO.NE.0 ) THEN
