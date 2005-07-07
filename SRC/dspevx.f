@@ -142,7 +142,7 @@
       PARAMETER          ( ZERO = 0.0D0, ONE = 1.0D0 )
 *     ..
 *     .. Local Scalars ..
-      LOGICAL            ALLEIG, INDEIG, VALEIG, WANTZ
+      LOGICAL            ALLEIG, INDEIG, TEST, VALEIG, WANTZ
       CHARACTER          ORDER
       INTEGER            I, IINFO, IMAX, INDD, INDE, INDEE, INDIBL,
      $                   INDISP, INDIWO, INDTAU, INDWRK, ISCALE, ITMP1,
@@ -275,8 +275,13 @@
 *     to zero, then call DSTERF or DOPGTR and SSTEQR.  If this fails
 *     for some eigenvalue, then try DSTEBZ.
 *
-      IF( ( ALLEIG .OR. ( INDEIG .AND. IL.EQ.1 .AND. IU.EQ.N ) ) .AND.
-     $    ( ABSTOL.LE.ZERO ) ) THEN
+      TEST = .FALSE.
+      IF (INDEIG) THEN
+         IF (IL.EQ.1 .AND. IU.EQ.N) THEN
+            TEST = .TRUE.
+         END IF
+      END IF
+      IF ((ALLEIG .OR. TEST) .AND. (ABSTOL.LE.ZERO)) THEN
          CALL DCOPY( N, WORK( INDD ), 1, W, 1 )
          INDEE = INDWRK + 2*N
          IF( .NOT.WANTZ ) THEN
