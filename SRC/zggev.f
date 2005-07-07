@@ -231,7 +231,7 @@
          LWKMIN = MAX( 1, 2*N )
          LWKOPT = MAX( 1, N + N*ILAENV( 1, 'ZGEQRF', ' ', N, 1, N, 0 ) )
          LWKOPT = MAX( LWKOPT, N +
-     $                 N*ILAENV( 1, 'ZUNMQR', ' ', N, 1, N, 0 ) ) )
+     $                 N*ILAENV( 1, 'ZUNMQR', ' ', N, 1, N, 0 ) )
          IF( ILVL ) THEN
             LWKOPT = MAX( LWKOPT, N +
      $                    N*ILAENV( 1, 'ZUNGQR', ' ', N, 1, N, -1 ) )

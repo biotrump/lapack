@@ -233,7 +233,7 @@
      $                 ILAENV( 1, 'DORMQR', ' ', N, 1, N, 0 ) ) )
          IF( ILVL ) THEN
             MAXWRK = MAX( MAXWRK, N*( 7 +
-     $                    ILAENV( 1, 'DORGQR', ' ', N, 1, N, -1 ) )
+     $                 ILAENV( 1, 'DORGQR', ' ', N, 1, N, -1 ) ) )
          END IF
          WORK( 1 ) = MAXWRK
 *

@@ -370,6 +370,7 @@
             IF( ILVL ) THEN
                MAXWRK = MAX( MAXWRK, N +
      $                       N*ILAENV( 1, 'ZUNGQR', ' ', N, 1, N, 0 ) )
+            END IF 
          END IF
          WORK( 1 ) = MAXWRK
 *
