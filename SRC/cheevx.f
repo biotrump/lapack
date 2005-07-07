@@ -124,7 +124,8 @@
 *          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER
-*          The length of the array WORK.  LWORK >= max(1,2*N-1).
+*          The length of the array WORK.  LWORK >= 1, when N <= 1;
+*          otherwise 2*N.
 *          For optimal efficiency, LWORK >= (NB+1)*N,
 *          where NB is the max of the blocksize for CHETRD and for
 *          CUNMTR as returned by ILAENV.
@@ -159,11 +160,13 @@
       PARAMETER          ( CONE = ( 1.0E+0, 0.0E+0 ) )
 *     ..
 *     .. Local Scalars ..
-      LOGICAL            ALLEIG, INDEIG, LOWER, LQUERY, VALEIG, WANTZ
+      LOGICAL            ALLEIG, INDEIG, LOWER, LQUERY, TEST, VALEIG,
+     $                   WANTZ
       CHARACTER          ORDER
       INTEGER            I, IINFO, IMAX, INDD, INDE, INDEE, INDIBL,
      $                   INDISP, INDIWK, INDRWK, INDTAU, INDWRK, ISCALE,
-     $                   ITMP1, J, JJ, LLWORK, LOPT, LWKOPT, NB, NSPLIT
+     $                   ITMP1, J, JJ, LLWORK, LOPT, LWKMIN, LWKOPT, NB,
+     $                   NSPLIT
       REAL               ABSTLL, ANRM, BIGNUM, EPS, RMAX, RMIN, SAFMIN,
      $                   SIGMA, SMLNUM, TMP1, VLL, VUU
 *     ..
@@ -218,16 +221,23 @@
       IF( INFO.EQ.0 ) THEN
          IF( LDZ.LT.1 .OR. ( WANTZ .AND. LDZ.LT.N ) ) THEN
             INFO = -15
-         ELSE IF( LWORK.LT.MAX( 1, 2*N-1 ) .AND. .NOT.LQUERY ) THEN
-            INFO = -17
          END IF
       END IF
 *
       IF( INFO.EQ.0 ) THEN
-         NB = ILAENV( 1, 'CHETRD', UPLO, N, -1, -1, -1 )
-         NB = MAX( NB, ILAENV( 1, 'CUNMTR', UPLO, N, -1, -1, -1 ) )
-         LWKOPT = ( NB+1 )*N
-         WORK( 1 ) = LWKOPT
+         IF( N.LE.1 ) THEN
+            LWKMIN = 1
+            WORK( 1 ) = LWKMIN
+         ELSE
+            LWKMIN = 2*N
+            NB = ILAENV( 1, 'CHETRD', UPLO, N, -1, -1, -1 )
+            NB = MAX( NB, ILAENV( 1, 'CUNMTR', UPLO, N, -1, -1, -1 ) )
+            LWKOPT = MAX( 1, ( NB + 1 )*N )
+            WORK( 1 ) = LWKOPT
+         END IF
+*
+         IF( LWORK.LT.LWKMIN .AND. .NOT.LQUERY )
+     $      INFO = -17
       END IF
 *
       IF( INFO.NE.0 ) THEN
@@ -241,12 +251,10 @@
 *
       M = 0
       IF( N.EQ.0 ) THEN
-         WORK( 1 ) = 1
          RETURN
       END IF
 *
       IF( N.EQ.1 ) THEN
-         WORK( 1 ) = 1
          IF( ALLEIG .OR. INDEIG ) THEN
             M = 1
             W( 1 ) = A( 1, 1 )
@@ -275,8 +283,10 @@
 *
       ISCALE = 0
       ABSTLL = ABSTOL
-      VLL = VL
-      VUU = VU
+      IF( VALEIG ) THEN
+         VLL = VL
+         VUU = VU
+      END IF
       ANRM = CLANHE( 'M', UPLO, N, A, LDA, RWORK )
       IF( ANRM.GT.ZERO .AND. ANRM.LT.RMIN ) THEN
          ISCALE = 1
@@ -319,8 +329,13 @@
 *     zero, then call SSTERF or CUNGTR and CSTEQR.  If this fails for
 *     some eigenvalue, then try SSTEBZ.
 *
-      IF( ( ALLEIG .OR. ( INDEIG .AND. IL.EQ.1 .AND. IU.EQ.N ) ) .AND.
-     $    ( ABSTOL.LE.ZERO ) ) THEN
+      TEST = .FALSE.
+      IF( INDEIG ) THEN
+         IF( IL.EQ.1 .AND. IU.EQ.N ) THEN
+            TEST = .TRUE.
+         END IF
+      END IF
+      IF( ( ALLEIG .OR. TEST ) .AND. ( ABSTOL.LE.ZERO ) ) THEN
          CALL SCOPY( N, RWORK( INDD ), 1, W, 1 )
          INDEE = INDRWK + 2*N
          IF( .NOT.WANTZ ) THEN
