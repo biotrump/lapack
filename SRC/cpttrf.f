@@ -44,7 +44,7 @@
 *          > 0: if INFO = k, the leading minor of order k is not
 *               positive definite; if k < N, the factorization could not
 *               be completed, while if k = N, the factorization was
-*               completed, but D(N) = 0.
+*               completed, but D(N) <= 0.
 *
 *  =====================================================================
 *
