@@ -619,7 +619,7 @@
          CALL CHKXER( 'DSYEVX', INFOT, NOUT, LERR, OK )
          INFOT = 17
          CALL DSYEVX( 'V', 'A', 'U', 1, A, 1, 0.0D0, 0.0D0, 0, 0, 0.0D0,
-     $                M, X, Z, 1, W, 7, IW, I3, INFO )
+     $                M, X, Z, 1, W, 0, IW, I3, INFO )
          CALL CHKXER( 'DSYEVX', INFOT, NOUT, LERR, OK )
          NT = NT + 12
 *

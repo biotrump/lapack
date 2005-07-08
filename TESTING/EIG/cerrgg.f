@@ -640,7 +640,7 @@
          INFOT = 24
          CALL CGGESX( 'V', 'V', 'S', CLCTSX, 'V', 1, A, 1, B, 1, SDIM,
      $                ALPHA, BETA, Q, 1, U, 1, RCE, RCV, W, 32, RW, IW,
-     $                -1, BW, INFO )
+     $                0, BW, INFO )
          CALL CHKXER( 'CGGESX', INFOT, NOUT, LERR, OK )
          NT = NT + 13
 *

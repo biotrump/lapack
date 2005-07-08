@@ -622,7 +622,7 @@
          CALL CHKXER( 'SGGESX', INFOT, NOUT, LERR, OK )
          INFOT = 24
          CALL SGGESX( 'V', 'V', 'S', SLCTSX, 'V', 1, A, 1, B, 1, SDIM,
-     $                R1, R2, R3, Q, 1, U, 1, RCE, RCV, W, 32, IW, -1,
+     $                R1, R2, R3, Q, 1, U, 1, RCE, RCV, W, 32, IW, 0,
      $                BW, INFO )
          CALL CHKXER( 'SGGESX', INFOT, NOUT, LERR, OK )
          NT = NT + 13
