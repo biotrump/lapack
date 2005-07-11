@@ -34,9 +34,9 @@
 *  D       (input) REAL array, dimension (N)
 *          The n diagonal elements of the tridiagonal matrix T.
 *
-*  E       (input) REAL array, dimension (N)
+*  E       (input) REAL array, dimension (N-1)
 *          The (n-1) subdiagonal elements of the tridiagonal matrix
-*          T, in elements 1 to N-1.  E(N) need not be set.
+*          T, in elements 1 to N-1.
 *
 *  M       (input) INTEGER
 *          The number of eigenvectors to be found.  0 <= M <= N.

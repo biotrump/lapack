@@ -41,9 +41,9 @@
 *  D       (input) DOUBLE PRECISION array, dimension (N)
 *          The n diagonal elements of the tridiagonal matrix T.
 *
-*  E       (input) DOUBLE PRECISION array, dimension (N)
+*  E       (input) DOUBLE PRECISION array, dimension (N-1)
 *          The (n-1) subdiagonal elements of the tridiagonal matrix
-*          T, stored in elements 1 to N-1; E(N) need not be set.
+*          T, stored in elements 1 to N-1.
 *
 *  M       (input) INTEGER
 *          The number of eigenvectors to be found.  0 <= M <= N.
