@@ -79,9 +79,9 @@
 *          On entry, the n diagonal elements of the tridiagonal matrix
 *          T. On exit, D is overwritten.
 *
-*  E       (input/output) REAL array, dimension (N)
+*  E       (input/output) REAL array, dimension (N-1)
 *          On entry, the (n-1) subdiagonal elements of the tridiagonal
-*          matrix T in elements 1 to N-1 of E; E(N) need not be set.
+*          matrix T in elements 1 to N-1 of E.
 *          On exit, E is overwritten.
 *
 *  VL      (input) REAL
@@ -149,9 +149,10 @@
 *          The dimension of the array WORK.  LWORK >= max(1,18*N)
 *
 *          If LWORK = -1, then a workspace query is assumed; the routine
-*          only calculates the optimal size of the WORK array, returns
-*          this value as the first entry of the WORK array, and no error
-*          message related to LWORK is issued by XERBLA.
+*          only calculates the optimal sizes of the WORK and IWORK
+*          arrays, returns these values as the first entries of the WORK
+*          and IWORK arrays, and no error message related to LWORK or
+*          LIWORK is issued by XERBLA.
 *
 *  IWORK   (workspace/output) INTEGER array, dimension (LIWORK)
 *          On exit, if INFO = 0, IWORK(1) returns the optimal LIWORK.
@@ -160,15 +161,18 @@
 *          The dimension of the array IWORK.  LIWORK >= max(1,10*N)
 *
 *          If LIWORK = -1, then a workspace query is assumed; the
-*          routine only calculates the optimal size of the IWORK array,
-*          returns this value as the first entry of the IWORK array, and
-*          no error message related to LIWORK is issued by XERBLA.
+*          routine only calculates the optimal sizes of the WORK and
+*          IWORK arrays, returns these values as the first entries of
+*          the WORK and IWORK arrays, and no error message related to
+*          LWORK or LIWORK is issued by XERBLA.
 *
 *  INFO    (output) INTEGER
 *          = 0:  successful exit
 *          < 0:  if INFO = -i, the i-th argument had an illegal value
-*          > 0:  if INFO = 1, internal error in SLARRE,
-*                if INFO = 2, internal error in CLARRV.
+*          > 0:  if INFO = 1, the dqds algorithm failed to converge in
+*                SLARRE, 
+*                if INFO = 2, inverse iteration failed to converge in
+*                CLARRV. 
 *
 *  Further Details
 *  ===============
@@ -189,7 +193,7 @@
 *     ..
 *     .. Local Scalars ..
       LOGICAL            ALLEIG, INDEIG, LQUERY, VALEIG, WANTZ
-      INTEGER            I, IBEGIN, IEND, IINDBL, IINDWK, IINFO, IINSPL, 
+      INTEGER            I, IBEGIN, IEND, IINDBL, IINDWK, IINFO, IINSPL,
      $                   INDGRS, INDWOF, INDWRK, ITMP, J, JJ, LIWMIN, 
      $                   LWMIN, NSPLIT
       REAL               BIGNUM, EPS, RMAX, RMIN, SAFMIN, SCALE, SMLNUM,
@@ -216,8 +220,6 @@
       INDEIG = LSAME( RANGE, 'I' )
 *
       LQUERY = ( ( LWORK.EQ.-1 ) .OR. ( LIWORK.EQ.-1 ) )
-      LWMIN = 18*N
-      LIWMIN = 10*N
 *
       INFO = 0
       IF( .NOT.( WANTZ .OR. LSAME( JOBZ, 'N' ) ) ) THEN
@@ -232,25 +234,44 @@
          INFO = -2
       ELSE IF( N.LT.0 ) THEN
          INFO = -3
-      ELSE IF( VALEIG .AND. N.GT.0 .AND. VU.LE.VL ) THEN
-         INFO = -7
-      ELSE IF( INDEIG .AND. IL.LT.1 ) THEN
-         INFO = -8
+      ELSE IF( VALEIG .AND. N.GT.0 ) THEN
+         IF( VU.LE.VL )
+     $      INFO = -7
+      END IF
+      IF( INFO.EQ.0 ) THEN
+         IF( INDEIG ) THEN
+            IF( IL.LT.1 ) THEN
+               INFO = -8
+            ELSE IF( IU.LT.IL .OR. IU.GT.N ) THEN
+               INFO = -9
+            END IF
+         END IF
+      END IF
 *     The following change should be made in DSTEVX also, otherwise
 *     IL can be specified as N+1 and IU as N.
 *     ELSE IF( INDEIG .AND. ( IU.LT.MIN( N, IL ) .OR. IU.GT.N ) ) THEN
-      ELSE IF( INDEIG .AND. ( IU.LT.IL .OR. IU.GT.N ) ) THEN
-         INFO = -9
-      ELSE IF( LDZ.LT.1 .OR. ( WANTZ .AND. LDZ.LT.N ) ) THEN
-         INFO = -14
-      ELSE IF( LWORK.LT.LWMIN .AND. .NOT.LQUERY ) THEN
-         INFO = -17
-      ELSE IF( LIWORK.LT.LIWMIN .AND. .NOT.LQUERY ) THEN
-         INFO = -19
-      END IF
       IF( INFO.EQ.0 ) THEN
+         IF( LDZ.LT.1 .OR. ( WANTZ .AND. LDZ.LT.N ) ) THEN
+            INFO = -14
+         END IF
+      END IF
+*
+      IF( INFO.EQ.0 ) THEN
+         IF( N.LE.1 ) THEN
+            LWMIN  = 1
+            LIWMIN = 1
+         ELSE
+            LWMIN = 18*N
+            LIWMIN = 10*N
+         END IF
          WORK( 1 ) = LWMIN
          IWORK( 1 ) = LIWMIN
+*
+         IF( LWORK.LT.LWMIN .AND. .NOT.LQUERY ) THEN
+            INFO = -17
+         ELSE IF( LIWORK.LT.LIWMIN .AND. .NOT.LQUERY ) THEN
+            INFO = -19
+         END IF
       END IF
 *
       IF( INFO.NE.0 ) THEN
