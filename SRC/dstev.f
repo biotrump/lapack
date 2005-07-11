@@ -34,10 +34,9 @@
 *          A.
 *          On exit, if INFO = 0, the eigenvalues in ascending order.
 *
-*  E       (input/output) DOUBLE PRECISION array, dimension (N)
+*  E       (input/output) DOUBLE PRECISION array, dimension (N-1)
 *          On entry, the (n-1) subdiagonal elements of the tridiagonal
-*          matrix A, stored in elements 1 to N-1 of E; E(N) need not
-*          be set, but is used by the routine.
+*          matrix A, stored in elements 1 to N-1 of E.
 *          On exit, the contents of E are destroyed.
 *
 *  Z       (output) DOUBLE PRECISION array, dimension (LDZ, N)
