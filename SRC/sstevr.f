@@ -85,9 +85,9 @@
 *          On exit, D may be multiplied by a constant factor chosen
 *          to avoid over/underflow in computing the eigenvalues.
 *
-*  E       (input/output) REAL array, dimension (N)
+*  E       (input/output) REAL array, dimension (max(1,N-1))
 *          On entry, the (n-1) subdiagonal elements of the tridiagonal
-*          matrix A in elements 1 to N-1 of E; E(N) need not be set.
+*          matrix A in elements 1 to N-1 of E.
 *          On exit, E may be multiplied by a constant factor chosen
 *          to avoid over/underflow in computing the eigenvalues.
 *
@@ -168,9 +168,10 @@
 *          The dimension of the array WORK.  LWORK >= 20*N.
 *
 *          If LWORK = -1, then a workspace query is assumed; the routine
-*          only calculates the optimal size of the WORK array, returns
-*          this value as the first entry of the WORK array, and no error
-*          message related to LWORK is issued by XERBLA.
+*          only calculates the optimal sizes of the WORK and IWORK
+*          arrays, returns these values as the first entries of the WORK
+*          and IWORK arrays, and no error message related to LWORK or
+*          LIWORK is issued by XERBLA.
 *
 *  IWORK   (workspace/output) INTEGER array, dimension (LIWORK)
 *          On exit, if INFO = 0, IWORK(1) returns the optimal (and
@@ -180,9 +181,10 @@
 *          The dimension of the array IWORK.  LIWORK >= 10*N.
 *
 *          If LIWORK = -1, then a workspace query is assumed; the
-*          routine only calculates the optimal size of the IWORK array,
-*          returns this value as the first entry of the IWORK array, and
-*          no error message related to LIWORK is issued by XERBLA.
+*          routine only calculates the optimal sizes of the WORK and
+*          IWORK arrays, returns these values as the first entries of
+*          the WORK and IWORK arrays, and no error message related to
+*          LWORK or LIWORK is issued by XERBLA.
 *
 *  INFO    (output) INTEGER
 *          = 0:  successful exit
@@ -205,7 +207,7 @@
       PARAMETER          ( ZERO = 0.0E+0, ONE = 1.0E+0 )
 *     ..
 *     .. Local Scalars ..
-      LOGICAL            ALLEIG, INDEIG, LQUERY, VALEIG, WANTZ
+      LOGICAL            ALLEIG, INDEIG, TEST, LQUERY, VALEIG, WANTZ
       CHARACTER          ORDER
       INTEGER            I, IEEEOK, IMAX, INDIBL, INDIFL, INDISP,
      $                   INDIWO, ISCALE, ITMP1, J, JJ, LIWMIN, LWMIN,
@@ -239,8 +241,8 @@
       INDEIG = LSAME( RANGE, 'I' )
 *
       LQUERY = ( ( LWORK.EQ.-1 ) .OR. ( LIWORK.EQ.-1 ) )
-      LWMIN = 20*N
-      LIWMIN = 10*N
+      LWMIN = MAX( 1, 20*N )
+      LIWMIN = MAX(1, 10*N )
 *
 *
       INFO = 0
@@ -265,16 +267,18 @@
       IF( INFO.EQ.0 ) THEN
          IF( LDZ.LT.1 .OR. ( WANTZ .AND. LDZ.LT.N ) ) THEN
             INFO = -14
-         ELSE IF( LWORK.LT.LWMIN .AND. .NOT.LQUERY ) THEN
-            INFO = -17
-         ELSE IF( LIWORK.LT.LIWMIN .AND. .NOT.LQUERY ) THEN
-            INFO = -19
          END IF
       END IF
 *
       IF( INFO.EQ.0 ) THEN
          WORK( 1 ) = LWMIN
          IWORK( 1 ) = LIWMIN
+*
+         IF( LWORK.LT.LWMIN .AND. .NOT.LQUERY ) THEN
+            INFO = -17
+         ELSE IF( LIWORK.LT.LIWMIN .AND. .NOT.LQUERY ) THEN
+            INFO = -19
+         END IF
       END IF
 *
       IF( INFO.NE.0 ) THEN
@@ -343,8 +347,13 @@
 *     try SSTEBZ.
 *
 *
-      IF( ( ALLEIG .OR. ( INDEIG .AND. IL.EQ.1 .AND. IU.EQ.N ) ) .AND.
-     $    IEEEOK.EQ.1 ) THEN
+      TEST = .FALSE.
+      IF( INDEIG ) THEN
+         IF( IL.EQ.1 .AND. IU.EQ.N ) THEN
+            TEST = .TRUE.
+         END IF
+      END IF
+      IF( ( ALLEIG .OR. TEST ) .AND. IEEEOK.EQ.1 ) THEN
          CALL SCOPY( N-1, E( 1 ), 1, WORK( 1 ), 1 )
          IF( .NOT.WANTZ ) THEN
             CALL SCOPY( N, D, 1, W, 1 )
