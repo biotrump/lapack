@@ -161,9 +161,10 @@
 *          If IJOB = 3 or 5, LWORK >=  4*M*(N-M)
 *
 *          If LWORK = -1, then a workspace query is assumed; the routine
-*          only calculates the optimal size of the WORK array, returns
-*          this value as the first entry of the WORK array, and no error
-*          message related to LWORK is issued by XERBLA.
+*          only calculates the optimal sizes of the WORK and IWORK
+*          arrays, returns these values as the first entries of the WORK
+*          and IWORK arrays, and no error message related to LWORK or
+*          LIWORK is issued by XERBLA.
 *
 *  IWORK   (workspace/output) INTEGER, dimension (LIWORK)
 *          IF IJOB = 0, IWORK is not referenced.  Otherwise,
@@ -175,9 +176,10 @@
 *          If IJOB = 3 or 5, LIWORK >= MAX(N+2, 2*M*(N-M));
 *
 *          If LIWORK = -1, then a workspace query is assumed; the
-*          routine only calculates the optimal size of the IWORK array,
-*          returns this value as the first entry of the IWORK array, and
-*          no error message related to LIWORK is issued by XERBLA.
+*          routine only calculates the optimal sizes of the WORK and
+*          IWORK arrays, returns these values as the first entries of
+*          the WORK and IWORK arrays, and no error message related to
+*          LWORK or LIWORK is issued by XERBLA.
 *
 *  INFO    (output) INTEGER
 *            =0: Successful exit.
@@ -389,15 +391,15 @@
          END IF
    10 CONTINUE
 *
-      IF( IJOB.EQ.1 .OR. IJOB.EQ.2 .OR. IJOB.EQ.4 ) THEN
-         LWMIN = MAX( 1, 2*M*(N-M) )
-         LIWMIN = MAX( 1, N+2 )
-      ELSE IF( IJOB.EQ.3 .OR. IJOB.EQ.5 ) THEN
-         LWMIN = MAX( 1, 4*M*(N-M) )
-         LIWMIN = MAX( 1, 2*M*(N-M), N+2 )
-      ELSE
+      IF( N.EQ.0 .OR. IJOB.EQ.0 ) THEN
          LWMIN = 1
          LIWMIN = 1
+      ELSE IF( IJOB.EQ.1 .OR. IJOB.EQ.2 .OR. IJOB.EQ.4 ) THEN
+         LWMIN = MAX( 1, 2*M*( N - M ) )
+         LIWMIN = N + 2
+      ELSE IF( IJOB.EQ.3 .OR. IJOB.EQ.5 ) THEN
+         LWMIN = MAX( 1, 4*M*( N - M ) )
+         LIWMIN = MAX( 2*M*( N - M ), N + 2 )
       END IF
 *
       WORK( 1 ) = LWMIN
