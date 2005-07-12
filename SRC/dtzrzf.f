@@ -130,17 +130,23 @@
          INFO = -2
       ELSE IF( LDA.LT.MAX( 1, M ) ) THEN
          INFO = -4
-      ELSE IF( LWORK.LT.MAX( 1, M ) .AND. .NOT.LQUERY ) THEN
-         INFO = -7
       END IF
 *
       IF( INFO.EQ.0 ) THEN
+         IF( M.EQ.0 .OR. M.EQ.N ) THEN
+            LWKOPT = 1
+         ELSE
 *
-*        Determine the block size.
+*           Determine the block size.
 *
-         NB = ILAENV( 1, 'DGERQF', ' ', M, N, -1, -1 )
-         LWKOPT = M*NB
+            NB = ILAENV( 1, 'DGERQF', ' ', M, N, -1, -1 )
+            LWKOPT = M*NB
+         END IF
          WORK( 1 ) = LWKOPT
+*
+         IF( LWORK.LT.MAX( 1, M ) .AND. .NOT.LQUERY ) THEN
+            INFO = -7
+         END IF
       END IF
 *
       IF( INFO.NE.0 ) THEN
@@ -153,13 +159,11 @@
 *     Quick return if possible
 *
       IF( M.EQ.0 ) THEN
-         WORK( 1 ) = 1
          RETURN
       ELSE IF( M.EQ.N ) THEN
          DO 10 I = 1, N
             TAU( I ) = ZERO
    10    CONTINUE
-         WORK( 1 ) = 1
          RETURN
       END IF
 *
