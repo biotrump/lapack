@@ -551,8 +551,8 @@
      $                  A( J1, I ), LDA, ZERO, WORK, M )
             CALL SLACPY( 'Full', M, N-I+1, WORK, M, A( J1, I ), LDA )
             CALL SGEMM( 'T', 'N', M, N-I+1, M, ONE, LI, LDST,
-     $                  B( J1, I ), LDA, ZERO, WORK, M )
-            CALL SLACPY( 'Full', M, N-I+1, WORK, M, B( J1, I ), LDA )
+     $                  B( J1, I ), LDB, ZERO, WORK, M )
+            CALL SLACPY( 'Full', M, N-I+1, WORK, M, B( J1, I ), LDB )
          END IF
          I = J1 - 1
          IF( I.GT.0 ) THEN
