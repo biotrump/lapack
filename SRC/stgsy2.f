@@ -174,6 +174,8 @@
 *     Umea University, S-901 87 Umea, Sweden.
 *
 *  =====================================================================
+*  Replaced various illegal calls to SCOPY by calls to SLASET.
+*  Sven Hammarling, 27/5/02.
 *
 *     .. Parameters ..
       INTEGER            LDZ
@@ -197,7 +199,7 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           SAXPY, SCOPY, SGEMM, SGEMV, SGER, SGESC2,
-     $                   SGETC2, SSCAL, SLATDF, XERBLA
+     $                   SGETC2, SSCAL, SLASET, SLATDF, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX
@@ -506,14 +508,14 @@
                      CALL SGER( MB, N-JE, ONE, RHS( 3 ), 1,
      $                          B( JS, JE+1 ), LDB, C( IS, JE+1 ), LDC )
                      CALL SGER( MB, N-JE, ONE, RHS( 3 ), 1,
-     $                          E( JS, JE+1 ), LDE, F( IS, JE+1 ), LDF )
+     $                          E( JS, JE+1 ), LDB, F( IS, JE+1 ), LDC )
                   END IF
 *
                ELSE IF( ( MB.EQ.2 ) .AND. ( NB.EQ.2 ) ) THEN
 *
 *                 Build an 8-by-8 system Z * x = RHS
 *
-                  CALL SCOPY( LDZ*LDZ, ZERO, 0, Z, 1 )
+                  CALL SLASET( 'F', LDZ, LDZ, ZERO, ZERO, Z, LDZ )
 *
                   Z( 1, 1 ) = A( IS, IS )
                   Z( 2, 1 ) = A( ISP1, IS )
@@ -841,7 +843,7 @@
 *
 *                 Build an 8-by-8 system Z' * x = RHS
 *
-                  CALL SCOPY( LDZ*LDZ, ZERO, 0, Z, 1 )
+                  CALL DLASET( 'F', LDZ, LDZ, ZERO, ZERO, Z, LDZ )
 *
                   Z( 1, 1 ) = A( IS, IS )
                   Z( 2, 1 ) = A( IS, ISP1 )

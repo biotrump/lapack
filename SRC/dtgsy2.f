@@ -55,10 +55,10 @@
 *  This case is used to compute an estimate of Dif[(A, D), (B, E)] =
 *  sigma_min(Z) using reverse communicaton with DLACON.
 *
-*  DTGSY2 also (IJOB >= 1) contributes to the computation in DTGSYL
+*  DTGSY2 also (IJOB >= 1) contributes to the computation in STGSYL
 *  of an upper bound on the separation between to matrix pairs. Then
 *  the input (A, D), (B, E) are sub-pencils of the matrix pair in
-*  DTGSYL. See DTGSYL for details.
+*  DTGSYL. See STGSYL for details.
 *
 *  Arguments
 *  =========
@@ -143,7 +143,7 @@
 *          On exit, the corresponding sum of squares updated with the
 *          contributions from the current sub-system.
 *          If TRANS = 'T' RDSUM is not touched.
-*          NOTE: RDSUM only makes sense when DTGSY2 is called by DTGSYL.
+*          NOTE: RDSUM only makes sense when DTGSY2 is called by STGSYL.
 *
 *  RDSCAL  (input/output) DOUBLE PRECISION
 *          On entry, scaling factor used to prevent overflow in RDSUM.
@@ -174,6 +174,8 @@
 *     Umea University, S-901 87 Umea, Sweden.
 *
 *  =====================================================================
+*  Replaced various illegal calls to DCOPY by calls to DLASET.
+*  Sven Hammarling, 27/5/02.
 *
 *     .. Parameters ..
       INTEGER            LDZ
@@ -197,7 +199,7 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           DAXPY, DCOPY, DGEMM, DGEMV, DGER, DGESC2,
-     $                   DGETC2, DLATDF, DSCAL, XERBLA
+     $                   DGETC2, DLASET, DLATDF, DSCAL, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX
@@ -506,14 +508,14 @@
                      CALL DGER( MB, N-JE, ONE, RHS( 3 ), 1,
      $                          B( JS, JE+1 ), LDB, C( IS, JE+1 ), LDC )
                      CALL DGER( MB, N-JE, ONE, RHS( 3 ), 1,
-     $                          E( JS, JE+1 ), LDE, F( IS, JE+1 ), LDF )
+     $                          E( JS, JE+1 ), LDB, F( IS, JE+1 ), LDC )
                   END IF
 *
                ELSE IF( ( MB.EQ.2 ) .AND. ( NB.EQ.2 ) ) THEN
 *
 *                 Build an 8-by-8 system Z * x = RHS
 *
-                  CALL DCOPY( LDZ*LDZ, ZERO, 0, Z, 1 )
+                  CALL DLASET( 'F', LDZ, LDZ, ZERO, ZERO, Z, LDZ )
 *
                   Z( 1, 1 ) = A( IS, IS )
                   Z( 2, 1 ) = A( ISP1, IS )
@@ -841,7 +843,7 @@
 *
 *                 Build an 8-by-8 system Z' * x = RHS
 *
-                  CALL DCOPY( LDZ*LDZ, ZERO, 0, Z, 1 )
+                  CALL DLASET( 'F', LDZ, LDZ, ZERO, ZERO, Z, LDZ )
 *
                   Z( 1, 1 ) = A( IS, IS )
                   Z( 2, 1 ) = A( IS, ISP1 )
