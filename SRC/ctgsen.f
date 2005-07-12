@@ -152,8 +152,7 @@
 *          If IJOB = 0 or 1, DIF is not referenced.
 *
 *  WORK    (workspace/output) COMPLEX array, dimension (LWORK)
-*          IF IJOB = 0, WORK is not referenced.  Otherwise,
-*          on exit, if INFO = 0, WORK(1) returns the optimal LWORK.
+*          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER
 *          The dimension of the array WORK. LWORK >=  1
@@ -167,8 +166,7 @@
 *          LIWORK is issued by XERBLA.
 *
 *  IWORK   (workspace/output) INTEGER, dimension (LIWORK)
-*          IF IJOB = 0, IWORK is not referenced.  Otherwise,
-*          on exit, if INFO = 0, IWORK(1) returns the optimal LIWORK.
+*          On exit, if INFO = 0, IWORK(1) returns the optimal LIWORK.
 *
 *  LIWORK  (input) INTEGER
 *          The dimension of the array IWORK. LIWORK >= 1.
