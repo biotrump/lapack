@@ -93,8 +93,7 @@
 *          If JOB = 'N' or 'E', SEP is not referenced.
 *
 *  WORK    (workspace/output) COMPLEX*16 array, dimension (LWORK)
-*          If JOB = 'N', WORK is not referenced.  Otherwise,
-*          on exit, if INFO = 0, WORK(1) returns the optimal LWORK.
+*          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER
 *          The dimension of the array WORK. LWORK >= 1.
