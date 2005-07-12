@@ -92,7 +92,7 @@
 *
 *  LWORK   (input) INTEGER
 *          The dimension of the array WORK.
-*          LWORK >=  MAX( N*(N2+N1), (N2+N1)*(N2+N1)*2 )
+*          LWORK >=  MAX( 1, N*(N2+N1), (N2+N1)*(N2+N1)*2 )
 *
 *  INFO    (output) INTEGER
 *            =0: Successful exit
@@ -128,6 +128,8 @@
 *      Note 87. To appear in Numerical Algorithms, 1996.
 *
 *  =====================================================================
+*  Replaced various illegal calls to DCOPY by calls to DLASET, or by DO
+*  loops. Sven Hammarling, 1/5/02.
 *
 *     .. Parameters ..
       DOUBLE PRECISION   ZERO, ONE
@@ -158,8 +160,8 @@
       EXTERNAL           DLAMCH
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DCOPY, DGEMM, DGEQR2, DGERQ2, DLACPY, DLAGV2,
-     $                   DLARTG, DLASSQ, DORG2R, DORGR2, DORM2R, DORMR2,
+      EXTERNAL           DGEMM, DGEQR2, DGERQ2, DLACPY, DLAGV2, DLARTG,
+     $                   DLASET, DLASSQ, DORG2R, DORGR2, DORM2R, DORMR2,
      $                   DROT, DSCAL, DTGSY2
 *     ..
 *     .. Intrinsic Functions ..
@@ -176,9 +178,9 @@
       IF( N1.GT.N .OR. ( J1+N1 ).GT.N )
      $   RETURN
       M = N1 + N2
-      IF( LWORK.LT.MAX( N*M, M*M*2 ) ) THEN
+      IF( LWORK.LT.MAX( 1, N*M, M*M*2 ) ) THEN
          INFO = -16
-         WORK( 1 ) = MAX( N*M, M*M*2 )
+         WORK( 1 ) = MAX( 1, N*M, M*M*2 )
          RETURN
       END IF
 *
@@ -187,8 +189,8 @@
 *
 *     Make a local copy of selected block
 *
-      CALL DCOPY( LDST*LDST, ZERO, 0, LI, 1 )
-      CALL DCOPY( LDST*LDST, ZERO, 0, IR, 1 )
+      CALL DLASET( 'Full', LDST, LDST, ZERO, ZERO, LI, LDST )
+      CALL DLASET( 'Full', LDST, LDST, ZERO, ZERO, IR, LDST )
       CALL DLACPY( 'Full', M, M, A( J1, J1 ), LDA, S, LDST )
       CALL DLACPY( 'Full', M, M, B( J1, J1 ), LDB, T, LDST )
 *
@@ -432,9 +434,7 @@
 *
 *        Set lower triangle of B-part to zero
 *
-         DO 50 I = 2, M
-            CALL DCOPY( M-I+1, ZERO, 0, T( I, I-1 ), 1 )
-   50    CONTINUE
+         CALL DLASET( 'Lower', M-1, M-1, ZERO, ZERO, T(2,1), LDST )
 *
          IF( WANDS ) THEN
 *
@@ -468,19 +468,19 @@
 *        If the swap is accepted ("weakly" and "strongly"), apply the
 *        transformations and set N1-by-N2 (2,1)-block to zero.
 *
-         DO 60 I = 1, N2
-            CALL DCOPY( N1, ZERO, 0, S( N2+1, I ), 1 )
-   60    CONTINUE
+         CALL DLASET( 'Full', N1, N2, ZERO, ZERO, S(N2+1,1), LDST )
 *
 *        copy back M-by-M diagonal block starting at index J1 of (A, B)
 *
          CALL DLACPY( 'F', M, M, S, LDST, A( J1, J1 ), LDA )
          CALL DLACPY( 'F', M, M, T, LDST, B( J1, J1 ), LDB )
-         CALL DCOPY( LDST*LDST, ZERO, 0, T, 1 )
+         CALL DLASET( 'Full', LDST, LDST, ZERO, ZERO, T, LDST )
 *
 *        Standardize existing 2-by-2 blocks.
 *
-         CALL DCOPY( M*M, ZERO, 0, WORK, 1 )
+         DO 50 I = 1, M*M
+            WORK(I) = ZERO
+   50    CONTINUE
          WORK( 1 ) = ONE
          T( 1, 1 ) = ONE
          IDUM = LWORK - M*M - 2
@@ -519,7 +519,7 @@
          CALL DGEMM( 'N', 'N', N2, N1, N1, ONE, A( J1, J1+N2 ), LDA,
      $               T( N2+1, N2+1 ), LDST, ZERO, WORK, N2 )
          CALL DLACPY( 'Full', N2, N1, WORK, N2, A( J1, J1+N2 ), LDA )
-         CALL DGEMM( 'N', 'N', N2, N1, N1, ONE, B( J1, J1+N2 ), LDB,
+         CALL DGEMM( 'N', 'N', N2, N1, N1, ONE, B( J1, J1+N2 ), LDA,
      $               T( N2+1, N2+1 ), LDST, ZERO, WORK, N2 )
          CALL DLACPY( 'Full', N2, N1, WORK, N2, B( J1, J1+N2 ), LDB )
          CALL DGEMM( 'T', 'N', M, M, M, ONE, IR, LDST, T, LDST, ZERO,

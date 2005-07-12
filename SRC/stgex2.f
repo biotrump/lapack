@@ -128,6 +128,8 @@
 *      Note 87. To appear in Numerical Algorithms, 1996.
 *
 *  =====================================================================
+*  Replaced various illegal calls to SCOPY by calls to SLASET, or by DO
+*  loops. Sven Hammarling, 1/5/02.
 *
 *     .. Parameters ..
       REAL               ZERO, ONE
@@ -158,8 +160,8 @@
       EXTERNAL           SLAMCH
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SCOPY, SGEMM, SGEQR2, SGERQ2, SLACPY, SLAGV2,
-     $                   SLARTG, SLASSQ, SORG2R, SORGR2, SORM2R, SORMR2,
+      EXTERNAL           SGEMM, SGEQR2, SGERQ2, SLACPY, SLAGV2, SLARTG,
+     $                   SLASET, SLASSQ, SORG2R, SORGR2, SORM2R, SORMR2,
      $                   SROT, SSCAL, STGSY2
 *     ..
 *     .. Intrinsic Functions ..
@@ -187,8 +189,8 @@
 *
 *     Make a local copy of selected block
 *
-      CALL SCOPY( LDST*LDST, ZERO, 0, LI, 1 )
-      CALL SCOPY( LDST*LDST, ZERO, 0, IR, 1 )
+      CALL SLASET( 'Full', LDST, LDST, ZERO, ZERO, LI, LDST )
+      CALL SLASET( 'Full', LDST, LDST, ZERO, ZERO, IR, LDST )
       CALL SLACPY( 'Full', M, M, A( J1, J1 ), LDA, S, LDST )
       CALL SLACPY( 'Full', M, M, B( J1, J1 ), LDB, T, LDST )
 *
@@ -432,9 +434,7 @@
 *
 *        Set lower triangle of B-part to zero
 *
-         DO 50 I = 2, M
-            CALL SCOPY( M-I+1, ZERO, 0, T( I, I-1 ), 1 )
-   50    CONTINUE
+         CALL SLASET( 'Lower', M-1, M-1, ZERO, ZERO, T(2,1), LDST )
 *
          IF( WANDS ) THEN
 *
@@ -468,19 +468,19 @@
 *        If the swap is accepted ("weakly" and "strongly"), apply the
 *        transformations and set N1-by-N2 (2,1)-block to zero.
 *
-         DO 60 I = 1, N2
-            CALL SCOPY( N1, ZERO, 0, S( N2+1, I ), 1 )
-   60    CONTINUE
+         CALL SLASET( 'Full', N1, N2, ZERO, ZERO, S(N2+1,1), LDST )
 *
 *        copy back M-by-M diagonal block starting at index J1 of (A, B)
 *
          CALL SLACPY( 'F', M, M, S, LDST, A( J1, J1 ), LDA )
          CALL SLACPY( 'F', M, M, T, LDST, B( J1, J1 ), LDB )
-         CALL SCOPY( LDST*LDST, ZERO, 0, T, 1 )
+         CALL SLASET( 'Full', LDST, LDST, ZERO, ZERO, T, LDST )
 *
 *        Standardize existing 2-by-2 blocks.
 *
-         CALL SCOPY( M*M, ZERO, 0, WORK, 1 )
+         DO 50 I = 1, M*M
+            WORK(I) = ZERO
+   50    CONTINUE
          WORK( 1 ) = ONE
          T( 1, 1 ) = ONE
          IDUM = LWORK - M*M - 2
