@@ -106,7 +106,7 @@
       EXTERNAL           LSAME, DLAMCH, ZLANGE, ZDOTC, ZDOTU, ZLADIV
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           XERBLA, ZDSCAL
+      EXTERNAL           DLABAD, XERBLA, ZDSCAL
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, DBLE, DCMPLX, DCONJG, DIMAG, MAX, MIN
