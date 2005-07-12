@@ -115,7 +115,7 @@
       EXTERNAL           SORMQR, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          MAX
+      INTRINSIC          MAX, MIN
 *     ..
 *     .. Executable Statements ..
 *
