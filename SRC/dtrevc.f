@@ -917,7 +917,6 @@
 *
 *              Copy the vector x or Q*x to VL and normalize.
 *
-  210          CONTINUE
                IF( .NOT.OVER ) THEN
                   CALL DCOPY( N-KI+1, WORK( KI+N ), 1, VL( KI, IS ), 1 )
                   CALL DCOPY( N-KI+1, WORK( KI+N2 ), 1, VL( KI, IS+1 ),
