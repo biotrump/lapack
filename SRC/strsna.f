@@ -5,7 +5,7 @@
 *  -- LAPACK routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     October 26, 2001
+*     September 30, 1994
 *
 *     .. Scalar Arguments ..
       CHARACTER          HOWMNY, JOB
@@ -125,7 +125,7 @@
 *          The leading dimension of the array WORK.
 *          LDWORK >= 1; and if JOB = 'V' or 'B', LDWORK >= N.
 *
-*  IWORK   (workspace) INTEGER array, dimension (2*(N-1))
+*  IWORK   (workspace) INTEGER array, dimension (N)
 *          If JOB = 'E', IWORK is not referenced.
 *
 *  INFO    (output) INTEGER
