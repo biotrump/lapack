@@ -93,9 +93,6 @@
 *     Test the input arguments
 *
       INFO = 0
-      NB = ILAENV( 1, 'SORGQL', ' ', M, N, K, -1 )
-      LWKOPT = MAX( 1, N )*NB
-      WORK( 1 ) = LWKOPT
       LQUERY = ( LWORK.EQ.-1 )
       IF( M.LT.0 ) THEN
          INFO = -1
@@ -105,9 +102,22 @@
          INFO = -3
       ELSE IF( LDA.LT.MAX( 1, M ) ) THEN
          INFO = -5
-      ELSE IF( LWORK.LT.MAX( 1, N ) .AND. .NOT.LQUERY ) THEN
-         INFO = -8
       END IF
+*
+      IF( INFO.EQ.0 ) THEN
+         IF( N.EQ.0 ) THEN
+            LWKOPT = 1
+         ELSE
+            NB = ILAENV( 1, 'SORGQL', ' ', M, N, K, -1 )
+            LWKOPT = N*NB
+         END IF
+         WORK( 1 ) = LWKOPT
+*
+         IF( LWORK.LT.MAX( 1, N ) .AND. .NOT.LQUERY ) THEN
+            INFO = -8
+         END IF
+      END IF
+*
       IF( INFO.NE.0 ) THEN
          CALL XERBLA( 'SORGQL', -INFO )
          RETURN
@@ -118,7 +128,6 @@
 *     Quick return if possible
 *
       IF( N.LE.0 ) THEN
-         WORK( 1 ) = 1
          RETURN
       END IF
 *
