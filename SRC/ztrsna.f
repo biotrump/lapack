@@ -5,7 +5,7 @@
 *  -- LAPACK routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     October 26, 2001
+*     September 30, 1994
 *
 *     .. Scalar Arguments ..
       CHARACTER          HOWMNY, JOB
@@ -102,7 +102,7 @@
 *          used to store the estimated condition numbers.
 *          If HOWMNY = 'A', M is set to N.
 *
-*  WORK    (workspace) COMPLEX*16 array, dimension (LDWORK,N+6)
+*  WORK    (workspace) COMPLEX*16 array, dimension (LDWORK,N+1)
 *          If JOB = 'E', WORK is not referenced.
 *
 *  LDWORK  (input) INTEGER
@@ -181,7 +181,8 @@
       EXTERNAL           LSAME, IZAMAX, DLAMCH, DZNRM2, ZDOTC
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           XERBLA, ZDRSCL, ZLACON, ZLACPY, ZLATRS, ZTREXC
+      EXTERNAL           DLABAD, XERBLA, ZDRSCL, ZLACON, ZLACPY, ZLATRS,
+     $                   ZTREXC
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, DBLE, DIMAG, MAX
