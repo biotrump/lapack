@@ -5,7 +5,7 @@
 *  -- LAPACK routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     October 26, 2001 
+*     September 30, 1994
 *
 *     .. Scalar Arguments ..
       CHARACTER          HOWMNY, JOB
@@ -102,7 +102,7 @@
 *          used to store the estimated condition numbers.
 *          If HOWMNY = 'A', M is set to N.
 *
-*  WORK    (workspace) COMPLEX array, dimension (LDWORK,N+6)
+*  WORK    (workspace) COMPLEX array, dimension (LDWORK,N+1)
 *          If JOB = 'E', WORK is not referenced.
 *
 *  LDWORK  (input) INTEGER
