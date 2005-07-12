@@ -82,7 +82,7 @@
       EXTERNAL           ILAENV
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          MAX
+      INTRINSIC          MAX, MIN
 *     ..
 *     .. Executable Statements ..
 *
