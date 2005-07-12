@@ -136,10 +136,10 @@
 *
       IF( LEFT ) THEN
          NQ = M
-         NW = N
+         NW = MAX( 1, N )
       ELSE
          NQ = N
-         NW = M
+         NW = MAX( 1, M )
       END IF
       IF( .NOT.LEFT .AND. .NOT.LSAME( SIDE, 'R' ) ) THEN
          INFO = -1
@@ -155,19 +155,25 @@
          INFO = -7
       ELSE IF( LDC.LT.MAX( 1, M ) ) THEN
          INFO = -10
-      ELSE IF( LWORK.LT.MAX( 1, NW ) .AND. .NOT.LQUERY ) THEN
-         INFO = -12
       END IF
 *
       IF( INFO.EQ.0 ) THEN
+         IF( M.EQ.0 .OR. N.EQ.0 ) THEN
+            LWKOPT = 1
+         ELSE
 *
-*        Determine the block size.  NB may be at most NBMAX, where NBMAX
-*        is used to define the local array T.
+*           Determine the block size.  NB may be at most NBMAX, where
+*           NBMAX is used to define the local array T.
 *
-         NB = MIN( NBMAX, ILAENV( 1, 'CUNMRQ', SIDE // TRANS, M, N, K,
-     $        -1 ) )
-         LWKOPT = MAX( 1, NW )*NB
+            NB = MIN( NBMAX, ILAENV( 1, 'CUNMRQ', SIDE // TRANS, M, N,
+     $                               K, -1 ) )
+            LWKOPT = NW*NB
+         END IF
          WORK( 1 ) = LWKOPT
+*
+         IF( LWORK.LT.NW .AND. .NOT.LQUERY ) THEN
+            INFO = -12
+         END IF
       END IF
 *
       IF( INFO.NE.0 ) THEN
@@ -179,8 +185,7 @@
 *
 *     Quick return if possible
 *
-      IF( M.EQ.0 .OR. N.EQ.0 .OR. K.EQ.0 ) THEN
-         WORK( 1 ) = 1
+      IF( M.EQ.0 .OR. N.EQ.0 ) THEN
          RETURN
       END IF
 *
