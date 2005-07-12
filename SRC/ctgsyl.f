@@ -148,11 +148,11 @@
 *          hold the solutions to the homogenious system with C = F = 0.
 *
 *  WORK    (workspace/output) COMPLEX array, dimension (LWORK)
-*          IF IJOB = 0, WORK is not referenced.  Otherwise,
+*          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER
 *          The dimension of the array WORK. LWORK > = 1.
-*          If IJOB = 1 or 2 and TRANS = 'N', LWORK >= 2*M*N.
+*          If IJOB = 1 or 2 and TRANS = 'N', LWORK >= max(1,2*M*N).
 *
 *          If LWORK = -1, then a workspace query is assumed; the routine
 *          only calculates the optimal size of the WORK array, returns
@@ -193,10 +193,14 @@
 *      July 1989, pp 745-751.
 *
 *  =====================================================================
+*  Replaced various illegal calls to CCOPY by calls to CLASET.
+*  Sven Hammarling, 1/5/02.
 *
 *     .. Parameters ..
       REAL               ZERO, ONE
       PARAMETER          ( ZERO = 0.0E+0, ONE = 1.0E+0 )
+      COMPLEX            CZERO
+      PARAMETER          ( CZERO = (0.0E+0, 0.0E+0) )
 *     ..
 *     .. Local Scalars ..
       LOGICAL            LQUERY, NOTRAN
@@ -210,7 +214,7 @@
       EXTERNAL           LSAME, ILAENV
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CCOPY, CGEMM, CLACPY, CSCAL, CTGSY2, XERBLA
+      EXTERNAL           CGEMM, CLACPY, CLASET, CSCAL, CTGSY2, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          CMPLX, MAX, REAL, SQRT
@@ -222,12 +226,6 @@
       INFO = 0
       NOTRAN = LSAME( TRANS, 'N' )
       LQUERY = ( LWORK.EQ.-1 )
-*
-      IF( ( IJOB.EQ.1 .OR. IJOB.EQ.2 ) .AND. NOTRAN ) THEN
-         LWMIN = MAX( 1, 2*M*N )
-      ELSE
-         LWMIN = 1
-      END IF
 *
       IF( .NOT.NOTRAN .AND. .NOT.LSAME( TRANS, 'C' ) ) THEN
          INFO = -1
@@ -249,18 +247,35 @@
          INFO = -14
       ELSE IF( LDF.LT.MAX( 1, M ) ) THEN
          INFO = -16
-      ELSE IF( LWORK.LT.LWMIN .AND. .NOT.LQUERY ) THEN
-         INFO = -20
       END IF
 *
       IF( INFO.EQ.0 ) THEN
+         IF( ( IJOB.EQ.1 .OR. IJOB.EQ.2 ) .AND. NOTRAN ) THEN
+            LWMIN = MAX( 1, 2*M*N )
+         ELSE
+            LWMIN = 1
+         END IF
          WORK( 1 ) = LWMIN
+*
+         IF( LWORK.LT.LWMIN .AND. .NOT.LQUERY ) THEN
+            INFO = -20
+         END IF
       END IF
 *
       IF( INFO.NE.0 ) THEN
          CALL XERBLA( 'CTGSYL', -INFO )
          RETURN
       ELSE IF( LQUERY ) THEN
+         RETURN
+      END IF
+*
+*     Quick return if possible
+*
+      IF( M.EQ.0 .OR. N.EQ.0 ) THEN
+         SCALE = 1
+         IF( IJOB.NE.0 .AND. NOTRAN ) THEN
+            DIF = 0
+         END IF
          RETURN
       END IF
 *
@@ -273,10 +288,8 @@
       IFUNC = 0
       IF( IJOB.GE.3 .AND. NOTRAN ) THEN
          IFUNC = IJOB - 2
-         DO 10 J = 1, N
-            CALL CCOPY( M, CMPLX( ZERO, ZERO ), 0, C( 1, J ), 1 )
-            CALL CCOPY( M, CMPLX( ZERO, ZERO ), 0, F( 1, J ), 1 )
-   10    CONTINUE
+         CALL CLASET( 'F', M, N, CZERO, CZERO, C, LDC )
+         CALL CLASET( 'F', M, N, CZERO, CZERO, F, LDF )
       ELSE IF( IJOB.GE.1 .AND. NOTRAN ) THEN
          ISOLVE = 2
       END IF
@@ -307,10 +320,8 @@
                SCALE2 = SCALE
                CALL CLACPY( 'F', M, N, C, LDC, WORK, M )
                CALL CLACPY( 'F', M, N, F, LDF, WORK( M*N+1 ), M )
-               DO 20 J = 1, N
-                  CALL CCOPY( M, CMPLX( ZERO, ZERO ), 0, C( 1, J ), 1 )
-                  CALL CCOPY( M, CMPLX( ZERO, ZERO ), 0, F( 1, J ), 1 )
-   20          CONTINUE
+               CALL CLASET( 'F', M, N, CZERO, CZERO, C, LDC )
+               CALL CLASET( 'F', M, N, CZERO, CZERO, F, LDF )
             ELSE IF( ISOLVE.EQ.2 .AND. IROUND.EQ.2 ) THEN
                CALL CLACPY( 'F', M, N, WORK, M, C, LDC )
                CALL CLACPY( 'F', M, N, WORK( M*N+1 ), M, F, LDF )
@@ -452,10 +463,8 @@
                SCALE2 = SCALE
                CALL CLACPY( 'F', M, N, C, LDC, WORK, M )
                CALL CLACPY( 'F', M, N, F, LDF, WORK( M*N+1 ), M )
-               DO 140 J = 1, N
-                  CALL CCOPY( M, CMPLX( ZERO, ZERO ), 0, C( 1, J ), 1 )
-                  CALL CCOPY( M, CMPLX( ZERO, ZERO ), 0, F( 1, J ), 1 )
-  140          CONTINUE
+               CALL CLASET( 'F', M, N, CZERO, CZERO, C, LDC )
+               CALL CLASET( 'F', M, N, CZERO, CZERO, F, LDF )
             ELSE IF( ISOLVE.EQ.2 .AND. IROUND.EQ.2 ) THEN
                CALL CLACPY( 'F', M, N, WORK, M, C, LDC )
                CALL CLACPY( 'F', M, N, WORK( M*N+1 ), M, F, LDF )
