@@ -4,7 +4,7 @@
 *  -- LAPACK routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     January 3, 2001
+*     June 30, 1999
 *
 *     .. Scalar Arguments ..
       CHARACTER          COMPQ, JOB
@@ -116,15 +116,16 @@
 *          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER
-*          The dimension of the array WORK.
+*          The dimension of the array WORK. LWORK >= 1.
 *          If JOB = 'N', LWORK >= max(1,N);
 *          if JOB = 'E', LWORK >= max(1,M*(N-M));
 *          if JOB = 'V' or 'B', LWORK >= max(1,2*M*(N-M)).
 *
 *          If LWORK = -1, then a workspace query is assumed; the routine
-*          only calculates the optimal size of the WORK array, returns
-*          this value as the first entry of the WORK array, and no error
-*          message related to LWORK is issued by XERBLA.
+*          only calculates the optimal sizes of the WORK and IWORK
+*          arrays, returns these values as the first entries of the WORK
+*          and IWORK arrays, and no error message related to LWORK or
+*          LIWORK is issued by XERBLA.
 *
 *  IWORK   (workspace) INTEGER array, dimension (LIWORK)
 *          On exit, if INFO = 0, IWORK(1) returns the optimal LIWORK.
@@ -135,9 +136,10 @@
 *          if JOB = 'V' or 'B', LIWORK >= max(1,M*(N-M)).
 *
 *          If LIWORK = -1, then a workspace query is assumed; the
-*          routine only calculates the optimal size of the IWORK array,
-*          returns this value as the first entry of the IWORK array, and
-*          no error message related to LIWORK is issued by XERBLA.
+*          routine only calculates the optimal sizes of the WORK and
+*          IWORK arrays, returns these values as the first entries of
+*          the WORK and IWORK arrays, and no error message related to
+*          LWORK or LIWORK is issued by XERBLA.
 *
 *  INFO    (output) INTEGER
 *          = 0: successful exit
@@ -297,27 +299,27 @@
          N2 = N - M
          NN = N1*N2
 *
-         IF( WANTSP ) THEN
+         IF( N.EQ.0 ) THEN
+            LWMIN = 1
+            LIWMIN = 1
+         ELSE IF( WANTSP ) THEN
             LWMIN = MAX( 1, 2*NN )
             LIWMIN = MAX( 1, NN )
          ELSE IF( LSAME( JOB, 'N' ) ) THEN
-            LWMIN = MAX( 1, N )
+            LWMIN = N
             LIWMIN = 1
          ELSE IF( LSAME( JOB, 'E' ) ) THEN
             LWMIN = MAX( 1, NN )
             LIWMIN = 1
          END IF
+         WORK( 1 ) = LWMIN
+         IWORK( 1 ) = LIWMIN
 *
          IF( LWORK.LT.LWMIN .AND. .NOT.LQUERY ) THEN
             INFO = -15
          ELSE IF( LIWORK.LT.LIWMIN .AND. .NOT.LQUERY ) THEN
             INFO = -17
          END IF
-      END IF
-*
-      IF( INFO.EQ.0 ) THEN
-         WORK( 1 ) = LWMIN
-         IWORK( 1 ) = LIWMIN
       END IF
 *
       IF( INFO.NE.0 ) THEN
