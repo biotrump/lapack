@@ -71,6 +71,9 @@
 *     Ren-Cang Li, Computer Science Division, University of California
 *     at Berkeley, USA
 *
+*  This version has a few statements commented out for thread safety
+*  (machine parameters are computed on each entry). 10 feb 03, SJH.
+*
 *  =====================================================================
 *
 *     .. Parameters ..
@@ -88,24 +91,39 @@
       DOUBLE PRECISION   DSCALE( 3 ), ZSCALE( 3 )
 *     ..
 *     .. Local Scalars ..
-      LOGICAL            FIRST, SCALE
+*     LOGICAL            FIRST
+      LOGICAL            SCALE
       INTEGER            I, ITER, NITER
       DOUBLE PRECISION   A, B, BASE, C, DDF, DF, EPS, ERRETM, ETA, F,
      $                   FC, SCLFAC, SCLINV, SMALL1, SMALL2, SMINV1,
      $                   SMINV2, TEMP, TEMP1, TEMP2, TEMP3, TEMP4
 *     ..
 *     .. Save statement ..
-      SAVE               FIRST, SMALL1, SMINV1, SMALL2, SMINV2, EPS
+*     SAVE               FIRST, SMALL1, SMINV1, SMALL2, SMINV2, EPS
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, INT, LOG, MAX, MIN, SQRT
 *     ..
 *     .. Data statements ..
-      DATA               FIRST / .TRUE. /
+*     DATA               FIRST / .TRUE. /
 *     ..
 *     .. Executable Statements ..
 *
       INFO = 0
+*
+*     On first call to routine, get machine parameters for
+*     possible scaling to avoid overflow
+*
+*     IF( FIRST ) THEN
+         EPS = DLAMCH( 'Epsilon' )
+         BASE = DLAMCH( 'Base' )
+         SMALL1 = BASE**( INT( LOG( DLAMCH( 'SafMin' ) ) / LOG( BASE ) /
+     $            THREE ) )
+         SMINV1 = ONE / SMALL1
+         SMALL2 = SMALL1*SMALL1
+         SMINV2 = SMINV1*SMINV1
+*        FIRST = .FALSE.
+*     END IF
 *
       NITER = 1
       TAU = ZERO
@@ -136,20 +154,6 @@
      $          Z( 2 ) / ( D( 2 )-TAU ) + Z( 3 ) / ( D( 3 )-TAU )
          IF( ABS( FINIT ).LE.ABS( TEMP ) )
      $      TAU = ZERO
-      END IF
-*
-*     On first call to routine, get machine parameters for
-*     possible scaling to avoid overflow
-*
-      IF( FIRST ) THEN
-         EPS = DLAMCH( 'Epsilon' )
-         BASE = DLAMCH( 'Base' )
-         SMALL1 = BASE**( INT( LOG( DLAMCH( 'SafMin' ) ) / LOG( BASE ) /
-     $            THREE ) )
-         SMINV1 = ONE / SMALL1
-         SMALL2 = SMALL1*SMALL1
-         SMINV2 = SMINV1*SMINV1
-         FIRST = .FALSE.
       END IF
 *
 *     Determine if scaling of inputs necessary to avoid overflow
