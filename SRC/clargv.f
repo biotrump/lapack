@@ -61,6 +61,9 @@
 *
 *  6-6-96 - Modified with a new algorithm by W. Kahan and J. Demmel
 *
+*  This version has a few statements commented out for thread safety
+*  (machine parameters are computed on each entry). 10 feb 03, SJH.
+*
 *  =====================================================================
 *
 *     .. Parameters ..
@@ -70,7 +73,7 @@
       PARAMETER          ( CZERO = ( 0.0E+0, 0.0E+0 ) )
 *     ..
 *     .. Local Scalars ..
-      LOGICAL            FIRST
+*     LOGICAL            FIRST
       INTEGER            COUNT, I, IC, IX, IY, J
       REAL               CS, D, DI, DR, EPS, F2, F2S, G2, G2S, SAFMIN,
      $                   SAFMN2, SAFMX2, SCALE
@@ -88,10 +91,10 @@
       REAL               ABS1, ABSSQ
 *     ..
 *     .. Save statement ..
-      SAVE               FIRST, SAFMX2, SAFMIN, SAFMN2
+*     SAVE               FIRST, SAFMX2, SAFMIN, SAFMN2
 *     ..
 *     .. Data statements ..
-      DATA               FIRST / .TRUE. /
+*     DATA               FIRST / .TRUE. /
 *     ..
 *     .. Statement Function definitions ..
       ABS1( FF ) = MAX( ABS( REAL( FF ) ), ABS( AIMAG( FF ) ) )
@@ -99,14 +102,14 @@
 *     ..
 *     .. Executable Statements ..
 *
-      IF( FIRST ) THEN
-         FIRST = .FALSE.
+*     IF( FIRST ) THEN
+*        FIRST = .FALSE.
          SAFMIN = SLAMCH( 'S' )
          EPS = SLAMCH( 'E' )
          SAFMN2 = SLAMCH( 'B' )**INT( LOG( SAFMIN / EPS ) /
      $            LOG( SLAMCH( 'B' ) ) / TWO )
          SAFMX2 = ONE / SAFMN2
-      END IF
+*     END IF
       IX = 1
       IY = 1
       IC = 1
