@@ -7,6 +7,8 @@
 *     Courant Institute, Argonne National Lab, and Rice University
 *     September 30, 1994
 *
+*     Modified to call DLACN2 in place of DLACON, 5 Feb 03, SJH.
+*
 *     .. Scalar Arguments ..
       CHARACTER          TRANS
       INTEGER            INFO, LDB, LDX, N, NRHS
@@ -129,8 +131,11 @@
       INTEGER            COUNT, I, J, KASE, NZ
       DOUBLE PRECISION   EPS, LSTRES, S, SAFE1, SAFE2, SAFMIN
 *     ..
+*     .. Local Arrays ..
+      INTEGER            ISAVE( 3 )
+*     ..
 *     .. External Subroutines ..
-      EXTERNAL           DAXPY, DCOPY, DGTTRS, DLACON, DLAGTM, XERBLA
+      EXTERNAL           DAXPY, DCOPY, DGTTRS, DLACN2, DLAGTM, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, MAX
@@ -300,7 +305,7 @@
 *        is incremented by SAFE1 if the i-th component of
 *        abs(op(A))*abs(X) + abs(B) is less than SAFE2.
 *
-*        Use DLACON to estimate the infinity-norm of the matrix
+*        Use DLACN2 to estimate the infinity-norm of the matrix
 *           inv(op(A)) * diag(W),
 *        where W = abs(R) + NZ*EPS*( abs(op(A))*abs(X)+abs(B) )))
 *
@@ -314,8 +319,8 @@
 *
          KASE = 0
    70    CONTINUE
-         CALL DLACON( N, WORK( 2*N+1 ), WORK( N+1 ), IWORK, FERR( J ),
-     $                KASE )
+         CALL DLACN2( N, WORK( 2*N+1 ), WORK( N+1 ), IWORK, FERR( J ),
+     $                KASE, ISAVE )
          IF( KASE.NE.0 ) THEN
             IF( KASE.EQ.1 ) THEN
 *

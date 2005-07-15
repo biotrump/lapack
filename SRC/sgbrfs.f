@@ -7,6 +7,8 @@
 *     Courant Institute, Argonne National Lab, and Rice University
 *     September 30, 1994
 *
+*     Modified to call SLACN2 in place of SLACON, 7 Feb 03, SJH.
+*
 *     .. Scalar Arguments ..
       CHARACTER          TRANS
       INTEGER            INFO, KL, KU, LDAB, LDAFB, LDB, LDX, N, NRHS
@@ -130,8 +132,11 @@
       INTEGER            COUNT, I, J, K, KASE, KK, NZ
       REAL               EPS, LSTRES, S, SAFE1, SAFE2, SAFMIN, XK
 *     ..
+*     .. Local Arrays ..
+      INTEGER            ISAVE( 3 )
+*     ..
 *     .. External Subroutines ..
-      EXTERNAL           SAXPY, SCOPY, SGBMV, SGBTRS, SLACON, XERBLA
+      EXTERNAL           SAXPY, SCOPY, SGBMV, SGBTRS, SLACN2, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, MAX, MIN
@@ -294,7 +299,7 @@
 *        is incremented by SAFE1 if the i-th component of
 *        abs(op(A))*abs(X) + abs(B) is less than SAFE2.
 *
-*        Use SLACON to estimate the infinity-norm of the matrix
+*        Use SLACN2 to estimate the infinity-norm of the matrix
 *           inv(op(A)) * diag(W),
 *        where W = abs(R) + NZ*EPS*( abs(op(A))*abs(X)+abs(B) )))
 *
@@ -308,8 +313,8 @@
 *
          KASE = 0
   100    CONTINUE
-         CALL SLACON( N, WORK( 2*N+1 ), WORK( N+1 ), IWORK, FERR( J ),
-     $                KASE )
+         CALL SLACN2( N, WORK( 2*N+1 ), WORK( N+1 ), IWORK, FERR( J ),
+     $                KASE, ISAVE )
          IF( KASE.NE.0 ) THEN
             IF( KASE.EQ.1 ) THEN
 *

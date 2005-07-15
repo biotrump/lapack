@@ -7,6 +7,8 @@
 *     Courant Institute, Argonne National Lab, and Rice University
 *     June 30, 1999
 *
+*     Modified to call SLACN2 in place of SLACON, 7 Feb 03, SJH.
+*
 *     .. Scalar Arguments ..
       LOGICAL            WANTQ, WANTZ
       INTEGER            IJOB, INFO, LDA, LDB, LDQ, LDZ, LIWORK, LWORK,
@@ -162,22 +164,22 @@
 *          If IJOB = 0 or 1, DIF is not referenced.
 *
 *  WORK    (workspace/output) REAL array, dimension (LWORK)
-*          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
+*          IF IJOB = 0, WORK is not referenced.  Otherwise,
+*          on exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER
-*          The dimension of the array WORK.
-*          IF N = 0, LWORK >= 1, else LWORK >=  4*N+16.
+*          The dimension of the array WORK. LWORK >=  4*N+16.
 *          If IJOB = 1, 2 or 4, LWORK >= MAX(4*N+16, 2*M*(N-M)).
 *          If IJOB = 3 or 5, LWORK >= MAX(4*N+16, 4*M*(N-M)).
 *
 *          If LWORK = -1, then a workspace query is assumed; the routine
-*          only calculates the optimal sizes of the WORK and IWORK
-*          arrays, returns these values as the first entries of the WORK
-*          and IWORK arrays, and no error message related to LWORK or
-*          LIWORK is issued by XERBLA.
+*          only calculates the optimal size of the WORK array, returns
+*          this value as the first entry of the WORK array, and no error
+*          message related to LWORK is issued by XERBLA.
 *
 *  IWORK   (workspace/output) INTEGER array, dimension (LIWORK)
-*          On exit, if INFO = 0, IWORK(1) returns the optimal LIWORK.
+*          IF IJOB = 0, IWORK is not referenced.  Otherwise,
+*          on exit, if INFO = 0, IWORK(1) returns the optimal LIWORK.
 *
 *  LIWORK  (input) INTEGER
 *          The dimension of the array IWORK. LIWORK >= 1.
@@ -185,10 +187,9 @@
 *          If IJOB = 3 or 5, LIWORK >= MAX(2*M*(N-M), N+6).
 *
 *          If LIWORK = -1, then a workspace query is assumed; the
-*          routine only calculates the optimal sizes of the WORK and
-*          IWORK arrays, returns these values as the first entries of
-*          the WORK and IWORK arrays, and no error message related to
-*          LWORK or LIWORK is issued by XERBLA.
+*          routine only calculates the optimal size of the IWORK array,
+*          returns this value as the first entry of the IWORK array, and
+*          no error message related to LIWORK is issued by XERBLA.
 *
 *  INFO    (output) INTEGER
 *            =0: Successful exit.
@@ -344,8 +345,11 @@
      $                   MN2, N1, N2
       REAL               DSCALE, DSUM, EPS, RDSCAL, SMLNUM
 *     ..
+*     .. Local Arrays ..
+      INTEGER            ISAVE( 3 )
+*     ..
 *     .. External Subroutines ..
-      EXTERNAL           SLACON, SLACPY, SLAG2, SLASSQ, STGEXC, STGSYL,
+      EXTERNAL           SLACN2, SLACPY, SLAG2, SLASSQ, STGEXC, STGSYL,
      $                   XERBLA
 *     ..
 *     .. External Functions ..
@@ -417,17 +421,14 @@
          END IF
    10 CONTINUE
 *
-      IF( N.EQ.0 )THEN
-         LWMIN = 1
-         LIWMIN = 1
-      ELSE IF( IJOB.EQ.1 .OR. IJOB.EQ.2 .OR. IJOB.EQ.4 ) THEN
-         LWMIN = MAX( 4*N + 16, 2*M*( N - M ) )
-         LIWMIN = N + 6
+      IF( IJOB.EQ.1 .OR. IJOB.EQ.2 .OR. IJOB.EQ.4 ) THEN
+         LWMIN = MAX( 1, 4*N+16, 2*M*(N-M) )
+         LIWMIN = MAX( 1, N+6 )
       ELSE IF( IJOB.EQ.3 .OR. IJOB.EQ.5 ) THEN
-         LWMIN = MAX( 4*N + 16, 4*M*( N - M ) )
-         LIWMIN = MAX( 2*M*( N - M ), N + 6 )
+         LWMIN = MAX( 1, 4*N+16, 4*M*(N-M) )
+         LIWMIN = MAX( 1, 2*M*(N-M), N+6 )
       ELSE
-         LWMIN = 4*N + 16
+         LWMIN = MAX( 1, 4*N+16 )
          LIWMIN = 1
       END IF
 *
@@ -585,7 +586,7 @@
 *
 *
 *           Compute 1-norm-based estimates of Difu and Difl using
-*           reversed communication with SLACON. In each step a
+*           reversed communication with SLACN2. In each step a
 *           generalized Sylvester equation or a transposed variant
 *           is solved.
 *
@@ -599,8 +600,8 @@
 *           1-norm-based estimate of Difu.
 *
    40       CONTINUE
-            CALL SLACON( MN2, WORK( MN2+1 ), WORK, IWORK, DIF( 1 ),
-     $                   KASE )
+            CALL SLACN2( MN2, WORK( MN2+1 ), WORK, IWORK, DIF( 1 ),
+     $                   KASE, ISAVE )
             IF( KASE.NE.0 ) THEN
                IF( KASE.EQ.1 ) THEN
 *
@@ -628,8 +629,8 @@
 *           1-norm-based estimate of Difl.
 *
    50       CONTINUE
-            CALL SLACON( MN2, WORK( MN2+1 ), WORK, IWORK, DIF( 2 ),
-     $                   KASE )
+            CALL SLACN2( MN2, WORK( MN2+1 ), WORK, IWORK, DIF( 2 ),
+     $                   KASE, ISAVE )
             IF( KASE.NE.0 ) THEN
                IF( KASE.EQ.1 ) THEN
 *
@@ -663,7 +664,7 @@
 *     normalize the generalized Schur form.
 *
       PAIR = .FALSE.
-      DO 80 K = 1, N
+      DO 70 K = 1, N
          IF( PAIR ) THEN
             PAIR = .FALSE.
          ELSE
@@ -697,15 +698,11 @@
 *
 *                 If B(K,K) is negative, make it positive
 *
-                  DO 70 I = 1, N
+                  DO 80 I = 1, N
                      A( K, I ) = -A( K, I )
                      B( K, I ) = -B( K, I )
-   70             CONTINUE
-                  IF( WANTQ ) THEN
-                     DO 75 I = 1, N
-                        Q( I, K ) = -Q( I, K )
-   75                CONTINUE
-                  END IF
+                     Q( I, K ) = -Q( I, K )
+   80             CONTINUE
                END IF
 *
                ALPHAR( K ) = A( K, K )
@@ -714,7 +711,7 @@
 *
             END IF
          END IF
-   80 CONTINUE
+   70 CONTINUE
 *
       WORK( 1 ) = LWMIN
       IWORK( 1 ) = LIWMIN

@@ -6,6 +6,8 @@
 *     Courant Institute, Argonne National Lab, and Rice University
 *     March 31, 1993
 *
+*     Modified to call ZLACN2 in place of ZLACON, 10 Feb 03, SJH.
+*
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
       INTEGER            INFO, LDA, N
@@ -72,6 +74,9 @@
       DOUBLE PRECISION   AINVNM, SCALE, SCALEL, SCALEU, SMLNUM
       COMPLEX*16         ZDUM
 *     ..
+*     .. Local Arrays ..
+      INTEGER            ISAVE( 3 )
+*     ..
 *     .. External Functions ..
       LOGICAL            LSAME
       INTEGER            IZAMAX
@@ -79,7 +84,7 @@
       EXTERNAL           LSAME, IZAMAX, DLAMCH
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           XERBLA, ZDRSCL, ZLACON, ZLATRS
+      EXTERNAL           XERBLA, ZDRSCL, ZLACN2, ZLATRS
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, DBLE, DIMAG, MAX
@@ -127,7 +132,7 @@
       KASE = 0
       NORMIN = 'N'
    10 CONTINUE
-      CALL ZLACON( N, WORK( N+1 ), WORK, AINVNM, KASE )
+      CALL ZLACN2( N, WORK( N+1 ), WORK, AINVNM, KASE, ISAVE )
       IF( KASE.NE.0 ) THEN
          IF( UPPER ) THEN
 *

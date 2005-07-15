@@ -5,7 +5,9 @@
 *  -- LAPACK routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     September 30, 1994
+*     October 26, 2001 
+*
+*     Modified to call CLACN2 in place of CLACON, 10 Feb 03, SJH.
 *
 *     .. Scalar Arguments ..
       CHARACTER          HOWMNY, JOB
@@ -102,7 +104,7 @@
 *          used to store the estimated condition numbers.
 *          If HOWMNY = 'A', M is set to N.
 *
-*  WORK    (workspace) COMPLEX array, dimension (LDWORK,N+1)
+*  WORK    (workspace) COMPLEX array, dimension (LDWORK,N+6)
 *          If JOB = 'E', WORK is not referenced.
 *
 *  LDWORK  (input) INTEGER
@@ -171,6 +173,7 @@
       COMPLEX            CDUM, PROD
 *     ..
 *     .. Local Arrays ..
+      INTEGER            ISAVE( 3 )
       COMPLEX            DUMMY( 1 )
 *     ..
 *     .. External Functions ..
@@ -181,7 +184,7 @@
       EXTERNAL           LSAME, ICAMAX, SCNRM2, SLAMCH, CDOTC
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CLACON, CLACPY, CLATRS, CSRSCL, CTREXC, SLABAD,
+      EXTERNAL           CLACN2, CLACPY, CLATRS, CSRSCL, CTREXC, SLABAD,
      $                   XERBLA
 *     ..
 *     .. Intrinsic Functions ..
@@ -308,7 +311,7 @@
             KASE = 0
             NORMIN = 'N'
    30       CONTINUE
-            CALL CLACON( N-1, WORK( 1, N+1 ), WORK, EST, KASE )
+            CALL CLACN2( N-1, WORK( 1, N+1 ), WORK, EST, KASE, ISAVE )
 *
             IF( KASE.NE.0 ) THEN
                IF( KASE.EQ.1 ) THEN

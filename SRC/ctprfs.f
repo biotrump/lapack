@@ -6,6 +6,8 @@
 *     Courant Institute, Argonne National Lab, and Rice University
 *     September 30, 1994
 *
+*     Modified to call CLACN2 in place of CLACON, 10 Feb 03, SJH.
+*
 *     .. Scalar Arguments ..
       CHARACTER          DIAG, TRANS, UPLO
       INTEGER            INFO, LDB, LDX, N, NRHS
@@ -109,8 +111,11 @@
       REAL               EPS, LSTRES, S, SAFE1, SAFE2, SAFMIN, XK
       COMPLEX            ZDUM
 *     ..
+*     .. Local Arrays ..
+      INTEGER            ISAVE( 3 )
+*     ..
 *     .. External Subroutines ..
-      EXTERNAL           CAXPY, CCOPY, CLACON, CTPMV, CTPSV, XERBLA
+      EXTERNAL           CAXPY, CCOPY, CLACN2, CTPMV, CTPSV, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, AIMAG, MAX, REAL
@@ -332,7 +337,7 @@
 *        is incremented by SAFE1 if the i-th component of
 *        abs(op(A))*abs(X) + abs(B) is less than SAFE2.
 *
-*        Use CLACON to estimate the infinity-norm of the matrix
+*        Use CLACN2 to estimate the infinity-norm of the matrix
 *           inv(op(A)) * diag(W),
 *        where W = abs(R) + NZ*EPS*( abs(op(A))*abs(X)+abs(B) )))
 *
@@ -347,7 +352,7 @@
 *
          KASE = 0
   210    CONTINUE
-         CALL CLACON( N, WORK( N+1 ), WORK, FERR( J ), KASE )
+         CALL CLACN2( N, WORK( N+1 ), WORK, FERR( J ), KASE, ISAVE )
          IF( KASE.NE.0 ) THEN
             IF( KASE.EQ.1 ) THEN
 *

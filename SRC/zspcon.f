@@ -5,6 +5,8 @@
 *     Courant Institute, Argonne National Lab, and Rice University
 *     March 31, 1993
 *
+*     Modified to call ZLACN2 in place of ZLACON, 10 Feb 03, SJH.
+*
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
       INTEGER            INFO, N
@@ -71,12 +73,15 @@
       INTEGER            I, IP, KASE
       DOUBLE PRECISION   AINVNM
 *     ..
+*     .. Local Arrays ..
+      INTEGER            ISAVE( 3 )
+*     ..
 *     .. External Functions ..
       LOGICAL            LSAME
       EXTERNAL           LSAME
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           XERBLA, ZLACON, ZSPTRS
+      EXTERNAL           XERBLA, ZLACN2, ZSPTRS
 *     ..
 *     .. Executable Statements ..
 *
@@ -134,7 +139,7 @@
 *
       KASE = 0
    30 CONTINUE
-      CALL ZLACON( N, WORK( N+1 ), WORK, AINVNM, KASE )
+      CALL ZLACN2( N, WORK( N+1 ), WORK, AINVNM, KASE, ISAVE )
       IF( KASE.NE.0 ) THEN
 *
 *        Multiply by inv(L*D*L') or inv(U*D*U').

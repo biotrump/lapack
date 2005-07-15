@@ -6,6 +6,8 @@
 *     Courant Institute, Argonne National Lab, and Rice University
 *     September 30, 1994 
 *
+*     Modified to call SLACN2 in place of SLACON, 7 Feb 03, SJH.
+*
 *     .. Scalar Arguments ..
       CHARACTER          NORM
       INTEGER            INFO, N
@@ -86,12 +88,15 @@
       INTEGER            I, KASE, KASE1
       REAL               AINVNM
 *     ..
+*     .. Local Arrays ..
+      INTEGER            ISAVE( 3 )
+*     ..
 *     .. External Functions ..
       LOGICAL            LSAME
       EXTERNAL           LSAME
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SGTTRS, SLACON, XERBLA
+      EXTERNAL           SGTTRS, SLACN2, XERBLA
 *     ..
 *     .. Executable Statements ..
 *
@@ -136,7 +141,7 @@
       END IF
       KASE = 0
    20 CONTINUE
-      CALL SLACON( N, WORK( N+1 ), WORK, IWORK, AINVNM, KASE )
+      CALL SLACN2( N, WORK( N+1 ), WORK, IWORK, AINVNM, KASE, ISAVE )
       IF( KASE.NE.0 ) THEN
          IF( KASE.EQ.KASE1 ) THEN
 *

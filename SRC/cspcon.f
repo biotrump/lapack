@@ -5,6 +5,8 @@
 *     Courant Institute, Argonne National Lab, and Rice University
 *     March 31, 1993 
 *
+*     Modified to call CLACN2 in place of CLACON, 10 Feb 03, SJH.
+*
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
       INTEGER            INFO, N
@@ -71,12 +73,15 @@
       INTEGER            I, IP, KASE
       REAL               AINVNM
 *     ..
+*     .. Local Arrays ..
+      INTEGER            ISAVE( 3 )
+*     ..
 *     .. External Functions ..
       LOGICAL            LSAME
       EXTERNAL           LSAME
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CLACON, CSPTRS, XERBLA
+      EXTERNAL           CLACN2, CSPTRS, XERBLA
 *     ..
 *     .. Executable Statements ..
 *
@@ -134,7 +139,7 @@
 *
       KASE = 0
    30 CONTINUE
-      CALL CLACON( N, WORK( N+1 ), WORK, AINVNM, KASE )
+      CALL CLACN2( N, WORK( N+1 ), WORK, AINVNM, KASE, ISAVE )
       IF( KASE.NE.0 ) THEN
 *
 *        Multiply by inv(L*D*L') or inv(U*D*U').

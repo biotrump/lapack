@@ -5,6 +5,8 @@
 *     Courant Institute, Argonne National Lab, and Rice University
 *     March 31, 1993
 *
+*     Modified to call DLACN2 in place of DLACON, 5 Feb 03, SJH.
+*
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
       INTEGER            INFO, N
@@ -72,6 +74,9 @@
       INTEGER            IX, KASE
       DOUBLE PRECISION   AINVNM, SCALE, SCALEL, SCALEU, SMLNUM
 *     ..
+*     .. Local Arrays ..
+      INTEGER            ISAVE( 3 )
+*     ..
 *     .. External Functions ..
       LOGICAL            LSAME
       INTEGER            IDAMAX
@@ -79,7 +84,7 @@
       EXTERNAL           LSAME, IDAMAX, DLAMCH
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DLACON, DLATPS, DRSCL, XERBLA
+      EXTERNAL           DLACN2, DLATPS, DRSCL, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS
@@ -119,7 +124,7 @@
       KASE = 0
       NORMIN = 'N'
    10 CONTINUE
-      CALL DLACON( N, WORK( N+1 ), WORK, IWORK, AINVNM, KASE )
+      CALL DLACN2( N, WORK( N+1 ), WORK, IWORK, AINVNM, KASE, ISAVE )
       IF( KASE.NE.0 ) THEN
          IF( UPPER ) THEN
 *

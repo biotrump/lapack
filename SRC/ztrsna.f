@@ -5,7 +5,9 @@
 *  -- LAPACK routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     September 30, 1994
+*     October 26, 2001
+*
+*     Modified to call ZLACN2 in place of ZLACON, 10 Feb 03, SJH.
 *
 *     .. Scalar Arguments ..
       CHARACTER          HOWMNY, JOB
@@ -102,7 +104,7 @@
 *          used to store the estimated condition numbers.
 *          If HOWMNY = 'A', M is set to N.
 *
-*  WORK    (workspace) COMPLEX*16 array, dimension (LDWORK,N+1)
+*  WORK    (workspace) COMPLEX*16 array, dimension (LDWORK,N+6)
 *          If JOB = 'E', WORK is not referenced.
 *
 *  LDWORK  (input) INTEGER
@@ -171,6 +173,7 @@
       COMPLEX*16         CDUM, PROD
 *     ..
 *     .. Local Arrays ..
+      INTEGER            ISAVE( 3 )
       COMPLEX*16         DUMMY( 1 )
 *     ..
 *     .. External Functions ..
@@ -181,8 +184,7 @@
       EXTERNAL           LSAME, IZAMAX, DLAMCH, DZNRM2, ZDOTC
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DLABAD, XERBLA, ZDRSCL, ZLACON, ZLACPY, ZLATRS,
-     $                   ZTREXC
+      EXTERNAL           XERBLA, ZDRSCL, ZLACN2, ZLACPY, ZLATRS, ZTREXC
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, DBLE, DIMAG, MAX
@@ -308,7 +310,7 @@
             KASE = 0
             NORMIN = 'N'
    30       CONTINUE
-            CALL ZLACON( N-1, WORK( 1, N+1 ), WORK, EST, KASE )
+            CALL ZLACN2( N-1, WORK( 1, N+1 ), WORK, EST, KASE, ISAVE )
 *
             IF( KASE.NE.0 ) THEN
                IF( KASE.EQ.1 ) THEN

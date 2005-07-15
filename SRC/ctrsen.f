@@ -4,7 +4,9 @@
 *  -- LAPACK routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     June 30, 1999
+*     January 3, 2001
+*
+*     Modified to call CLACN2 in place of CLACON, 10 Feb 03, SJH.
 *
 *     .. Scalar Arguments ..
       CHARACTER          COMPQ, JOB
@@ -96,9 +98,10 @@
 *          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER
-*          The dimension of the array WORK. LWORK >= 1.
-*          if JOB = 'E', LWORK = M*(N-M);
-*          if JOB = 'V' or 'B', LWORK >= 2*M*(N-M).
+*          The dimension of the array WORK.
+*          If JOB = 'N', LWORK >= 1;
+*          if JOB = 'E', LWORK = max(1,M*(N-M));
+*          if JOB = 'V' or 'B', LWORK >= max(1,2*M*(N-M)).
 *
 *          If LWORK = -1, then a workspace query is assumed; the routine
 *          only calculates the optimal size of the WORK array, returns
@@ -192,6 +195,7 @@
       REAL               EST, RNORM, SCALE
 *     ..
 *     .. Local Arrays ..
+      INTEGER            ISAVE( 3 )
       REAL               RWORK( 1 )
 *     ..
 *     .. External Functions ..
@@ -200,7 +204,7 @@
       EXTERNAL           LSAME, CLANGE
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CLACON, CLACPY, CTREXC, CTRSYL, XERBLA
+      EXTERNAL           CLACN2, CLACPY, CTREXC, CTRSYL, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX, SQRT
@@ -214,8 +218,28 @@
       WANTSP = LSAME( JOB, 'V' ) .OR. WANTBH
       WANTQ = LSAME( COMPQ, 'V' )
 *
+*     Set M to the number of selected eigenvalues.
+*
+      M = 0
+      DO 10 K = 1, N
+         IF( SELECT( K ) )
+     $      M = M + 1
+   10 CONTINUE
+*
+      N1 = M
+      N2 = N - M
+      NN = N1*N2
+*
       INFO = 0
       LQUERY = ( LWORK.EQ.-1 )
+*
+      IF( WANTSP ) THEN
+         LWMIN = MAX( 1, 2*NN )
+      ELSE IF( LSAME( JOB, 'N' ) ) THEN
+         LWMIN = 1
+      ELSE IF( LSAME( JOB, 'E' ) ) THEN
+         LWMIN = MAX( 1, NN )
+      END IF
 *
       IF( .NOT.LSAME( JOB, 'N' ) .AND. .NOT.WANTS .AND. .NOT.WANTSP )
      $     THEN
@@ -228,33 +252,12 @@
          INFO = -6
       ELSE IF( LDQ.LT.1 .OR. ( WANTQ .AND. LDQ.LT.N ) ) THEN
          INFO = -8
+      ELSE IF( LWORK.LT.LWMIN .AND. .NOT.LQUERY ) THEN
+         INFO = -14
       END IF
 *
       IF( INFO.EQ.0 ) THEN
-*
-*        Set M to the number of selected eigenvalues.
-*
-         M = 0
-         DO 10 K = 1, N
-            IF( SELECT( K ) )
-     $         M = M + 1
-   10    CONTINUE
-*
-         N1 = M
-         N2 = N - M
-         NN = N1*N2
-         IF( N.EQ.0 .OR. LSAME( JOB, 'N' ) ) THEN
-            LWMIN = 1
-         ELSE IF( WANTSP ) THEN
-            LWMIN = MAX( 1, 2*NN )
-         ELSE IF( LSAME( JOB, 'E' ) ) THEN
-            LWMIN = MAX( 1, NN )
-         END IF
          WORK( 1 ) = LWMIN
-*
-         IF( LWORK.LT.LWMIN .AND. .NOT.LQUERY ) THEN
-            INFO = -14
-         END IF
       END IF
 *
       IF( INFO.NE.0 ) THEN
@@ -317,7 +320,7 @@
          EST = ZERO
          KASE = 0
    30    CONTINUE
-         CALL CLACON( NN, WORK( NN+1 ), WORK, EST, KASE )
+         CALL CLACN2( NN, WORK( NN+1 ), WORK, EST, KASE, ISAVE )
          IF( KASE.NE.0 ) THEN
             IF( KASE.EQ.1 ) THEN
 *

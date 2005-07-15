@@ -6,6 +6,8 @@
 *     Courant Institute, Argonne National Lab, and Rice University
 *     September 30, 1994
 *
+*     Modified to call CLACN2 in place of CLACON, 10 Feb 03, SJH.
+*
 *     .. Scalar Arguments ..
       CHARACTER          NORM
       INTEGER            INFO, N
@@ -84,12 +86,15 @@
       INTEGER            I, KASE, KASE1
       REAL               AINVNM
 *     ..
+*     .. Local Arrays ..
+      INTEGER            ISAVE( 3 )
+*     ..
 *     .. External Functions ..
       LOGICAL            LSAME
       EXTERNAL           LSAME
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CGTTRS, CLACON, XERBLA
+      EXTERNAL           CGTTRS, CLACN2, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          CMPLX
@@ -137,7 +142,7 @@
       END IF
       KASE = 0
    20 CONTINUE
-      CALL CLACON( N, WORK( N+1 ), WORK, AINVNM, KASE )
+      CALL CLACN2( N, WORK( N+1 ), WORK, AINVNM, KASE, ISAVE )
       IF( KASE.NE.0 ) THEN
          IF( KASE.EQ.KASE1 ) THEN
 *

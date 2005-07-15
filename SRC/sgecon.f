@@ -6,6 +6,8 @@
 *     Courant Institute, Argonne National Lab, and Rice University
 *     February 29, 1992
 *
+*     Modified to call SLACN2 in place of SLACON, 7 Feb 03, SJH.
+*
 *     .. Scalar Arguments ..
       CHARACTER          NORM
       INTEGER            INFO, LDA, N
@@ -74,6 +76,9 @@
       INTEGER            IX, KASE, KASE1
       REAL               AINVNM, SCALE, SL, SMLNUM, SU
 *     ..
+*     .. Local Arrays ..
+      INTEGER            ISAVE( 3 )
+*     ..
 *     .. External Functions ..
       LOGICAL            LSAME
       INTEGER            ISAMAX
@@ -81,7 +86,7 @@
       EXTERNAL           LSAME, ISAMAX, SLAMCH
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SLACON, SLATRS, SRSCL, XERBLA
+      EXTERNAL           SLACN2, SLATRS, SRSCL, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, MAX
@@ -129,7 +134,7 @@
       END IF
       KASE = 0
    10 CONTINUE
-      CALL SLACON( N, WORK( N+1 ), WORK, IWORK, AINVNM, KASE )
+      CALL SLACN2( N, WORK( N+1 ), WORK, IWORK, AINVNM, KASE, ISAVE )
       IF( KASE.NE.0 ) THEN
          IF( KASE.EQ.KASE1 ) THEN
 *

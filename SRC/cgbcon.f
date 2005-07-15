@@ -6,6 +6,8 @@
 *     Courant Institute, Argonne National Lab, and Rice University
 *     September 30, 1994
 *
+*     Modified to call CLACN2 in place of CLACON, 10 Feb 03, SJH.
+*
 *     .. Scalar Arguments ..
       CHARACTER          NORM
       INTEGER            INFO, KL, KU, LDAB, N
@@ -89,6 +91,9 @@
       REAL               AINVNM, SCALE, SMLNUM
       COMPLEX            T, ZDUM
 *     ..
+*     .. Local Arrays ..
+      INTEGER            ISAVE( 3 )
+*     ..
 *     .. External Functions ..
       LOGICAL            LSAME
       INTEGER            ICAMAX
@@ -97,7 +102,7 @@
       EXTERNAL           LSAME, ICAMAX, SLAMCH, CDOTC
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CAXPY, CLACON, CLATBS, CSRSCL, XERBLA
+      EXTERNAL           CAXPY, CLACN2, CLATBS, CSRSCL, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, AIMAG, MIN, REAL
@@ -157,7 +162,7 @@
       LNOTI = KL.GT.0
       KASE = 0
    10 CONTINUE
-      CALL CLACON( N, WORK( N+1 ), WORK, AINVNM, KASE )
+      CALL CLACN2( N, WORK( N+1 ), WORK, AINVNM, KASE, ISAVE )
       IF( KASE.NE.0 ) THEN
          IF( KASE.EQ.KASE1 ) THEN
 *
