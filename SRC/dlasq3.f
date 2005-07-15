@@ -197,8 +197,6 @@
          END IF
       END IF
 *
-   70 CONTINUE
-*
       IF( DMIN.LT.ZERO .OR. SAFMIN*QMAX.LT.MIN( Z( 4*N0+PP-1 ),
      $    Z( 4*N0+PP-9 ), DMIN2+Z( 4*N0-PP ) ) ) THEN
 *

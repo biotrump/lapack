@@ -126,7 +126,7 @@
       RETURN
 *
 *     ................ ENTRY   (JUMP = 2)
-*     FIRST ITERATION.  X HAS BEEN OVERWRITTEN BY ZTRANS(A)*X.
+*     FIRST ITERATION.  X HAS BEEN OVERWRITTEN BY CTRANS(A)*X.
 *
    40 CONTINUE
       J = IZMAX1( N, X, 1 )
@@ -169,7 +169,7 @@
       RETURN
 *
 *     ................ ENTRY   (JUMP = 4)
-*     X HAS BEEN OVERWRITTEN BY ZTRANS(A)*X.
+*     X HAS BEEN OVERWRITTEN BY CTRANS(A)*X.
 *
    90 CONTINUE
       JLAST = J

@@ -3,7 +3,9 @@
 *  -- LAPACK routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     October 31, 1999 
+*     October 31, 1999
+*
+*     Modified to call SLAZQ3 in place of SLASQ3, 13 Feb 03, SJH.
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, N
@@ -29,7 +31,7 @@
 *  Note : SLASQ2 defines a logical variable, IEEE, which is true
 *  on machines which follow ieee-754 floating-point standard in their
 *  handling of infinities and NaNs, and false otherwise. This variable
-*  is passed to SLASQ3.
+*  is passed to SLAZQ3.
 *
 *  Arguments
 *  =========
@@ -76,13 +78,13 @@
 *     .. Local Scalars ..
       LOGICAL            IEEE
       INTEGER            I0, I4, IINFO, IPN4, ITER, IWHILA, IWHILB, K, 
-     $                   N0, NBIG, NDIV, NFAIL, PP, SPLT
-      REAL               D, DESIG, DMIN, E, EMAX, EMIN, EPS, OLDEMN, 
-     $                   QMAX, QMIN, S, SAFMIN, SIGMA, T, TEMP, TOL, 
-     $                   TOL2, TRACE, ZMAX
+     $                   N0, NBIG, NDIV, NFAIL, PP, SPLT, TTYPE
+      REAL               D, DESIG, DMIN, DMIN1, DMIN2, DN, DN1, DN2, E,
+     $                   EMAX, EMIN, EPS, OLDEMN, QMAX, QMIN, S, SAFMIN,
+     $                   SIGMA, T, TAU, TEMP, TOL, TOL2, TRACE, ZMAX
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SLASQ3, SLASRT, XERBLA
+      EXTERNAL           SLAZQ3, SLASRT, XERBLA
 *     ..
 *     .. External Functions ..
       INTEGER            ILAENV
@@ -90,7 +92,7 @@
       EXTERNAL           ILAENV, SLAMCH
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          MAX, MIN, REAL, SQRT
+      INTRINSIC          ABS, MAX, MIN, REAL, SQRT
 *     ..
 *     .. Executable Statements ..
 *      
@@ -286,6 +288,16 @@
          PP = 1 - PP
    80 CONTINUE
 *
+*     Initialise variables to pass to SLAZQ3
+*
+      TTYPE = 0
+      DMIN1 = ZERO
+      DMIN2 = ZERO
+      DN    = ZERO
+      DN1   = ZERO
+      DN2   = ZERO
+      TAU   = ZERO
+*
       ITER = 2
       NFAIL = 0
       NDIV = 2*( N0-I0 )
@@ -336,7 +348,7 @@
   100    CONTINUE
          I0 = I4 / 4
 *
-*        Store EMIN for passing to SLASQ3.
+*        Store EMIN for passing to SLAZQ3.
 *
          Z( 4*N0-1 ) = EMIN
 *
@@ -355,8 +367,9 @@
 *
 *           While submatrix unfinished take a good dqds step.
 *
-            CALL SLASQ3( I0, N0, Z, PP, DMIN, SIGMA, DESIG, QMAX, NFAIL,
-     $                   ITER, NDIV, IEEE )
+            CALL SLAZQ3( I0, N0, Z, PP, DMIN, SIGMA, DESIG, QMAX, NFAIL,
+     $                   ITER, NDIV, IEEE, TTYPE, DMIN1, DMIN2, DN, DN1,
+     $                   DN2, TAU )
 *
             PP = 1 - PP
 *
