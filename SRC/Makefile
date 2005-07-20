@@ -51,7 +51,7 @@ SCLAUX = \
    slartg.o slaruv.o slas2.o  slascl.o \
    slasd0.o slasd1.o slasd2.o slasd3.o slasd4.o slasd5.o slasd6.o \
    slasd7.o slasd8.o slasda.o slasdq.o slasdt.o \
-   slaset.o slasq1.o slasq2.o slasq3.o slasq4.o slasq5.o slasq6.o \
+   slaset.o slasq1.o slasq2.o slasq3.o slazq3.o slasq4.o slazq4.o slasq5.o slasq6.o \
    slasr.o  slasrt.o slassq.o slasv2.o spttrf.o sstebz.o sstedc.o \
    ssteqr.o ssterf.o second.o
 
@@ -66,7 +66,7 @@ DZLAUX = \
    dlartg.o dlaruv.o dlas2.o  dlascl.o \
    dlasd0.o dlasd1.o dlasd2.o dlasd3.o dlasd4.o dlasd5.o dlasd6.o \
    dlasd7.o dlasd8.o dlasda.o dlasdq.o dlasdt.o \
-   dlaset.o dlasq1.o dlasq2.o dlasq3.o dlasq4.o dlasq5.o dlasq6.o \
+   dlaset.o dlasq1.o dlasq2.o dlasq3.o dlazq3.o dlasq4.o dlazq4.o dlasq5.o dlasq6.o \
    dlasr.o  dlasrt.o dlassq.o dlasv2.o dpttrf.o dstebz.o dstedc.o \
    dsteqr.o dsterf.o dsecnd.o
 
@@ -83,7 +83,7 @@ SLASRC = \
    sggglm.o sgghrd.o sgglse.o sggqrf.o \
    sggrqf.o sggsvd.o sggsvp.o sgtcon.o sgtrfs.o sgtsv.o  \
    sgtsvx.o sgttrf.o sgttrs.o sgtts2.o shgeqz.o \
-   shsein.o shseqr.o slabrd.o slacon.o \
+   shsein.o shseqr.o slabrd.o slacon.o slacn2.o \
    slaein.o slaexc.o slag2.o  slags2.o slagtm.o slagv2.o slahqr.o \
    slahrd.o slaic1.o slaln2.o slals0.o slalsa.o slalsd.o \
    slangb.o slange.o slangt.o slanhs.o slansb.o slansp.o \
@@ -139,7 +139,7 @@ CLASRC = \
    chpevx.o chpgst.o chpgv.o  chpgvd.o chpgvx.o chprfs.o chpsv.o  \
    chpsvx.o \
    chptrd.o chptrf.o chptri.o chptrs.o chsein.o chseqr.o clabrd.o \
-   clacgv.o clacon.o clacp2.o clacpy.o clacrm.o clacrt.o cladiv.o \
+   clacgv.o clacon.o clacn2.o clacp2.o clacpy.o clacrm.o clacrt.o cladiv.o \
    claed0.o claed7.o claed8.o \
    claein.o claesy.o claev2.o clags2.o clagtm.o \
    clahef.o clahqr.o \
@@ -184,7 +184,7 @@ DLASRC = \
    dggglm.o dgghrd.o dgglse.o dggqrf.o \
    dggrqf.o dggsvd.o dggsvp.o dgtcon.o dgtrfs.o dgtsv.o  \
    dgtsvx.o dgttrf.o dgttrs.o dgtts2.o dhgeqz.o \
-   dhsein.o dhseqr.o dlabrd.o dlacon.o \
+   dhsein.o dhseqr.o dlabrd.o dlacon.o dlacn2.o \
    dlaein.o dlaexc.o dlag2.o  dlags2.o dlagtm.o dlagv2.o dlahqr.o \
    dlahrd.o dlaic1.o dlaln2.o dlals0.o dlalsa.o dlalsd.o \
    dlangb.o dlange.o dlangt.o dlanhs.o dlansb.o dlansp.o \
@@ -241,7 +241,7 @@ ZLASRC = \
    zhpevx.o zhpgst.o zhpgv.o  zhpgvd.o zhpgvx.o zhprfs.o zhpsv.o  \
    zhpsvx.o \
    zhptrd.o zhptrf.o zhptri.o zhptrs.o zhsein.o zhseqr.o zlabrd.o \
-   zlacgv.o zlacon.o zlacp2.o zlacpy.o zlacrm.o zlacrt.o zladiv.o \
+   zlacgv.o zlacon.o zlacn2.o zlacp2.o zlacpy.o zlacrm.o zlacrt.o zladiv.o \
    zlaed0.o zlaed7.o zlaed8.o \
    zlaein.o zlaesy.o zlaev2.o zlags2.o zlagtm.o \
    zlahef.o zlahqr.o \
