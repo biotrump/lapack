@@ -320,19 +320,19 @@
          CALL DSTEDC( 'N', 1, D, E, Z, 1, W, 0, IW, 1, INFO )
          CALL CHKXER( 'DSTEDC', INFOT, NOUT, LERR, OK )
          INFOT = 8
-         CALL DSTEDC( 'I', 2, D, E, Z, 2, W, 12, IW, 12, INFO )
+         CALL DSTEDC( 'I', 2, D, E, Z, 2, W, 0, IW, 12, INFO )
          CALL CHKXER( 'DSTEDC', INFOT, NOUT, LERR, OK )
          INFOT = 8
-         CALL DSTEDC( 'V', 2, D, E, Z, 2, W, 22, IW, 28, INFO )
+         CALL DSTEDC( 'V', 2, D, E, Z, 2, W, 0, IW, 28, INFO )
          CALL CHKXER( 'DSTEDC', INFOT, NOUT, LERR, OK )
          INFOT = 10
          CALL DSTEDC( 'N', 1, D, E, Z, 1, W, 1, IW, 0, INFO )
          CALL CHKXER( 'DSTEDC', INFOT, NOUT, LERR, OK )
          INFOT = 10
-         CALL DSTEDC( 'I', 2, D, E, Z, 2, W, 19, IW, 11, INFO )
+         CALL DSTEDC( 'I', 2, D, E, Z, 2, W, 19, IW, 0, INFO )
          CALL CHKXER( 'DSTEDC', INFOT, NOUT, LERR, OK )
          INFOT = 10
-         CALL DSTEDC( 'V', 2, D, E, Z, 2, W, 23, IW, 27, INFO )
+         CALL DSTEDC( 'V', 2, D, E, Z, 2, W, 23, IW, 0, INFO )
          CALL CHKXER( 'DSTEDC', INFOT, NOUT, LERR, OK )
          NT = NT + 9
 *

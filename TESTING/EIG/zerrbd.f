@@ -178,11 +178,11 @@
      $                INFO )
          CALL CHKXER( 'ZUNMBR', INFOT, NOUT, LERR, OK )
          INFOT = 13
-         CALL ZUNMBR( 'Q', 'L', 'C', 0, 2, 0, A, 1, TQ, U, 1, W, 1,
+         CALL ZUNMBR( 'Q', 'L', 'C', 0, 2, 0, A, 1, TQ, U, 1, W, 0,
      $                INFO )
          CALL CHKXER( 'ZUNMBR', INFOT, NOUT, LERR, OK )
          INFOT = 13
-         CALL ZUNMBR( 'Q', 'R', 'C', 2, 0, 0, A, 1, TQ, U, 2, W, 1,
+         CALL ZUNMBR( 'Q', 'R', 'C', 2, 0, 0, A, 1, TQ, U, 2, W, 0,
      $                INFO )
          CALL CHKXER( 'ZUNMBR', INFOT, NOUT, LERR, OK )
          NT = NT + 13

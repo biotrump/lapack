@@ -274,25 +274,25 @@
          CALL CSTEDC( 'N', 2, D, E, Z, 1, W, 0, RW, 1, IW, 1, INFO )
          CALL CHKXER( 'CSTEDC', INFOT, NOUT, LERR, OK )
          INFOT = 8
-         CALL CSTEDC( 'V', 2, D, E, Z, 2, W, 3, RW, 23, IW, 28, INFO )
+         CALL CSTEDC( 'V', 2, D, E, Z, 2, W, 0, RW, 23, IW, 28, INFO )
          CALL CHKXER( 'CSTEDC', INFOT, NOUT, LERR, OK )
          INFOT = 10
          CALL CSTEDC( 'N', 2, D, E, Z, 1, W, 1, RW, 0, IW, 1, INFO )
          CALL CHKXER( 'CSTEDC', INFOT, NOUT, LERR, OK )
          INFOT = 10
-         CALL CSTEDC( 'I', 2, D, E, Z, 2, W, 1, RW, 16, IW, 12, INFO )
+         CALL CSTEDC( 'I', 2, D, E, Z, 2, W, 1, RW, 1, IW, 12, INFO )
          CALL CHKXER( 'CSTEDC', INFOT, NOUT, LERR, OK )
          INFOT = 10
-         CALL CSTEDC( 'V', 2, D, E, Z, 2, W, 4, RW, 22, IW, 28, INFO )
+         CALL CSTEDC( 'V', 2, D, E, Z, 2, W, 4, RW, 1, IW, 28, INFO )
          CALL CHKXER( 'CSTEDC', INFOT, NOUT, LERR, OK )
          INFOT = 12
          CALL CSTEDC( 'N', 2, D, E, Z, 1, W, 1, RW, 1, IW, 0, INFO )
          CALL CHKXER( 'CSTEDC', INFOT, NOUT, LERR, OK )
          INFOT = 12
-         CALL CSTEDC( 'I', 2, D, E, Z, 2, W, 1, RW, 23, IW, 11, INFO )
+         CALL CSTEDC( 'I', 2, D, E, Z, 2, W, 1, RW, 23, IW, 0, INFO )
          CALL CHKXER( 'CSTEDC', INFOT, NOUT, LERR, OK )
          INFOT = 12
-         CALL CSTEDC( 'V', 2, D, E, Z, 2, W, 4, RW, 23, IW, 27, INFO )
+         CALL CSTEDC( 'V', 2, D, E, Z, 2, W, 4, RW, 23, IW, 0, INFO )
          CALL CHKXER( 'CSTEDC', INFOT, NOUT, LERR, OK )
          NT = NT + 11
 *

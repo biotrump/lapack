@@ -178,11 +178,11 @@
      $                INFO )
          CALL CHKXER( 'CUNMBR', INFOT, NOUT, LERR, OK )
          INFOT = 13
-         CALL CUNMBR( 'Q', 'L', 'C', 0, 2, 0, A, 1, TQ, U, 1, W, 1,
+         CALL CUNMBR( 'Q', 'L', 'C', 0, 2, 0, A, 1, TQ, U, 1, W, 0,
      $                INFO )
          CALL CHKXER( 'CUNMBR', INFOT, NOUT, LERR, OK )
          INFOT = 13
-         CALL CUNMBR( 'Q', 'R', 'C', 2, 0, 0, A, 1, TQ, U, 2, W, 1,
+         CALL CUNMBR( 'Q', 'R', 'C', 2, 0, 0, A, 1, TQ, U, 2, W, 0,
      $                INFO )
          CALL CHKXER( 'CUNMBR', INFOT, NOUT, LERR, OK )
          NT = NT + 13

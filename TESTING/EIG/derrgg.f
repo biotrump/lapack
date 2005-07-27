@@ -770,7 +770,7 @@
          CALL CHKXER( 'DTGEXC', INFOT, NOUT, LERR, OK )
          INFOT = 15
          CALL DTGEXC( .TRUE., .TRUE., 1, A, 1, B, 1, Q, 1, Z, 1, IFST,
-     $                ILST, W, 1, INFO )
+     $                ILST, W, 0, INFO )
          CALL CHKXER( 'DTGEXC', INFOT, NOUT, LERR, OK )
          NT = NT + 8
 *
