@@ -47,8 +47,10 @@
 *  LDX     (input) INTEGER
 *          The leading dimension of the array X, LDX >= MAX(1,M).
 *
-*  K       (input) INTEGER array, dimension (N)
-*          On entry, K contains the permutation vector.
+*  K       (input/output) INTEGER array, dimension (N)
+*          On entry, K contains the permutation vector. K is used as
+*          internal workspace, but reset to its original value on
+*          output.
 *
 *  =====================================================================
 *
