@@ -147,7 +147,7 @@
 *         On exit, it is an array of dimension 4, with COLTYP(I) being
 *         the dimension of the I-th type columns.
 *
-*  IDXQ   (input) INTEGER array, dimension(N)
+*  IDXQ   (input/output) INTEGER array, dimension(N)
 *         This contains the permutation which separately sorts the two
 *         sub-problems in D into ascending order.  Note that entries in
 *         the first hlaf of this permutation must first be moved one
