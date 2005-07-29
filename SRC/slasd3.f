@@ -64,12 +64,12 @@
 *  LDQ    (input) INTEGER
 *         The leading dimension of the array Q.  LDQ >= K.
 *
-*  DSIGMA (input) REAL array, dimension(K)
+*  DSIGMA (input/output) REAL array, dimension(K)
 *         The first K elements of this array contain the old roots
 *         of the deflated updating problem.  These are the poles
 *         of the secular equation.
 *
-*  U      (input) REAL array, dimension (LDU, N)
+*  U      (output) REAL array, dimension (LDU, N)
 *         The last N - K columns of this matrix contain the deflated
 *         left singular vectors.
 *
@@ -83,14 +83,14 @@
 *  LDU2   (input) INTEGER
 *         The leading dimension of the array U2.  LDU2 >= N.
 *
-*  VT     (input) REAL array, dimension (LDVT, M)
+*  VT     (output) REAL array, dimension (LDVT, M)
 *         The last M - K columns of VT' contain the deflated
 *         right singular vectors.
 *
 *  LDVT   (input) INTEGER
 *         The leading dimension of the array VT.  LDVT >= N.
 *
-*  VT2    (input) REAL array, dimension (LDVT2, N)
+*  VT2    (input/output) REAL array, dimension (LDVT2, N)
 *         The first K columns of VT2' contain the non-deflated
 *         right singular vectors for the split problem.
 *
@@ -114,7 +114,7 @@
 *         in U (or rows in VT), as described in IDXC. The fourth column
 *         type is any column which has been deflated.
 *
-*  Z      (input) REAL array, dimension (K)
+*  Z      (input/output) REAL array, dimension (K)
 *         The first K elements of this array contain the components
 *         of the deflation-adjusted updating row vector.
 *

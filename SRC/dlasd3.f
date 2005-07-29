@@ -69,28 +69,28 @@
 *         of the deflated updating problem.  These are the poles
 *         of the secular equation.
 *
-*  U      (input) DOUBLE PRECISION array, dimension (LDU, N)
+*  U      (output) DOUBLE PRECISION array, dimension (LDU, N)
 *         The last N - K columns of this matrix contain the deflated
 *         left singular vectors.
 *
 *  LDU    (input) INTEGER
 *         The leading dimension of the array U.  LDU >= N.
 *
-*  U2     (input) DOUBLE PRECISION array, dimension (LDU2, N)
+*  U2     (input/output) DOUBLE PRECISION array, dimension (LDU2, N)
 *         The first K columns of this matrix contain the non-deflated
 *         left singular vectors for the split problem.
 *
 *  LDU2   (input) INTEGER
 *         The leading dimension of the array U2.  LDU2 >= N.
 *
-*  VT     (input) DOUBLE PRECISION array, dimension (LDVT, M)
+*  VT     (output) DOUBLE PRECISION array, dimension (LDVT, M)
 *         The last M - K columns of VT' contain the deflated
 *         right singular vectors.
 *
 *  LDVT   (input) INTEGER
 *         The leading dimension of the array VT.  LDVT >= N.
 *
-*  VT2    (input) DOUBLE PRECISION array, dimension (LDVT2, N)
+*  VT2    (input/output) DOUBLE PRECISION array, dimension (LDVT2, N)
 *         The first K columns of VT2' contain the non-deflated
 *         right singular vectors for the split problem.
 *
