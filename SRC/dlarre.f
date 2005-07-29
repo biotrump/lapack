@@ -54,7 +54,7 @@
 *          The threshold for splitting. If on input |E(i)| < TOL, then
 *          the matrix T is split into smaller blocks.
 *
-*  NSPLIT  (input) INTEGER
+*  NSPLIT  (output) INTEGER
 *          The number of blocks T splits into. 1 <= NSPLIT <= N.
 *
 *  ISPLIT  (output) INTEGER array, dimension (2*N)
@@ -79,7 +79,7 @@
 *  GERSCH  (output) DOUBLE PRECISION array, dimension (2*N)
 *          The n Gerschgorin intervals.
 *
-*  WORK    (input) DOUBLE PRECISION array, dimension (4*N???)
+*  WORK    (input) DOUBLE PRECISION array, dimension (3*N)
 *          Workspace.
 *
 *  INFO    (output) INTEGER
