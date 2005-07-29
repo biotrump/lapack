@@ -80,10 +80,10 @@
 *         the lower block. On exit D(1:N) contains the singular values
 *         of the modified matrix.
 *
-*  ALPHA  (input) REAL
+*  ALPHA  (input/output) REAL
 *         Contains the diagonal element associated with the added row.
 *
-*  BETA   (input) REAL
+*  BETA   (input/output) REAL
 *         Contains the off-diagonal element associated with the added
 *         row.
 *

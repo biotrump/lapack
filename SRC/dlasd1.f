@@ -80,10 +80,10 @@
 *         the lower block. On exit D(1:N) contains the singular values
 *         of the modified matrix.
 *
-*  ALPHA  (input) DOUBLE PRECISION
+*  ALPHA  (input/output) DOUBLE PRECISION
 *         Contains the diagonal element associated with the added row.
 *
-*  BETA   (input) DOUBLE PRECISION
+*  BETA   (input/output) DOUBLE PRECISION
 *         Contains the off-diagonal element associated with the added
 *         row.
 *
