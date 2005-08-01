@@ -38,8 +38,8 @@
 *
 *  L       (input/output) REAL array, dimension (N-1)
 *          On entry, the (n-1) subdiagonal elements of the unit
-*          bidiagonal matrix L in elements 1 to N-1 of L. L(N) need
-*          not be set. On exit, L is overwritten.
+*          bidiagonal matrix L in elements 1 to N-1 of L.
+*          On exit, L is overwritten.
 *
 *  ISPLIT  (input) INTEGER array, dimension (N)
 *          The splitting points, at which T breaks up into submatrices.
@@ -75,6 +75,10 @@
 *          the first submatrix from the top, =2 if W(i) belongs to
 *          the second submatrix, etc. 
 *
+*  GERSCH   (input) REAL array, dimension (2*N)
+*           The n Gerschgorin intervals. These are used to restrict
+*           the initial search for R, when R is input as 0.
+*
 *  Z       (output) COMPLEX array, dimension (LDZ, max(1,M) )
 *          If JOBZ = 'V', then if INFO = 0, the first M columns of Z
 *          contain the orthonormal eigenvectors of the matrix T
@@ -102,7 +106,8 @@
 *  INFO    (output) INTEGER
 *          = 0:  successful exit
 *          < 0:  if INFO = -i, the i-th argument had an illegal value
-*          > 0:  if INFO = 1, internal error in SLARRB
+*          > 0:  if INFO = 1, internal error in SLARRB (this cannot be
+*                             triggered since SLARRB does not set INFO)
 *                if INFO = 2, internal error in CSTEIN
 *
 *  Further Details
@@ -143,7 +148,8 @@
       EXTERNAL           CDOTU, SCNRM2, SLAMCH
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CAXPY, CLAR1V, CLASET, CSTEIN, SCOPY, SLARRB 
+      EXTERNAL           CAXPY, CLAR1V, CLASET, CSSCAL, CSTEIN, SCOPY,
+     $                   SLARRB, SLARRF
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, CMPLX, MAX, MIN, REAL, SQRT
@@ -248,6 +254,7 @@
                   K = K + 1
    50          CONTINUE
                IF( NDEPTH.GT.0 ) THEN
+                  IINFO = 0
                   CALL SLARRB( IN, D( IBEGIN ), L( IBEGIN ),
      $                         WORK( INDLD+1 ), WORK( INDLLD+1 ),
      $                         OLDFST, OLDLST, SIGMA, RELTOL, WORK,
