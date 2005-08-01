@@ -52,7 +52,7 @@
 *  LDAB    (input) INTEGER
 *          The leading dimension of the array AB.  LDAB >= KD+1.
 *
-*  S       (output) REAL array, dimension (N)
+*  S       (input) REAL array, dimension (N)
 *          The scale factors for A.
 *
 *  SCOND   (input) REAL

@@ -51,7 +51,7 @@
 *  LDAB    (input) INTEGER
 *          The leading dimension of the array AB.  LDAB >= KD+1.
 *
-*  S       (output) DOUBLE PRECISION array, dimension (N)
+*  S       (input) DOUBLE PRECISION array, dimension (N)
 *          The scale factors for A.
 *
 *  SCOND   (input) DOUBLE PRECISION
