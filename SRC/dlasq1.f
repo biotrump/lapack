@@ -67,7 +67,7 @@
       DOUBLE PRECISION   EPS, SCALE, SAFMIN, SIGMN, SIGMX
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DLAS2, DLASQ2, DLASRT, XERBLA
+      EXTERNAL           DCOPY, DLAS2, DLASCL, DLASQ2, DLASRT, XERBLA
 *     ..
 *     .. External Functions ..
       DOUBLE PRECISION   DLAMCH
