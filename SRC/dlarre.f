@@ -44,9 +44,9 @@
 *          On exit, the n diagonal elements of the diagonal
 *          matrices D_i.
 *
-*  E       (input/output) DOUBLE PRECISION array, dimension (N)
+*  E       (input/output) DOUBLE PRECISION array, dimension (N-1)
 *          On entry, the (n-1) subdiagonal elements of the tridiagonal
-*          matrix T; E(N) need not be set.
+*          matrix T.
 *          On exit, the subdiagonal elements of the unit bidiagonal
 *          matrices L_i.
 *
