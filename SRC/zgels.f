@@ -73,8 +73,8 @@
 *          On entry, the matrix B of right hand side vectors, stored
 *          columnwise; B is M-by-NRHS if TRANS = 'N', or N-by-NRHS
 *          if TRANS = 'C'.
-*          On exit, B is overwritten by the solution vectors, stored
-*          columnwise:
+*          On exit, if INFO = 0, B is overwritten by the solution
+*          vectors, stored columnwise:
 *          if TRANS = 'N' and m >= n, rows 1 to n of B contain the least
 *          squares solution vectors; the residual sum of squares for the
 *          solution in each column is given by the sum of squares of the
@@ -109,15 +109,18 @@
 *  INFO    (output) INTEGER
 *          = 0:  successful exit
 *          < 0:  if INFO = -i, the i-th argument had an illegal value
+*          > 0:  if INFO =  i, the i-th diagonal element of the
+*                triangular factor of A is zero, so that A does not have
+*                full rank; the least squares solution could not be
+*                computed.
 *
 *  =====================================================================
 *
 *     .. Parameters ..
       DOUBLE PRECISION   ZERO, ONE
       PARAMETER          ( ZERO = 0.0D+0, ONE = 1.0D+0 )
-      COMPLEX*16         CZERO, CONE
-      PARAMETER          ( CZERO = ( 0.0D+0, 0.0D+0 ),
-     $                   CONE = ( 1.0D+0, 0.0D+0 ) )
+      COMPLEX*16         CZERO
+      PARAMETER          ( CZERO = ( 0.0D+0, 0.0D+0 ) )
 *     ..
 *     .. Local Scalars ..
       LOGICAL            LQUERY, TPSD
@@ -135,7 +138,7 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           DLABAD, XERBLA, ZGELQF, ZGEQRF, ZLASCL, ZLASET,
-     $                   ZTRSM, ZUNMLQ, ZUNMQR
+     $                   ZTRTRS, ZUNMLQ, ZUNMQR
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          DBLE, MAX, MIN
@@ -285,8 +288,12 @@
 *
 *           B(1:N,1:NRHS) := inv(R) * B(1:N,1:NRHS)
 *
-            CALL ZTRSM( 'Left', 'Upper', 'No transpose', 'Non-unit', N,
-     $                  NRHS, CONE, A, LDA, B, LDB )
+            CALL ZTRTRS( 'Upper', 'No transpose', 'Non-unit', N, NRHS,
+     $                   A, LDA, B, LDB, INFO )
+*
+            IF( INFO.EQ.0 ) THEN
+               RETURN
+            END IF
 *
             SCLLEN = N
 *
@@ -296,8 +303,12 @@
 *
 *           B(1:N,1:NRHS) := inv(R') * B(1:N,1:NRHS)
 *
-            CALL ZTRSM( 'Left', 'Upper', 'Conjugate transpose',
-     $                  'Non-unit', N, NRHS, CONE, A, LDA, B, LDB )
+            CALL ZTRTRS( 'Upper', 'Conjugate transpose','Non-unit',
+     $                   N, NRHS, A, LDA, B, LDB, INFO )
+*
+            IF( INFO.EQ.0 ) THEN
+               RETURN
+            END IF
 *
 *           B(N+1:M,1:NRHS) = ZERO
 *
@@ -334,8 +345,12 @@
 *
 *           B(1:M,1:NRHS) := inv(L) * B(1:M,1:NRHS)
 *
-            CALL ZTRSM( 'Left', 'Lower', 'No transpose', 'Non-unit', M,
-     $                  NRHS, CONE, A, LDA, B, LDB )
+            CALL ZTRTRS( 'Lower', 'No transpose', 'Non-unit', M, NRHS,
+     $                   A, LDA, B, LDB, INFO )
+*
+            IF( INFO.EQ.0 ) THEN
+               RETURN
+            END IF
 *
 *           B(M+1:N,1:NRHS) = 0
 *
@@ -369,8 +384,12 @@
 *
 *           B(1:M,1:NRHS) := inv(L') * B(1:M,1:NRHS)
 *
-            CALL ZTRSM( 'Left', 'Lower', 'Conjugate transpose',
-     $                  'Non-unit', M, NRHS, CONE, A, LDA, B, LDB )
+            CALL ZTRTRS( 'Lower', 'Conjugate transpose', 'Non-unit',
+     $                   M, NRHS, A, LDA, B, LDB, INFO )
+*
+            IF( INFO.EQ.0 ) THEN
+               RETURN
+            END IF
 *
             SCLLEN = M
 *

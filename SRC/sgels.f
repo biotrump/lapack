@@ -74,8 +74,8 @@
 *          On entry, the matrix B of right hand side vectors, stored
 *          columnwise; B is M-by-NRHS if TRANS = 'N', or N-by-NRHS
 *          if TRANS = 'T'.  
-*          On exit, B is overwritten by the solution vectors, stored
-*          columnwise:
+*          On exit, if INFO = 0, B is overwritten by the solution
+*          vectors, stored columnwise:
 *          if TRANS = 'N' and m >= n, rows 1 to n of B contain the least
 *          squares solution vectors; the residual sum of squares for the
 *          solution in each column is given by the sum of squares of
@@ -110,6 +110,10 @@
 *  INFO    (output) INTEGER
 *          = 0:  successful exit
 *          < 0:  if INFO = -i, the i-th argument had an illegal value
+*          > 0:  if INFO =  i, the i-th diagonal element of the
+*                triangular factor of A is zero, so that A does not have
+*                full rank; the least squares solution could not be
+*                computed.
 *
 *  =====================================================================
 *
@@ -133,7 +137,7 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           SGELQF, SGEQRF, SLABAD, SLASCL, SLASET, SORMLQ,
-     $                   SORMQR, STRSM, XERBLA
+     $                   SORMQR, STRTRS, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX, MIN, REAL
@@ -283,8 +287,12 @@
 *
 *           B(1:N,1:NRHS) := inv(R) * B(1:N,1:NRHS)
 *
-            CALL STRSM( 'Left', 'Upper', 'No transpose', 'Non-unit', N,
-     $                  NRHS, ONE, A, LDA, B, LDB )
+            CALL STRTRS( 'Upper', 'No transpose', 'Non-unit', N, NRHS,
+     $                   A, LDA, B, LDB, INFO )
+*
+            IF( INFO.EQ.0 ) THEN
+               RETURN
+            END IF
 *
             SCLLEN = N
 *
@@ -294,8 +302,12 @@
 *
 *           B(1:N,1:NRHS) := inv(R') * B(1:N,1:NRHS)
 *
-            CALL STRSM( 'Left', 'Upper', 'Transpose', 'Non-unit', N,
-     $                  NRHS, ONE, A, LDA, B, LDB )
+            CALL STRTRS( 'Upper', 'Transpose', 'Non-unit', N, NRHS,
+     $                   A, LDA, B, LDB, INFO )
+*
+            IF( INFO.EQ.0 ) THEN
+               RETURN
+            END IF
 *
 *           B(N+1:M,1:NRHS) = ZERO
 *
@@ -332,8 +344,12 @@
 *
 *           B(1:M,1:NRHS) := inv(L) * B(1:M,1:NRHS)
 *
-            CALL STRSM( 'Left', 'Lower', 'No transpose', 'Non-unit', M,
-     $                  NRHS, ONE, A, LDA, B, LDB )
+            CALL STRTRS( 'Lower', 'No transpose', 'Non-unit', M, NRHS,
+     $                   A, LDA, B, LDB, INFO )
+*
+            IF( INFO.EQ.0 ) THEN
+               RETURN
+            END IF
 *
 *           B(M+1:N,1:NRHS) = 0
 *
@@ -367,8 +383,12 @@
 *
 *           B(1:M,1:NRHS) := inv(L') * B(1:M,1:NRHS)
 *
-            CALL STRSM( 'Left', 'Lower', 'Transpose', 'Non-unit', M,
-     $                  NRHS, ONE, A, LDA, B, LDB )
+            CALL DTRTRS( 'Lower', 'Transpose', 'Non-unit', M, NRHS,
+     $                   A, LDA, B, LDB, INFO )
+*
+            IF( INFO.EQ.0 ) THEN
+               RETURN
+            END IF
 *
             SCLLEN = M
 *
