@@ -30,7 +30,10 @@
 *  Under these assumptions, the constrained equation is always
 *  consistent, and there is a unique solution x and a minimal 2-norm
 *  solution y, which is obtained using a generalized QR factorization
-*  of A and B.
+*  of the matrices (A, B) given by
+*
+*     A = Q*(R),   B = Q*T*Z.
+*           (0)
 *
 *  In particular, if matrix B is square nonsingular, then the problem
 *  GLM is equivalent to the following weighted linear least squares
@@ -55,14 +58,18 @@
 *
 *  A       (input/output) COMPLEX array, dimension (LDA,M)
 *          On entry, the N-by-M matrix A.
-*          On exit, A is destroyed.
+*          On exit, the upper triangular part of the array A contains
+*          the M-by-M upper triangular matrix R.
 *
 *  LDA     (input) INTEGER
 *          The leading dimension of the array A. LDA >= max(1,N).
 *
 *  B       (input/output) COMPLEX array, dimension (LDB,P)
 *          On entry, the N-by-P matrix B.
-*          On exit, B is destroyed.
+*          On exit, if N <= P, the upper triangle of the subarray
+*          B(1:N,P-N+1:P) contains the N-by-N upper triangular matrix T;
+*          if N > P, the elements on and above the (N-P)th subdiagonal
+*          contain the N-by-P upper trapezoidal matrix T.
 *
 *  LDB     (input) INTEGER
 *          The leading dimension of the array B. LDB >= max(1,N).
@@ -92,6 +99,15 @@
 *  INFO    (output) INTEGER
 *          = 0:  successful exit.
 *          < 0:  if INFO = -i, the i-th argument had an illegal value.
+*          = 1:  the upper triangular factor R associated with A in the
+*                generalized QR factorization of the pair (A, B) is
+*                singular, so that rank(A) < M; the least squares
+*                solution could not be computed.
+*          = 2:  the bottom (N-M) by (N-M) part of the upper trapezoidal
+*                factor T associated with B in the generalized QR
+*                factorization of the pair (A, B) is singular, so that
+*                rank( A B ) < N; the least squares solution could not
+*                be computed.
 *
 *  ===================================================================
 *
@@ -106,7 +122,7 @@
      $                   NB4, NP
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CCOPY, CGEMV, CGGQRF, CTRSV, CUNMQR, CUNMRQ,
+      EXTERNAL           CCOPY, CGEMV, CGGQRF, CTRTRS, CUNMQR, CUNMRQ,
      $                   XERBLA
 *     ..
 *     .. External Functions ..
@@ -191,8 +207,14 @@
 *
 *     Solve T22*y2 = d2 for y2
 *
-      CALL CTRSV( 'Upper', 'No transpose', 'Non unit', N-M,
-     $            B( M+1, M+P-N+1 ), LDB, D( M+1 ), 1 )
+      CALL CTRTRS( 'Upper', 'No transpose', 'Non unit', N-M, 1,
+     $             B( M+1, M+P-N+1 ), LDB, D( M+1 ), N-M, INFO )
+*
+      IF( INFO.GT.0 ) THEN
+         INFO = 1
+         RETURN
+      END IF
+*
       CALL CCOPY( N-M, D( M+1 ), 1, Y( M+P-N+1 ), 1 )
 *
 *     Set y1 = 0
@@ -208,7 +230,13 @@
 *
 *     Solve triangular system: R11*x = d1
 *
-      CALL CTRSV( 'Upper', 'No Transpose', 'Non unit', M, A, LDA, D, 1 )
+      CALL CTRTRS( 'Upper', 'No Transpose', 'Non unit', M, 1, A, LDA,
+     $             D, M, INFO )
+*
+      IF( INFO.GT.0 ) THEN
+         INFO = 2
+         RETURN
+      END IF
 *
 *     Copy D to X
 *
