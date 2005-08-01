@@ -236,14 +236,17 @@
 *
       IF( M.LT.N ) THEN
          NR = M + P - N
-         CALL CGEMV( 'No transpose', NR, N-M, -CONE, A( N-P+1, M+1 ),
-     $               LDA, D( NR+1 ), 1, CONE, C( N-P+1 ), 1 )
+         IF( NR.GT.0 )
+     $      CALL CGEMV( 'No transpose', NR, N-M, -CONE, A( N-P+1, M+1 ),
+     $                  LDA, D( NR+1 ), 1, CONE, C( N-P+1 ), 1 )
       ELSE
          NR = P
       END IF
-      CALL CTRMV( 'Upper', 'No transpose', 'Non unit', NR,
-     $            A( N-P+1, N-P+1 ), LDA, D, 1 )
-      CALL CAXPY( NR, -CONE, D, 1, C( N-P+1 ), 1 )
+      IF( NR.GT.0 ) THEN
+         CALL CTRMV( 'Upper', 'No transpose', 'Non unit', NR,
+     $               A( N-P+1, N-P+1 ), LDA, D, 1 )
+         CALL CAXPY( NR, -CONE, D, 1, C( N-P+1 ), 1 )
+      END IF
 *
 *     Backward transformation x = Q'*x
 *
