@@ -619,7 +619,6 @@
 *
          PREW = W
 *
-  170    CONTINUE
          DO 180 J = 1, N
             DELTA( J ) = DELTA( J ) - ETA
   180    CONTINUE
