@@ -111,10 +111,10 @@
 *         the lower block. On exit, VL contains the last components of
 *         all right singular vectors of the bidiagonal matrix.
 *
-*  ALPHA  (input) REAL
+*  ALPHA  (input/output) REAL
 *         Contains the diagonal element associated with the added row.
 *
-*  BETA   (input) REAL
+*  BETA   (input/output) REAL
 *         Contains the off-diagonal element associated with the added
 *         row.
 *

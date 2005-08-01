@@ -111,10 +111,10 @@
 *         the lower block. On exit, VL contains the last components of
 *         all right singular vectors of the bidiagonal matrix.
 *
-*  ALPHA  (input) DOUBLE PRECISION
+*  ALPHA  (input/output) DOUBLE PRECISION
 *         Contains the diagonal element associated with the added row.
 *
-*  BETA   (input) DOUBLE PRECISION
+*  BETA   (input/output) DOUBLE PRECISION
 *         Contains the off-diagonal element associated with the added
 *         row.
 *
