@@ -50,16 +50,16 @@
 *  LDAB    (input) INTEGER
 *          The leading dimension of the array AB.  LDA >= KL+KU+1.
 *
-*  R       (output) REAL array, dimension (M)
+*  R       (input) REAL array, dimension (M)
 *          The row scale factors for A.
 *
-*  C       (output) REAL array, dimension (N)
+*  C       (input) REAL array, dimension (N)
 *          The column scale factors for A.
 *
-*  ROWCND  (output) REAL
+*  ROWCND  (input) REAL
 *          Ratio of the smallest R(i) to the largest R(i).
 *
-*  COLCND  (output) REAL
+*  COLCND  (input) REAL
 *          Ratio of the smallest C(i) to the largest C(i).
 *
 *  AMAX    (input) REAL
