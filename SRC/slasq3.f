@@ -86,7 +86,7 @@
       EXTERNAL           SLAMCH
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          ABS, MIN, SQRT
+      INTRINSIC          ABS, MAX, MIN, SQRT
 *     ..
 *     .. Save statement ..
       SAVE               TTYPE
