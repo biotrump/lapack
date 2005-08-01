@@ -157,7 +157,7 @@
       SAWNAN = .FALSE.
 *
 *     Compute the stationary transform (using the differential form)
-*     untill the index R2
+*     until the index R2
 *
       IF( B1.EQ.1 ) THEN
          WORK( INDS ) = ZERO
