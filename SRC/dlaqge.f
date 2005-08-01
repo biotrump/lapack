@@ -19,7 +19,7 @@
 *  =======
 *
 *  DLAQGE equilibrates a general M by N matrix A using the row and
-*  scaling factors in the vectors R and C.
+*  column scaling factors in the vectors R and C.
 *
 *  Arguments
 *  =========
