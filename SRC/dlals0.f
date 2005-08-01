@@ -179,6 +179,9 @@
       DOUBLE PRECISION   DLAMC3, DNRM2
       EXTERNAL           DLAMC3, DNRM2
 *     ..
+*     .. Intrinsic Functions ..
+      INTRINSIC          MAX
+*     ..
 *     .. Executable Statements ..
 *
 *     Test the input parameters.

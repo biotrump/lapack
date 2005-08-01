@@ -179,6 +179,9 @@
       REAL               SLAMC3, SNRM2
       EXTERNAL           SLAMC3, SNRM2
 *     ..
+*     .. Intrinsic Functions ..
+      INTRINSIC          MAX
+*     ..
 *     .. Executable Statements ..
 *
 *     Test the input parameters.

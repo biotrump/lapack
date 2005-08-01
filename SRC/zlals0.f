@@ -182,7 +182,7 @@
       EXTERNAL           DLAMC3, DNRM2
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          DBLE, DCMPLX, DIMAG
+      INTRINSIC          DBLE, DCMPLX, DIMAG, MAX
 *     ..
 *     .. Executable Statements ..
 *
