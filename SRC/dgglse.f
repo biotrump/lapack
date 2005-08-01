@@ -26,11 +26,14 @@
 *  M-vector, and d is a given P-vector. It is assumed that
 *  P <= N <= M+P, and
 *
-*           rank(B) = P and  rank( ( A ) ) = N.
-*                                ( ( B ) )
+*           rank(B) = P and  rank( (A) ) = N.
+*                                ( (B) )
 *
 *  These conditions ensure that the LSE problem has a unique solution,
-*  which is obtained using a GRQ factorization of the matrices B and A.
+*  which is obtained using a generalized RQ factorization of the
+*  matrices (B, A) given by
+*
+*     B = (0 R)*Q,   A = Z*T*Q.
 *
 *  Arguments
 *  =========
@@ -46,14 +49,16 @@
 *
 *  A       (input/output) DOUBLE PRECISION array, dimension (LDA,N)
 *          On entry, the M-by-N matrix A.
-*          On exit, A is destroyed.
+*          On exit, the elements on and above the diagonal of the array
+*          contain the min(M,N)-by-N upper trapezoidal matrix T.
 *
 *  LDA     (input) INTEGER
 *          The leading dimension of the array A. LDA >= max(1,M).
 *
 *  B       (input/output) DOUBLE PRECISION array, dimension (LDB,N)
 *          On entry, the P-by-N matrix B.
-*          On exit, B is destroyed.
+*          On exit, the upper triangle of the subarray B(1:P,N-P+1:N)
+*          contains the P-by-P upper triangular matrix R.
 *
 *  LDB     (input) INTEGER
 *          The leading dimension of the array B. LDB >= max(1,P).
@@ -90,6 +95,16 @@
 *  INFO    (output) INTEGER
 *          = 0:  successful exit.
 *          < 0:  if INFO = -i, the i-th argument had an illegal value.
+*          = 1:  the upper triangular factor R associated with B in the
+*                generalized RQ factorization of the pair (B, A) is
+*                singular, so that rank(B) < P; the least squares
+*                solution could not be computed.
+*          = 2:  the (N-P) by (N-P) part of the upper trapezoidal factor
+*                T associated with A in the generalized RQ factorization
+*                of the pair (B, A) is singular, so that
+*                rank( (A) ) < N; the least squares solution could not
+*                    ( (B) )
+*                be computed.
 *
 *  =====================================================================
 *
@@ -104,7 +119,7 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           DAXPY, DCOPY, DGEMV, DGGRQF, DORMQR, DORMRQ,
-     $                   DTRMV, DTRSV, XERBLA
+     $                   DTRMV, DTRTRS, XERBLA
 *     ..
 *     .. External Functions ..
       INTEGER            ILAENV
@@ -188,8 +203,13 @@
 *
 *     Solve T12*x2 = d for x2
 *
-      CALL DTRSV( 'Upper', 'No transpose', 'Non unit', P, B( 1, N-P+1 ),
-     $            LDB, D, 1 )
+      CALL DTRTRS( 'Upper', 'No transpose', 'Non-unit', P, 1,
+     $             B( 1, N-P+1 ), LDB, D, P, INFO )
+*
+      IF( INFO.GT.0 ) THEN
+         INFO = 1
+         RETURN
+      END IF
 *
 *     Update c1
 *
@@ -198,8 +218,13 @@
 *
 *     Sovle R11*x1 = c1 for x1
 *
-      CALL DTRSV( 'Upper', 'No transpose', 'Non unit', N-P, A, LDA, C,
-     $            1 )
+      CALL DTRTRS( 'Upper', 'No transpose', 'Non-unit', N-P, 1, A, LDA,
+     $             C, N-P, INFO )
+*
+      IF( INFO.GT.0 ) THEN
+         INFO = 2
+         RETURN
+      END IF
 *
 *     Put the solutions in X
 *
