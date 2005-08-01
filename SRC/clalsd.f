@@ -58,7 +58,7 @@
 *         On entry D contains the main diagonal of the bidiagonal
 *         matrix. On exit, if INFO = 0, D contains its singular values.
 *
-*  E      (input) REAL array, dimension (N-1)
+*  E      (input/output) REAL array, dimension (N-1)
 *         Contains the super-diagonal entries of the bidiagonal matrix.
 *         On exit, E has been destroyed.
 *
@@ -126,7 +126,7 @@
      $                   JREAL, JROW, K, NLVL, NM1, NRWORK, NSIZE, NSUB,
      $                   PERM, POLES, S, SIZEI, SMLSZP, SQRE, ST, ST1,
      $                   U, VT, Z
-      REAL               CS, EPS, ORGNRM, R, SN, TOL
+      REAL               CS, EPS, ORGNRM, R, RCND, SN, TOL
 *     ..
 *     .. External Functions ..
       INTEGER            ISAMAX
@@ -164,7 +164,9 @@
 *     Set up the tolerance.
 *
       IF( ( RCOND.LE.ZERO ) .OR. ( RCOND.GE.ONE ) ) THEN
-         RCOND = EPS
+         RCND = EPS
+      ELSE
+         RCND = RCOND
       END IF
 *
       RANK = 0
@@ -273,7 +275,7 @@
    80       CONTINUE
    90    CONTINUE
 *
-         TOL = RCOND*ABS( D( ISAMAX( N, D, 1 ) ) )
+         TOL = RCND*ABS( D( ISAMAX( N, D, 1 ) ) )
          DO 100 I = 1, N
             IF( D( I ).LE.TOL ) THEN
                CALL CLASET( 'A', 1, NRHS, CZERO, CZERO, B( I, 1 ), LDB )
@@ -498,7 +500,7 @@
 *
 *     Apply the singular values and treat the tiny ones as zero.
 *
-      TOL = RCOND*ABS( D( ISAMAX( N, D, 1 ) ) )
+      TOL = RCND*ABS( D( ISAMAX( N, D, 1 ) ) )
 *
       DO 250 I = 1, N
 *
