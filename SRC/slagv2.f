@@ -281,8 +281,6 @@
          BETA( 2 ) = ONE
       END IF
 *
-   10 CONTINUE
-*
       RETURN
 *
 *     End of SLAGV2
