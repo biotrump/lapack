@@ -54,10 +54,10 @@
 *  NRHS   (input) INTEGER
 *         The number of columns of B and BX. NRHS must be at least 1.
 *
-*  B      (input) COMPLEX array, dimension ( LDB, NRHS )
+*  B      (input/output) COMPLEX array, dimension ( LDB, NRHS )
 *         On input, B contains the right hand sides of the least
-*         squares problem in rows 1 through M. On output, B contains
-*         the solution X in rows 1 through N.
+*         squares problem in rows 1 through M.
+*         On output, B contains the solution X in rows 1 through N.
 *
 *  LDB    (input) INTEGER
 *         The leading dimension of B in the calling subprogram.
