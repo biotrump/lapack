@@ -226,10 +226,8 @@
 *
 *     Update d1 = d1 - T12*y2
 *
-      IF( N.GT.M ) THEN
-         CALL DGEMV( 'No transpose', M, N-M, -ONE, B( 1, M+P-N+1 ), LDB,
-     $               Y( M+P-N+1 ), 1, ONE, D, 1 )
-      END IF
+      CALL DGEMV( 'No transpose', M, N-M, -ONE, B( 1, M+P-N+1 ), LDB,
+     $            Y( M+P-N+1 ), 1, ONE, D, 1 )
 *
 *     Solve triangular system: R11*x = d1
 *
