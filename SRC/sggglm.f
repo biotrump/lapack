@@ -206,15 +206,17 @@
 *
 *     Solve T22*y2 = d2 for y2
 *
-      CALL STRTRS( 'Upper', 'No transpose', 'Non unit', N-M, 1,
-     $             B( M+1, M+P-N+1 ), LDB, D( M+1 ), N-M, INFO )
+      IF( N.GT.M ) THEN
+         CALL STRTRS( 'Upper', 'No transpose', 'Non unit', N-M, 1,
+     $                B( M+1, M+P-N+1 ), LDB, D( M+1 ), N-M, INFO )
 *
-      IF( INFO.GT.0 ) THEN
-         INFO = 1
-         RETURN
+         IF( INFO.GT.0 ) THEN
+            INFO = 1
+            RETURN
+         END IF
+*
+         CALL SCOPY( N-M, D( M+1 ), 1, Y( M+P-N+1 ), 1 )
       END IF
-*
-      CALL SCOPY( N-M, D( M+1 ), 1, Y( M+P-N+1 ), 1 )
 *
 *     Set y1 = 0
 *
@@ -224,22 +226,26 @@
 *
 *     Update d1 = d1 - T12*y2
 *
-      CALL SGEMV( 'No transpose', M, N-M, -ONE, B( 1, M+P-N+1 ), LDB,
-     $            Y( M+P-N+1 ), 1, ONE, D, 1 )
+      IF( N.GT.M ) THEN
+         CALL SGEMV( 'No transpose', M, N-M, -ONE, B( 1, M+P-N+1 ), LDB,
+     $               Y( M+P-N+1 ), 1, ONE, D, 1 )
+      END IF
 *
 *     Solve triangular system: R11*x = d1
 *
-      CALL STRTRS( 'Upper', 'No Transpose', 'Non unit', M, 1, A, LDA,
-     $             D, M, INFO )
+      IF( M.GT.0 ) THEN
+         CALL STRTRS( 'Upper', 'No Transpose', 'Non unit', M, 1, A, LDA,
+     $                D, M, INFO )
 *
-      IF( INFO.GT.0 ) THEN
-         INFO = 2
-         RETURN
+         IF( INFO.GT.0 ) THEN
+            INFO = 2
+            RETURN
+         END IF
+*
+*        Copy D to X
+*
+         CALL SCOPY( M, D, 1, X, 1 )
       END IF
-*
-*     Copy D to X
-*
-      CALL SCOPY( M, D, 1, X, 1 )
 *
 *     Backward transformation y = Z'*y
 *
