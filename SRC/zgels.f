@@ -291,7 +291,7 @@
             CALL ZTRTRS( 'Upper', 'No transpose', 'Non-unit', N, NRHS,
      $                   A, LDA, B, LDB, INFO )
 *
-            IF( INFO.EQ.0 ) THEN
+            IF( INFO.GT.0 ) THEN
                RETURN
             END IF
 *
@@ -306,7 +306,7 @@
             CALL ZTRTRS( 'Upper', 'Conjugate transpose','Non-unit',
      $                   N, NRHS, A, LDA, B, LDB, INFO )
 *
-            IF( INFO.EQ.0 ) THEN
+            IF( INFO.GT.0 ) THEN
                RETURN
             END IF
 *
@@ -348,7 +348,7 @@
             CALL ZTRTRS( 'Lower', 'No transpose', 'Non-unit', M, NRHS,
      $                   A, LDA, B, LDB, INFO )
 *
-            IF( INFO.EQ.0 ) THEN
+            IF( INFO.GT.0 ) THEN
                RETURN
             END IF
 *
@@ -387,7 +387,7 @@
             CALL ZTRTRS( 'Lower', 'Conjugate transpose', 'Non-unit',
      $                   M, NRHS, A, LDA, B, LDB, INFO )
 *
-            IF( INFO.EQ.0 ) THEN
+            IF( INFO.GT.0 ) THEN
                RETURN
             END IF
 *

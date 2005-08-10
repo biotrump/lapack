@@ -290,7 +290,7 @@
             CALL DTRTRS( 'Upper', 'No transpose', 'Non-unit', N, NRHS,
      $                   A, LDA, B, LDB, INFO )
 *
-            IF( INFO.EQ.0 ) THEN
+            IF( INFO.GT.0 ) THEN
                RETURN
             END IF
 *
@@ -305,7 +305,7 @@
             CALL DTRTRS( 'Upper', 'Transpose', 'Non-unit', N, NRHS,
      $                   A, LDA, B, LDB, INFO )
 *
-            IF( INFO.EQ.0 ) THEN
+            IF( INFO.GT.0 ) THEN
                RETURN
             END IF
 *
@@ -347,7 +347,7 @@
             CALL DTRTRS( 'Lower', 'No transpose', 'Non-unit', M, NRHS,
      $                   A, LDA, B, LDB, INFO )
 *
-            IF( INFO.EQ.0 ) THEN
+            IF( INFO.GT.0 ) THEN
                RETURN
             END IF
 *
@@ -386,7 +386,7 @@
             CALL DTRTRS( 'Lower', 'Transpose', 'Non-unit', M, NRHS,
      $                   A, LDA, B, LDB, INFO )
 *
-            IF( INFO.EQ.0 ) THEN
+            IF( INFO.GT.0 ) THEN
                RETURN
             END IF
 *

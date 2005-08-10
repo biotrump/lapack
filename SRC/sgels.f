@@ -290,7 +290,7 @@
             CALL STRTRS( 'Upper', 'No transpose', 'Non-unit', N, NRHS,
      $                   A, LDA, B, LDB, INFO )
 *
-            IF( INFO.EQ.0 ) THEN
+            IF( INFO.GT.0 ) THEN
                RETURN
             END IF
 *
@@ -305,7 +305,7 @@
             CALL STRTRS( 'Upper', 'Transpose', 'Non-unit', N, NRHS,
      $                   A, LDA, B, LDB, INFO )
 *
-            IF( INFO.EQ.0 ) THEN
+            IF( INFO.GT.0 ) THEN
                RETURN
             END IF
 *
@@ -347,7 +347,7 @@
             CALL STRTRS( 'Lower', 'No transpose', 'Non-unit', M, NRHS,
      $                   A, LDA, B, LDB, INFO )
 *
-            IF( INFO.EQ.0 ) THEN
+            IF( INFO.GT.0 ) THEN
                RETURN
             END IF
 *
@@ -383,10 +383,10 @@
 *
 *           B(1:M,1:NRHS) := inv(L') * B(1:M,1:NRHS)
 *
-            CALL DTRTRS( 'Lower', 'Transpose', 'Non-unit', M, NRHS,
+            CALL STRTRS( 'Lower', 'Transpose', 'Non-unit', M, NRHS,
      $                   A, LDA, B, LDB, INFO )
 *
-            IF( INFO.EQ.0 ) THEN
+            IF( INFO.GT.0 ) THEN
                RETURN
             END IF
 *
