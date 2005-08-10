@@ -204,33 +204,40 @@
 *
 *     Solve T12*x2 = d for x2
 *
-      CALL CTRTRS( 'Upper', 'No transpose', 'Non-unit', P, 1,
-     $             B( 1, N-P+1 ), LDB, D, P, INFO )
+      IF( P.GT.0 ) THEN
+         CALL CTRTRS( 'Upper', 'No transpose', 'Non-unit', P, 1,
+     $                B( 1, N-P+1 ), LDB, D, P, INFO )
 *
-      IF( INFO.GT.0 ) THEN
-         INFO = 1
-         RETURN
-      END IF
+         IF( INFO.GT.0 ) THEN
+            INFO = 1
+            RETURN
+         END IF
 *
-*     Update c1
+*        Put the solution in X
 *
-      CALL CGEMV( 'No transpose', N-P, P, -CONE, A( 1, N-P+1 ), LDA, D,
-     $            1, CONE, C, 1 )
-*
-*     Sovle R11*x1 = c1 for x1
-*
-      CALL CTRTRS( 'Upper', 'No transpose', 'Non-unit', N-P, 1, A, LDA,
-     $             C, N-P, INFO )
-*
-      IF( INFO.GT.0 ) THEN
-         INFO = 2
-         RETURN
-      END IF
-*
-*     Put the solutions in X
-*
-      CALL CCOPY( N-P, C, 1, X, 1 )
       CALL CCOPY( P, D, 1, X( N-P+1 ), 1 )
+*
+*        Update c1
+*
+         CALL CGEMV( 'No transpose', N-P, P, -CONE, A( 1, N-P+1 ), LDA,
+     $               D, 1, CONE, C, 1 )
+      END IF
+*
+*     Solve R11*x1 = c1 for x1
+*
+      IF( N.GT.P ) THEN
+         CALL CTRTRS( 'Upper', 'No transpose', 'Non-unit', N-P, 1,
+     $                A, LDA, C, N-P, INFO )
+*
+         IF( INFO.GT.0 ) THEN
+            INFO = 2
+            RETURN
+         END IF
+*
+*        Put the solutions in X
+*
+         CALL CCOPY( N-P, C, 1, X, 1 )
+      END IF
 *
 *     Compute the residual vector:
 *
