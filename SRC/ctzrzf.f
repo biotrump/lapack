@@ -32,7 +32,7 @@
 *          The number of rows of the matrix A.  M >= 0.
 *
 *  N       (input) INTEGER
-*          The number of columns of the matrix A.  N >= 0.
+*          The number of columns of the matrix A.  N >= M.
 *
 *  A       (input/output) COMPLEX array, dimension (LDA,N)
 *          On entry, the leading M-by-N upper trapezoidal part of the
