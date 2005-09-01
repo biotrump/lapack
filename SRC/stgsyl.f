@@ -227,29 +227,38 @@
 *
       IF( .NOT.NOTRAN .AND. .NOT.LSAME( TRANS, 'T' ) ) THEN
          INFO = -1
-      ELSE IF( ( IJOB.LT.0 ) .OR. ( IJOB.GT.4 ) ) THEN
-         INFO = -2
-      ELSE IF( M.LE.0 ) THEN
-         INFO = -3
-      ELSE IF( N.LE.0 ) THEN
-         INFO = -4
-      ELSE IF( LDA.LT.MAX( 1, M ) ) THEN
-         INFO = -6
-      ELSE IF( LDB.LT.MAX( 1, N ) ) THEN
-         INFO = -8
-      ELSE IF( LDC.LT.MAX( 1, M ) ) THEN
-         INFO = -10
-      ELSE IF( LDD.LT.MAX( 1, M ) ) THEN
-         INFO = -12
-      ELSE IF( LDE.LT.MAX( 1, N ) ) THEN
-         INFO = -14
-      ELSE IF( LDF.LT.MAX( 1, M ) ) THEN
-         INFO = -16
+      ELSE IF( NOTRAN ) THEN
+         IF( ( IJOB.LT.0 ) .OR. ( IJOB.GT.4 ) ) THEN
+            INFO = -2
+         END IF
+      END IF
+      IF( INFO.EQ.0 ) THEN
+         IF( M.LE.0 ) THEN
+            INFO = -3
+         ELSE IF( N.LE.0 ) THEN
+            INFO = -4
+         ELSE IF( LDA.LT.MAX( 1, M ) ) THEN
+            INFO = -6
+         ELSE IF( LDB.LT.MAX( 1, N ) ) THEN
+            INFO = -8
+         ELSE IF( LDC.LT.MAX( 1, M ) ) THEN
+            INFO = -10
+         ELSE IF( LDD.LT.MAX( 1, M ) ) THEN
+            INFO = -12
+         ELSE IF( LDE.LT.MAX( 1, N ) ) THEN
+            INFO = -14
+         ELSE IF( LDF.LT.MAX( 1, M ) ) THEN
+            INFO = -16
+         END IF
       END IF
 *
       IF( INFO.EQ.0 ) THEN
-         IF( ( IJOB.EQ.1 .OR. IJOB.EQ.2 ) .AND. NOTRAN ) THEN
-            LWMIN = MAX( 1, 2*M*N )
+         IF( NOTRAN ) THEN
+            IF( IJOB.EQ.1 .OR. IJOB.EQ.2 ) THEN
+               LWMIN = MAX( 1, 2*M*N )
+            ELSE
+               LWMIN = 1
+            END IF
          ELSE
             LWMIN = 1
          END IF
@@ -271,8 +280,10 @@
 *
       IF( M.EQ.0 .OR. N.EQ.0 ) THEN
          SCALE = 1
-         IF( IJOB.NE.0 .AND. NOTRAN ) THEN
-            DIF = 0
+         IF( NOTRAN ) THEN
+            IF( IJOB.NE.0 ) THEN
+               DIF = 0
+            END IF
          END IF
          RETURN
       END IF
@@ -284,12 +295,14 @@
 *
       ISOLVE = 1
       IFUNC = 0
-      IF( IJOB.GE.3 .AND. NOTRAN ) THEN
-         IFUNC = IJOB - 2
-         CALL SLASET( 'F', M, N, ZERO, ZERO, C, LDC )
-         CALL SLASET( 'F', M, N, ZERO, ZERO, F, LDF )
-      ELSE IF( IJOB.GE.1 .AND. NOTRAN ) THEN
-         ISOLVE = 2
+      IF( NOTRAN ) THEN
+         IF( IJOB.GE.3 ) THEN
+            IFUNC = IJOB - 2
+            CALL SLASET( 'F', M, N, ZERO, ZERO, C, LDC )
+            CALL SLASET( 'F', M, N, ZERO, ZERO, F, LDF )
+         ELSE IF( IJOB.GE.1 .AND. NOTRAN ) THEN
+            ISOLVE = 2
+         END IF
       END IF
 *
       IF( ( MB.LE.1 .AND. NB.LE.1 ) .OR. ( MB.GE.M .AND. NB.GE.N ) )
@@ -314,7 +327,9 @@
             END IF
 *
             IF( ISOLVE.EQ.2 .AND. IROUND.EQ.1 ) THEN
-               IFUNC = IJOB
+               IF( NOTRAN ) THEN
+                  IFUNC = IJOB
+               END IF
                SCALE2 = SCALE
                CALL SLACPY( 'F', M, N, C, LDC, WORK, M )
                CALL SLACPY( 'F', M, N, F, LDF, WORK( M*N+1 ), M )
@@ -452,7 +467,9 @@
                END IF
             END IF
             IF( ISOLVE.EQ.2 .AND. IROUND.EQ.1 ) THEN
-               IFUNC = IJOB
+               IF( NOTRAN ) THEN
+                  IFUNC = IJOB
+               END IF
                SCALE2 = SCALE
                CALL SLACPY( 'F', M, N, C, LDC, WORK, M )
                CALL SLACPY( 'F', M, N, F, LDF, WORK( M*N+1 ), M )
