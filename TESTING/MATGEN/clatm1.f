@@ -97,13 +97,13 @@
 *     ..
 *     .. Local Scalars ..
       INTEGER            I
-      REAL               ALPHA, TEMP
+      REAL               ALPHA, TEMP, SAFEMIN
       COMPLEX            CTEMP
 *     ..
 *     .. External Functions ..
-      REAL               SLARAN
+      REAL               SLARAN, SLAMCH
       COMPLEX            CLARND
-      EXTERNAL           SLARAN, CLARND
+      EXTERNAL           SLARAN, SLAMCH, CLARND
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           CLARNV, XERBLA
@@ -211,10 +211,11 @@
 *        If MODE neither -6 nor 0 nor 6, and IRSIGN = 1, assign
 *        random signs to D
 *
+         SAFEMIN = SLAMCH('Safe minimum')
          IF( ( MODE.NE.-6 .AND. MODE.NE.0 .AND. MODE.NE.6 ) .AND.
      $       IRSIGN.EQ.1 ) THEN
             DO 130 I = 1, N
-               CTEMP = CLARND( 3, ISEED )
+               CTEMP = CLARND( 3, ISEED ) + SAFEMIN
                D( I ) = D( I )*( CTEMP / ABS( CTEMP ) )
   130       CONTINUE
          END IF
