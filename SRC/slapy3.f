@@ -42,7 +42,10 @@
       ZABS = ABS( Z )
       W = MAX( XABS, YABS, ZABS )
       IF( W.EQ.ZERO ) THEN
-         SLAPY3 = ZERO
+*     W can be zero for max(0,nan,0)
+*     adding all three entries together will make sure
+*     NaN will not disappear.
+         SLAPY3 =  XABS + YABS + ZABS
       ELSE
          SLAPY3 = W*SQRT( ( XABS / W )**2+( YABS / W )**2+
      $            ( ZABS / W )**2 )

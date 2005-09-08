@@ -63,11 +63,13 @@
       PARAMETER          ( ONE = 1.0D+0, ZERO = 0.0D+0 )
 *     ..
 *     .. Local Scalars ..
-      INTEGER            J, JP
+      DOUBLE PRECISION   SFMIN 
+      INTEGER            I, J, JP
 *     ..
 *     .. External Functions ..
+      DOUBLE PRECISION   DLAMCH      
       INTEGER            IDAMAX
-      EXTERNAL           IDAMAX
+      EXTERNAL           DLAMCH, IDAMAX
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           DGER, DSCAL, DSWAP, XERBLA
@@ -97,6 +99,10 @@
       IF( M.EQ.0 .OR. N.EQ.0 )
      $   RETURN
 *
+*     Compute machine safe minimum 
+* 
+      SFMIN = DLAMCH('S')  
+*
       DO 10 J = 1, MIN( M, N )
 *
 *        Find pivot and test for singularity.
@@ -112,8 +118,15 @@
 *
 *           Compute elements J+1:M of J-th column.
 *
-            IF( J.LT.M )
-     $         CALL DSCAL( M-J, ONE / A( J, J ), A( J+1, J ), 1 )
+            IF( J.LT.M ) THEN 
+               IF( ABS(A( J, J )) .GE. SFMIN ) THEN 
+                  CALL DSCAL( M-J, ONE / A( J, J ), A( J+1, J ), 1 ) 
+               ELSE 
+                 DO 20 I = 1, M-J 
+                    A( J+I, J ) = A( J+I, J ) / A( J, J ) 
+   20            CONTINUE 
+               END IF 
+            END IF 
 *
          ELSE IF( INFO.EQ.0 ) THEN
 *

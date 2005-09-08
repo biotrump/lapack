@@ -64,11 +64,13 @@
      $                   ZERO = ( 0.0E+0, 0.0E+0 ) )
 *     ..
 *     .. Local Scalars ..
-      INTEGER            J, JP
+      REAL               SFMIN
+      INTEGER            I, J, JP
 *     ..
 *     .. External Functions ..
+      REAL               SLAMCH
       INTEGER            ICAMAX
-      EXTERNAL           ICAMAX
+      EXTERNAL           SLAMCH, ICAMAX
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           CGERU, CSCAL, CSWAP, XERBLA
@@ -98,6 +100,10 @@
       IF( M.EQ.0 .OR. N.EQ.0 )
      $   RETURN
 *
+*     Compute machine safe minimum
+*
+      SFMIN = SLAMCH('S') 
+*
       DO 10 J = 1, MIN( M, N )
 *
 *        Find pivot and test for singularity.
@@ -113,8 +119,15 @@
 *
 *           Compute elements J+1:M of J-th column.
 *
-            IF( J.LT.M )
-     $         CALL CSCAL( M-J, ONE / A( J, J ), A( J+1, J ), 1 )
+            IF( J.LT.M ) THEN
+               IF( ABS(A( J, J )) .GE. SFMIN ) THEN
+                  CALL CSCAL( M-J, ONE / A( J, J ), A( J+1, J ), 1 )
+               ELSE
+                  DO 20 I = 1, M-J
+                     A( J+I, J ) = A( J+I, J ) / A( J, J )
+   20             CONTINUE
+               END IF
+            END IF
 *
          ELSE IF( INFO.EQ.0 ) THEN
 *
