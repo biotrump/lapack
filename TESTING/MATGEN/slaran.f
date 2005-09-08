@@ -55,6 +55,7 @@
       INTRINSIC          MOD, REAL
 *     ..
 *     .. Executable Statements ..
+  10  CONTINUE
 *
 *     multiply the seed by the multiplier modulo 2**48
 *
@@ -82,6 +83,22 @@
 *
       SLARAN = R*( REAL( IT1 )+R*( REAL( IT2 )+R*( REAL( IT3 )+R*
      $         ( REAL( IT4 ) ) ) ) )
+*
+      IF (SLARAN.EQ.1.0) THEN
+*        If a real number has n bits of precision, and the first
+*        n bits of the 48-bit integer above happen to be all 1 (which
+*        will occur about once every 2**n calls), then SLARAN will
+*        be rounded to exactly 1.0. In IEEE single precision arithmetic,
+*        this will happen relatively often since n = 24.
+*        Since SLARAN is not supposed to return exactly 0.0 or 1.0
+*        (and some callers of SLARAN, such as CLARND, depend on that),
+*        the statistically correct thing to do in this situation is
+*        simply to iterate again.
+*        N.B. the case SLARAN = 0.0 should not be possible.
+*
+         GOTO 10
+      END IF
+*
       RETURN
 *
 *     End of SLARAN

@@ -55,6 +55,7 @@
       INTRINSIC          DBLE, MOD
 *     ..
 *     .. Executable Statements ..
+  10  CONTINUE
 *
 *     multiply the seed by the multiplier modulo 2**48
 *
@@ -82,6 +83,21 @@
 *
       DLARAN = R*( DBLE( IT1 )+R*( DBLE( IT2 )+R*( DBLE( IT3 )+R*
      $         ( DBLE( IT4 ) ) ) ) )
+*
+      IF (DLARAN.EQ.1.0D+0) THEN
+*        If a real number has n bits of precision, and the first
+*        n bits of the 48-bit integer above happen to be all 1 (which
+*        will occur about once every 2**n calls), then DLARAN will
+*        be rounded to exactly 1.0. 
+*        Since DLARAN is not supposed to return exactly 0.0 or 1.0
+*        (and some callers of DLARAN, such as CLARND, depend on that),
+*        the statistically correct thing to do in this situation is
+*        simply to iterate again.
+*        N.B. the case DLARAN = 0.0 should not be possible.
+*
+         GOTO 10
+      END IF
+*
       RETURN
 *
 *     End of DLARAN

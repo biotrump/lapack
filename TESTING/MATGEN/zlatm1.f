@@ -97,13 +97,13 @@
 *     ..
 *     .. Local Scalars ..
       INTEGER            I
-      DOUBLE PRECISION   ALPHA, TEMP, SAFEMIN
+      DOUBLE PRECISION   ALPHA, TEMP
       COMPLEX*16         CTEMP
 *     ..
 *     .. External Functions ..
-      DOUBLE PRECISION   DLARAN, DLAMCH
+      DOUBLE PRECISION   DLARAN
       COMPLEX*16         ZLARND
-      EXTERNAL           DLARAN, DLAMCH, ZLARND
+      EXTERNAL           DLARAN, ZLARND
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           XERBLA, ZLARNV
@@ -211,11 +211,10 @@
 *        If MODE neither -6 nor 0 nor 6, and IRSIGN = 1, assign
 *        random signs to D
 *
-         SAFEMIN = DLAMCH('Safe minimum')
          IF( ( MODE.NE.-6 .AND. MODE.NE.0 .AND. MODE.NE.6 ) .AND.
      $       IRSIGN.EQ.1 ) THEN
             DO 130 I = 1, N
-               CTEMP = ZLARND( 3, ISEED ) + SAFEMIN
+               CTEMP = ZLARND( 3, ISEED )
                D( I ) = D( I )*( CTEMP / ABS( CTEMP ) )
   130       CONTINUE
          END IF
