@@ -38,7 +38,7 @@
 *  where  norm1  denotes the  one norm of a matrix (maximum column sum),
 *  normI  denotes the  infinity norm  of a matrix  (maximum row sum) and
 *  normF  denotes the  Frobenius norm of a matrix (square root of sum of
-*  squares).  Note that  max(abs(A(i,j)))  is not a  matrix norm.
+*  squares).  Note that  max(abs(A(i,j)))  is not a consistent matrix norm.
 *
 *  Arguments
 *  =========
