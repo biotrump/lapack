@@ -6,14 +6,14 @@
 
 include make.inc
 
-all: install lib testing blas_testing timing blas_timing
+all: lapack_install lib lapack_testing blas_testing lapack_timing blas_timing
 
 lib: lapacklib tmglib
 #lib: blaslib lapacklib tmglib
 
 clean: cleanlib cleantesting cleanblas_testing cleantiming
 
-install:
+lapack_install:
 	( cd INSTALL; $(MAKE); ./testlsame; ./testslamch; \
 	  ./testdlamch; ./testsecond; ./testdsecnd; \
 	  cp lsame.f ../BLAS/SRC/; cp lsame.f ../SRC; \
@@ -29,7 +29,7 @@ lapacklib:
 tmglib:
 	( cd TESTING/MATGEN; $(MAKE) )
 
-testing:
+lapack_testing:
 	( cd TESTING ; $(MAKE) )
 
 blas_testing:
@@ -57,7 +57,7 @@ blas_testing:
 	           ./xblat3z < zblat3.in     ; \
 	           mv ZBLAT3.SUMM zblat3.out )
 
-timing:
+lapack_timing:
 	( cd TIMING; $(MAKE) )
 
 blas_timing:
