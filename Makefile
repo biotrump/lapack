@@ -15,10 +15,11 @@ clean: cleanlib cleantesting cleanblas_testing cleantiming
 
 lapack_install:
 	( cd INSTALL; $(MAKE); ./testlsame; ./testslamch; \
-	  ./testdlamch; ./testsecond; ./testdsecnd; \
+	  ./testdlamch; ./testsecond; ./testdsecnd; ./testversion \
 	  cp lsame.f ../BLAS/SRC/; cp lsame.f ../SRC; \
 	  cp slamch.f ../SRC/; cp dlamch.f ../SRC/; \
-	  cp second.f ../SRC/; cp dsecnd.f ../SRC/ )
+	  cp second.f ../SRC/; cp dsecnd.f ../SRC/; \
+	  cp ilaver.f ../SRC )
 
 blaslib:
 	( cd BLAS/SRC; $(MAKE) )
