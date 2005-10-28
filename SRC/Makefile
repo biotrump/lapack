@@ -38,7 +38,7 @@ include ../make.inc
 #
 #######################################################################
  
-ALLAUX = ilaenv.o ieeeck.o lsame.o lsamen.o xerbla.o
+ALLAUX = ilaenv.o ieeeck.o lsame.o lsamen.o xerbla.o ilaver.o
 
 SCLAUX = \
    sbdsdc.o \
