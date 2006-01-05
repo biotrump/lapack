@@ -71,9 +71,6 @@
 *  form: 
 *    alpha = S(i,i), beta = P(i,i).
 *
-*  Change to implicit shift and exceptional shift calculations,  
-*  Bobby Cheng, MathWorks.
-*
 *  Ref: C.B. Moler & G.W. Stewart, "An Algorithm for Generalized Matrix
 *       Eigenvalue Problems", SIAM J. Numer. Anal., 10(1973),
 *       pp. 241--256.
@@ -374,7 +371,6 @@
          ALPHAR( J ) = H( J, J )
          ALPHAI( J ) = ZERO
          BETA( J ) = T( J, J )
-         WORK(J) = 0
    30 CONTINUE
 *
 *     If IHI < ILO, skip QZ steps
@@ -591,7 +587,6 @@
          ALPHAR( ILAST ) = H( ILAST, ILAST )
          ALPHAI( ILAST ) = ZERO
          BETA( ILAST ) = T( ILAST, ILAST )
-         WORK(ILAST) = IITER
 *
 *        Go to next block -- exit if finished.
 *
@@ -629,12 +624,12 @@
 *
          IF( ( IITER / 10 )*10.EQ.IITER ) THEN
 *
-*           Exceptional shift.
+*           Exceptional shift.  Chosen for no particularly good reason.
 *           (Single shift only.)
 *
-            IF( ( DBLE( MAXIT )*SAFMIN )*ABS( H( ILAST, ILAST-1 ) ).LT.
+            IF( ( DBLE( MAXIT )*SAFMIN )*ABS( H( ILAST-1, ILAST ) ).LT.
      $          ABS( T( ILAST-1, ILAST-1 ) ) ) THEN
-               ESHIFT = H( ILAST, ILAST-1 ) /
+               ESHIFT = ESHIFT + H( ILAST-1, ILAST ) /
      $                  T( ILAST-1, ILAST-1 )
             ELSE
                ESHIFT = ESHIFT + ONE / ( SAFMIN*DBLE( MAXIT ) )
@@ -651,16 +646,6 @@
             CALL DLAG2( H( ILAST-1, ILAST-1 ), LDH,
      $                  T( ILAST-1, ILAST-1 ), LDT, SAFMIN*SAFETY, S1,
      $                  S2, WR, WR2, WI )
-*
-            IF (ABS((WR/S1)*T(ILAST,ILAST)-H(ILAST,ILAST)) .GT. 
-     $          ABS((WR2/S2)*T(ILAST,ILAST)-H(ILAST,ILAST))) THEN
-                    TEMP = WR
-                    WR = WR2
-                    WR2 = TEMP
-                    TEMP = S1
-                    S1 = S2
-                    S2 = TEMP
-            END IF
 *
             TEMP = MAX( S1, SAFMIN*MAX( ONE, ABS( WR ), ABS( WI ) ) )
             IF( WI.NE.ZERO )
@@ -813,7 +798,6 @@
 *           If B22 is negative, negate column ILAST
 *
             IF( B22.LT.ZERO ) THEN
-               B22 = -B22
                DO 210 J = IFRSTM, ILAST
                   H( J, ILAST ) = -H( J, ILAST )
                   T( J, ILAST ) = -T( J, ILAST )
@@ -937,8 +921,6 @@
             ALPHAI( ILAST-1 ) = ( WI*B1A )*S1INV
             ALPHAR( ILAST ) = ( WR*B2A )*S1INV
             ALPHAI( ILAST ) = -( WI*B2A )*S1INV
-            WORK(ILAST-1) = 0
-            WORK(ILAST) = IITER
 *
 *           Step 3: Go to next block -- exit if finished.
 *
@@ -1246,7 +1228,6 @@
          ALPHAR( J ) = H( J, J )
          ALPHAI( J ) = ZERO
          BETA( J ) = T( J, J )
-         WORK(J) = 0
   410 CONTINUE
 *
 *     Normal Termination
@@ -1256,6 +1237,7 @@
 *     Exit (other than argument error) -- return optimal workspace size
 *
   420 CONTINUE
+      WORK( 1 ) = DBLE( N )
       RETURN
 *
 *     End of DHGEQZ

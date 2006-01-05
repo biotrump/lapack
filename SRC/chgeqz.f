@@ -60,9 +60,6 @@
 *  directly from the generalized Schur form:  alpha = S(i,i),
 *  beta = P(i,i).
 *
-*     Change to implicit shift and exceptional shift calculations,
-*     Bobby Cheng, MathWorks.
-*
 *  Ref: C.B. Moler & G.W. Stewart, "An Algorithm for Generalized Matrix
 *       Eigenvalue Problems", SIAM J. Numer. Anal., 10(1973),
 *       pp. 241--256.
@@ -205,9 +202,9 @@
      $                   JR, MAXIT
       REAL               ABSB, ANORM, ASCALE, ATOL, BNORM, BSCALE, BTOL,
      $                   C, SAFMIN, TEMP, TEMP2, TEMPR, ULP
-      COMPLEX            A12, A21, A22, B12, CTEMP, CTEMP2,
-     $                   CTEMP3, ESHIFT, S, SHIFT, SIGNBC, T1,
-     $                   D, R1, R2, SIGMA1, SIGMA2, RHO, X
+      COMPLEX            ABI22, AD11, AD12, AD21, AD22, CTEMP, CTEMP2,
+     $                   CTEMP3, ESHIFT, RTDISC, S, SHIFT, SIGNBC, T1,
+     $                   U12, X
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
@@ -349,8 +346,7 @@ c     WORK( 1 ) = CMPLX( 1 )
          END IF
          ALPHA( J ) = H( J, J )
          BETA( J ) = T( J, J )
-         RWORK(J) = 0 
-  10  CONTINUE
+   10 CONTINUE
 *
 *     If IHI < ILO, skip QZ steps
 *
@@ -562,7 +558,6 @@ c     WORK( 1 ) = CMPLX( 1 )
          END IF
          ALPHA( ILAST ) = H( ILAST, ILAST )
          BETA( ILAST ) = T( ILAST, ILAST )
-         RWORK(ILAST) = IITER
 *
 *        Go to next block -- exit if finished.
 *
@@ -600,43 +595,40 @@ c     WORK( 1 ) = CMPLX( 1 )
 *
          IF( ( IITER / 10 )*10.NE.IITER ) THEN
 *
-*           sigma = eigenvalues of lower 2x2 H - lambda*T
-*           rho = H(1,1) - (sigma closest to H(2,2)/T(2,2))*T(1,1)
-*           [rho; H(2,1)] is the initial vector for implicit 2-by-2 QZ.
+*           The Wilkinson shift (AEP p.512), i.e., the eigenvalue of
+*           the bottom-right 2x2 block of A inv(B) which is nearest to
+*           the bottom-right element.
 *
-*           Form (H - r1*T)/diag(T) and T/diag(T) where r1 = H(1,1)/T(1,1)
+*           We factor B as U*D, where U has unit diagonals, and
+*           compute (A*inv(D))*inv(U).
 *
-            R1 = H(ILAST-1,ILAST-1)/T(ILAST-1,ILAST-1)
-            R2 = H(ILAST,ILAST)/T(ILAST,ILAST)
-            A12 = (H(ILAST-1,ILAST)-R1*T(ILAST-1,ILAST))/T(ILAST,ILAST)
-            A21 = H(ILAST,ILAST-1)/T(ILAST-1,ILAST-1)
-            A22 = R2-R1
-            B12 = T(ILAST-1,ILAST)/T(ILAST,ILAST)
+            U12 = ( BSCALE*T( ILAST-1, ILAST ) ) /
+     $            ( BSCALE*T( ILAST, ILAST ) )
+            AD11 = ( ASCALE*H( ILAST-1, ILAST-1 ) ) /
+     $             ( BSCALE*T( ILAST-1, ILAST-1 ) )
+            AD21 = ( ASCALE*H( ILAST, ILAST-1 ) ) /
+     $             ( BSCALE*T( ILAST-1, ILAST-1 ) )
+            AD12 = ( ASCALE*H( ILAST-1, ILAST ) ) /
+     $             ( BSCALE*T( ILAST, ILAST ) )
+            AD22 = ( ASCALE*H( ILAST, ILAST ) ) /
+     $             ( BSCALE*T( ILAST, ILAST ) )
+            ABI22 = AD22 - U12*AD21
 *
-*           Solve quadratic equation without destructive roundoff
-*           or under/overflow.
-*
-            T1 = (A21*B12 - A22)/2.0E0
-            D = SQRT(T1*T1 + A12*A21)
-            SIGMA1 = R1 - (T1-D)
-            SIGMA2 = R1 - (T1+D)
-*
-*           Choose eigenvalue closest to r2.
-*           Compute rho without subtracting r1 from sigma.
-*
-            IF (ABS(SIGMA1 - R2) .LE. ABS(SIGMA2 - R2)) THEN
-               SHIFT = SIGMA1
-               RHO = T(ILAST-1,ILAST-1)*(T1-D)
+            T1 = HALF*( AD11+ABI22 )
+            RTDISC = SQRT( T1**2+AD12*AD21-AD11*AD22 )
+            TEMP = REAL( T1-ABI22 )*REAL( RTDISC ) +
+     $             AIMAG( T1-ABI22 )*AIMAG( RTDISC )
+            IF( TEMP.LE.ZERO ) THEN
+               SHIFT = T1 + RTDISC
             ELSE
-               SHIFT = SIGMA2
-               RHO = T(ILAST-1,ILAST-1)*(T1+D)
+               SHIFT = T1 - RTDISC
             END IF
-*
          ELSE
 *
-*           Exceptional shift.
+*           Exceptional shift.  Chosen for no particularly good reason.
 *
-            ESHIFT = ESHIFT + H(ILAST,ILAST-1)/T(ILAST-1,ILAST-1)
+            ESHIFT = ESHIFT + CONJG( ( ASCALE*H( ILAST-1, ILAST ) ) /
+     $               ( BSCALE*T( ILAST-1, ILAST-1 ) ) )
             SHIFT = ESHIFT
          END IF
 *
@@ -644,8 +636,8 @@ c     WORK( 1 ) = CMPLX( 1 )
 *
          DO 80 J = ILAST - 1, IFIRST + 1, -1
             ISTART = J
-            CTEMP = H( J, J ) - SHIFT*T( J, J )
-            TEMP = ASCALE*ABS1( CTEMP )
+            CTEMP = ASCALE*H( J, J ) - SHIFT*( BSCALE*T( J, J ) )
+            TEMP = ABS1( CTEMP )
             TEMP2 = ASCALE*ABS1( H( J+1, J ) )
             TEMPR = MAX( TEMP, TEMP2 )
             IF( TEMPR.LT.ONE .AND. TEMPR.NE.ZERO ) THEN
@@ -657,18 +649,15 @@ c     WORK( 1 ) = CMPLX( 1 )
    80    CONTINUE
 *
          ISTART = IFIRST
-         IF (ISTART .EQ. ILAST-1) THEN
-            CTEMP = RHO
-         ELSE
-            CTEMP = H( ISTART, ISTART ) - SHIFT*T( ISTART, ISTART )
-         END IF
+         CTEMP = ASCALE*H( IFIRST, IFIRST ) -
+     $           SHIFT*( BSCALE*T( IFIRST, IFIRST ) )
    90    CONTINUE
 *
 *        Do an implicit-shift QZ sweep.
 *
 *        Initial Q
 *
-         CTEMP2 = H( ISTART+1, ISTART )
+         CTEMP2 = ASCALE*H( ISTART+1, ISTART )
          CALL CLARTG( CTEMP, CTEMP2, C, S, CTEMP3 )
 *
 *        Sweep
@@ -753,7 +742,6 @@ c     WORK( 1 ) = CMPLX( 1 )
          END IF
          ALPHA( J ) = H( J, J )
          BETA( J ) = T( J, J )
-         RWORK(J) = 0 
   200 CONTINUE
 *
 *     Normal Termination
