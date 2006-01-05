@@ -146,8 +146,9 @@
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
+      INTEGER            ILAENV
       REAL               CLANHE, SLAMCH
-      EXTERNAL           LSAME, CLANHE, SLAMCH
+      EXTERNAL           ILAENV, LSAME, CLANHE, SLAMCH
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           CHETRD, CLACPY, CLASCL, CSTEDC, CUNMTR, SSCAL,
