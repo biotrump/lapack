@@ -106,7 +106,7 @@
       REAL               ZERO, ONE
       PARAMETER          ( ZERO = 0.0E+0, ONE = 1.0E+0 )
       REAL               SCLFAC
-      PARAMETER          ( SCLFAC = 0.8E+1 )
+      PARAMETER          ( SCLFAC = 2.0E+0 )
       REAL               FACTOR
       PARAMETER          ( FACTOR = 0.95E+0 )
 *     ..

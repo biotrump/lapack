@@ -106,7 +106,7 @@
       DOUBLE PRECISION   ZERO, ONE
       PARAMETER          ( ZERO = 0.0D+0, ONE = 1.0D+0 )
       DOUBLE PRECISION   SCLFAC
-      PARAMETER          ( SCLFAC = 0.8D+1 )
+      PARAMETER          ( SCLFAC = 2.0D+0 )
       DOUBLE PRECISION   FACTOR
       PARAMETER          ( FACTOR = 0.95D+0 )
 *     ..
