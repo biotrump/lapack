@@ -64,7 +64,7 @@
 *  GAMMA   (input) DOUBLE PRECISION
 *          The diagonal element gamma.
 *
-*  SEDTPR  (output) DOUBLE PRECISION
+*  SESTPR  (output) DOUBLE PRECISION
 *          Estimated singular value of (j+1) by (j+1) matrix Lhat.
 *
 *  S       (output) DOUBLE PRECISION
