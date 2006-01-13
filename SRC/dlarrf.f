@@ -67,8 +67,15 @@
 *          elements of the unit bidiagonal matrix L(+). LPLUS( N ) is
 *          set to SIGMA.
 *
-*  WORK    (input) DOUBLE PRECISION array, dimension (???)
+*  WORK    (workspace) DOUBLE PRECISION array, dimension (1)
 *          Workspace.
+*
+*  IWORK   (workspace) INTEGER array, dimension (1)
+*          Workspace.
+*
+*  INFO    (output) INTEGER
+*          = 0:  successful exit
+*          = 1:  either IFIRST .NE. 1 or ILAST .NE. N
 *
 *  Further Details
 *  ===============

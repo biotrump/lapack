@@ -64,10 +64,10 @@
 *         On entry, maximum size of the subproblems at the
 *         bottom of the computation tree.
 *
-*  IWORK  INTEGER work array.
+*  IWORK  (workspace) INTEGER work array.
 *         Dimension must be at least (8 * N)
 *
-*  WORK   DOUBLE PRECISION work array.
+*  WORK   (workspace) DOUBLE PRECISION work array.
 *         Dimension must be at least (3 * M**2 + 2 * M)
 *
 *  INFO   (output) INTEGER
