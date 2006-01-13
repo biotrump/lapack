@@ -60,7 +60,7 @@ SBLAS1 = isamax.o sasum.o saxpy.o scopy.o sdot.o snrm2.o \
 	srot.o srotg.o sscal.o sswap.o
 $(SBLAS1): $(FRC)
 
-CBLAS1 = scasum.o scnrm2.o icamax.o caxpy.o ccopy.o \
+CBLAS1 = scabs1.o scasum.o scnrm2.o icamax.o caxpy.o ccopy.o \
 	cdotc.o cdotu.o csscal.o crotg.o cscal.o cswap.o
 $(CBLAS1): $(FRC)
 
