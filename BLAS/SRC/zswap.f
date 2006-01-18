@@ -1,36 +1,44 @@
-      subroutine  zswap (n,zx,incx,zy,incy)
+      SUBROUTINE ZSWAP(N,ZX,INCX,ZY,INCY)
 c
 c     interchanges two vectors.
 c     jack dongarra, 3/11/78.
 c     modified 12/3/93, array(1) declarations changed to array(*)
 c
-      double complex zx(*),zy(*),ztemp
-      integer i,incx,incy,ix,iy,n
 c
-      if(n.le.0)return
-      if(incx.eq.1.and.incy.eq.1)go to 20
+C     .. Scalar Arguments ..
+      INTEGER INCX,INCY,N
+C     ..
+C     .. Array Arguments ..
+      DOUBLE COMPLEX ZX(*),ZY(*)
+C     ..
+C     .. Local Scalars ..
+      DOUBLE COMPLEX ZTEMP
+      INTEGER I,IX,IY
+C     ..
+      IF (N.LE.0) RETURN
+      IF (INCX.EQ.1 .AND. INCY.EQ.1) GO TO 20
 c
 c       code for unequal increments or equal increments not equal
 c         to 1
 c
-      ix = 1
-      iy = 1
-      if(incx.lt.0)ix = (-n+1)*incx + 1
-      if(incy.lt.0)iy = (-n+1)*incy + 1
-      do 10 i = 1,n
-        ztemp = zx(ix)
-        zx(ix) = zy(iy)
-        zy(iy) = ztemp
-        ix = ix + incx
-        iy = iy + incy
-   10 continue
-      return
+      IX = 1
+      IY = 1
+      IF (INCX.LT.0) IX = (-N+1)*INCX + 1
+      IF (INCY.LT.0) IY = (-N+1)*INCY + 1
+      DO 10 I = 1,N
+          ZTEMP = ZX(IX)
+          ZX(IX) = ZY(IY)
+          ZY(IY) = ZTEMP
+          IX = IX + INCX
+          IY = IY + INCY
+   10 CONTINUE
+      RETURN
 c
 c       code for both increments equal to 1
-   20 do 30 i = 1,n
-        ztemp = zx(i)
-        zx(i) = zy(i)
-        zy(i) = ztemp
-   30 continue
-      return
-      end
+   20 DO 30 I = 1,N
+          ZTEMP = ZX(I)
+          ZX(I) = ZY(I)
+          ZY(I) = ZTEMP
+   30 CONTINUE
+      RETURN
+      END

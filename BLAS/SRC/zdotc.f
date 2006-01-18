@@ -1,36 +1,48 @@
-      double complex function zdotc(n,zx,incx,zy,incy)
+      DOUBLE COMPLEX FUNCTION ZDOTC(N,ZX,INCX,ZY,INCY)
 c
 c     forms the dot product of a vector.
 c     jack dongarra, 3/11/78.
 c     modified 12/3/93, array(1) declarations changed to array(*)
 c
-      double complex zx(*),zy(*),ztemp
-      integer i,incx,incy,ix,iy,n
-      ztemp = (0.0d0,0.0d0)
-      zdotc = (0.0d0,0.0d0)
-      if(n.le.0)return
-      if(incx.eq.1.and.incy.eq.1)go to 20
+
+C     .. Scalar Arguments ..
+      INTEGER INCX,INCY,N
+C     ..
+C     .. Array Arguments ..
+      DOUBLE COMPLEX ZX(*),ZY(*)
+C     ..
+C     .. Local Scalars ..
+      DOUBLE COMPLEX ZTEMP
+      INTEGER I,IX,IY
+C     ..
+C     .. Intrinsic Functions ..
+      INTRINSIC DCONJG
+C     ..
+      ZTEMP = (0.0d0,0.0d0)
+      ZDOTC = (0.0d0,0.0d0)
+      IF (N.LE.0) RETURN
+      IF (INCX.EQ.1 .AND. INCY.EQ.1) GO TO 20
 c
 c        code for unequal increments or equal increments
 c          not equal to 1
 c
-      ix = 1
-      iy = 1
-      if(incx.lt.0)ix = (-n+1)*incx + 1
-      if(incy.lt.0)iy = (-n+1)*incy + 1
-      do 10 i = 1,n
-        ztemp = ztemp + dconjg(zx(ix))*zy(iy)
-        ix = ix + incx
-        iy = iy + incy
-   10 continue
-      zdotc = ztemp
-      return
+      IX = 1
+      IY = 1
+      IF (INCX.LT.0) IX = (-N+1)*INCX + 1
+      IF (INCY.LT.0) IY = (-N+1)*INCY + 1
+      DO 10 I = 1,N
+          ZTEMP = ZTEMP + DCONJG(ZX(IX))*ZY(IY)
+          IX = IX + INCX
+          IY = IY + INCY
+   10 CONTINUE
+      ZDOTC = ZTEMP
+      RETURN
 c
 c        code for both increments equal to 1
 c
-   20 do 30 i = 1,n
-        ztemp = ztemp + dconjg(zx(i))*zy(i)
-   30 continue
-      zdotc = ztemp
-      return
-      end
+   20 DO 30 I = 1,N
+          ZTEMP = ZTEMP + DCONJG(ZX(I))*ZY(I)
+   30 CONTINUE
+      ZDOTC = ZTEMP
+      RETURN
+      END

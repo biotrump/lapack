@@ -1,48 +1,59 @@
-      subroutine saxpy(n,sa,sx,incx,sy,incy)
+      SUBROUTINE SAXPY(N,SA,SX,INCX,SY,INCY)
 c
 c     constant times a vector plus a vector.
 c     uses unrolled loop for increments equal to one.
 c     jack dongarra, linpack, 3/11/78.
 c     modified 12/3/93, array(1) declarations changed to array(*)
 c
-      real sx(*),sy(*),sa
-      integer i,incx,incy,ix,iy,m,mp1,n
 c
-      if(n.le.0)return
-      if (sa .eq. 0.0) return
-      if(incx.eq.1.and.incy.eq.1)go to 20
+C     .. Scalar Arguments ..
+      REAL SA
+      INTEGER INCX,INCY,N
+C     ..
+C     .. Array Arguments ..
+      REAL SX(*),SY(*)
+C     ..
+C     .. Local Scalars ..
+      INTEGER I,IX,IY,M,MP1
+C     ..
+C     .. Intrinsic Functions ..
+      INTRINSIC MOD
+C     ..
+      IF (N.LE.0) RETURN
+      IF (SA.EQ.0.0) RETURN
+      IF (INCX.EQ.1 .AND. INCY.EQ.1) GO TO 20
 c
 c        code for unequal increments or equal increments
 c          not equal to 1
 c
-      ix = 1
-      iy = 1
-      if(incx.lt.0)ix = (-n+1)*incx + 1
-      if(incy.lt.0)iy = (-n+1)*incy + 1
-      do 10 i = 1,n
-        sy(iy) = sy(iy) + sa*sx(ix)
-        ix = ix + incx
-        iy = iy + incy
-   10 continue
-      return
+      IX = 1
+      IY = 1
+      IF (INCX.LT.0) IX = (-N+1)*INCX + 1
+      IF (INCY.LT.0) IY = (-N+1)*INCY + 1
+      DO 10 I = 1,N
+          SY(IY) = SY(IY) + SA*SX(IX)
+          IX = IX + INCX
+          IY = IY + INCY
+   10 CONTINUE
+      RETURN
 c
 c        code for both increments equal to 1
 c
 c
 c        clean-up loop
 c
-   20 m = mod(n,4)
-      if( m .eq. 0 ) go to 40
-      do 30 i = 1,m
-        sy(i) = sy(i) + sa*sx(i)
-   30 continue
-      if( n .lt. 4 ) return
-   40 mp1 = m + 1
-      do 50 i = mp1,n,4
-        sy(i) = sy(i) + sa*sx(i)
-        sy(i + 1) = sy(i + 1) + sa*sx(i + 1)
-        sy(i + 2) = sy(i + 2) + sa*sx(i + 2)
-        sy(i + 3) = sy(i + 3) + sa*sx(i + 3)
-   50 continue
-      return
-      end
+   20 M = MOD(N,4)
+      IF (M.EQ.0) GO TO 40
+      DO 30 I = 1,M
+          SY(I) = SY(I) + SA*SX(I)
+   30 CONTINUE
+      IF (N.LT.4) RETURN
+   40 MP1 = M + 1
+      DO 50 I = MP1,N,4
+          SY(I) = SY(I) + SA*SX(I)
+          SY(I+1) = SY(I+1) + SA*SX(I+1)
+          SY(I+2) = SY(I+2) + SA*SX(I+2)
+          SY(I+3) = SY(I+3) + SA*SX(I+3)
+   50 CONTINUE
+      RETURN
+      END

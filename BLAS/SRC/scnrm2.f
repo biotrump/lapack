@@ -1,9 +1,10 @@
-      REAL             FUNCTION SCNRM2( N, X, INCX )
-*     .. Scalar Arguments ..
-      INTEGER                           INCX, N
-*     .. Array Arguments ..
-      COMPLEX                           X( * )
-*     ..
+      REAL FUNCTION SCNRM2(N,X,INCX)
+C     .. Scalar Arguments ..
+      INTEGER INCX,N
+C     ..
+C     .. Array Arguments ..
+      COMPLEX X(*)
+C     ..
 *
 *  SCNRM2 returns the euclidean norm of a vector via the function
 *  name, so that
@@ -17,46 +18,47 @@
 *     Sven Hammarling, Nag Ltd.
 *
 *
-*     .. Parameters ..
-      REAL                  ONE         , ZERO
-      PARAMETER           ( ONE = 1.0E+0, ZERO = 0.0E+0 )
-*     .. Local Scalars ..
-      INTEGER               IX
-      REAL                  NORM, SCALE, SSQ, TEMP
-*     .. Intrinsic Functions ..
-      INTRINSIC             ABS, AIMAG, REAL, SQRT
-*     ..
-*     .. Executable Statements ..
-      IF( N.LT.1 .OR. INCX.LT.1 )THEN
-         NORM  = ZERO
+C     .. Parameters ..
+      REAL ONE,ZERO
+      PARAMETER (ONE=1.0E+0,ZERO=0.0E+0)
+C     ..
+C     .. Local Scalars ..
+      REAL NORM,SCALE,SSQ,TEMP
+      INTEGER IX
+C     ..
+C     .. Intrinsic Functions ..
+      INTRINSIC ABS,AIMAG,REAL,SQRT
+C     ..
+      IF (N.LT.1 .OR. INCX.LT.1) THEN
+          NORM = ZERO
       ELSE
-         SCALE = ZERO
-         SSQ   = ONE
+          SCALE = ZERO
+          SSQ = ONE
 *        The following loop is equivalent to this call to the LAPACK
 *        auxiliary routine:
 *        CALL CLASSQ( N, X, INCX, SCALE, SSQ )
 *
-         DO 10, IX = 1, 1 + ( N - 1 )*INCX, INCX
-            IF( REAL( X( IX ) ).NE.ZERO )THEN
-               TEMP = ABS( REAL( X( IX ) ) )
-               IF( SCALE.LT.TEMP )THEN
-                  SSQ   = ONE   + SSQ*( SCALE/TEMP )**2
-                  SCALE = TEMP
-               ELSE
-                  SSQ   = SSQ   +     ( TEMP/SCALE )**2
-               END IF
-            END IF
-            IF( AIMAG( X( IX ) ).NE.ZERO )THEN
-               TEMP = ABS( AIMAG( X( IX ) ) )
-               IF( SCALE.LT.TEMP )THEN
-                  SSQ   = ONE   + SSQ*( SCALE/TEMP )**2
-                  SCALE = TEMP
-               ELSE
-                  SSQ   = SSQ   +     ( TEMP/SCALE )**2
-               END IF
-            END IF
-   10    CONTINUE
-         NORM  = SCALE * SQRT( SSQ )
+          DO 10 IX = 1,1 + (N-1)*INCX,INCX
+              IF (REAL(X(IX)).NE.ZERO) THEN
+                  TEMP = ABS(REAL(X(IX)))
+                  IF (SCALE.LT.TEMP) THEN
+                      SSQ = ONE + SSQ* (SCALE/TEMP)**2
+                      SCALE = TEMP
+                  ELSE
+                      SSQ = SSQ + (TEMP/SCALE)**2
+                  END IF
+              END IF
+              IF (AIMAG(X(IX)).NE.ZERO) THEN
+                  TEMP = ABS(AIMAG(X(IX)))
+                  IF (SCALE.LT.TEMP) THEN
+                      SSQ = ONE + SSQ* (SCALE/TEMP)**2
+                      SCALE = TEMP
+                  ELSE
+                      SSQ = SSQ + (TEMP/SCALE)**2
+                  END IF
+              END IF
+   10     CONTINUE
+          NORM = SCALE*SQRT(SSQ)
       END IF
 *
       SCNRM2 = NORM

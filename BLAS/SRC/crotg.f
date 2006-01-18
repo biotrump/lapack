@@ -1,20 +1,28 @@
-      subroutine crotg(ca,cb,c,s)
-      complex ca,cb,s
-      real c
-      real norm,scale
-      complex alpha
-      if (cabs(ca) .ne. 0.) go to 10
-         c = 0.
-         s = (1.,0.)
-         ca = cb
-         go to 20
-   10 continue
-         scale = cabs(ca) + cabs(cb)
-         norm = scale * sqrt((cabs(ca/scale))**2 + (cabs(cb/scale))**2)
-         alpha = ca /cabs(ca)
-         c = cabs(ca) / norm
-         s = alpha * conjg(cb) / norm
-         ca = alpha * norm
-   20 continue
-      return
-      end
+      SUBROUTINE CROTG(CA,CB,C,S)
+
+C     .. Scalar Arguments ..
+      COMPLEX CA,CB,S
+      REAL C
+C     ..
+C     .. Local Scalars ..
+      COMPLEX ALPHA
+      REAL NORM,SCALE
+C     ..
+C     .. Intrinsic Functions ..
+      INTRINSIC CABS,CONJG,SQRT
+C     ..
+      IF (CABS(CA).NE.0.) GO TO 10
+      C = 0.
+      S = (1.,0.)
+      CA = CB
+      GO TO 20
+   10 CONTINUE
+      SCALE = CABS(CA) + CABS(CB)
+      NORM = SCALE*SQRT((CABS(CA/SCALE))**2+ (CABS(CB/SCALE))**2)
+      ALPHA = CA/CABS(CA)
+      C = CABS(CA)/NORM
+      S = ALPHA*CONJG(CB)/NORM
+      CA = ALPHA*NORM
+   20 CONTINUE
+      RETURN
+      END

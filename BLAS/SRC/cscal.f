@@ -1,28 +1,36 @@
-      subroutine  cscal(n,ca,cx,incx)
+      SUBROUTINE CSCAL(N,CA,CX,INCX)
 c
 c     scales a vector by a constant.
 c     jack dongarra, linpack,  3/11/78.
 c     modified 3/93 to return if incx .le. 0.
 c     modified 12/3/93, array(1) declarations changed to array(*)
 c
-      complex ca,cx(*)
-      integer i,incx,n,nincx
 c
-      if( n.le.0 .or. incx.le.0 )return
-      if(incx.eq.1)go to 20
+C     .. Scalar Arguments ..
+      COMPLEX CA
+      INTEGER INCX,N
+C     ..
+C     .. Array Arguments ..
+      COMPLEX CX(*)
+C     ..
+C     .. Local Scalars ..
+      INTEGER I,NINCX
+C     ..
+      IF (N.LE.0 .OR. INCX.LE.0) RETURN
+      IF (INCX.EQ.1) GO TO 20
 c
 c        code for increment not equal to 1
 c
-      nincx = n*incx
-      do 10 i = 1,nincx,incx
-        cx(i) = ca*cx(i)
-   10 continue
-      return
+      NINCX = N*INCX
+      DO 10 I = 1,NINCX,INCX
+          CX(I) = CA*CX(I)
+   10 CONTINUE
+      RETURN
 c
 c        code for increment equal to 1
 c
-   20 do 30 i = 1,n
-        cx(i) = ca*cx(i)
-   30 continue
-      return
-      end
+   20 DO 30 I = 1,N
+          CX(I) = CA*CX(I)
+   30 CONTINUE
+      RETURN
+      END

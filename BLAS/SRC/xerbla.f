@@ -1,14 +1,14 @@
-      SUBROUTINE XERBLA( SRNAME, INFO )
+      SUBROUTINE XERBLA(SRNAME,INFO)
 *
 *  -- LAPACK auxiliary routine (preliminary version) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
 *     February 29, 1992
 *
-*     .. Scalar Arguments ..
-      CHARACTER*6        SRNAME
-      INTEGER            INFO
-*     ..
+C     .. Scalar Arguments ..
+      INTEGER INFO
+      CHARACTER*6 SRNAME
+C     ..
 *
 *  Purpose
 *  =======
@@ -31,12 +31,12 @@
 *          of the calling routine.
 *
 *
-      WRITE( *, FMT = 9999 )SRNAME, INFO
+      WRITE (*,FMT=9999) SRNAME,INFO
 *
       STOP
 *
- 9999 FORMAT( ' ** On entry to ', A6, ' parameter number ', I2, ' had ',
-     $      'an illegal value' )
+ 9999 FORMAT (' ** On entry to ',A6,' parameter number ',I2,' had ',
+     +       'an illegal value')
 *
 *     End of XERBLA
 *

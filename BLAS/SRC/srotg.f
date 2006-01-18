@@ -1,27 +1,35 @@
-      subroutine srotg(sa,sb,c,s)
+      SUBROUTINE SROTG(SA,SB,C,S)
 c
 c     construct givens plane rotation.
 c     jack dongarra, linpack, 3/11/78.
 c
-      real sa,sb,c,s,roe,scale,r,z
 c
-      roe = sb
-      if( abs(sa) .gt. abs(sb) ) roe = sa
-      scale = abs(sa) + abs(sb)
-      if( scale .ne. 0.0 ) go to 10
-         c = 1.0
-         s = 0.0
-         r = 0.0
-         z = 0.0
-         go to 20
-   10 r = scale*sqrt((sa/scale)**2 + (sb/scale)**2)
-      r = sign(1.0,roe)*r
-      c = sa/r
-      s = sb/r
-      z = 1.0
-      if( abs(sa) .gt. abs(sb) ) z = s
-      if( abs(sb) .ge. abs(sa) .and. c .ne. 0.0 ) z = 1.0/c
-   20 sa = r
-      sb = z
-      return
-      end
+C     .. Scalar Arguments ..
+      REAL C,S,SA,SB
+C     ..
+C     .. Local Scalars ..
+      REAL R,ROE,SCALE,Z
+C     ..
+C     .. Intrinsic Functions ..
+      INTRINSIC ABS,SIGN,SQRT
+C     ..
+      ROE = SB
+      IF (ABS(SA).GT.ABS(SB)) ROE = SA
+      SCALE = ABS(SA) + ABS(SB)
+      IF (SCALE.NE.0.0) GO TO 10
+      C = 1.0
+      S = 0.0
+      R = 0.0
+      Z = 0.0
+      GO TO 20
+   10 R = SCALE*SQRT((SA/SCALE)**2+ (SB/SCALE)**2)
+      R = SIGN(1.0,ROE)*R
+      C = SA/R
+      S = SB/R
+      Z = 1.0
+      IF (ABS(SA).GT.ABS(SB)) Z = S
+      IF (ABS(SB).GE.ABS(SA) .AND. C.NE.0.0) Z = 1.0/C
+   20 SA = R
+      SB = Z
+      RETURN
+      END

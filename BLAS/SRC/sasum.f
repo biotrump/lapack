@@ -1,4 +1,4 @@
-      real function sasum(n,sx,incx)
+      REAL FUNCTION SASUM(N,SX,INCX)
 c
 c     takes the sum of the absolute values.
 c     uses unrolled loops for increment equal to one.
@@ -6,39 +6,50 @@ c     jack dongarra, linpack, 3/11/78.
 c     modified 3/93 to return if incx .le. 0.
 c     modified 12/3/93, array(1) declarations changed to array(*)
 c
-      real sx(*),stemp
-      integer i,incx,m,mp1,n,nincx
 c
-      sasum = 0.0e0
-      stemp = 0.0e0
-      if( n.le.0 .or. incx.le.0 )return
-      if(incx.eq.1)go to 20
+C     .. Scalar Arguments ..
+      INTEGER INCX,N
+C     ..
+C     .. Array Arguments ..
+      REAL SX(*)
+C     ..
+C     .. Local Scalars ..
+      REAL STEMP
+      INTEGER I,M,MP1,NINCX
+C     ..
+C     .. Intrinsic Functions ..
+      INTRINSIC ABS,MOD
+C     ..
+      SASUM = 0.0e0
+      STEMP = 0.0e0
+      IF (N.LE.0 .OR. INCX.LE.0) RETURN
+      IF (INCX.EQ.1) GO TO 20
 c
 c        code for increment not equal to 1
 c
-      nincx = n*incx
-      do 10 i = 1,nincx,incx
-        stemp = stemp + abs(sx(i))
-   10 continue
-      sasum = stemp
-      return
+      NINCX = N*INCX
+      DO 10 I = 1,NINCX,INCX
+          STEMP = STEMP + ABS(SX(I))
+   10 CONTINUE
+      SASUM = STEMP
+      RETURN
 c
 c        code for increment equal to 1
 c
 c
 c        clean-up loop
 c
-   20 m = mod(n,6)
-      if( m .eq. 0 ) go to 40
-      do 30 i = 1,m
-        stemp = stemp + abs(sx(i))
-   30 continue
-      if( n .lt. 6 ) go to 60
-   40 mp1 = m + 1
-      do 50 i = mp1,n,6
-        stemp = stemp + abs(sx(i)) + abs(sx(i + 1)) + abs(sx(i + 2))
-     *  + abs(sx(i + 3)) + abs(sx(i + 4)) + abs(sx(i + 5))
-   50 continue
-   60 sasum = stemp
-      return
-      end
+   20 M = MOD(N,6)
+      IF (M.EQ.0) GO TO 40
+      DO 30 I = 1,M
+          STEMP = STEMP + ABS(SX(I))
+   30 CONTINUE
+      IF (N.LT.6) GO TO 60
+   40 MP1 = M + 1
+      DO 50 I = MP1,N,6
+          STEMP = STEMP + ABS(SX(I)) + ABS(SX(I+1)) + ABS(SX(I+2)) +
+     +            ABS(SX(I+3)) + ABS(SX(I+4)) + ABS(SX(I+5))
+   50 CONTINUE
+   60 SASUM = STEMP
+      RETURN
+      END
