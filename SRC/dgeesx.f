@@ -63,7 +63,7 @@
 *          = 'N': Eigenvalues are not ordered;
 *          = 'S': Eigenvalues are ordered (see SELECT).
 *
-*  SELECT  LOGICAL FUNCTION of two DOUBLE PRECISION arguments
+*  SELECT  (external procedure) LOGICAL FUNCTION of two DOUBLE PRECISION arguments
 *          SELECT must be declared EXTERNAL in the calling subroutine.
 *          If SORT = 'S', SELECT is used to select eigenvalues to sort
 *          to the top left of the Schur form.

@@ -56,7 +56,7 @@
 *          = 'N': Eigenvalues are not ordered;
 *          = 'S': Eigenvalues are ordered (see SELECT).
 *
-*  SELECT  LOGICAL FUNCTION of one COMPLEX*16 argument
+*  SELECT  (external procedure) LOGICAL FUNCTION of one COMPLEX*16 argument
 *          SELECT must be declared EXTERNAL in the calling subroutine.
 *          If SORT = 'S', SELECT is used to select eigenvalues to order
 *          to the top left of the Schur form.
