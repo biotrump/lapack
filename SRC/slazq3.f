@@ -67,8 +67,12 @@
 *         Shift type.  TTYPE is passed as an argument in order to save
 *         its value between calls to SLAZQ3
 *
-*  DMIN1, DMIN2, DN, DN1, DN2, TAU
-*         (input/output) REAL
+*  DMIN1  (input/output) REAL
+*  DMIN2  (input/output) REAL
+*  DN     (input/output) REAL
+*  DN1    (input/output) REAL
+*  DN2    (input/output) REAL
+*  TAU    (input/output) REAL
 *         These are passed as arguments in order to save their values
 *         between calls to SLAZQ3
 *

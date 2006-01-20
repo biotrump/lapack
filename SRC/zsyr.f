@@ -27,7 +27,7 @@
 *  Arguments
 *  ==========
 *
-*  UPLO   - (input) CHARACTER*1
+*  UPLO     (input) CHARACTER*1
 *           On entry, UPLO specifies whether the upper or lower
 *           triangular part of the array A is to be referenced as
 *           follows:
@@ -40,27 +40,27 @@
 *
 *           Unchanged on exit.
 *
-*  N      - (input) INTEGER
+*  N        (input) INTEGER
 *           On entry, N specifies the order of the matrix A.
 *           N must be at least zero.
 *           Unchanged on exit.
 *
-*  ALPHA  - (input) COMPLEX*16
+*  ALPHA    (input) COMPLEX*16
 *           On entry, ALPHA specifies the scalar alpha.
 *           Unchanged on exit.
 *
-*  X      - (input) COMPLEX*16 array, dimension at least
+*  X        (input) COMPLEX*16 array, dimension at least
 *           ( 1 + ( N - 1 )*abs( INCX ) ).
 *           Before entry, the incremented array X must contain the N-
 *           element vector x.
 *           Unchanged on exit.
 *
-*  INCX   - (input) INTEGER
+*  INCX     (input) INTEGER
 *           On entry, INCX specifies the increment for the elements of
 *           X. INCX must not be zero.
 *           Unchanged on exit.
 *
-*  A      - (input/output) COMPLEX*16 array, dimension ( LDA, N )
+*  A        (input/output) COMPLEX*16 array, dimension ( LDA, N )
 *           Before entry, with  UPLO = 'U' or 'u', the leading n by n
 *           upper triangular part of the array A must contain the upper
 *           triangular part of the symmetric matrix and the strictly
@@ -74,7 +74,7 @@
 *           lower triangular part of the array A is overwritten by the
 *           lower triangular part of the updated matrix.
 *
-*  LDA    - (input) INTEGER
+*  LDA      (input) INTEGER
 *           On entry, LDA specifies the first dimension of A as declared
 *           in the calling (sub) program. LDA must be at least
 *           max( 1, N ).

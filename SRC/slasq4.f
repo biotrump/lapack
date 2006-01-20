@@ -32,7 +32,7 @@
 *  PP    (input) INTEGER
 *        PP=0 for ping, PP=1 for pong.
 *
-*  NOIN  (input) INTEGER
+*  N0IN  (input) INTEGER
 *        The value of N0 at start of EIGTEST.
 *
 *  DMIN  (input) REAL
