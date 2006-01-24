@@ -80,7 +80,7 @@
 *                      (NMAX*max(3,NSMAX))
 *
 *  RWORK   (workspace) DOUBLE PRECISION array, dimension
-*                      (max(NMAX,2*NSMAX))
+*                      (NMAX+2*NSMAX)
 *
 *  NOUT    (input) INTEGER
 *          The unit number for output.
