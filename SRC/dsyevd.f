@@ -132,8 +132,9 @@
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
+      INTEGER            ILAENV
       DOUBLE PRECISION   DLAMCH, DLANSY
-      EXTERNAL           LSAME, DLAMCH, DLANSY
+      EXTERNAL           LSAME, DLAMCH, DLANSY, ILAENV
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           DLACPY, DLASCL, DORMTR, DSCAL, DSTEDC, DSTERF,
