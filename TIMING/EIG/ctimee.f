@@ -613,7 +613,7 @@
      $                NBVAL, LDAVAL, TIMMIN, NOUT, ISEED, A( 1, 1 ),
      $                A( 1, 2 ), A( 1, 3 ), A( 1, 4 ), DR( 1, 1 ),
      $                D( 1, 1 ), DR( 1, 3 ), D( 1, 2 ), D( 1, 3 ),
-     $                D( 1, 4 ), WORK, LWORK, WORKR, IWORK, LOGWRK,
+     $                D( 1, 4 ), WORK, LWORK, WORKR, IWORK2, LOGWRK,
      $                RESULT, MAXPRM, MAXT, MAXIN, OPCNTS, MAXPRM, MAXT,
      $                MAXIN, INFO )
          IF( INFO.NE.0 )
