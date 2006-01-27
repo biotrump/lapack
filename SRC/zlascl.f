@@ -62,7 +62,7 @@
 *  N       (input) INTEGER
 *          The number of columns of the matrix A.  N >= 0.
 *
-*  A       (input/output) COMPLEX*16 array, dimension (LDA,M)
+*  A       (input/output) COMPLEX*16 array, dimension (LDA,N)
 *          The matrix to be multiplied by CTO/CFROM.  See TYPE for the
 *          storage type.
 *
