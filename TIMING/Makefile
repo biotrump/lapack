@@ -42,11 +42,11 @@
 #       make clean
 #
 #  To re-run specific tests after a make, enter (for example):
-#       'rm stime_small.out; make'  or:
-#       'make stime_small.out' or:
-#       'touch stime_small.in; make' (to re-run the timings.)
+#       'rm stime.out; make'  or:
+#       'make stime.out' or:
+#       'touch stime.in; make' (to re-run the timings.)
 #
-#       'rm *time_small.out; make'  (to re-run all the timings.)
+#       'rm *time.out; make'  (to re-run all the timings.)
 #
 #######################################################################
 
@@ -61,72 +61,72 @@ SEIGTIM= sgeptim_small.out \
          sseptim_small.out \
          ssvdtim_small.out
 
-SEIGTM2= SGEPTIM.out \
-         SNEPTIM.out \
-         SSEPTIM.out \
-         SSVDTIM.out
+SEIGTM2= sgeptim_large.out \
+         sneptim_large.out \
+         sseptim_large.out \
+         ssvdtim_large.out
 
 CEIGTIM= cgeptim_small.out \
          cneptim_small.out \
          cseptim_small.out \
          csvdtim_small.out
 
-CEIGTM2= CGEPTIM.out \
-         CNEPTIM.out \
-         CSEPTIM.out \
-         CSVDTIM.out
+CEIGTM2= cgeptim_large.out \
+         cneptim_large.out \
+         cseptim_large.out \
+         csvdtim_large.out
 
 DEIGTIM= dgeptim_small.out \
          dneptim_small.out \
          dseptim_small.out \
          dsvdtim_small.out
 
-DEIGTM2= DGEPTIM.out \
-         DNEPTIM.out \
-         DSEPTIM.out \
-         DSVDTIM.out
+DEIGTM2= dgeptim_large.out \
+         dneptim_large.out \
+         dseptim_large.out \
+         dsvdtim_large.out
 
 ZEIGTIM= zgeptim_small.out \
          zneptim_small.out \
          zseptim_small.out \
          zsvdtim_small.out
 
-ZEIGTM2= ZGEPTIM.out \
-         ZNEPTIM.out \
-         ZSEPTIM.out \
-         ZSVDTIM.out
+ZEIGTM2= zgeptim_large.out \
+         zneptim_large.out \
+         zseptim_large.out \
+         zsvdtim_large.out
 
 SLINTIM= stime_small.out \
 	 sband_small.out \
 	 stime2_small.out
 
-SLINTM2= STIME.out \
-	 SBAND.out \
-	 STIME2.out
+SLINTM2= stime_large.out \
+	 sband_large.out \
+	 stime2_large.out
 
 CLINTIM= ctime_small.out \
 	 cband_small.out \
 	 ctime2_small.out
 
-CLINTM2= CTIME.out \
-	 CBAND.out \
-	 CTIME2.out
+CLINTM2= ctime_large.out \
+	 cband_large.out \
+	 ctime2_large.out
 
 DLINTIM= dtime_small.out \
 	 dband_small.out \
 	 dtime2_small.out
 
-DLINTM2= DTIME.out \
-	 DBAND.out \
-	 DTIME2.out
+DLINTM2= dtime_large.out \
+	 dband_large.out \
+	 dtime2_large.out
 
 ZLINTIM= ztime_small.out \
 	 zband_small.out \
 	 ztime2_small.out
 
-ZLINTM2= ZTIME.out \
-	 ZBAND.out \
-	 ZTIME2.out
+ZLINTM2= ztime_large.out \
+	 zband_large.out \
+	 ztime2_large.out
 
 single:         $(SLINTIM) $(SEIGTIM)
 complex:        $(CLINTIM) $(CEIGTIM)
