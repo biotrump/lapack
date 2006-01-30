@@ -13,7 +13,8 @@
 #  desired.
 #
 #  By default, 'make' alone executes the timings with SMALL data sets.
-#
+#  (the data files with _small in the name)
+#  
 #  Some examples:
 #       make single
 #       make single complex
@@ -23,7 +24,8 @@
 #  without any arguments runs all eight test programs with the SMALL
 #  timing data files.
 #
-#  If you wish to use the LARGE data sets for your timings, you
+#  If you wish to use the LARGE data sets for your timingsi ( the data
+#  files with _large in their names), you
 #  need to type
 #       make large
 #  for all tests, which would be equivalent to typing
@@ -40,11 +42,11 @@
 #       make clean
 #
 #  To re-run specific tests after a make, enter (for example):
-#       'rm stime.out; make'  or:
-#       'make stime.out' or:
-#       'touch stime.in; make' (to re-run the timings.)
+#       'rm stime_small.out; make'  or:
+#       'make stime_small.out' or:
+#       'touch stime_small.in; make' (to re-run the timings.)
 #
-#       'rm *time.out; make'  (to re-run all the timings.)
+#       'rm *time_small.out; make'  (to re-run all the timings.)
 #
 #######################################################################
 
@@ -54,73 +56,73 @@ all:     single complex double complex16
 large:	 single_large complex_large double_large complex16_large
 small:   single complex double complex16
 
-SEIGTIM= sgeptim.out \
-         sneptim.out \
-         sseptim.out \
-         ssvdtim.out
+SEIGTIM= sgeptim_small.out \
+         sneptim_small.out \
+         sseptim_small.out \
+         ssvdtim_small.out
 
 SEIGTM2= SGEPTIM.out \
          SNEPTIM.out \
          SSEPTIM.out \
          SSVDTIM.out
 
-CEIGTIM= cgeptim.out \
-         cneptim.out \
-         cseptim.out \
-         csvdtim.out
+CEIGTIM= cgeptim_small.out \
+         cneptim_small.out \
+         cseptim_small.out \
+         csvdtim_small.out
 
 CEIGTM2= CGEPTIM.out \
          CNEPTIM.out \
          CSEPTIM.out \
          CSVDTIM.out
 
-DEIGTIM= dgeptim.out \
-         dneptim.out \
-         dseptim.out \
-         dsvdtim.out
+DEIGTIM= dgeptim_small.out \
+         dneptim_small.out \
+         dseptim_small.out \
+         dsvdtim_small.out
 
 DEIGTM2= DGEPTIM.out \
          DNEPTIM.out \
          DSEPTIM.out \
          DSVDTIM.out
 
-ZEIGTIM= zgeptim.out \
-         zneptim.out \
-         zseptim.out \
-         zsvdtim.out
+ZEIGTIM= zgeptim_small.out \
+         zneptim_small.out \
+         zseptim_small.out \
+         zsvdtim_small.out
 
 ZEIGTM2= ZGEPTIM.out \
          ZNEPTIM.out \
          ZSEPTIM.out \
          ZSVDTIM.out
 
-SLINTIM= stime.out \
-	 sband.out \
-	 stime2.out
+SLINTIM= stime_small.out \
+	 sband_small.out \
+	 stime2_small.out
 
 SLINTM2= STIME.out \
 	 SBAND.out \
 	 STIME2.out
 
-CLINTIM= ctime.out \
-	 cband.out \
-	 ctime2.out
+CLINTIM= ctime_small.out \
+	 cband_small.out \
+	 ctime2_small.out
 
 CLINTM2= CTIME.out \
 	 CBAND.out \
 	 CTIME2.out
 
-DLINTIM= dtime.out \
-	 dband.out \
-	 dtime2.out
+DLINTIM= dtime_small.out \
+	 dband_small.out \
+	 dtime2_small.out
 
 DLINTM2= DTIME.out \
 	 DBAND.out \
 	 DTIME2.out
 
-ZLINTIM= ztime.out \
-	 zband.out \
-	 ztime2.out
+ZLINTIM= ztime_small.out \
+	 zband_small.out \
+	 ztime2_small.out
 
 ZLINTM2= ZTIME.out \
 	 ZBAND.out \
@@ -139,244 +141,244 @@ complex16_large:  $(ZLINTM2) $(ZEIGTM2)
 #
 # ======== SINGLE LIN TIMINGS ===========================
 
-stime.out: stime.in xlintims
+stime_small.out: stime_small.in xlintims
 	@echo Timing square REAL LAPACK linear equation routines
-	./xlintims < stime.in > $@ 2>&1
+	./xlintims < stime_small.in > $@ 2>&1
 
-STIME.out: STIME.in xlintims
+stime_large.out: stime_large.in xlintims
 	@echo Timing square REAL LAPACK linear equation routines
-	./xlintims < STIME.in > $@ 2>&1
+	./xlintims < stime_large.in > $@ 2>&1
 
-sband.out: sband.in xlintims
+sband_small.out: sband_small.in xlintims
 	@echo Timing banded REAL LAPACK linear equation routines
-	./xlintims < sband.in > $@ 2>&1
+	./xlintims < sband_small.in > $@ 2>&1
 
-SBAND.out: SBAND.in xlintims
+sband_large.out: sband_large.in xlintims
 	@echo Timing banded REAL LAPACK linear equation routines
-	./xlintims < SBAND.in > $@ 2>&1
+	./xlintims < sband_large.in > $@ 2>&1
 
-stime2.out: stime2.in xlintims
+stime2_small.out: stime2_small.in xlintims
 	@echo Timing rectangular REAL LAPACK linear equation routines
-	./xlintims < stime2.in > $@ 2>&1
+	./xlintims < stime2_small.in > $@ 2>&1
 
-STIME2.out: STIME2.in xlintims
+stime2_large.out: stime2_large.in xlintims
 	@echo Timing rectangular REAL LAPACK linear equation routines
-	./xlintims < STIME2.in > $@ 2>&1
+	./xlintims < stime2_large.in > $@ 2>&1
 #
 # ======== COMPLEX LIN TIMINGS ==========================
 
-ctime.out: ctime.in xlintimc
+ctime_small.out: ctime_small.in xlintimc
 	@echo Timing square COMPLEX LAPACK linear equation routines
-	./xlintimc < ctime.in > $@ 2>&1
+	./xlintimc < ctime_small.in > $@ 2>&1
 
-CTIME.out: CTIME.in xlintimc
+ctime_large.out: ctime_large.in xlintimc
 	@echo Timing square COMPLEX LAPACK linear equation routines
-	./xlintimc < CTIME.in > $@ 2>&1
+	./xlintimc < ctime_large.in > $@ 2>&1
 
-cband.out: cband.in xlintimc
+cband_small.out: cband_small.in xlintimc
 	@echo Timing banded COMPLEX LAPACK linear equation routines
-	./xlintimc < cband.in > $@ 2>&1
+	./xlintimc < cband_small.in > $@ 2>&1
 
-CBAND.out: CBAND.in xlintimc
+cband_large.out: cband_large.in xlintimc
 	@echo Timing banded COMPLEX LAPACK linear equation routines
-	./xlintimc < CBAND.in > $@ 2>&1
+	./xlintimc < cband_large.in > $@ 2>&1
 
-ctime2.out: ctime2.in xlintimc
+ctime2_small.out: ctime2_small.in xlintimc
 	@echo Timing rectangular COMPLEX LAPACK linear equation routines
-	./xlintimc < ctime2.in > $@ 2>&1
+	./xlintimc < ctime2_small.in > $@ 2>&1
 
-CTIME2.out: CTIME2.in xlintimc
+ctime2_large.out: CTIME2_large.in xlintimc
 	@echo Timing rectangular COMPLEX LAPACK linear equation routines
-	./xlintimc < CTIME2.in > $@ 2>&1
+	./xlintimc < ctime2_large.in > $@ 2>&1
 #
 # ======== DOUBLE LIN TIMINGS ===========================
 
-dtime.out: dtime.in xlintimd
+dtime_small.out: dtime_small.in xlintimd
 	@echo Timing square DOUBLE PRECISION LAPACK linear equation routines
-	./xlintimd < dtime.in > $@ 2>&1
+	./xlintimd < dtime_small.in > $@ 2>&1
 
-DTIME.out: DTIME.in xlintimd
+dtime_large.out: dtime_large.in xlintimd
 	@echo Timing square DOUBLE PRECISION LAPACK linear equation routines
-	./xlintimd < DTIME.in > $@ 2>&1
+	./xlintimd < dtime_large.in > $@ 2>&1
 
-dband.out: dband.in xlintimd
+dband_small.out: dband_small.in xlintimd
 	@echo Timing banded DOUBLE PRECISION LAPACK linear equation routines
-	./xlintimd < dband.in > $@ 2>&1
+	./xlintimd < dband_small.in > $@ 2>&1
 
-DBAND.out: dband.in xlintimd
+dband_large.out: dband_large.in xlintimd
 	@echo Timing banded DOUBLE PRECISION LAPACK linear equation routines
-	./xlintimd < DBAND.in > $@ 2>&1
+	./xlintimd < dband_large.in > $@ 2>&1
 
-dtime2.out: dtime2.in xlintimd
+dtime2_small.out: dtime2_small.in xlintimd
 	@echo Timing rectangular DOUBLE PRECISION LAPACK linear equation routines
-	./xlintimd < dtime2.in > $@ 2>&1
+	./xlintimd < dtime2_small.in > $@ 2>&1
 
-DTIME2.out: DTIME2.in xlintimd
+dtime2_large.out: dtime2_large.in xlintimd
 	@echo Timing rectangular DOUBLE PRECISION LAPACK linear equation routines
-	./xlintimd < DTIME2.in > $@ 2>&1
+	./xlintimd < dtime2_large.in > $@ 2>&1
 #
 # ======== COMPLEX16 LIN TIMINGS ========================
 
-ztime.out: ztime.in xlintimz
+ztime_small.out: ztime_small.in xlintimz
 	@echo Timing square COMPLEX16 LAPACK linear equation routines
-	./xlintimz < ztime.in > $@ 2>&1
+	./xlintimz < ztime_small.in > $@ 2>&1
 
-ZTIME.out: ztime.in xlintimz
+ztime_large.out: ztime_large.in xlintimz
 	@echo Timing square COMPLEX16 LAPACK linear equation routines
-	./xlintimz < ZTIME.in > $@ 2>&1
+	./xlintimz < ztime_large.in > $@ 2>&1
 
-zband.out: zband.in xlintimz
+zband_small.out: zband_small.in xlintimz
 	@echo Timing banded COMPLEX16 LAPACK linear equation routines
-	./xlintimz < zband.in > $@ 2>&1
+	./xlintimz < zband_small.in > $@ 2>&1
 
-ZBAND.out: ZBAND.in xlintimz
+zband_large.out: zband_large.in xlintimz
 	@echo Timing banded COMPLEX16 LAPACK linear equation routines
-	./xlintimz < ZBAND.in > $@ 2>&1
+	./xlintimz < zband_large.in > $@ 2>&1
 
-ztime2.out: ztime2.in xlintimz
+ztime2_small.out: ztime2_small.in xlintimz
 	@echo Timing rectangular COMPLEX16 LAPACK linear equation routines
-	./xlintimz < ztime2.in > $@ 2>&1
+	./xlintimz < ztime2_small.in > $@ 2>&1
 
-ZTIME2.out: ZTIME2.in xlintimz
+ztime2_large.out: ztime2_large.in xlintimz
 	@echo Timing rectangular COMPLEX16 LAPACK linear equation routines
-	./xlintimz < ZTIME2.in > $@ 2>&1
+	./xlintimz < ztime2_large.in > $@ 2>&1
 #
 #
 # ======== SINGLE EIG TIMINGS ===========================
 #
-sgeptim.out: sgeptim.in xeigtims
+sgeptim_small.out: sgeptim_small.in xeigtims
 	@echo GEP: Timing REAL Generalized Nonsymmetric Eigenvalue Problem routines
-	./xeigtims < sgeptim.in > $@ 2>&1
+	./xeigtims < sgeptim_small.in > $@ 2>&1
 
-SGEPTIM.out: SGEPTIM.in xeigtims
+sgeptim_large.out: sgeptim_large.in xeigtims
 	@echo GEP: Timing REAL Generalized Nonsymmetric Eigenvalue Problem routines
-	./xeigtims < SGEPTIM.in > $@ 2>&1
+	./xeigtims < sgeptim_large.in > $@ 2>&1
 
-sneptim.out: sneptim.in xeigtims
+sneptim_small.out: sneptim_small.in xeigtims
 	@echo NEP: Timing REAL Nonsymmetric Eigenvalue Problem routines
-	./xeigtims < sneptim.in > $@ 2>&1
+	./xeigtims < sneptim_small.in > $@ 2>&1
 
-SNEPTIM.out: SNEPTIM.in xeigtims
+sneptim_large.out: sneptim_large.in xeigtims
 	@echo NEP: Timing REAL Nonsymmetric Eigenvalue Problem routines
-	./xeigtims < SNEPTIM.in > $@ 2>&1
+	./xeigtims < sneptim_large.in > $@ 2>&1
 
-sseptim.out: sseptim.in xeigtims
+sseptim_small.out: sseptim_small.in xeigtims
 	@echo SEP: Timing REAL Symmetric Eigenvalue Problem routines
-	./xeigtims < sseptim.in > $@ 2>&1
+	./xeigtims < sseptim_small.in > $@ 2>&1
 
-SSEPTIM.out: SSEPTIM.in xeigtims
+sseptim_large.out: sseptim_large.in xeigtims
 	@echo SEP: Timing REAL Symmetric Eigenvalue Problem routines
-	./xeigtims < SSEPTIM.in > $@ 2>&1
+	./xeigtims < sseptim_large.in > $@ 2>&1
 
-ssvdtim.out: ssvdtim.in xeigtims
+ssvdtim_small.out: ssvdtim_small.in xeigtims
 	@echo SVD: Timing REAL Singular Value Decomposition routines
-	./xeigtims < ssvdtim.in > $@ 2>&1
+	./xeigtims < ssvdtim_small.in > $@ 2>&1
 
-SSVDTIM.out: SSVDTIM.in xeigtims
+ssvdtim_large.out: ssvdtim_large.in xeigtims
 	@echo SVD: Timing REAL Singular Value Decomposition routines
-	./xeigtims < SSVDTIM.in > $@ 2>&1
+	./xeigtims < ssvdtim_large.in > $@ 2>&1
 #
 # ======== COMPLEX EIG TIMINGS ===========================
 #
-cgeptim.out: cgeptim.in xeigtimc
+cgeptim_small.out: cgeptim_small.in xeigtimc
 	@echo GEP: Timing COMPLEX Generalized Nonsymmetric Eigenvalue Problem routines
-	./xeigtimc < cgeptim.in > $@ 2>&1
+	./xeigtimc < cgeptim_small.in > $@ 2>&1
 
-CGEPTIM.out: CGEPTIM.in xeigtimc
+cgeptim_large.out: cgeptim_large.in xeigtimc
 	@echo GEP: Timing COMPLEX Generalized Nonsymmetric Eigenvalue Problem routines
-	./xeigtimc < cgeptim.in > $@ 2>&1
+	./xeigtimc < cgeptim_large_large.in > $@ 2>&1
 
-cneptim.out: cneptim.in xeigtimc
+cneptim_small.out: cneptim_small.in xeigtimc
 	@echo NEP: Timing COMPLEX Nonsymmetric Eigenvalue Problem routines
-	./xeigtimc < cneptim.in > $@ 2>&1
+	./xeigtimc < cneptim_small.in > $@ 2>&1
 
-CNEPTIM.out: CNEPTIM.in xeigtimc
+cneptim_large.out: cneptim_large.in xeigtimc
 	@echo NEP: Timing COMPLEX Nonsymmetric Eigenvalue Problem routines
-	./xeigtimc < CNEPTIM.in > $@ 2>&1
+	./xeigtimc < cneptim_large.in > $@ 2>&1
 
-cseptim.out: cseptim.in xeigtimc
+cseptim_small.out: cseptim_small.in xeigtimc
 	@echo SEP: Timing COMPLEX Symmetric Eigenvalue Problem routines
-	./xeigtimc < cseptim.in > $@ 2>&1
+	./xeigtimc < cseptim_small.in > $@ 2>&1
 
-CSEPTIM.out: CSEPTIM.in xeigtimc
+cseptim_large.out: cseptim_large.in xeigtimc
 	@echo SEP: Timing COMPLEX Symmetric Eigenvalue Problem routines
-	./xeigtimc < CSEPTIM.in > $@ 2>&1
+	./xeigtimc < cseptim_large.in > $@ 2>&1
 
-csvdtim.out: csvdtim.in xeigtimc
+csvdtim_small.out: csvdtim_small.in xeigtimc
 	@echo SVD: Timing COMPLEX Singular Value Decomposition routines
-	./xeigtimc < csvdtim.in > $@ 2>&1
+	./xeigtimc < csvdtim_small.in > $@ 2>&1
 
-CSVDTIM.out: CSVDTIM.in xeigtimc
+csvdtim_large.out: csvdtim_large.in xeigtimc
 	@echo SVD: Timing COMPLEX Singular Value Decomposition routines
-	./xeigtimc < CSVDTIM.in > $@ 2>&1
+	./xeigtimc < csvdtim_large.in > $@ 2>&1
 #
 # ======== DOUBLE EIG TIMINGS ===========================
 #
-dgeptim.out: dgeptim.in xeigtimd
+dgeptim_small.out: dgeptim_small.in xeigtimd
 	@echo GEP: Timing DOUBLE PRECISION Generalized Nonsymmetric Eigenvalue Problem routines
-	./xeigtimd < dgeptim.in > $@ 2>&1
+	./xeigtimd < dgeptim_small.in > $@ 2>&1
 
-DGEPTIM.out: DGEPTIM.in xeigtimd
+dgeptim_large.out: dgeptim_large.in xeigtimd
 	@echo GEP: Timing DOUBLE PRECISION Generalized Nonsymmetric Eigenvalue Problem routines
-	./xeigtimd < dgeptim.in > $@ 2>&1
+	./xeigtimd < dgeptim_large.in > $@ 2>&1
 
-dneptim.out: dneptim.in xeigtimd
+dneptim_small.out: dneptim_small.in xeigtimd
 	@echo NEP: Timing DOUBLE PRECISION Nonsymmetric Eigenvalue Problem routines
-	./xeigtimd < dneptim.in > $@ 2>&1
+	./xeigtimd < dneptim_small.in > $@ 2>&1
 
-DNEPTIM.out: DNEPTIM.in xeigtimd
+dneptim_large.out: dneptim_large.in xeigtimd
 	@echo NEP: Timing DOUBLE PRECISION Nonsymmetric Eigenvalue Problem routines
-	./xeigtimd < DNEPTIM.in > $@ 2>&1
+	./xeigtimd < dneptim_large.in > $@ 2>&1
 
-dseptim.out: dseptim.in xeigtimd
+dseptim_small.out: dseptim_small.in xeigtimd
 	@echo SEP: Timing DOUBLE PRECISION Symmetric Eigenvalue Problem routines
-	./xeigtimd < dseptim.in > $@ 2>&1
+	./xeigtimd < dseptim_small.in > $@ 2>&1
 
-DSEPTIM.out: DSEPTIM.in xeigtimd
+dseptim_large.out: dseptim_large.in xeigtimd
 	@echo SEP: Timing DOUBLE PRECISION Symmetric Eigenvalue Problem routines
-	./xeigtimd < DSEPTIM.in > $@ 2>&1
+	./xeigtimd < dseptim_large.in > $@ 2>&1
 
-dsvdtim.out: dsvdtim.in xeigtimd
+dsvdtim_small.out: dsvdtim_small.in xeigtimd
 	@echo SVD: Timing DOUBLE PRECISION Singular Value Decomposition routines
-	./xeigtimd < dsvdtim.in > $@ 2>&1
+	./xeigtimd < dsvdtim_small.in > $@ 2>&1
 
-DSVDTIM.out: DSVDTIM.in xeigtimd
+dsvdtim_large.out: dsvdtim_large.in xeigtimd
 	@echo SVD: Timing DOUBLE PRECISION Singular Value Decomposition routines
-	./xeigtimd < DSVDTIM.in > $@ 2>&1
+	./xeigtimd < dsvdtim_large.in > $@ 2>&1
 #
 # ======== COMPLEX16 EIG TIMINGS ===========================
 #
-zgeptim.out: zgeptim.in xeigtimz
+zgeptim_small.out: zgeptim_small.in xeigtimz
 	@echo GEP: Timing COMPLEX16 Generalized Nonsymmetric Eigenvalue Problem routines
-	./xeigtimz < zgeptim.in > $@ 2>&1
+	./xeigtimz < zgeptim_small.in > $@ 2>&1
 
-ZGEPTIM.out: ZGEPTIM.in xeigtimz
+zgeptim_large.out: zgeptim_large.in xeigtimz
 	@echo GEP: Timing COMPLEX16 Generalized Nonsymmetric Eigenvalue Problem routines
-	./xeigtimz < zgeptim.in > $@ 2>&1
+	./xeigtimz < zgeptim_large.in > $@ 2>&1
 
-zneptim.out: zneptim.in xeigtimz
+zneptim_small.out: zneptim_small.in xeigtimz
 	@echo NEP: Timing COMPLEX16 Nonsymmetric Eigenvalue Problem routines
-	./xeigtimz < zneptim.in > $@ 2>&1
+	./xeigtimz < zneptim_small.in > $@ 2>&1
 
-ZNEPTIM.out: ZNEPTIM.in xeigtimz
+zneptim_large.out: zneptim_large.in xeigtimz
 	@echo NEP: Timing COMPLEX16 Nonsymmetric Eigenvalue Problem routines
-	./xeigtimz < ZNEPTIM.in > $@ 2>&1
+	./xeigtimz < zneptim_large.in > $@ 2>&1
 
-zseptim.out: zseptim.in xeigtimz
+zseptim_small.out: zseptim_small.in xeigtimz
 	@echo SEP: Timing COMPLEX16 Symmetric Eigenvalue Problem routines
-	./xeigtimz < zseptim.in > $@ 2>&1
+	./xeigtimz < zseptim_small.in > $@ 2>&1
 
-ZSEPTIM.out: ZSEPTIM.in xeigtimz
+zseptim_large.out: zseptim_large.in xeigtimz
 	@echo SEP: Timing COMPLEX16 Symmetric Eigenvalue Problem routines
-	./xeigtimz < ZSEPTIM.in > $@ 2>&1
+	./xeigtimz < zseptim_large.in > $@ 2>&1
 
-zsvdtim.out: zsvdtim.in xeigtimz
+zsvdtim_small.out: zsvdtim_small.in xeigtimz
 	@echo SVD: Timing COMPLEX16 Singular Value Decomposition routines
-	./xeigtimz < zsvdtim.in > $@ 2>&1
+	./xeigtimz < zsvdtim_small.in > $@ 2>&1
 
-ZSVDTIM.out: ZSVDTIM.in xeigtimz
+zsvdtim_large.out: zsvdtim_large.in xeigtimz
 	@echo SVD: Timing COMPLEX16 Singular Value Decomposition routines
-	./xeigtimz < ZSVDTIM.in > $@ 2>&1
+	./xeigtimz < zsvdtim_large.in > $@ 2>&1
 # ==============================================================================
 
 xlintims:
