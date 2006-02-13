@@ -86,7 +86,7 @@
 *     .. Local Scalars ..
       LOGICAL            LOWER, LQUERY, WANTZ
       INTEGER            IINFO, IMAX, INDE, INDTAU, INDWRK, ISCALE,
-     $                   LLWORK, LOPT, LWKOPT, NB
+     $                   LLWORK, LWKOPT, NB
       REAL               ANRM, BIGNUM, EPS, RMAX, RMIN, SAFMIN, SIGMA,
      $                   SMLNUM
 *     ..
@@ -183,7 +183,6 @@
       LLWORK = LWORK - INDWRK + 1
       CALL CHETRD( UPLO, N, A, LDA, W, RWORK( INDE ), WORK( INDTAU ),
      $             WORK( INDWRK ), LLWORK, IINFO )
-      LOPT = N + WORK( INDWRK )
 *
 *     For eigenvalues only, call SSTERF.  For eigenvectors, first call
 *     CUNGTR to generate the unitary matrix, then call CSTEQR.

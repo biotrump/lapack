@@ -160,7 +160,7 @@
       CHARACTER          ORDER
       INTEGER            I, IINFO, IMAX, INDD, INDE, INDEE, INDIBL,
      $                   INDISP, INDIWO, INDTAU, INDWKN, INDWRK, ISCALE,
-     $                   ITMP1, J, JJ, LLWORK, LLWRKN, LOPT, LWKMIN,
+     $                   ITMP1, J, JJ, LLWORK, LLWRKN, LWKMIN,
      $                   LWKOPT, NB, NSPLIT
       REAL               ABSTLL, ANRM, BIGNUM, EPS, RMAX, RMIN, SAFMIN,
      $                   SIGMA, SMLNUM, TMP1, VLL, VUU
@@ -315,7 +315,6 @@
       LLWORK = LWORK - INDWRK + 1
       CALL SSYTRD( UPLO, N, A, LDA, WORK( INDD ), WORK( INDE ),
      $             WORK( INDTAU ), WORK( INDWRK ), LLWORK, IINFO )
-      LOPT = 3*N + WORK( INDWRK )
 *
 *     If all eigenvalues are desired and ABSTOL is less than or equal to
 *     zero, then call SSTERF or SORGTR and SSTEQR.  If this fails for

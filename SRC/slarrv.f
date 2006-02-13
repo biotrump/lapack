@@ -128,11 +128,11 @@
 *     .. Local Scalars ..
       LOGICAL            MGSCLS
       INTEGER            I, IBEGIN, IEND, IINDC1, IINDC2, IINDR, IINDWK,
-     $                   IINFO, IM, IN, INDERR, INDGAP, INDLD, INDLLD, 
-     $                   INDWRK, ITER, ITMP1, ITMP2, J, JBLK, K, KTOT, 
-     $                   LSBDPT, MAXITR, NCLUS, NDEPTH, NDONE, NEWCLS, 
+     $                   IINFO, IM, IN, INDERR, INDGAP, INDLD, INDLLD,
+     $                   INDWRK, ITER, ITMP1, ITMP2, J, JBLK, K, KTOT,
+     $                   LSBDPT, MAXITR, NCLUS, NDEPTH, NDONE, NEWCLS,
      $                   NEWFRS, NEWFTT, NEWLST, NEWSIZ, NSPLIT, OLDCLS,
-     $                   OLDFST, OLDIEN, OLDLST, OLDNCL, P, Q, 
+     $                   OLDFST, OLDIEN, OLDLST, OLDNCL, P, Q,
      $                   TEMP( 1 )
       REAL               EPS, GAP, LAMBDA, MGSTOL, MINGMA, MINRGP, 
      $                   NRMINV, RELGAP, RELTOL, RESID, RQCORR, SIGMA, 

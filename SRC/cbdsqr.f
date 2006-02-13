@@ -167,7 +167,7 @@
      $                   NM12, NM13, OLDLL, OLDM
       REAL               ABSE, ABSS, COSL, COSR, CS, EPS, F, G, H, MU,
      $                   OLDCS, OLDSN, R, SHIFT, SIGMN, SIGMX, SINL,
-     $                   SINR, SLL, SMAX, SMIN, SMINL, SMINLO, SMINOA,
+     $                   SINR, SLL, SMAX, SMIN, SMINL, SMINOA,
      $                   SN, THRESH, TOL, TOLMUL, UNFL
 *     ..
 *     .. External Functions ..
@@ -427,7 +427,6 @@
                   E( LLL ) = ZERO
                   GO TO 60
                END IF
-               SMINLO = SMINL
                MU = ABS( D( LLL+1 ) )*( MU / ( MU+ABS( E( LLL ) ) ) )
                SMINL = MIN( SMINL, MU )
   100       CONTINUE
@@ -456,7 +455,6 @@
                   E( LLL ) = ZERO
                   GO TO 60
                END IF
-               SMINLO = SMINL
                MU = ABS( D( LLL ) )*( MU / ( MU+ABS( E( LLL ) ) ) )
                SMINL = MIN( SMINL, MU )
   110       CONTINUE

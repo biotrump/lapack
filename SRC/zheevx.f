@@ -165,7 +165,7 @@
       CHARACTER          ORDER
       INTEGER            I, IINFO, IMAX, INDD, INDE, INDEE, INDIBL,
      $                   INDISP, INDIWK, INDRWK, INDTAU, INDWRK, ISCALE,
-     $                   ITMP1, J, JJ, LLWORK, LOPT, LWKMIN, LWKOPT, NB,
+     $                   ITMP1, J, JJ, LLWORK, LWKMIN, LWKOPT, NB,
      $                   NSPLIT
       DOUBLE PRECISION   ABSTLL, ANRM, BIGNUM, EPS, RMAX, RMIN, SAFMIN,
      $                   SIGMA, SMLNUM, TMP1, VLL, VUU
@@ -323,7 +323,6 @@
       LLWORK = LWORK - INDWRK + 1
       CALL ZHETRD( UPLO, N, A, LDA, RWORK( INDD ), RWORK( INDE ),
      $             WORK( INDTAU ), WORK( INDWRK ), LLWORK, IINFO )
-      LOPT = N + WORK( INDWRK )
 *
 *     If all eigenvalues are desired and ABSTOL is less than or equal to
 *     zero, then call DSTERF or ZUNGTR and ZSTEQR.  If this fails for

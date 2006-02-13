@@ -80,7 +80,7 @@
 *     .. Local Scalars ..
       LOGICAL            LOWER, LQUERY, WANTZ
       INTEGER            IINFO, IMAX, INDE, INDTAU, INDWRK, ISCALE,
-     $                   LLWORK, LOPT, LWKOPT, NB
+     $                   LLWORK, LWKOPT, NB
       DOUBLE PRECISION   ANRM, BIGNUM, EPS, RMAX, RMIN, SAFMIN, SIGMA,
      $                   SMLNUM
 *     ..
@@ -177,7 +177,6 @@
       LLWORK = LWORK - INDWRK + 1
       CALL DSYTRD( UPLO, N, A, LDA, W, WORK( INDE ), WORK( INDTAU ),
      $             WORK( INDWRK ), LLWORK, IINFO )
-      LOPT = 2*N + WORK( INDWRK )
 *
 *     For eigenvalues only, call DSTERF.  For eigenvectors, first call
 *     DORGTR to generate the orthogonal matrix, then call DSTEQR.

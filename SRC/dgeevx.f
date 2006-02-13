@@ -142,7 +142,8 @@
 *          The leading dimension of the array VR.  LDVR >= 1, and if
 *          JOBVR = 'V', LDVR >= N.
 *
-*  ILO,IHI (output) INTEGER
+*  ILO     (output) INTEGER
+*  IHI     (output) INTEGER
 *          ILO and IHI are integer values determined when A was
 *          balanced.  The balanced A(i,j) = 0 if I > J and
 *          J = 1,...,ILO-1 or I = IHI+1,...,N.

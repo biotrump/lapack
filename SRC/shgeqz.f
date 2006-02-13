@@ -1198,7 +1198,6 @@
 *
 *     Drop-through = non-convergence
 *
-  370 CONTINUE
       INFO = ILAST
       GO TO 420
 *

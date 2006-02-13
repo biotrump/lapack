@@ -62,7 +62,7 @@
       PARAMETER          ( MULTPL = 4.0E+0 )
 *     ..
 *     .. Local Scalars ..
-      REAL               AA, BB, BCMAX, BCMIS, CC, CS1, DD, EPS, P, SAB, 
+      REAL               AA, BB, BCMAX, BCMIS, CC, CS1, DD, EPS, P, SAB,
      $                   SAC, SCALE, SIGMA, SN1, TAU, TEMP, Z
 *     ..
 *     .. External Functions ..

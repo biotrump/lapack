@@ -150,7 +150,8 @@
 *          The leading dimension of the matrix VR. LDVR >= 1, and
 *          if JOBVR = 'V', LDVR >= N.
 *
-*  ILO,IHI (output) INTEGER
+*  ILO     (output) INTEGER
+*  IHI     (output) INTEGER
 *          ILO and IHI are integer values such that on exit
 *          A(i,j) = 0 and B(i,j) = 0 if i > j and
 *          j = 1,...,ILO-1 or i = IHI+1,...,N.
