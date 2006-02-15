@@ -36,8 +36,10 @@
 *         where A' is the conjugate transpose of A, and ZLACON must be
 *         re-called with all the other parameters unchanged.
 *
-*  EST    (output) DOUBLE PRECISION
-*         An estimate (a lower bound) for norm(A).
+*  EST    (input/output) DOUBLE PRECISION
+*         On entry with KASE = 1 or 2 and JUMP = 3, EST should be
+*         unchanged from the previous call to ZLACON.
+*         On exit, EST is an estimate (a lower bound) for norm(A). 
 *
 *  KASE   (input/output) INTEGER
 *         On the initial call to ZLACON, KASE should be 0.
