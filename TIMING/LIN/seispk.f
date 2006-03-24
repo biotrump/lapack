@@ -1,8 +1,5 @@
       SUBROUTINE ORTHES(NM,N,LOW,IGH,A,ORT)
 C
-      INTEGER I,J,M,N,II,JJ,LA,MP,NM,IGH,KP1,LOW
-      REAL A(NM,N),ORT(IGH)
-      REAL F,G,H,SCALE
 C
 C     THIS SUBROUTINE IS A TRANSLATION OF THE ALGOL PROCEDURE ORTHES,
 C     NUM. MATH. 12, 349-368(1968) BY MARTIN AND WILKINSON.
@@ -44,72 +41,88 @@ C     THIS VERSION DATED AUGUST 1983.
 C
 C     ------------------------------------------------------------------
 C
+C     .. Scalar Arguments ..
+      INTEGER IGH,LOW,N,NM
+C     ..
+C     .. Array Arguments ..
+      REAL A(NM,N),ORT(IGH)
+C     ..
+C     .. Local Scalars ..
+      REAL F,G,H,SCALE
+      INTEGER I,II,J,JJ,KP1,LA,M,MP
+C     ..
+C     .. Intrinsic Functions ..
+      INTRINSIC ABS,SIGN,SQRT
+C     ..
       LA = IGH - 1
       KP1 = LOW + 1
-      IF (LA .LT. KP1) GO TO 200
+      IF (LA.GE.KP1) THEN
 C
-      DO 180 M = KP1, LA
-         H = 0.0E0
-         ORT(M) = 0.0E0
-         SCALE = 0.0E0
+          DO 90 M = KP1,LA
+              H = 0.0E0
+              ORT(M) = 0.0E0
+              SCALE = 0.0E0
 C     .......... SCALE COLUMN (ALGOL TOL THEN NOT NEEDED) ..........
-         DO 90 I = M, IGH
-   90    SCALE = SCALE + ABS(A(I,M-1))
+              DO 10 I = M,IGH
+                  SCALE = SCALE + ABS(A(I,M-1))
+   10         CONTINUE
 C
-         IF (SCALE .EQ. 0.0E0) GO TO 180
-         MP = M + IGH
+              IF (SCALE.NE.0.0E0) THEN
+                  MP = M + IGH
 C     .......... FOR I=IGH STEP -1 UNTIL M DO -- ..........
-         DO 100 II = M, IGH
-            I = MP - II
-            ORT(I) = A(I,M-1) / SCALE
-            H = H + ORT(I) * ORT(I)
-  100    CONTINUE
+                  DO 20 II = M,IGH
+                      I = MP - II
+                      ORT(I) = A(I,M-1)/SCALE
+                      H = H + ORT(I)*ORT(I)
+   20             CONTINUE
 C
-         G = -SIGN(SQRT(H),ORT(M))
-         H = H - ORT(M) * G
-         ORT(M) = ORT(M) - G
+                  G = -SIGN(SQRT(H),ORT(M))
+                  H = H - ORT(M)*G
+                  ORT(M) = ORT(M) - G
 C     .......... FORM (I-(U*UT)/H) * A ..........
-         DO 130 J = M, N
-            F = 0.0E0
+                  DO 50 J = M,N
+                      F = 0.0E0
 C     .......... FOR I=IGH STEP -1 UNTIL M DO -- ..........
-            DO 110 II = M, IGH
-               I = MP - II
-               F = F + ORT(I) * A(I,J)
-  110       CONTINUE
+                      DO 30 II = M,IGH
+                          I = MP - II
+                          F = F + ORT(I)*A(I,J)
+   30                 CONTINUE
 C
-            F = F / H
+                      F = F/H
 C
-            DO 120 I = M, IGH
-  120       A(I,J) = A(I,J) - F * ORT(I)
+                      DO 40 I = M,IGH
+                          A(I,J) = A(I,J) - F*ORT(I)
+   40                 CONTINUE
+   50             CONTINUE
 C
-  130    CONTINUE
 C     .......... FORM (I-(U*UT)/H)*A*(I-(U*UT)/H) ..........
-         DO 160 I = 1, IGH
-            F = 0.0E0
+                  DO 80 I = 1,IGH
+                      F = 0.0E0
 C     .......... FOR J=IGH STEP -1 UNTIL M DO -- ..........
-            DO 140 JJ = M, IGH
-               J = MP - JJ
-               F = F + ORT(J) * A(I,J)
-  140       CONTINUE
+                      DO 60 JJ = M,IGH
+                          J = MP - JJ
+                          F = F + ORT(J)*A(I,J)
+   60                 CONTINUE
 C
-            F = F / H
+                      F = F/H
 C
-            DO 150 J = M, IGH
-  150       A(I,J) = A(I,J) - F * ORT(J)
+                      DO 70 J = M,IGH
+                          A(I,J) = A(I,J) - F*ORT(J)
+   70                 CONTINUE
+   80             CONTINUE
 C
-  160    CONTINUE
 C
-         ORT(M) = SCALE * ORT(M)
-         A(M,M-1) = SCALE * G
-  180 CONTINUE
+                  ORT(M) = SCALE*ORT(M)
+                  A(M,M-1) = SCALE*G
+              END IF
+   90     CONTINUE
+      END IF
+      RETURN
+*$st$ Unreachable comments ...
 C
-  200 RETURN
       END
       SUBROUTINE TRED1(NM,N,A,D,E,E2)
 C
-      INTEGER I,J,K,L,N,II,NM,JP1
-      REAL A(NM,N),D(N),E(N),E2(N)
-      REAL F,G,H,SCALE
 C
 C     THIS SUBROUTINE IS A TRANSLATION OF THE ALGOL PROCEDURE TRED1,
 C     NUM. MATH. 11, 181-195(1968) BY MARTIN, REINSCH, AND WILKINSON.
@@ -151,92 +164,113 @@ C     THIS VERSION DATED AUGUST 1983.
 C
 C     ------------------------------------------------------------------
 C
-      DO 100 I = 1, N
-         D(I) = A(N,I)
-         A(N,I) = A(I,I)
-  100 CONTINUE
+C     .. Scalar Arguments ..
+      INTEGER N,NM
+C     ..
+C     .. Array Arguments ..
+      REAL A(NM,N),D(N),E(N),E2(N)
+C     ..
+C     .. Local Scalars ..
+      REAL F,G,H,SCALE
+      INTEGER I,II,J,JP1,K,L
+C     ..
+C     .. Intrinsic Functions ..
+      INTRINSIC ABS,SIGN,SQRT
+C     ..
+      DO 10 I = 1,N
+          D(I) = A(N,I)
+          A(N,I) = A(I,I)
+   10 CONTINUE
 C     .......... FOR I=N STEP -1 UNTIL 1 DO -- ..........
-      DO 300 II = 1, N
-         I = N + 1 - II
-         L = I - 1
-         H = 0.0E0
-         SCALE = 0.0E0
-         IF (L .LT. 1) GO TO 130
+      DO 130 II = 1,N
+          I = N + 1 - II
+          L = I - 1
+          H = 0.0E0
+          SCALE = 0.0E0
+          IF (L.GE.1) THEN
 C     .......... SCALE ROW (ALGOL TOL THEN NOT NEEDED) ..........
-         DO 120 K = 1, L
-  120    SCALE = SCALE + ABS(D(K))
+              DO 20 K = 1,L
+                  SCALE = SCALE + ABS(D(K))
+   20         CONTINUE
 C
-         IF (SCALE .NE. 0.0E0) GO TO 140
+              IF (SCALE.NE.0.0E0) THEN
 C
-         DO 125 J = 1, L
-            D(J) = A(L,J)
-            A(L,J) = A(I,J)
-            A(I,J) = 0.0E0
-  125    CONTINUE
+                  DO 30 K = 1,L
+                      D(K) = D(K)/SCALE
+                      H = H + D(K)*D(K)
+   30             CONTINUE
 C
-  130    E(I) = 0.0E0
-         E2(I) = 0.0E0
-         GO TO 300
-C
-  140    DO 150 K = 1, L
-            D(K) = D(K) / SCALE
-            H = H + D(K) * D(K)
-  150    CONTINUE
-C
-         E2(I) = SCALE * SCALE * H
-         F = D(L)
-         G = -SIGN(SQRT(H),F)
-         E(I) = SCALE * G
-         H = H - F * G
-         D(L) = F - G
-         IF (L .EQ. 1) GO TO 285
+                  E2(I) = SCALE*SCALE*H
+                  F = D(L)
+                  G = -SIGN(SQRT(H),F)
+                  E(I) = SCALE*G
+                  H = H - F*G
+                  D(L) = F - G
+                  IF (L.NE.1) THEN
 C     .......... FORM A*U ..........
-         DO 170 J = 1, L
-  170    E(J) = 0.0E0
+                      DO 40 J = 1,L
+                          E(J) = 0.0E0
+   40                 CONTINUE
 C
-         DO 240 J = 1, L
-            F = D(J)
-            G = E(J) + A(J,J) * F
-            JP1 = J + 1
-            IF (L .LT. JP1) GO TO 220
+                      DO 60 J = 1,L
+                          F = D(J)
+                          G = E(J) + A(J,J)*F
+                          JP1 = J + 1
+                          IF (L.GE.JP1) THEN
 C
-            DO 200 K = JP1, L
-               G = G + A(K,J) * D(K)
-               E(K) = E(K) + A(K,J) * F
-  200       CONTINUE
+                              DO 50 K = JP1,L
+                                  G = G + A(K,J)*D(K)
+                                  E(K) = E(K) + A(K,J)*F
+   50                         CONTINUE
+                          END IF
 C
-  220       E(J) = G
-  240    CONTINUE
+                          E(J) = G
+   60                 CONTINUE
 C     .......... FORM P ..........
-         F = 0.0E0
+                      F = 0.0E0
 C
-         DO 245 J = 1, L
-            E(J) = E(J) / H
-            F = F + E(J) * D(J)
-  245    CONTINUE
+                      DO 70 J = 1,L
+                          E(J) = E(J)/H
+                          F = F + E(J)*D(J)
+   70                 CONTINUE
 C
-         H = F / (H + H)
+                      H = F/ (H+H)
 C     .......... FORM Q ..........
-         DO 250 J = 1, L
-  250    E(J) = E(J) - H * D(J)
+                      DO 80 J = 1,L
+                          E(J) = E(J) - H*D(J)
+   80                 CONTINUE
 C     .......... FORM REDUCED A ..........
-         DO 280 J = 1, L
-            F = D(J)
-            G = E(J)
+                      DO 100 J = 1,L
+                          F = D(J)
+                          G = E(J)
 C
-            DO 260 K = J, L
-  260       A(K,J) = A(K,J) - F * E(K) - G * D(K)
+                          DO 90 K = J,L
+                              A(K,J) = A(K,J) - F*E(K) - G*D(K)
+   90                     CONTINUE
+  100                 CONTINUE
 C
-  280    CONTINUE
+                  END IF
 C
-  285    DO 290 J = 1, L
-            F = D(J)
-            D(J) = A(L,J)
-            A(L,J) = A(I,J)
-            A(I,J) = F * SCALE
-  290    CONTINUE
+                  DO 110 J = 1,L
+                      F = D(J)
+                      D(J) = A(L,J)
+                      A(L,J) = A(I,J)
+                      A(I,J) = F*SCALE
+  110             CONTINUE
+                  GO TO 130
+              ELSE
 C
-  300 CONTINUE
+                  DO 120 J = 1,L
+                      D(J) = A(L,J)
+                      A(L,J) = A(I,J)
+                      A(I,J) = 0.0E0
+  120             CONTINUE
+              END IF
+          END IF
 C
-      RETURN
+          E(I) = 0.0E0
+          E2(I) = 0.0E0
+  130 CONTINUE
+C
+C
       END
