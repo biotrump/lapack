@@ -73,7 +73,6 @@
 *  DN1    (input/output) REAL
 *  DN2    (input/output) REAL
 *  TAU    (input/output) REAL
-*         (input/output) DOUBLE PRECISION
 *         These are passed as arguments in order to save their values
 *         between calls to DLAZQ3
 *

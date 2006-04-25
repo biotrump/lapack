@@ -75,7 +75,7 @@
 *          Problem dimensions for the subroutine NAME; these may not all
 *          be required.
 *
-* (ILAENV) (output) INTEGER
+* ILAENV   (return value) INTEGER
 *          >= 0: the value of the parameter specified by ISPEC
 *          < 0:  if ILAENV = -k, the k-th argument had an illegal value.
 *

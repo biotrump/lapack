@@ -87,7 +87,7 @@
 *          The n-by-nb matrix Y required to update the unreduced part
 *          of A.
 *
-*  LDY     (output) INTEGER
+*  LDY     (input) INTEGER
 *          The leading dimension of the array Y. LDY >= N.
 *
 *  Further Details
