@@ -41,7 +41,7 @@
 *          The last element of IPIV for which a row interchange will
 *          be done.
 *
-*  IPIV    (input) INTEGER array, dimension (M*abs(INCX))
+*  IPIV    (input) INTEGER array, dimension (K2*abs(INCX))
 *          The vector of pivot indices.  Only the elements in positions
 *          K1 through K2 of IPIV are accessed.
 *          IPIV(K) = L implies rows K and L are to be interchanged.
