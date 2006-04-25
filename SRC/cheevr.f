@@ -162,14 +162,14 @@
 *          The leading dimension of the array Z.  LDZ >= 1, and if
 *          JOBZ = 'V', LDZ >= max(1,N).
 *
-*  ISUPPZ  (output) INTEGER ARRAY, dimension ( 2*max(1,M) )
+*  ISUPPZ  (output) INTEGER array, dimension ( 2*max(1,M) )
 *          The support of the eigenvectors in Z, i.e., the indices
 *          indicating the nonzero elements in Z. The i-th eigenvector
 *          is nonzero only in elements ISUPPZ( 2*i-1 ) through
 *          ISUPPZ( 2*i ).
 ********** Implemented only for RANGE = 'A' or 'I' and IU - IL = N - 1
 *
-*  WORK    (workspace/output) COMPLEX array, dimension (LWORK)
+*  WORK    (workspace/output) COMPLEX array, dimension (MAX(1,LWORK))
 *          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER
@@ -184,7 +184,7 @@
 *          the WORK, RWORK and IWORK arrays, and no error message
 *          related to LWORK or LRWORK or LIWORK is issued by XERBLA.
 *
-*  RWORK   (workspace/output) REAL array, dimension (LRWORK)
+*  RWORK   (workspace/output) REAL array, dimension (MAX(1,LRWORK))
 *          On exit, if INFO = 0, RWORK(1) returns the optimal
 *          (and minimal) LRWORK.
 *
@@ -197,7 +197,7 @@
 *          of the WORK, RWORK and IWORK arrays, and no error message
 *          related to LWORK or LRWORK or LIWORK is issued by XERBLA.
 *
-*  IWORK   (workspace/output) INTEGER array, dimension (LIWORK)
+*  IWORK   (workspace/output) INTEGER array, dimension (MAX(1,LIWORK))
 *          On exit, if INFO = 0, IWORK(1) returns the optimal
 *          (and minimal) LIWORK.
 *

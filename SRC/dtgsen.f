@@ -147,7 +147,8 @@
 *          The dimension of the specified pair of left and right eigen-
 *          spaces (deflating subspaces). 0 <= M <= N.
 *
-*  PL, PR  (output) DOUBLE PRECISION
+*  PL      (output) DOUBLE PRECISION
+*  PR      (output) DOUBLE PRECISION
 *          If IJOB = 1, 4 or 5, PL, PR are lower bounds on the
 *          reciprocal of the norm of "projections" onto left and right
 *          eigenspaces with respect to the selected cluster.
@@ -163,7 +164,7 @@
 *          If M = 0 or N, DIF(1:2) = F-norm([A, B]).
 *          If IJOB = 0 or 1, DIF is not referenced.
 *
-*  WORK    (workspace/output) DOUBLE PRECISION array, dimension (LWORK)
+*  WORK    (workspace/output) DOUBLE PRECISION array, dimension (MAX(1,LWORK))
 *          IF IJOB = 0, WORK is not referenced.  Otherwise,
 *          on exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
@@ -177,7 +178,7 @@
 *          this value as the first entry of the WORK array, and no error
 *          message related to LWORK is issued by XERBLA.
 *
-*  IWORK   (workspace/output) INTEGER array, dimension (LIWORK)
+*  IWORK   (workspace/output) INTEGER array, dimension (MAX(1,LIWORK))
 *          IF IJOB = 0, IWORK is not referenced.  Otherwise,
 *          on exit, if INFO = 0, IWORK(1) returns the optimal LIWORK.
 *

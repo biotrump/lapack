@@ -63,7 +63,7 @@
 *  Arguments
 *  =========
 *
-*  TRANS   (input) CHARACTER
+*  TRANS   (input) CHARACTER*1
 *          = 'N', solve the generalized Sylvester equation (1).
 *          = 'T': solve the 'transposed' system (3).
 *
@@ -98,7 +98,7 @@
 *  LDB     (input) INTEGER
 *          The leading dimension of the matrix B. LDB >= max(1, N).
 *
-*  C       (input/ output) DOUBLE PRECISION array, dimension (LDC, N)
+*  C       (input/output) DOUBLE PRECISION array, dimension (LDC, N)
 *          On entry, C contains the right-hand-side of the first matrix
 *          equation in (1).
 *          On exit, if IJOB = 0, C has been overwritten by the
@@ -119,7 +119,7 @@
 *  LDE     (input) INTEGER
 *          The leading dimension of the matrix E. LDE >= max(1, N).
 *
-*  F       (input/ output) DOUBLE PRECISION array, dimension (LDF, N)
+*  F       (input/output) DOUBLE PRECISION array, dimension (LDF, N)
 *          On entry, F contains the right-hand-side of the second matrix
 *          equation in (1).
 *          On exit, if IJOB = 0, F has been overwritten by the

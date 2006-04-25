@@ -51,11 +51,15 @@
 *         Contains the dimension of the non-deflated matrix,
 *         This is the order of the related secular equation. 1 <= K <=N.
 *
-*  D      (input/output) REAL array, dimension(N)
+*  D      (input/output) REAL array, dimension (N)
 *         On entry D contains the singular values of the two submatrices
 *         to be combined.  On exit D contains the trailing (N-K) updated
 *         singular values (those which were deflated) sorted into
 *         increasing order.
+*
+*  Z      (output) REAL array, dimension (N)
+*         On exit Z contains the updating row vector in the secular
+*         equation.
 *
 *  ALPHA  (input) REAL
 *         Contains the diagonal element associated with the added row.
@@ -64,7 +68,7 @@
 *         Contains the off-diagonal element associated with the added
 *         row.
 *
-*  U      (input/output) REAL array, dimension(LDU,N)
+*  U      (input/output) REAL array, dimension (LDU,N)
 *         On entry U contains the left singular vectors of two
 *         submatrices in the two square blocks with corners at (1,1),
 *         (NL, NL), and (NL+2, NL+2), (N,N).
@@ -74,27 +78,7 @@
 *  LDU    (input) INTEGER
 *         The leading dimension of the array U.  LDU >= N.
 *
-*  Z      (output) REAL array, dimension(N)
-*         On exit Z contains the updating row vector in the secular
-*         equation.
-*
-*  DSIGMA (output) REAL array, dimension (N)
-*         Contains a copy of the diagonal elements (K-1 singular values
-*         and one zero) in the secular equation.
-*
-*  U2     (output) REAL array, dimension(LDU2,N)
-*         Contains a copy of the first K-1 left singular vectors which
-*         will be used by SLASD3 in a matrix multiply (SGEMM) to solve
-*         for the new left singular vectors. U2 is arranged into four
-*         blocks. The first block contains a column with 1 at NL+1 and
-*         zero everywhere else; the second block contains non-zero
-*         entries only at and above NL; the third contains non-zero
-*         entries only below NL+1; and the fourth is dense.
-*
-*  LDU2   (input) INTEGER
-*         The leading dimension of the array U2.  LDU2 >= N.
-*
-*  VT     (input/output) REAL array, dimension(LDVT,M)
+*  VT     (input/output) REAL array, dimension (LDVT,M)
 *         On entry VT' contains the right singular vectors of two
 *         submatrices in the two square blocks with corners at (1,1),
 *         (NL+1, NL+1), and (NL+2, NL+2), (M,M).
@@ -106,7 +90,23 @@
 *  LDVT   (input) INTEGER
 *         The leading dimension of the array VT.  LDVT >= M.
 *
-*  VT2    (output) REAL array, dimension(LDVT2,N)
+*  DSIGMA (output) REAL array, dimension (N)
+*         Contains a copy of the diagonal elements (K-1 singular values
+*         and one zero) in the secular equation.
+*
+*  U2     (output) REAL array, dimension (LDU2,N)
+*         Contains a copy of the first K-1 left singular vectors which
+*         will be used by SLASD3 in a matrix multiply (SGEMM) to solve
+*         for the new left singular vectors. U2 is arranged into four
+*         blocks. The first block contains a column with 1 at NL+1 and
+*         zero everywhere else; the second block contains non-zero
+*         entries only at and above NL; the third contains non-zero
+*         entries only below NL+1; and the fourth is dense.
+*
+*  LDU2   (input) INTEGER
+*         The leading dimension of the array U2.  LDU2 >= N.
+*
+*  VT2    (output) REAL array, dimension (LDVT2,N)
 *         VT2' contains a copy of the first K right singular vectors
 *         which will be used by SLASD3 in a matrix multiply (SGEMM) to
 *         solve for the new right singular vectors. VT2 is arranged into
@@ -118,24 +118,31 @@
 *  LDVT2  (input) INTEGER
 *         The leading dimension of the array VT2.  LDVT2 >= M.
 *
-*  IDXP   (workspace) INTEGER array, dimension(N)
+*  IDXP   (workspace) INTEGER array, dimension (N)
 *         This will contain the permutation used to place deflated
 *         values of D at the end of the array. On output IDXP(2:K)
 *         points to the nondeflated D-values and IDXP(K+1:N)
 *         points to the deflated singular values.
 *
-*  IDX    (workspace) INTEGER array, dimension(N)
+*  IDX    (workspace) INTEGER array, dimension (N)
 *         This will contain the permutation used to sort the contents of
 *         D into ascending order.
 *
-*  IDXC   (output) INTEGER array, dimension(N)
+*  IDXC   (output) INTEGER array, dimension (N)
 *         This will contain the permutation used to arrange the columns
 *         of the deflated U matrix into three groups:  the first group
 *         contains non-zero entries only at and above NL, the second
 *         contains non-zero entries only below NL+2, and the third is
 *         dense.
 *
-*  COLTYP (workspace/output) INTEGER array, dimension(N)
+*  IDXQ   (input/output) INTEGER array, dimension (N)
+*         This contains the permutation which separately sorts the two
+*         sub-problems in D into ascending order.  Note that entries in
+*         the first hlaf of this permutation must first be moved one
+*         position backward; and entries in the second half
+*         must first have NL+1 added to their values.
+*
+*  COLTYP (workspace/output) INTEGER array, dimension (N)
 *         As workspace, this will contain a label which will indicate
 *         which of the following types a column in the U2 matrix or a
 *         row in the VT2 matrix is:
@@ -146,13 +153,6 @@
 *
 *         On exit, it is an array of dimension 4, with COLTYP(I) being
 *         the dimension of the I-th type columns.
-*
-*  IDXQ   (input/output) INTEGER array, dimension(N)
-*         This contains the permutation which separately sorts the two
-*         sub-problems in D into ascending order.  Note that entries in
-*         the first hlaf of this permutation must first be moved one
-*         position backward; and entries in the second half
-*         must first have NL+1 added to their values.
 *
 *  INFO   (output) INTEGER
 *          = 0:  successful exit.

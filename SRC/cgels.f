@@ -45,7 +45,7 @@
 *  Arguments
 *  =========
 *
-*  TRANS   (input) CHARACTER
+*  TRANS   (input) CHARACTER*1
 *          = 'N': the linear system involves A;
 *          = 'C': the linear system involves A**H.
 *
@@ -91,7 +91,7 @@
 *  LDB     (input) INTEGER
 *          The leading dimension of the array B. LDB >= MAX(1,M,N).
 *
-*  WORK    (workspace/output) COMPLEX array, dimension (LWORK)
+*  WORK    (workspace/output) COMPLEX array, dimension (MAX(1,LWORK))
 *          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER

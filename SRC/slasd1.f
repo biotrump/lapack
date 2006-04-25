@@ -73,8 +73,8 @@
 *         The bidiagonal matrix has row dimension N = NL + NR + 1,
 *         and column dimension M = N + SQRE.
 *
-*  D      (input/output) REAL array,
-*                        dimension (N = NL+NR+1).
+*  D      (input/output) REAL array, dimension (NL+NR+1).
+*         N = NL+NR+1
 *         On entry D(1:NL,1:NL) contains the singular values of the
 *         upper block; and D(NL+2:N) contains the singular values of
 *         the lower block. On exit D(1:N) contains the singular values
@@ -87,7 +87,7 @@
 *         Contains the off-diagonal element associated with the added
 *         row.
 *
-*  U      (input/output) REAL array, dimension(LDU,N)
+*  U      (input/output) REAL array, dimension (LDU,N)
 *         On entry U(1:NL, 1:NL) contains the left singular vectors of
 *         the upper block; U(NL+2:N, NL+2:N) contains the left singular
 *         vectors of the lower block. On exit U contains the left
@@ -96,7 +96,7 @@
 *  LDU    (input) INTEGER
 *         The leading dimension of the array U.  LDU >= max( 1, N ).
 *
-*  VT     (input/output) REAL array, dimension(LDVT,M)
+*  VT     (input/output) REAL array, dimension (LDVT,M)
 *         where M = N + SQRE.
 *         On entry VT(1:NL+1, 1:NL+1)' contains the right singular
 *         vectors of the upper block; VT(NL+2:M, NL+2:M)' contains
@@ -107,14 +107,14 @@
 *  LDVT   (input) INTEGER
 *         The leading dimension of the array VT.  LDVT >= max( 1, M ).
 *
-*  IDXQ  (output) INTEGER array, dimension(N)
+*  IDXQ  (output) INTEGER array, dimension (N)
 *         This contains the permutation which will reintegrate the
 *         subproblem just solved back into sorted order, i.e.
 *         D( IDXQ( I = 1, N ) ) will be in ascending order.
 *
-*  IWORK  (workspace) INTEGER array, dimension( 4 * N )
+*  IWORK  (workspace) INTEGER array, dimension (4*N)
 *
-*  WORK   (workspace) REAL array, dimension( 3*M**2 + 2*M )
+*  WORK   (workspace) REAL array, dimension (3*M**2+2*M)
 *
 *  INFO   (output) INTEGER
 *          = 0:  successful exit.

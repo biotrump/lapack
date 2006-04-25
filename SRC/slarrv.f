@@ -47,16 +47,6 @@
 *          ISPLIT( 1 ), the second of rows/columns ISPLIT( 1 )+1
 *          through ISPLIT( 2 ), etc.
 *
-*  TOL     (input) REAL
-*          The absolute error tolerance for the
-*          eigenvalues/eigenvectors.
-*          Errors in the input eigenvalues must be bounded by TOL.
-*          The eigenvectors output have residual norms
-*          bounded by TOL, and the dot products between different
-*          eigenvectors are bounded by TOL. TOL must be at least
-*          N*EPS*|T|, where EPS is the machine precision and |T| is
-*          the 1-norm of the tridiagonal matrix.
-*
 *  M       (input) INTEGER
 *          The total number of eigenvalues found.  0 <= M <= N.
 *          If RANGE = 'A', M = N, and if RANGE = 'I', M = IU-IL+1.
@@ -79,6 +69,16 @@
 *           The n Gerschgorin intervals. These are used to restrict
 *           the initial search for R, when R is input as 0.
 *
+*  TOL     (input) REAL
+*          The absolute error tolerance for the
+*          eigenvalues/eigenvectors.
+*          Errors in the input eigenvalues must be bounded by TOL.
+*          The eigenvectors output have residual norms
+*          bounded by TOL, and the dot products between different
+*          eigenvectors are bounded by TOL. TOL must be at least
+*          N*EPS*|T|, where EPS is the machine precision and |T| is
+*          the 1-norm of the tridiagonal matrix.
+*
 *  Z       (output) REAL array, dimension (LDZ, max(1,M) )
 *          If JOBZ = 'V', then if INFO = 0, the first M columns of Z
 *          contain the orthonormal eigenvectors of the matrix T
@@ -93,7 +93,7 @@
 *          The leading dimension of the array Z.  LDZ >= 1, and if
 *          JOBZ = 'V', LDZ >= max(1,N).
 *
-*  ISUPPZ  (output) INTEGER ARRAY, dimension ( 2*max(1,M) )
+*  ISUPPZ  (output) INTEGER array, dimension ( 2*max(1,M) )
 *          The support of the eigenvectors in Z, i.e., the indices
 *          indicating the nonzero elements in Z. The i-th eigenvector
 *          is nonzero only in elements ISUPPZ( 2*i-1 ) through

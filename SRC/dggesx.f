@@ -96,7 +96,7 @@
 *          (especially if the eigenvalue is ill-conditioned), in this
 *          case INFO is set to N+3.
 *
-*  SENSE   (input) CHARACTER
+*  SENSE   (input) CHARACTER*1
 *          Determines which reciprocal condition numbers are computed.
 *          = 'N' : None are computed;
 *          = 'E' : Computed for average of selected eigenvalues only;
@@ -177,7 +177,7 @@
 *          subspaces.
 *          Not referenced if SENSE = 'N' or 'E'.
 *
-*  WORK    (workspace/output) DOUBLE PRECISION array, dimension (LWORK)
+*  WORK    (workspace/output) DOUBLE PRECISION array, dimension (MAX(1,LWORK))
 *          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER
@@ -197,7 +197,7 @@
 *          no error message related to LWORK or LIWORK is issued by
 *          XERBLA.
 *
-*  IWORK   (workspace) INTEGER array, dimension (LIWORK)
+*  IWORK   (workspace) INTEGER array, dimension (MAX(1,LIWORK))
 *          On exit, if INFO = 0, IWORK(1) returns the minimum LIWORK.
 *
 *  LIWORK  (input) INTEGER

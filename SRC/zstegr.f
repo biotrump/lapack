@@ -135,13 +135,13 @@
 *          The leading dimension of the array Z.  LDZ >= 1, and if
 *          JOBZ = 'V', LDZ >= max(1,N).
 *
-*  ISUPPZ  (output) INTEGER ARRAY, dimension ( 2*max(1,M) )
+*  ISUPPZ  (output) INTEGER array, dimension ( 2*max(1,M) )
 *          The support of the eigenvectors in Z, i.e., the indices
 *          indicating the nonzero elements in Z. The i-th eigenvector
 *          is nonzero only in elements ISUPPZ( 2*i-1 ) through
 *          ISUPPZ( 2*i ).
 *
-*  WORK    (workspace/output) DOUBLE PRECISION array, dimension (LWORK)
+*  WORK    (workspace/output) DOUBLE PRECISION array, dimension (MAX(1,LWORK))
 *          On exit, if INFO = 0, WORK(1) returns the optimal
 *          (and minimal) LWORK.
 *
@@ -154,7 +154,7 @@
 *          and IWORK arrays, and no error message related to LWORK or
 *          LIWORK is issued by XERBLA.
 *
-*  IWORK   (workspace/output) INTEGER array, dimension (LIWORK)
+*  IWORK   (workspace/output) INTEGER array, dimension (MAX(1,LIWORK))
 *          On exit, if INFO = 0, IWORK(1) returns the optimal LIWORK.
 *
 *  LIWORK  (input) INTEGER
