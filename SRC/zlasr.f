@@ -98,18 +98,18 @@
 *          = 'L':  Left, compute A := P*A
 *          = 'R':  Right, compute A:= A*P**T
 *
-*  DIRECT  (input) CHARACTER*1
-*          Specifies whether P is a forward or backward sequence of
-*          plane rotations.
-*          = 'F':  Forward, P = P(z-1)*...*P(2)*P(1)
-*          = 'B':  Backward, P = P(1)*P(2)*...*P(z-1)
-*
 *  PIVOT   (input) CHARACTER*1
 *          Specifies the plane for which P(k) is a plane rotation
 *          matrix.
 *          = 'V':  Variable pivot, the plane (k,k+1)
 *          = 'T':  Top pivot, the plane (1,k+1)
 *          = 'B':  Bottom pivot, the plane (k,z)
+*
+*  DIRECT  (input) CHARACTER*1
+*          Specifies whether P is a forward or backward sequence of
+*          plane rotations.
+*          = 'F':  Forward, P = P(z-1)*...*P(2)*P(1)
+*          = 'B':  Backward, P = P(1)*P(2)*...*P(z-1)
 *
 *  M       (input) INTEGER
 *          The number of rows of the matrix A.  If m <= 1, an immediate
