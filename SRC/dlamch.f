@@ -595,7 +595,8 @@
 *  Arguments
 *  =========
 *
-*  A, B    (input) DOUBLE PRECISION
+*  A       (input) DOUBLE PRECISION
+*  B       (input) DOUBLE PRECISION
 *          The values A and B.
 *
 * =====================================================================
@@ -632,7 +633,7 @@
 *  Arguments
 *  =========
 *
-*  EMIN    (output) EMIN
+*  EMIN    (output) INTEGER 
 *          The minimum exponent before (gradual) underflow, computed by
 *          setting A = START and dividing by BASE until the previous A
 *          can not be recovered.

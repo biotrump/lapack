@@ -595,7 +595,8 @@
 *  Arguments
 *  =========
 *
-*  A, B    (input) REAL
+*  A       (input) REAL
+*  B       (input) REAL
 *          The values A and B.
 *
 * =====================================================================
@@ -620,7 +621,8 @@
 *     October 31, 1992
 *
 *     .. Scalar Arguments ..
-      INTEGER            BASE, EMIN
+      INTEGER            BASE
+      INTEGER            EMIN
       REAL               START
 *     ..
 *
@@ -632,7 +634,7 @@
 *  Arguments
 *  =========
 *
-*  EMIN    (output) EMIN
+*  EMIN    (output) INTEGER 
 *          The minimum exponent before (gradual) underflow, computed by
 *          setting A = START and dividing by BASE until the previous A
 *          can not be recovered.
