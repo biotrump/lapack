@@ -114,7 +114,7 @@
 *          M = 0 or N, SEP = norm(T).
 *          If JOB = 'N' or 'E', SEP is not referenced.
 *
-*  WORK    (workspace/output) REAL array, dimension (LWORK)
+*  WORK    (workspace/output) REAL array, dimension (MAX(1,LWORK))
 *          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER
@@ -128,7 +128,7 @@
 *          this value as the first entry of the WORK array, and no error
 *          message related to LWORK is issued by XERBLA.
 *
-*  IWORK   (workspace) INTEGER array, dimension (LIWORK)
+*  IWORK   (workspace) INTEGER array, dimension (MAX(1,LIWORK))
 *          On exit, if INFO = 0, IWORK(1) returns the optimal LIWORK.
 *
 *  LIWORK  (input) INTEGER

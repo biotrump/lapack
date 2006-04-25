@@ -105,7 +105,7 @@
 *          The leading dimension of the array VT.  LDVT >= 1; if
 *          JOBVT = 'A', LDVT >= N; if JOBVT = 'S', LDVT >= min(M,N).
 *
-*  WORK    (workspace/output) REAL array, dimension (LWORK)
+*  WORK    (workspace/output) REAL array, dimension (MAX(1,LWORK))
 *          On exit, if INFO = 0, WORK(1) returns the optimal LWORK;
 *          if INFO > 0, WORK(2:MIN(M,N)) contains the unconverged
 *          superdiagonal elements of an upper bidiagonal matrix B

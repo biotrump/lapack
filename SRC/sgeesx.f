@@ -129,7 +129,7 @@
 *          condition number for the selected right invariant subspace.
 *          Not referenced if SENSE = 'N' or 'E'.
 *
-*  WORK    (workspace/output) REAL array, dimension (LWORK)
+*  WORK    (workspace/output) REAL array, dimension (MAX(1,LWORK))
 *          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER
@@ -148,7 +148,7 @@
 *          entries of the WORK and IWORK arrays, and no error messages
 *          related to LWORK or LIWORK are issued by XERBLA.
 *
-*  IWORK   (workspace/output) INTEGER array, dimension (LIWORK)
+*  IWORK   (workspace/output) INTEGER array, dimension (MAX(1,LIWORK))
 *          On exit, if INFO = 0, IWORK(1) returns the optimal LIWORK.
 *
 *  LIWORK  (input) INTEGER

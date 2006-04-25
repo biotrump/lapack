@@ -89,7 +89,7 @@
 *          The scalar factors of the elementary reflectors which
 *          represent the unitary matrix Z (see Further Details).
 *
-*  WORK    (workspace/output) COMPLEX*16 array, dimension (LWORK)
+*  WORK    (workspace/output) COMPLEX*16 array, dimension (MAX(1,LWORK))
 *          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER

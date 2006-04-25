@@ -171,7 +171,7 @@
 *          RCONDV(j) is the reciprocal condition number of the j-th
 *          right eigenvector.
 *
-*  WORK    (workspace/output) DOUBLE PRECISION array, dimension (LWORK)
+*  WORK    (workspace/output) DOUBLE PRECISION array, dimension (MAX(1,LWORK))
 *          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER

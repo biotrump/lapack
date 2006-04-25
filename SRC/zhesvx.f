@@ -155,7 +155,7 @@
 *          vector X(j) (i.e., the smallest relative change in
 *          any element of A or B that makes X(j) an exact solution).
 *
-*  WORK    (workspace/output) COMPLEX*16 array, dimension (LWORK)
+*  WORK    (workspace/output) COMPLEX*16 array, dimension (MAX(1,LWORK))
 *          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER

@@ -65,7 +65,7 @@
 *  LDAB    (input) INTEGER
 *          The leading dimension of the array AB.  LDAB >= KL+KU+1.
 *
-*  WORK    (workspace) DOUBLE PRECISION array, dimension (LWORK),
+*  WORK    (workspace) DOUBLE PRECISION array, dimension (MAX(1,LWORK)),
 *          where LWORK >= N when NORM = 'I'; otherwise, WORK is not
 *          referenced.
 *

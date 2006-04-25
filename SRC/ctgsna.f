@@ -112,7 +112,7 @@
 *          the specified condition numbers; for each selected eigenvalue
 *          one element is used. If HOWMNY = 'A', M is set to N.
 *
-*  WORK    (workspace/output) COMPLEX array, dimension (LWORK)
+*  WORK    (workspace/output) COMPLEX array, dimension (MAX(1,LWORK))
 *          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK  (input) INTEGER

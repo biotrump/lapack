@@ -76,7 +76,7 @@
 *          reflector H(i) or G(i), which determines Q or P**T, as
 *          returned by SGEBRD in its array argument TAUQ or TAUP.
 *
-*  WORK    (workspace/output) REAL array, dimension (LWORK)
+*  WORK    (workspace/output) REAL array, dimension (MAX(1,LWORK))
 *          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER

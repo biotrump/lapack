@@ -149,7 +149,7 @@
 *          solutions R and L, respectively, to the homogeneous system
 *          with C = F = 0. Normally, SCALE = 1.
 *
-*  WORK    (workspace/output) REAL array, dimension (LWORK)
+*  WORK    (workspace/output) REAL array, dimension (MAX(1,LWORK))
 *          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER

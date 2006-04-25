@@ -60,7 +60,7 @@
 *  LDA     (input) INTEGER
 *          The leading dimension of the array A.  LDA >= max(M,1).
 *
-*  WORK    (workspace) DOUBLE PRECISION array, dimension (LWORK),
+*  WORK    (workspace) DOUBLE PRECISION array, dimension (MAX(1,LWORK)),
 *          where LWORK >= M when NORM = 'I'; otherwise, WORK is not
 *          referenced.
 *

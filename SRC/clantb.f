@@ -79,7 +79,7 @@
 *  LDAB    (input) INTEGER
 *          The leading dimension of the array AB.  LDAB >= K+1.
 *
-*  WORK    (workspace) REAL array, dimension (LWORK),
+*  WORK    (workspace) REAL array, dimension (MAX(1,LWORK)),
 *          where LWORK >= N when NORM = 'I'; otherwise, WORK is not
 *          referenced.
 *

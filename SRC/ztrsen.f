@@ -94,7 +94,7 @@
 *          M = 0 or N, SEP = norm(T).
 *          If JOB = 'N' or 'E', SEP is not referenced.
 *
-*  WORK    (workspace/output) COMPLEX*16 array, dimension (LWORK)
+*  WORK    (workspace/output) COMPLEX*16 array, dimension (MAX(1,LWORK))
 *          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER

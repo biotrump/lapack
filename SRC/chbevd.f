@@ -79,7 +79,7 @@
 *          The leading dimension of the array Z.  LDZ >= 1, and if
 *          JOBZ = 'V', LDZ >= max(1,N).
 *
-*  WORK    (workspace/output) COMPLEX array, dimension (LWORK)
+*  WORK    (workspace/output) COMPLEX array, dimension (MAX(1,LWORK))
 *          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER
@@ -111,7 +111,7 @@
 *          of the WORK, RWORK and IWORK arrays, and no error message
 *          related to LWORK or LRWORK or LIWORK is issued by XERBLA.
 *
-*  IWORK   (workspace/output) INTEGER array, dimension (LIWORK)
+*  IWORK   (workspace/output) INTEGER array, dimension (MAX(1,LIWORK))
 *          On exit, if INFO = 0, IWORK(1) returns the optimal LIWORK.
 *
 *  LIWORK  (input) INTEGER

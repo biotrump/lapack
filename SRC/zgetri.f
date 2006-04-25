@@ -40,7 +40,7 @@
 *          The pivot indices from ZGETRF; for 1<=i<=N, row i of the
 *          matrix was interchanged with row IPIV(i).
 *
-*  WORK    (workspace/output) COMPLEX*16 array, dimension (LWORK)
+*  WORK    (workspace/output) COMPLEX*16 array, dimension (MAX(1,LWORK))
 *          On exit, if INFO=0, then WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER

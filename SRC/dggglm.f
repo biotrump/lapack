@@ -82,7 +82,7 @@
 *  Y       (output) DOUBLE PRECISION array, dimension (P)
 *          On exit, X and Y are the solutions of the GLM problem.
 *
-*  WORK    (workspace/output) DOUBLE PRECISION array, dimension (LWORK)
+*  WORK    (workspace/output) DOUBLE PRECISION array, dimension (MAX(1,LWORK))
 *          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER

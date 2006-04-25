@@ -62,7 +62,7 @@
 *          if UPLO = 'U', AP(i + (j-1)*j/2) = A(i,j) for 1<=i<=j;
 *          if UPLO = 'L', AP(i + (j-1)*(2n-j)/2) = A(i,j) for j<=i<=n.
 *
-*  WORK    (workspace) DOUBLE PRECISION array, dimension (LWORK),
+*  WORK    (workspace) DOUBLE PRECISION array, dimension (MAX(1,LWORK)),
 *          where LWORK >= N when NORM = 'I' or '1' or 'O'; otherwise,
 *          WORK is not referenced.
 *

@@ -98,7 +98,7 @@
 *          final position (which may differ from its input value by
 *          +1 or -1). 1 <= IFST, ILST <= N.
 *
-*  WORK    (workspace/output) REAL array, dimension (LWORK)
+*  WORK    (workspace/output) REAL array, dimension (MAX(1,LWORK))
 *          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER

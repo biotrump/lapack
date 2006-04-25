@@ -204,7 +204,7 @@
 *          value would be very small anyway.
 *          If SENSE = 'N' or 'E', RCONDV is not referenced.
 *
-*  WORK    (workspace/output) REAL array, dimension (LWORK)
+*  WORK    (workspace/output) REAL array, dimension (MAX(1,LWORK))
 *          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER

@@ -88,7 +88,7 @@
 *  N2      (input) INTEGER
 *          The order of the second block (A22, B22). N2 = 0, 1 or 2.
 *
-*  WORK    (workspace) REAL array, dimension (LWORK).
+*  WORK    (workspace) REAL array, dimension (MAX(1,LWORK)).
 *
 *  LWORK   (input) INTEGER
 *          The dimension of the array WORK.

@@ -65,7 +65,7 @@
 *          Note that the  imaginary parts of the diagonal elements need
 *          not be set and are assumed to be zero.
 *
-*  WORK    (workspace) DOUBLE PRECISION array, dimension (LWORK),
+*  WORK    (workspace) DOUBLE PRECISION array, dimension (MAX(1,LWORK)),
 *          where LWORK >= N when NORM = 'I' or '1' or 'O'; otherwise,
 *          WORK is not referenced.
 *

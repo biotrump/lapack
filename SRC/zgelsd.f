@@ -92,7 +92,7 @@
 *          The effective rank of A, i.e., the number of singular values
 *          which are greater than RCOND*S(1).
 *
-*  WORK    (workspace/output) COMPLEX*16 array, dimension (LWORK)
+*  WORK    (workspace/output) COMPLEX*16 array, dimension (MAX(1,LWORK))
 *          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER
@@ -112,7 +112,7 @@
 *          IWORK arrays, and no error message related to LWORK is issued
 *          by XERBLA.
 *
-*  RWORK   (workspace) DOUBLE PRECISION array, dimension (LRWORK)
+*  RWORK   (workspace) DOUBLE PRECISION array, dimension (MAX(1,LRWORK))
 *          LRWORK >=
 *              10*N + 2*N*SMLSIZ + 8*N*NLVL + 3*SMLSIZ*NRHS +
 *             (SMLSIZ+1)**2
@@ -126,7 +126,7 @@
 *             NLVL = MAX( 0, INT( LOG_2( MIN( M,N )/(SMLSIZ+1) ) ) + 1 )
 *          On exit, if INFO = 0, RWORK(1) returns the minimum LRWORK.
 *
-*  IWORK   (workspace) INTEGER array, dimension (LIWORK)
+*  IWORK   (workspace) INTEGER array, dimension (MAX(1,LIWORK))
 *          LIWORK >= max(1, 3*MINMN*NLVL + 11*MINMN),
 *          where MINMN = MIN( M,N ).
 *          On exit, if INFO = 0, IWORK(1) returns the minimum LIWORK.

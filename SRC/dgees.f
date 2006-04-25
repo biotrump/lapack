@@ -103,7 +103,7 @@
 *          The leading dimension of the array VS.  LDVS >= 1; if
 *          JOBVS = 'V', LDVS >= N.
 *
-*  WORK    (workspace/output) DOUBLE PRECISION array, dimension (LWORK)
+*  WORK    (workspace/output) DOUBLE PRECISION array, dimension (MAX(1,LWORK))
 *          On exit, if INFO = 0, WORK(1) contains the optimal LWORK.
 *
 *  LWORK   (input) INTEGER

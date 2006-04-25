@@ -78,7 +78,7 @@
 *  X       (output) REAL array, dimension (N)
 *          On exit, X is the solution of the LSE problem.
 *
-*  WORK    (workspace/output) REAL array, dimension (LWORK)
+*  WORK    (workspace/output) REAL array, dimension (MAX(1,LWORK))
 *          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER

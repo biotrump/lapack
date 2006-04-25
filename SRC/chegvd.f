@@ -88,7 +88,7 @@
 *  W       (output) REAL array, dimension (N)
 *          If INFO = 0, the eigenvalues in ascending order.
 *
-*  WORK    (workspace/output) COMPLEX array, dimension (LWORK)
+*  WORK    (workspace/output) COMPLEX array, dimension (MAX(1,LWORK))
 *          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER
@@ -103,7 +103,7 @@
 *          the WORK, RWORK and IWORK arrays, and no error message
 *          related to LWORK or LRWORK or LIWORK is issued by XERBLA.
 *
-*  RWORK   (workspace/output) REAL array, dimension (LRWORK)
+*  RWORK   (workspace/output) REAL array, dimension (MAX(1,LRWORK))
 *          On exit, if INFO = 0, RWORK(1) returns the optimal LRWORK.
 *
 *  LRWORK  (input) INTEGER
@@ -118,7 +118,7 @@
 *          of the WORK, RWORK and IWORK arrays, and no error message
 *          related to LWORK or LRWORK or LIWORK is issued by XERBLA.
 *
-*  IWORK   (workspace/output) INTEGER array, dimension (LIWORK)
+*  IWORK   (workspace/output) INTEGER array, dimension (MAX(1,LIWORK))
 *          On exit, if INFO = 0, IWORK(1) returns the optimal LIWORK.
 *
 *  LIWORK  (input) INTEGER

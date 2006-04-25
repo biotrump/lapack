@@ -70,7 +70,7 @@
 *          corresponding to the diagonal elements of the matrix A are
 *          not referenced, but are assumed to be one.
 *
-*  WORK    (workspace) REAL array, dimension (LWORK),
+*  WORK    (workspace) REAL array, dimension (MAX(1,LWORK)),
 *          where LWORK >= N when NORM = 'I'; otherwise, WORK is not
 *          referenced.
 *

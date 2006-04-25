@@ -147,7 +147,7 @@
 *          D and E have not been changed. If SCALE = 0, R and L will
 *          hold the solutions to the homogenious system with C = F = 0.
 *
-*  WORK    (workspace/output) COMPLEX array, dimension (LWORK)
+*  WORK    (workspace/output) COMPLEX array, dimension (MAX(1,LWORK))
 *          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER

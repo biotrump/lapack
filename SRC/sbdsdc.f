@@ -109,7 +109,7 @@
 *             bottom of the computation tree (usually about 25).
 *          For other values of COMPQ, IQ is not referenced.
 *
-*  WORK    (workspace) REAL array, dimension (LWORK)
+*  WORK    (workspace) REAL array, dimension (MAX(1,LWORK))
 *          If COMPQ = 'N' then LWORK >= (4 * N).
 *          If COMPQ = 'P' then LWORK >= (6 * N).
 *          If COMPQ = 'I' then LWORK >= (3 * N**2 + 4 * N).

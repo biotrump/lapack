@@ -40,7 +40,7 @@
 *          The pivot indices from DGETRF; for 1<=i<=N, row i of the
 *          matrix was interchanged with row IPIV(i).
 *
-*  WORK    (workspace/output) DOUBLE PRECISION array, dimension (LWORK)
+*  WORK    (workspace/output) DOUBLE PRECISION array, dimension (MAX(1,LWORK))
 *          On exit, if INFO=0, then WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER

@@ -91,7 +91,7 @@
 *          The effective rank of A, i.e., the number of singular values
 *          which are greater than RCOND*S(1).
 *
-*  WORK    (workspace/output) REAL array, dimension (LWORK)
+*  WORK    (workspace/output) REAL array, dimension (MAX(1,LWORK))
 *          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER
@@ -114,7 +114,7 @@
 *          the first entries of the WORK and IWORK arrays, and no error
 *          message related to LWORK is issued by XERBLA.
 *
-*  IWORK   (workspace) INTEGER array, dimension (LIWORK)
+*  IWORK   (workspace) INTEGER array, dimension (MAX(1,LIWORK))
 *          LIWORK >= max(1, 3*MINMN*NLVL + 11*MINMN),
 *          where MINMN = MIN( M,N ).
 *          On exit, if INFO = 0, IWORK(1) returns the minimum LIWORK.

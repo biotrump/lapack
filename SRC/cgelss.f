@@ -79,7 +79,7 @@
 *          The effective rank of A, i.e., the number of singular values
 *          which are greater than RCOND*S(1).
 *
-*  WORK    (workspace/output) COMPLEX array, dimension (LWORK)
+*  WORK    (workspace/output) COMPLEX array, dimension (MAX(1,LWORK))
 *          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER

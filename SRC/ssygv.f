@@ -79,7 +79,7 @@
 *  W       (output) REAL array, dimension (N)
 *          If INFO = 0, the eigenvalues in ascending order.
 *
-*  WORK    (workspace/output) REAL array, dimension (LWORK)
+*  WORK    (workspace/output) REAL array, dimension (MAX(1,LWORK))
 *          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER

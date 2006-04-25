@@ -109,7 +109,7 @@
 *          JOBZ = 'A' or JOBZ = 'O' and M >= N, LDVT >= N;
 *          if JOBZ = 'S', LDVT >= min(M,N).
 *
-*  WORK    (workspace/output) COMPLEX*16 array, dimension (LWORK)
+*  WORK    (workspace/output) COMPLEX*16 array, dimension (MAX(1,LWORK))
 *          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER
@@ -125,7 +125,7 @@
 *          size for the WORK array is calculated and stored in WORK(1),
 *          and no other work except argument checking is performed.
 *
-*  RWORK   (workspace) DOUBLE PRECISION array, dimension (LRWORK)
+*  RWORK   (workspace) DOUBLE PRECISION array, dimension (MAX(1,LRWORK))
 *          If JOBZ = 'N', LRWORK >= 5*min(M,N).
 *          Otherwise, LRWORK >= 5*min(M,N)*min(M,N) + 7*min(M,N)
 *

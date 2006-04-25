@@ -64,7 +64,7 @@
 *          IPIV(k+1) < 0, then rows and columns k+1 and -IPIV(k) were
 *          interchanged and D(k:k+1,k:k+1) is a 2-by-2 diagonal block.
 *
-*  WORK    (workspace/output) REAL array, dimension (LWORK)
+*  WORK    (workspace/output) REAL array, dimension (MAX(1,LWORK))
 *          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER

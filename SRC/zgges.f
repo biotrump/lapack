@@ -138,7 +138,7 @@
 *          The leading dimension of the matrix VSR. LDVSR >= 1, and
 *          if JOBVSR = 'V', LDVSR >= N.
 *
-*  WORK    (workspace/output) COMPLEX*16 array, dimension (LWORK)
+*  WORK    (workspace/output) COMPLEX*16 array, dimension (MAX(1,LWORK))
 *          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER

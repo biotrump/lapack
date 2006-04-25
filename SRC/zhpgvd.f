@@ -87,7 +87,7 @@
 *          The leading dimension of the array Z.  LDZ >= 1, and if
 *          JOBZ = 'V', LDZ >= max(1,N).
 *
-*  WORK    (workspace) COMPLEX*16 array, dimension (LWORK)
+*  WORK    (workspace) COMPLEX*16 array, dimension (MAX(1,LWORK))
 *          On exit, if INFO = 0, WORK(1) returns the required LWORK.
 *
 *  LWORK   (input) INTEGER
@@ -102,7 +102,7 @@
 *          the WORK, RWORK and IWORK arrays, and no error message
 *          related to LWORK or LRWORK or LIWORK is issued by XERBLA.
 *
-*  RWORK   (workspace) DOUBLE PRECISION array, dimension (LRWORK)
+*  RWORK   (workspace) DOUBLE PRECISION array, dimension (MAX(1,LRWORK))
 *          On exit, if INFO = 0, RWORK(1) returns the required LRWORK.
 *
 *  LRWORK  (input) INTEGER
@@ -117,7 +117,7 @@
 *          of the WORK, RWORK and IWORK arrays, and no error message
 *          related to LWORK or LRWORK or LIWORK is issued by XERBLA.
 *
-*  IWORK   (workspace/output) INTEGER array, dimension (LIWORK)
+*  IWORK   (workspace/output) INTEGER array, dimension (MAX(1,LIWORK))
 *          On exit, if INFO = 0, IWORK(1) returns the required LIWORK.
 *
 *  LIWORK  (input) INTEGER
