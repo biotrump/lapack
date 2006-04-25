@@ -35,13 +35,13 @@
 *  I      (input) INTEGER
 *         The index of the eigenvalue to be computed.  I = 1 or I = 2.
 *
-*  D      (input) REAL array, dimension ( 2 )
+*  D      (input) REAL array, dimension (2)
 *         The original eigenvalues.  We assume 0 <= D(1) < D(2).
 *
-*  Z      (input) REAL array, dimension ( 2 )
+*  Z      (input) REAL array, dimension (2)
 *         The components of the updating vector.
 *
-*  DELTA  (output) REAL array, dimension ( 2 )
+*  DELTA  (output) REAL array, dimension (2)
 *         Contains (D(j) - lambda_I) in its  j-th component.
 *         The vector DELTA contains the information necessary
 *         to construct the eigenvectors.
@@ -52,7 +52,7 @@
 *  DSIGMA (output) REAL
 *         The computed lambda_I, the I-th updated eigenvalue.
 *
-*  WORK   (workspace) REAL array, dimension ( 2 )
+*  WORK   (workspace) REAL array, dimension (2)
 *         WORK contains (D(j) + sigma_I) in its  j-th component.
 *
 *  Further Details

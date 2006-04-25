@@ -39,7 +39,7 @@
 *  N     (input) INTEGER
 *        The number of rows and columns in the matrix. N >= 0.
 *
-*  Z     (workspace) REAL array, dimension ( 4*N )
+*  Z     (workspace) REAL array, dimension (4*N)
 *        On entry Z holds the qd array. On exit, entries 1 to N hold
 *        the eigenvalues in decreasing order, Z( 2*N+1 ) holds the
 *        trace, and Z( 2*N+2 ) holds the sum of the eigenvalues. If

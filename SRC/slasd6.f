@@ -91,20 +91,20 @@
 *         The bidiagonal matrix has row dimension N = NL + NR + 1,
 *         and column dimension M = N + SQRE.
 *
-*  D      (input/output) REAL array, dimension ( NL+NR+1 ).
+*  D      (input/output) REAL array, dimension (NL+NR+1).
 *         On entry D(1:NL,1:NL) contains the singular values of the
 *         upper block, and D(NL+2:N) contains the singular values
 *         of the lower block. On exit D(1:N) contains the singular
 *         values of the modified matrix.
 *
-*  VF     (input/output) REAL array, dimension ( M )
+*  VF     (input/output) REAL array, dimension (M)
 *         On entry, VF(1:NL+1) contains the first components of all
 *         right singular vectors of the upper block; and VF(NL+2:M)
 *         contains the first components of all right singular vectors
 *         of the lower block. On exit, VF contains the first components
 *         of all right singular vectors of the bidiagonal matrix.
 *
-*  VL     (input/output) REAL array, dimension ( M )
+*  VL     (input/output) REAL array, dimension (M)
 *         On entry, VL(1:NL+1) contains the  last components of all
 *         right singular vectors of the upper block; and VL(NL+2:M)
 *         contains the last components of all right singular vectors of
@@ -118,7 +118,7 @@
 *         Contains the off-diagonal element associated with the added
 *         row.
 *
-*  IDXQ   (output) INTEGER array, dimension ( N )
+*  IDXQ   (output) INTEGER array, dimension (N)
 *         This contains the permutation which will reintegrate the
 *         subproblem just solved back into sorted order, i.e.
 *         D( IDXQ( I = 1, N ) ) will be in ascending order.

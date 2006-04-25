@@ -97,7 +97,7 @@
 *  LDVT2  (input) INTEGER
 *         The leading dimension of the array VT2.  LDVT2 >= N.
 *
-*  IDXC   (input) INTEGER array, dimension ( N )
+*  IDXC   (input) INTEGER array, dimension (N)
 *         The permutation used to arrange the columns of U (and rows of
 *         VT) into three groups:  the first group contains non-zero
 *         entries only at and above (or before) NL +1; the second
@@ -109,7 +109,7 @@
 *         must be likewise permuted before the matrix multiplies can
 *         take place.
 *
-*  CTOT   (input) INTEGER array, dimension ( 4 )
+*  CTOT   (input) INTEGER array, dimension (4)
 *         A count of the total number of the various types of columns
 *         in U (or rows in VT), as described in IDXC. The fourth column
 *         type is any column which has been deflated.

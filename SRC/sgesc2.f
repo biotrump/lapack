@@ -41,11 +41,11 @@
 *          On entry, the right hand side vector b.
 *          On exit, the solution vector X.
 *
-*  IPIV    (iput) INTEGER array, dimension (N).
+*  IPIV    (input) INTEGER array, dimension (N).
 *          The pivot indices; for 1 <= i <= N, row i of the
 *          matrix has been interchanged with row IPIV(i).
 *
-*  JPIV    (iput) INTEGER array, dimension (N).
+*  JPIV    (input) INTEGER array, dimension (N).
 *          The pivot indices; for 1 <= j <= N, column j of the
 *          matrix has been interchanged with column JPIV(j).
 *

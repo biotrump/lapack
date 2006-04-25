@@ -197,7 +197,7 @@
 *             endfor
 *          such that ALPHA(1) >= ALPHA(2) >= ... >= ALPHA(N).
 *
-*  INFO    (output)INTEGER
+*  INFO    (output) INTEGER
 *          = 0:  successful exit
 *          < 0:  if INFO = -i, the i-th argument had an illegal value.
 *          > 0:  if INFO = 1, the Jacobi-type procedure failed to
