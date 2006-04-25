@@ -79,8 +79,8 @@
 *         singular vector matrices of all subproblems at the bottom
 *         level.
 *
-*  K      (output) INTEGER array,
-*         dimension ( N ) if ICOMPQ = 1 and dimension 1 if ICOMPQ = 0.
+*  K      (output) INTEGER array, dimension ( N ) 
+*         if ICOMPQ = 1 and dimension 1 if ICOMPQ = 0.
 *         If ICOMPQ = 1, on exit, K(I) is the dimension of the I-th
 *         secular equation on the computation tree.
 *
@@ -125,8 +125,8 @@
 *  LDGCOL (input) INTEGER, LDGCOL = > N.
 *         The leading dimension of arrays GIVCOL and PERM.
 *
-*  PERM   (output) INTEGER array,
-*         dimension ( LDGCOL, NLVL ) if ICOMPQ = 1, and not referenced
+*  PERM   (output) INTEGER array, dimension ( LDGCOL, NLVL ) 
+*         if ICOMPQ = 1, and not referenced
 *         if ICOMPQ = 0. If ICOMPQ = 1, on exit, PERM(1, I) records
 *         permutations done on the I-th level of the computation tree.
 *
@@ -152,8 +152,7 @@
 *  WORK   (workspace) REAL array, dimension
 *         (6 * N + (SMLSIZ + 1)*(SMLSIZ + 1)).
 *
-*  IWORK  (workspace) INTEGER array.
-*         Dimension must be at least (7 * N).
+*  IWORK  (workspace) INTEGER array, dimension (7*N).
 *
 *  INFO   (output) INTEGER
 *          = 0:  successful exit.
