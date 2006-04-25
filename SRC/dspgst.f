@@ -34,7 +34,7 @@
 *          = 1: compute inv(U**T)*A*inv(U) or inv(L)*A*inv(L**T);
 *          = 2 or 3: compute U*A*U**T or L**T*A*L.
 *
-*  UPLO    (input) CHARACTER
+*  UPLO    (input) CHARACTER*1
 *          = 'U':  Upper triangle of A is stored and B is factored as
 *                  U**T*U;
 *          = 'L':  Lower triangle of A is stored and B is factored as

@@ -31,7 +31,7 @@
 *  Arguments
 *  =========
 *
-*  UPLO    (input) CHARACTER
+*  UPLO    (input) CHARACTER*1
 *          Specifies whether the upper or lower triangular part of the
 *          symmetric matrix A is stored:
 *          = 'U': Upper triangular

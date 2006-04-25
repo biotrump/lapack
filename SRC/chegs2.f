@@ -34,7 +34,7 @@
 *          = 1: compute inv(U')*A*inv(U) or inv(L)*A*inv(L');
 *          = 2 or 3: compute U*A*U' or L'*A*L.
 *
-*  UPLO    (input) CHARACTER
+*  UPLO    (input) CHARACTER*1
 *          Specifies whether the upper or lower triangular part of the
 *          Hermitian matrix A is stored, and how B has been factorized.
 *          = 'U':  Upper triangular

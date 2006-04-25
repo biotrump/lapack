@@ -30,7 +30,7 @@
 *  Arguments
 *  =========
 *
-*  TRANS   (input) CHARACTER
+*  TRANS   (input) CHARACTER*1
 *          Specifies the operation applied to A.
 *          = 'N':  No transpose, B := alpha * A * X + beta * B
 *          = 'T':  Transpose,    B := alpha * A**T * X + beta * B

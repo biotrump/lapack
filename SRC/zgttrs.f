@@ -26,7 +26,7 @@
 *  Arguments
 *  =========
 *
-*  TRANS   (input) CHARACTER
+*  TRANS   (input) CHARACTER*1
 *          Specifies the form of the system of equations.
 *          = 'N':  A * X = B     (No transpose)
 *          = 'T':  A**T * X = B  (Transpose)
