@@ -85,9 +85,7 @@
 *           =0:  Successful exit.
 *           =1:  The transformed matrix pair (A, B) would be too far
 *                from generalized Schur form; the problem is ill-
-*                conditioned. (A, B) may have been partially reordered,
-*                and ILST points to the first row of the current
-*                position of the block being moved.
+*                conditioned.
 *
 *
 *  Further Details
