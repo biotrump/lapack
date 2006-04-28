@@ -1,12 +1,12 @@
       SUBROUTINE CSYR2K(UPLO,TRANS,N,K,ALPHA,A,LDA,B,LDB,BETA,C,LDC)
-C     .. Scalar Arguments ..
+*     .. Scalar Arguments ..
       COMPLEX ALPHA,BETA
       INTEGER K,LDA,LDB,LDC,N
       CHARACTER TRANS,UPLO
-C     ..
-C     .. Array Arguments ..
+*     ..
+*     .. Array Arguments ..
       COMPLEX A(LDA,*),B(LDB,*),C(LDC,*)
-C     ..
+*     ..
 *
 *  Purpose
 *  =======
@@ -23,7 +23,7 @@ C     ..
 *  and  A and B  are  n by k  matrices  in the  first  case  and  k by n
 *  matrices in the second case.
 *
-*  Parameters
+*  Arguments
 *  ==========
 *
 *  UPLO   - CHARACTER*1.
@@ -131,27 +131,27 @@ C     ..
 *     Sven Hammarling, Numerical Algorithms Group Ltd.
 *
 *
-C     .. External Functions ..
+*     .. External Functions ..
       LOGICAL LSAME
       EXTERNAL LSAME
-C     ..
-C     .. External Subroutines ..
+*     ..
+*     .. External Subroutines ..
       EXTERNAL XERBLA
-C     ..
-C     .. Intrinsic Functions ..
+*     ..
+*     .. Intrinsic Functions ..
       INTRINSIC MAX
-C     ..
-C     .. Local Scalars ..
+*     ..
+*     .. Local Scalars ..
       COMPLEX TEMP1,TEMP2
       INTEGER I,INFO,J,L,NROWA
       LOGICAL UPPER
-C     ..
-C     .. Parameters ..
+*     ..
+*     .. Parameters ..
       COMPLEX ONE
       PARAMETER (ONE= (1.0E+0,0.0E+0))
       COMPLEX ZERO
       PARAMETER (ZERO= (0.0E+0,0.0E+0))
-C     ..
+*     ..
 *
 *     Test the input parameters.
 *

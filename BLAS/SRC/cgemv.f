@@ -1,17 +1,17 @@
       SUBROUTINE CGEMV(TRANS,M,N,ALPHA,A,LDA,X,INCX,BETA,Y,INCY)
-C     .. Scalar Arguments ..
+*     .. Scalar Arguments ..
       COMPLEX ALPHA,BETA
       INTEGER INCX,INCY,LDA,M,N
       CHARACTER TRANS
-C     ..
-C     .. Array Arguments ..
+*     ..
+*     .. Array Arguments ..
       COMPLEX A(LDA,*),X(*),Y(*)
-C     ..
+*     ..
 *
 *  Purpose
 *  =======
 *
-*  CGEMV  performs one of the matrix-vector operations
+*  CGEMV performs one of the matrix-vector operations
 *
 *     y := alpha*A*x + beta*y,   or   y := alpha*A'*x + beta*y,   or
 *
@@ -20,7 +20,7 @@ C     ..
 *  where alpha and beta are scalars, x and y are vectors and A is an
 *  m by n matrix.
 *
-*  Parameters
+*  Arguments
 *  ==========
 *
 *  TRANS  - CHARACTER*1.
@@ -101,27 +101,27 @@ C     ..
 *     Richard Hanson, Sandia National Labs.
 *
 *
-C     .. Parameters ..
+*     .. Parameters ..
       COMPLEX ONE
       PARAMETER (ONE= (1.0E+0,0.0E+0))
       COMPLEX ZERO
       PARAMETER (ZERO= (0.0E+0,0.0E+0))
-C     ..
-C     .. Local Scalars ..
+*     ..
+*     .. Local Scalars ..
       COMPLEX TEMP
       INTEGER I,INFO,IX,IY,J,JX,JY,KX,KY,LENX,LENY
       LOGICAL NOCONJ
-C     ..
-C     .. External Functions ..
+*     ..
+*     .. External Functions ..
       LOGICAL LSAME
       EXTERNAL LSAME
-C     ..
-C     .. External Subroutines ..
+*     ..
+*     .. External Subroutines ..
       EXTERNAL XERBLA
-C     ..
-C     .. Intrinsic Functions ..
+*     ..
+*     .. Intrinsic Functions ..
       INTRINSIC CONJG,MAX
-C     ..
+*     ..
 *
 *     Test the input parameters.
 *

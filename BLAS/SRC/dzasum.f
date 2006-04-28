@@ -1,32 +1,35 @@
       DOUBLE PRECISION FUNCTION DZASUM(N,ZX,INCX)
-c
-c     takes the sum of the absolute values.
-c     jack dongarra, 3/11/78.
-c     modified 3/93 to return if incx .le. 0.
-c     modified 12/3/93, array(1) declarations changed to array(*)
-c
-c
-C     .. Scalar Arguments ..
+*     .. Scalar Arguments ..
       INTEGER INCX,N
-C     ..
-C     .. Array Arguments ..
+*     ..
+*     .. Array Arguments ..
       DOUBLE COMPLEX ZX(*)
-C     ..
-C     .. Local Scalars ..
+*     ..
+*
+*  Purpose
+*  =======
+*
+*     takes the sum of the absolute values.
+*     jack dongarra, 3/11/78.
+*     modified 3/93 to return if incx .le. 0.
+*     modified 12/3/93, array(1) declarations changed to array(*)
+*
+*
+*     .. Local Scalars ..
       DOUBLE PRECISION STEMP
       INTEGER I,IX
-C     ..
-C     .. External Functions ..
+*     ..
+*     .. External Functions ..
       DOUBLE PRECISION DCABS1
       EXTERNAL DCABS1
-C     ..
+*     ..
       DZASUM = 0.0d0
       STEMP = 0.0d0
       IF (N.LE.0 .OR. INCX.LE.0) RETURN
       IF (INCX.EQ.1) GO TO 20
-c
-c        code for increment not equal to 1
-c
+*
+*        code for increment not equal to 1
+*
       IX = 1
       DO 10 I = 1,N
           STEMP = STEMP + DCABS1(ZX(IX))
@@ -34,9 +37,9 @@ c
    10 CONTINUE
       DZASUM = STEMP
       RETURN
-c
-c        code for increment equal to 1
-c
+*
+*        code for increment equal to 1
+*
    20 DO 30 I = 1,N
           STEMP = STEMP + DCABS1(ZX(I))
    30 CONTINUE

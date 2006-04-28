@@ -1,12 +1,12 @@
       SUBROUTINE DTRMM(SIDE,UPLO,TRANSA,DIAG,M,N,ALPHA,A,LDA,B,LDB)
-C     .. Scalar Arguments ..
+*     .. Scalar Arguments ..
       DOUBLE PRECISION ALPHA
       INTEGER LDA,LDB,M,N
       CHARACTER DIAG,SIDE,TRANSA,UPLO
-C     ..
-C     .. Array Arguments ..
+*     ..
+*     .. Array Arguments ..
       DOUBLE PRECISION A(LDA,*),B(LDB,*)
-C     ..
+*     ..
 *
 *  Purpose
 *  =======
@@ -20,7 +20,7 @@ C     ..
 *
 *     op( A ) = A   or   op( A ) = A'.
 *
-*  Parameters
+*  Arguments
 *  ==========
 *
 *  SIDE   - CHARACTER*1.
@@ -124,25 +124,25 @@ C     ..
 *     Sven Hammarling, Numerical Algorithms Group Ltd.
 *
 *
-C     .. External Functions ..
+*     .. External Functions ..
       LOGICAL LSAME
       EXTERNAL LSAME
-C     ..
-C     .. External Subroutines ..
+*     ..
+*     .. External Subroutines ..
       EXTERNAL XERBLA
-C     ..
-C     .. Intrinsic Functions ..
+*     ..
+*     .. Intrinsic Functions ..
       INTRINSIC MAX
-C     ..
-C     .. Local Scalars ..
+*     ..
+*     .. Local Scalars ..
       DOUBLE PRECISION TEMP
       INTEGER I,INFO,J,K,NROWA
       LOGICAL LSIDE,NOUNIT,UPPER
-C     ..
-C     .. Parameters ..
+*     ..
+*     .. Parameters ..
       DOUBLE PRECISION ONE,ZERO
       PARAMETER (ONE=1.0D+0,ZERO=0.0D+0)
-C     ..
+*     ..
 *
 *     Test the input parameters.
 *

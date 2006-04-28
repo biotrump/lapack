@@ -1,12 +1,12 @@
       SUBROUTINE CHERK(UPLO,TRANS,N,K,ALPHA,A,LDA,BETA,C,LDC)
-C     .. Scalar Arguments ..
+*     .. Scalar Arguments ..
       REAL ALPHA,BETA
       INTEGER K,LDA,LDC,N
       CHARACTER TRANS,UPLO
-C     ..
-C     .. Array Arguments ..
+*     ..
+*     .. Array Arguments ..
       COMPLEX A(LDA,*),C(LDC,*)
-C     ..
+*     ..
 *
 *  Purpose
 *  =======
@@ -23,7 +23,7 @@ C     ..
 *  matrix and  A  is an  n by k  matrix in the  first case and a  k by n
 *  matrix in the second case.
 *
-*  Parameters
+*  Arguments
 *  ==========
 *
 *  UPLO   - CHARACTER*1.
@@ -120,26 +120,26 @@ C     ..
 *     Ed Anderson, Cray Research Inc.
 *
 *
-C     .. External Functions ..
+*     .. External Functions ..
       LOGICAL LSAME
       EXTERNAL LSAME
-C     ..
-C     .. External Subroutines ..
+*     ..
+*     .. External Subroutines ..
       EXTERNAL XERBLA
-C     ..
-C     .. Intrinsic Functions ..
+*     ..
+*     .. Intrinsic Functions ..
       INTRINSIC CMPLX,CONJG,MAX,REAL
-C     ..
-C     .. Local Scalars ..
+*     ..
+*     .. Local Scalars ..
       COMPLEX TEMP
       REAL RTEMP
       INTEGER I,INFO,J,L,NROWA
       LOGICAL UPPER
-C     ..
-C     .. Parameters ..
+*     ..
+*     .. Parameters ..
       REAL ONE,ZERO
       PARAMETER (ONE=1.0E+0,ZERO=0.0E+0)
-C     ..
+*     ..
 *
 *     Test the input parameters.
 *

@@ -5,9 +5,9 @@
 *     Courant Institute, Argonne National Lab, and Rice University
 *     September 30, 1994
 *
-C     .. Scalar Arguments ..
+*     .. Scalar Arguments ..
       CHARACTER CA,CB
-C     ..
+*     ..
 *
 *  Purpose
 *  =======
@@ -19,17 +19,18 @@ C     ..
 *  =========
 *
 *  CA      (input) CHARACTER*1
+*
 *  CB      (input) CHARACTER*1
 *          CA and CB specify the single characters to be compared.
 *
 * =====================================================================
 *
-C     .. Intrinsic Functions ..
+*     .. Intrinsic Functions ..
       INTRINSIC ICHAR
-C     ..
-C     .. Local Scalars ..
+*     ..
+*     .. Local Scalars ..
       INTEGER INTA,INTB,ZCODE
-C     ..
+*     ..
 *
 *     Test if the characters are equal
 *

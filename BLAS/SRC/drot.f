@@ -1,27 +1,30 @@
       SUBROUTINE DROT(N,DX,INCX,DY,INCY,C,S)
-c
-c     applies a plane rotation.
-c     jack dongarra, linpack, 3/11/78.
-c     modified 12/3/93, array(1) declarations changed to array(*)
-c
-c
-C     .. Scalar Arguments ..
+*     .. Scalar Arguments ..
       DOUBLE PRECISION C,S
       INTEGER INCX,INCY,N
-C     ..
-C     .. Array Arguments ..
+*     ..
+*     .. Array Arguments ..
       DOUBLE PRECISION DX(*),DY(*)
-C     ..
-C     .. Local Scalars ..
+*     ..
+*
+*  Purpose
+*  =======
+*
+*     applies a plane rotation.
+*     jack dongarra, linpack, 3/11/78.
+*     modified 12/3/93, array(1) declarations changed to array(*)
+*
+*
+*     .. Local Scalars ..
       DOUBLE PRECISION DTEMP
       INTEGER I,IX,IY
-C     ..
+*     ..
       IF (N.LE.0) RETURN
       IF (INCX.EQ.1 .AND. INCY.EQ.1) GO TO 20
-c
-c       code for unequal increments or equal increments not equal
-c         to 1
-c
+*
+*       code for unequal increments or equal increments not equal
+*         to 1
+*
       IX = 1
       IY = 1
       IF (INCX.LT.0) IX = (-N+1)*INCX + 1
@@ -34,9 +37,9 @@ c
           IY = IY + INCY
    10 CONTINUE
       RETURN
-c
-c       code for both increments equal to 1
-c
+*
+*       code for both increments equal to 1
+*
    20 DO 30 I = 1,N
           DTEMP = C*DX(I) + S*DY(I)
           DY(I) = C*DY(I) - S*DX(I)

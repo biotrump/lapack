@@ -1,12 +1,12 @@
       SUBROUTINE CTRMM(SIDE,UPLO,TRANSA,DIAG,M,N,ALPHA,A,LDA,B,LDB)
-C     .. Scalar Arguments ..
+*     .. Scalar Arguments ..
       COMPLEX ALPHA
       INTEGER LDA,LDB,M,N
       CHARACTER DIAG,SIDE,TRANSA,UPLO
-C     ..
-C     .. Array Arguments ..
+*     ..
+*     .. Array Arguments ..
       COMPLEX A(LDA,*),B(LDB,*)
-C     ..
+*     ..
 *
 *  Purpose
 *  =======
@@ -20,7 +20,7 @@ C     ..
 *
 *     op( A ) = A   or   op( A ) = A'   or   op( A ) = conjg( A' ).
 *
-*  Parameters
+*  Arguments
 *  ==========
 *
 *  SIDE   - CHARACTER*1.
@@ -124,27 +124,27 @@ C     ..
 *     Sven Hammarling, Numerical Algorithms Group Ltd.
 *
 *
-C     .. External Functions ..
+*     .. External Functions ..
       LOGICAL LSAME
       EXTERNAL LSAME
-C     ..
-C     .. External Subroutines ..
+*     ..
+*     .. External Subroutines ..
       EXTERNAL XERBLA
-C     ..
-C     .. Intrinsic Functions ..
+*     ..
+*     .. Intrinsic Functions ..
       INTRINSIC CONJG,MAX
-C     ..
-C     .. Local Scalars ..
+*     ..
+*     .. Local Scalars ..
       COMPLEX TEMP
       INTEGER I,INFO,J,K,NROWA
       LOGICAL LSIDE,NOCONJ,NOUNIT,UPPER
-C     ..
-C     .. Parameters ..
+*     ..
+*     .. Parameters ..
       COMPLEX ONE
       PARAMETER (ONE= (1.0E+0,0.0E+0))
       COMPLEX ZERO
       PARAMETER (ZERO= (0.0E+0,0.0E+0))
-C     ..
+*     ..
 *
 *     Test the input parameters.
 *

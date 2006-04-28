@@ -1,34 +1,38 @@
       REAL FUNCTION SNRM2(N,X,INCX)
-C     .. Scalar Arguments ..
+*     .. Scalar Arguments ..
       INTEGER INCX,N
-C     ..
-C     .. Array Arguments ..
+*     ..
+*     .. Array Arguments ..
       REAL X(*)
-C     ..
+*     ..
+*
+*  Purpose
+*  =======
 *
 *  SNRM2 returns the euclidean norm of a vector via the function
 *  name, so that
 *
-*     SNRM2 := sqrt( x'*x )
+*     SNRM2 := sqrt( x'*x ).
 *
-*
+*  Further Details
+*  ===============
 *
 *  -- This version written on 25-October-1982.
 *     Modified on 14-October-1993 to inline the call to SLASSQ.
 *     Sven Hammarling, Nag Ltd.
 *
 *
-C     .. Parameters ..
+*     .. Parameters ..
       REAL ONE,ZERO
       PARAMETER (ONE=1.0E+0,ZERO=0.0E+0)
-C     ..
-C     .. Local Scalars ..
+*     ..
+*     .. Local Scalars ..
       REAL ABSXI,NORM,SCALE,SSQ
       INTEGER IX
-C     ..
-C     .. Intrinsic Functions ..
+*     ..
+*     .. Intrinsic Functions ..
       INTRINSIC ABS,SQRT
-C     ..
+*     ..
       IF (N.LT.1 .OR. INCX.LT.1) THEN
           NORM = ZERO
       ELSE IF (N.EQ.1) THEN

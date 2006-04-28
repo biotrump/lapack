@@ -1,31 +1,37 @@
       DOUBLE COMPLEX FUNCTION ZDOTC(N,ZX,INCX,ZY,INCY)
-c
-c     forms the dot product of a vector.
-c     jack dongarra, 3/11/78.
-c     modified 12/3/93, array(1) declarations changed to array(*)
-c
-
-C     .. Scalar Arguments ..
+*     .. Scalar Arguments ..
       INTEGER INCX,INCY,N
-C     ..
-C     .. Array Arguments ..
+*     ..
+*     .. Array Arguments ..
       DOUBLE COMPLEX ZX(*),ZY(*)
-C     ..
-C     .. Local Scalars ..
+*     ..
+*
+*  Purpose
+*  =======
+*
+*  ZDOTC forms the dot product of a vector.
+*
+*  Further Details
+*  ===============
+*
+*     jack dongarra, 3/11/78.
+*     modified 12/3/93, array(1) declarations changed to array(*)
+*
+*     .. Local Scalars ..
       DOUBLE COMPLEX ZTEMP
       INTEGER I,IX,IY
-C     ..
-C     .. Intrinsic Functions ..
+*     ..
+*     .. Intrinsic Functions ..
       INTRINSIC DCONJG
-C     ..
+*     ..
       ZTEMP = (0.0d0,0.0d0)
       ZDOTC = (0.0d0,0.0d0)
       IF (N.LE.0) RETURN
       IF (INCX.EQ.1 .AND. INCY.EQ.1) GO TO 20
-c
-c        code for unequal increments or equal increments
-c          not equal to 1
-c
+*
+*        code for unequal increments or equal increments
+*          not equal to 1
+*
       IX = 1
       IY = 1
       IF (INCX.LT.0) IX = (-N+1)*INCX + 1
@@ -37,9 +43,9 @@ c
    10 CONTINUE
       ZDOTC = ZTEMP
       RETURN
-c
-c        code for both increments equal to 1
-c
+*
+*        code for both increments equal to 1
+*
    20 DO 30 I = 1,N
           ZTEMP = ZTEMP + DCONJG(ZX(I))*ZY(I)
    30 CONTINUE

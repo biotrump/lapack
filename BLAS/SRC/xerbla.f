@@ -5,10 +5,10 @@
 *     Courant Institute, Argonne National Lab, and Rice University
 *     February 29, 1992
 *
-C     .. Scalar Arguments ..
+*     .. Scalar Arguments ..
       INTEGER INFO
       CHARACTER*6 SRNAME
-C     ..
+*     ..
 *
 *  Purpose
 *  =======

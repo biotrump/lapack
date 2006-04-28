@@ -1,18 +1,21 @@
       SUBROUTINE DROTG(DA,DB,C,S)
-c
-c     construct givens plane rotation.
-c     jack dongarra, linpack, 3/11/78.
-c
-c
-C     .. Scalar Arguments ..
+*     .. Scalar Arguments ..
       DOUBLE PRECISION C,DA,DB,S
-C     ..
-C     .. Local Scalars ..
+*     ..
+*
+*  Purpose
+*  =======
+*
+*     construct givens plane rotation.
+*     jack dongarra, linpack, 3/11/78.
+*
+*
+*     .. Local Scalars ..
       DOUBLE PRECISION R,ROE,SCALE,Z
-C     ..
-C     .. Intrinsic Functions ..
+*     ..
+*     .. Intrinsic Functions ..
       INTRINSIC DABS,DSIGN,DSQRT
-C     ..
+*     ..
       ROE = DB
       IF (DABS(DA).GT.DABS(DB)) ROE = DA
       SCALE = DABS(DA) + DABS(DB)

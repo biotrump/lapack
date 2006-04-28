@@ -1,12 +1,12 @@
       SUBROUTINE ZHPMV(UPLO,N,ALPHA,AP,X,INCX,BETA,Y,INCY)
-C     .. Scalar Arguments ..
+*     .. Scalar Arguments ..
       DOUBLE COMPLEX ALPHA,BETA
       INTEGER INCX,INCY,N
       CHARACTER UPLO
-C     ..
-C     .. Array Arguments ..
+*     ..
+*     .. Array Arguments ..
       DOUBLE COMPLEX AP(*),X(*),Y(*)
-C     ..
+*     ..
 *
 *  Purpose
 *  =======
@@ -18,7 +18,7 @@ C     ..
 *  where alpha and beta are scalars, x and y are n element vectors and
 *  A is an n by n hermitian matrix, supplied in packed form.
 *
-*  Parameters
+*  Arguments
 *  ==========
 *
 *  UPLO   - CHARACTER*1.
@@ -96,26 +96,26 @@ C     ..
 *     Richard Hanson, Sandia National Labs.
 *
 *
-C     .. Parameters ..
+*     .. Parameters ..
       DOUBLE COMPLEX ONE
       PARAMETER (ONE= (1.0D+0,0.0D+0))
       DOUBLE COMPLEX ZERO
       PARAMETER (ZERO= (0.0D+0,0.0D+0))
-C     ..
-C     .. Local Scalars ..
+*     ..
+*     .. Local Scalars ..
       DOUBLE COMPLEX TEMP1,TEMP2
       INTEGER I,INFO,IX,IY,J,JX,JY,K,KK,KX,KY
-C     ..
-C     .. External Functions ..
+*     ..
+*     .. External Functions ..
       LOGICAL LSAME
       EXTERNAL LSAME
-C     ..
-C     .. External Subroutines ..
+*     ..
+*     .. External Subroutines ..
       EXTERNAL XERBLA
-C     ..
-C     .. Intrinsic Functions ..
+*     ..
+*     .. Intrinsic Functions ..
       INTRINSIC DBLE,DCONJG
-C     ..
+*     ..
 *
 *     Test the input parameters.
 *

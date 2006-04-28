@@ -1,12 +1,12 @@
       SUBROUTINE ZGBMV(TRANS,M,N,KL,KU,ALPHA,A,LDA,X,INCX,BETA,Y,INCY)
-C     .. Scalar Arguments ..
+*     .. Scalar Arguments ..
       DOUBLE COMPLEX ALPHA,BETA
       INTEGER INCX,INCY,KL,KU,LDA,M,N
       CHARACTER TRANS
-C     ..
-C     .. Array Arguments ..
+*     ..
+*     .. Array Arguments ..
       DOUBLE COMPLEX A(LDA,*),X(*),Y(*)
-C     ..
+*     ..
 *
 *  Purpose
 *  =======
@@ -20,7 +20,7 @@ C     ..
 *  where alpha and beta are scalars, x and y are vectors and A is an
 *  m by n band matrix, with kl sub-diagonals and ku super-diagonals.
 *
-*  Parameters
+*  Arguments
 *  ==========
 *
 *  TRANS  - CHARACTER*1.
@@ -128,27 +128,27 @@ C     ..
 *     Richard Hanson, Sandia National Labs.
 *
 *
-C     .. Parameters ..
+*     .. Parameters ..
       DOUBLE COMPLEX ONE
       PARAMETER (ONE= (1.0D+0,0.0D+0))
       DOUBLE COMPLEX ZERO
       PARAMETER (ZERO= (0.0D+0,0.0D+0))
-C     ..
-C     .. Local Scalars ..
+*     ..
+*     .. Local Scalars ..
       DOUBLE COMPLEX TEMP
       INTEGER I,INFO,IX,IY,J,JX,JY,K,KUP1,KX,KY,LENX,LENY
       LOGICAL NOCONJ
-C     ..
-C     .. External Functions ..
+*     ..
+*     .. External Functions ..
       LOGICAL LSAME
       EXTERNAL LSAME
-C     ..
-C     .. External Subroutines ..
+*     ..
+*     .. External Subroutines ..
       EXTERNAL XERBLA
-C     ..
-C     .. Intrinsic Functions ..
+*     ..
+*     .. Intrinsic Functions ..
       INTRINSIC DCONJG,MAX,MIN
-C     ..
+*     ..
 *
 *     Test the input parameters.
 *

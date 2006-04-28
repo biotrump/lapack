@@ -1,11 +1,11 @@
       SUBROUTINE CGERC(M,N,ALPHA,X,INCX,Y,INCY,A,LDA)
-C     .. Scalar Arguments ..
+*     .. Scalar Arguments ..
       COMPLEX ALPHA
       INTEGER INCX,INCY,LDA,M,N
-C     ..
-C     .. Array Arguments ..
+*     ..
+*     .. Array Arguments ..
       COMPLEX A(LDA,*),X(*),Y(*)
-C     ..
+*     ..
 *
 *  Purpose
 *  =======
@@ -17,7 +17,7 @@ C     ..
 *  where alpha is a scalar, x is an m element vector, y is an n element
 *  vector and A is an m by n matrix.
 *
-*  Parameters
+*  Arguments
 *  ==========
 *
 *  M      - INTEGER.
@@ -77,20 +77,20 @@ C     ..
 *     Richard Hanson, Sandia National Labs.
 *
 *
-C     .. Parameters ..
+*     .. Parameters ..
       COMPLEX ZERO
       PARAMETER (ZERO= (0.0E+0,0.0E+0))
-C     ..
-C     .. Local Scalars ..
+*     ..
+*     .. Local Scalars ..
       COMPLEX TEMP
       INTEGER I,INFO,IX,J,JY,KX
-C     ..
-C     .. External Subroutines ..
+*     ..
+*     .. External Subroutines ..
       EXTERNAL XERBLA
-C     ..
-C     .. Intrinsic Functions ..
+*     ..
+*     .. Intrinsic Functions ..
       INTRINSIC CONJG,MAX
-C     ..
+*     ..
 *
 *     Test the input parameters.
 *

@@ -1,12 +1,12 @@
       SUBROUTINE DSPR(UPLO,N,ALPHA,X,INCX,AP)
-C     .. Scalar Arguments ..
+*     .. Scalar Arguments ..
       DOUBLE PRECISION ALPHA
       INTEGER INCX,N
       CHARACTER UPLO
-C     ..
-C     .. Array Arguments ..
+*     ..
+*     .. Array Arguments ..
       DOUBLE PRECISION AP(*),X(*)
-C     ..
+*     ..
 *
 *  Purpose
 *  =======
@@ -18,7 +18,7 @@ C     ..
 *  where alpha is a real scalar, x is an n element vector and A is an
 *  n by n symmetric matrix, supplied in packed form.
 *
-*  Parameters
+*  Arguments
 *  ==========
 *
 *  UPLO   - CHARACTER*1.
@@ -81,21 +81,21 @@ C     ..
 *     Richard Hanson, Sandia National Labs.
 *
 *
-C     .. Parameters ..
+*     .. Parameters ..
       DOUBLE PRECISION ZERO
       PARAMETER (ZERO=0.0D+0)
-C     ..
-C     .. Local Scalars ..
+*     ..
+*     .. Local Scalars ..
       DOUBLE PRECISION TEMP
       INTEGER I,INFO,IX,J,JX,K,KK,KX
-C     ..
-C     .. External Functions ..
+*     ..
+*     .. External Functions ..
       LOGICAL LSAME
       EXTERNAL LSAME
-C     ..
-C     .. External Subroutines ..
+*     ..
+*     .. External Subroutines ..
       EXTERNAL XERBLA
-C     ..
+*     ..
 *
 *     Test the input parameters.
 *

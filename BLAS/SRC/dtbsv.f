@@ -1,11 +1,11 @@
       SUBROUTINE DTBSV(UPLO,TRANS,DIAG,N,K,A,LDA,X,INCX)
-C     .. Scalar Arguments ..
+*     .. Scalar Arguments ..
       INTEGER INCX,K,LDA,N
       CHARACTER DIAG,TRANS,UPLO
-C     ..
-C     .. Array Arguments ..
+*     ..
+*     .. Array Arguments ..
       DOUBLE PRECISION A(LDA,*),X(*)
-C     ..
+*     ..
 *
 *  Purpose
 *  =======
@@ -21,7 +21,7 @@ C     ..
 *  No test for singularity or near-singularity is included in this
 *  routine. Such tests must be performed before calling this routine.
 *
-*  Parameters
+*  Arguments
 *  ==========
 *
 *  UPLO   - CHARACTER*1.
@@ -139,25 +139,25 @@ C     ..
 *     Richard Hanson, Sandia National Labs.
 *
 *
-C     .. Parameters ..
+*     .. Parameters ..
       DOUBLE PRECISION ZERO
       PARAMETER (ZERO=0.0D+0)
-C     ..
-C     .. Local Scalars ..
+*     ..
+*     .. Local Scalars ..
       DOUBLE PRECISION TEMP
       INTEGER I,INFO,IX,J,JX,KPLUS1,KX,L
       LOGICAL NOUNIT
-C     ..
-C     .. External Functions ..
+*     ..
+*     .. External Functions ..
       LOGICAL LSAME
       EXTERNAL LSAME
-C     ..
-C     .. External Subroutines ..
+*     ..
+*     .. External Subroutines ..
       EXTERNAL XERBLA
-C     ..
-C     .. Intrinsic Functions ..
+*     ..
+*     .. Intrinsic Functions ..
       INTRINSIC MAX,MIN
-C     ..
+*     ..
 *
 *     Test the input parameters.
 *

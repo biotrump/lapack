@@ -1,12 +1,12 @@
       SUBROUTINE CSYMM(SIDE,UPLO,M,N,ALPHA,A,LDA,B,LDB,BETA,C,LDC)
-C     .. Scalar Arguments ..
+*     .. Scalar Arguments ..
       COMPLEX ALPHA,BETA
       INTEGER LDA,LDB,LDC,M,N
       CHARACTER SIDE,UPLO
-C     ..
-C     .. Array Arguments ..
+*     ..
+*     .. Array Arguments ..
       COMPLEX A(LDA,*),B(LDB,*),C(LDC,*)
-C     ..
+*     ..
 *
 *  Purpose
 *  =======
@@ -22,7 +22,7 @@ C     ..
 *  where  alpha and beta are scalars, A is a symmetric matrix and  B and
 *  C are m by n matrices.
 *
-*  Parameters
+*  Arguments
 *  ==========
 *
 *  SIDE   - CHARACTER*1.
@@ -132,27 +132,27 @@ C     ..
 *     Sven Hammarling, Numerical Algorithms Group Ltd.
 *
 *
-C     .. External Functions ..
+*     .. External Functions ..
       LOGICAL LSAME
       EXTERNAL LSAME
-C     ..
-C     .. External Subroutines ..
+*     ..
+*     .. External Subroutines ..
       EXTERNAL XERBLA
-C     ..
-C     .. Intrinsic Functions ..
+*     ..
+*     .. Intrinsic Functions ..
       INTRINSIC MAX
-C     ..
-C     .. Local Scalars ..
+*     ..
+*     .. Local Scalars ..
       COMPLEX TEMP1,TEMP2
       INTEGER I,INFO,J,K,NROWA
       LOGICAL UPPER
-C     ..
-C     .. Parameters ..
+*     ..
+*     .. Parameters ..
       COMPLEX ONE
       PARAMETER (ONE= (1.0E+0,0.0E+0))
       COMPLEX ZERO
       PARAMETER (ZERO= (0.0E+0,0.0E+0))
-C     ..
+*     ..
 *
 *     Set NROWA as the number of rows of A.
 *

@@ -1,12 +1,12 @@
       SUBROUTINE ZGEMM(TRANSA,TRANSB,M,N,K,ALPHA,A,LDA,B,LDB,BETA,C,LDC)
-C     .. Scalar Arguments ..
+*     .. Scalar Arguments ..
       DOUBLE COMPLEX ALPHA,BETA
       INTEGER K,LDA,LDB,LDC,M,N
       CHARACTER TRANSA,TRANSB
-C     ..
-C     .. Array Arguments ..
+*     ..
+*     .. Array Arguments ..
       DOUBLE COMPLEX A(LDA,*),B(LDB,*),C(LDC,*)
-C     ..
+*     ..
 *
 *  Purpose
 *  =======
@@ -22,7 +22,7 @@ C     ..
 *  alpha and beta are scalars, and A, B and C are matrices, with op( A )
 *  an m by k matrix,  op( B )  a  k by n matrix and  C an m by n matrix.
 *
-*  Parameters
+*  Arguments
 *  ==========
 *
 *  TRANSA - CHARACTER*1.
@@ -128,27 +128,27 @@ C     ..
 *     Sven Hammarling, Numerical Algorithms Group Ltd.
 *
 *
-C     .. External Functions ..
+*     .. External Functions ..
       LOGICAL LSAME
       EXTERNAL LSAME
-C     ..
-C     .. External Subroutines ..
+*     ..
+*     .. External Subroutines ..
       EXTERNAL XERBLA
-C     ..
-C     .. Intrinsic Functions ..
+*     ..
+*     .. Intrinsic Functions ..
       INTRINSIC DCONJG,MAX
-C     ..
-C     .. Local Scalars ..
+*     ..
+*     .. Local Scalars ..
       DOUBLE COMPLEX TEMP
       INTEGER I,INFO,J,L,NCOLA,NROWA,NROWB
       LOGICAL CONJA,CONJB,NOTA,NOTB
-C     ..
-C     .. Parameters ..
+*     ..
+*     .. Parameters ..
       DOUBLE COMPLEX ONE
       PARAMETER (ONE= (1.0D+0,0.0D+0))
       DOUBLE COMPLEX ZERO
       PARAMETER (ZERO= (0.0D+0,0.0D+0))
-C     ..
+*     ..
 *
 *     Set  NOTA  and  NOTB  as  true if  A  and  B  respectively are not
 *     conjugated or transposed, set  CONJA and CONJB  as true if  A  and

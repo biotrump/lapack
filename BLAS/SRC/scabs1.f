@@ -1,10 +1,16 @@
       REAL FUNCTION SCABS1(Z)
-C     .. Scalar Arguments ..
+*     .. Scalar Arguments ..
       COMPLEX Z
-C     ..
-C     .. Intrinsic Functions ..
+*     ..
+*
+*  Purpose
+*  =======
+*
+*  SCABS1 computes absolute value of a complex number
+*
+*     .. Intrinsic Functions ..
       INTRINSIC ABS,AIMAG,REAL
-C     ..
+*     ..
       SCABS1 = ABS(REAL(Z)) + ABS(AIMAG(Z))
       RETURN
       END

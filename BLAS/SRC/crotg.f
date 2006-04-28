@@ -1,16 +1,21 @@
       SUBROUTINE CROTG(CA,CB,C,S)
-
-C     .. Scalar Arguments ..
+*     .. Scalar Arguments ..
       COMPLEX CA,CB,S
       REAL C
-C     ..
-C     .. Local Scalars ..
+*     ..
+*
+*  Purpose
+*  =======
+*
+*  CROTG determines a complex Givens rotation.
+*
+*     .. Local Scalars ..
       COMPLEX ALPHA
       REAL NORM,SCALE
-C     ..
-C     .. Intrinsic Functions ..
+*     ..
+*     .. Intrinsic Functions ..
       INTRINSIC CABS,CONJG,SQRT
-C     ..
+*     ..
       IF (CABS(CA).NE.0.) GO TO 10
       C = 0.
       S = (1.,0.)

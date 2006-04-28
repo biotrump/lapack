@@ -1,11 +1,11 @@
       SUBROUTINE CTRMV(UPLO,TRANS,DIAG,N,A,LDA,X,INCX)
-C     .. Scalar Arguments ..
+*     .. Scalar Arguments ..
       INTEGER INCX,LDA,N
       CHARACTER DIAG,TRANS,UPLO
-C     ..
-C     .. Array Arguments ..
+*     ..
+*     .. Array Arguments ..
       COMPLEX A(LDA,*),X(*)
-C     ..
+*     ..
 *
 *  Purpose
 *  =======
@@ -17,7 +17,7 @@ C     ..
 *  where x is an n element vector and  A is an n by n unit, or non-unit,
 *  upper or lower triangular matrix.
 *
-*  Parameters
+*  Arguments
 *  ==========
 *
 *  UPLO   - CHARACTER*1.
@@ -98,25 +98,25 @@ C     ..
 *     Richard Hanson, Sandia National Labs.
 *
 *
-C     .. Parameters ..
+*     .. Parameters ..
       COMPLEX ZERO
       PARAMETER (ZERO= (0.0E+0,0.0E+0))
-C     ..
-C     .. Local Scalars ..
+*     ..
+*     .. Local Scalars ..
       COMPLEX TEMP
       INTEGER I,INFO,IX,J,JX,KX
       LOGICAL NOCONJ,NOUNIT
-C     ..
-C     .. External Functions ..
+*     ..
+*     .. External Functions ..
       LOGICAL LSAME
       EXTERNAL LSAME
-C     ..
-C     .. External Subroutines ..
+*     ..
+*     .. External Subroutines ..
       EXTERNAL XERBLA
-C     ..
-C     .. Intrinsic Functions ..
+*     ..
+*     .. Intrinsic Functions ..
       INTRINSIC CONJG,MAX
-C     ..
+*     ..
 *
 *     Test the input parameters.
 *

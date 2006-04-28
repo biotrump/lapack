@@ -1,16 +1,21 @@
       SUBROUTINE ZROTG(CA,CB,C,S)
-
-C     .. Scalar Arguments ..
+*     .. Scalar Arguments ..
       DOUBLE COMPLEX CA,CB,S
       DOUBLE PRECISION C
-C     ..
-C     .. Local Scalars ..
+*     ..
+*
+*  Purpose
+*  =======
+*
+*     determines a double complex Givens rotation.
+*
+*     .. Local Scalars ..
       DOUBLE COMPLEX ALPHA
       DOUBLE PRECISION NORM,SCALE
-C     ..
-C     .. Intrinsic Functions ..
+*     ..
+*     .. Intrinsic Functions ..
       INTRINSIC CDABS,DCMPLX,DCONJG,DSQRT
-C     ..
+*     ..
       IF (CDABS(CA).NE.0.0d0) GO TO 10
       C = 0.0d0
       S = (1.0d0,0.0d0)

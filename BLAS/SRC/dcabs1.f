@@ -1,10 +1,16 @@
       DOUBLE PRECISION FUNCTION DCABS1(Z)
-C     .. Scalar Arguments ..
+*     .. Scalar Arguments ..
       DOUBLE COMPLEX Z
-C     ..
-C     .. Intrinsic Functions ..
+*     ..
+*     ..
+*  Purpose
+*  =======
+*
+*  DCABS1 computes absolute value of a double complex number 
+*
+*     .. Intrinsic Functions ..
       INTRINSIC ABS,DBLE,DIMAG
-C     ..
+*
       DCABS1 = ABS(DBLE(Z)) + ABS(DIMAG(Z))
       RETURN
       END

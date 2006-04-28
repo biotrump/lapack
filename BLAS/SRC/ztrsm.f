@@ -1,12 +1,12 @@
       SUBROUTINE ZTRSM(SIDE,UPLO,TRANSA,DIAG,M,N,ALPHA,A,LDA,B,LDB)
-C     .. Scalar Arguments ..
+*     .. Scalar Arguments ..
       DOUBLE COMPLEX ALPHA
       INTEGER LDA,LDB,M,N
       CHARACTER DIAG,SIDE,TRANSA,UPLO
-C     ..
-C     .. Array Arguments ..
+*     ..
+*     .. Array Arguments ..
       DOUBLE COMPLEX A(LDA,*),B(LDB,*)
-C     ..
+*     ..
 *
 *  Purpose
 *  =======
@@ -22,7 +22,7 @@ C     ..
 *
 *  The matrix X is overwritten on B.
 *
-*  Parameters
+*  Arguments
 *  ==========
 *
 *  SIDE   - CHARACTER*1.
@@ -126,27 +126,27 @@ C     ..
 *     Sven Hammarling, Numerical Algorithms Group Ltd.
 *
 *
-C     .. External Functions ..
+*     .. External Functions ..
       LOGICAL LSAME
       EXTERNAL LSAME
-C     ..
-C     .. External Subroutines ..
+*     ..
+*     .. External Subroutines ..
       EXTERNAL XERBLA
-C     ..
-C     .. Intrinsic Functions ..
+*     ..
+*     .. Intrinsic Functions ..
       INTRINSIC DCONJG,MAX
-C     ..
-C     .. Local Scalars ..
+*     ..
+*     .. Local Scalars ..
       DOUBLE COMPLEX TEMP
       INTEGER I,INFO,J,K,NROWA
       LOGICAL LSIDE,NOCONJ,NOUNIT,UPPER
-C     ..
-C     .. Parameters ..
+*     ..
+*     .. Parameters ..
       DOUBLE COMPLEX ONE
       PARAMETER (ONE= (1.0D+0,0.0D+0))
       DOUBLE COMPLEX ZERO
       PARAMETER (ZERO= (0.0D+0,0.0D+0))
-C     ..
+*     ..
 *
 *     Test the input parameters.
 *

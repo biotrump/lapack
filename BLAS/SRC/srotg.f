@@ -1,18 +1,21 @@
       SUBROUTINE SROTG(SA,SB,C,S)
-c
-c     construct givens plane rotation.
-c     jack dongarra, linpack, 3/11/78.
-c
-c
-C     .. Scalar Arguments ..
+*     .. Scalar Arguments ..
       REAL C,S,SA,SB
-C     ..
-C     .. Local Scalars ..
+*     ..
+*
+*  Purpose
+*  =======
+*
+*     construct givens plane rotation.
+*     jack dongarra, linpack, 3/11/78.
+*
+*
+*     .. Local Scalars ..
       REAL R,ROE,SCALE,Z
-C     ..
-C     .. Intrinsic Functions ..
+*     ..
+*     .. Intrinsic Functions ..
       INTRINSIC ABS,SIGN,SQRT
-C     ..
+*     ..
       ROE = SB
       IF (ABS(SA).GT.ABS(SB)) ROE = SA
       SCALE = ABS(SA) + ABS(SB)

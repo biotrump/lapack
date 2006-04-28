@@ -1,12 +1,12 @@
       SUBROUTINE CHPR(UPLO,N,ALPHA,X,INCX,AP)
-C     .. Scalar Arguments ..
+*     .. Scalar Arguments ..
       REAL ALPHA
       INTEGER INCX,N
       CHARACTER UPLO
-C     ..
-C     .. Array Arguments ..
+*     ..
+*     .. Array Arguments ..
       COMPLEX AP(*),X(*)
-C     ..
+*     ..
 *
 *  Purpose
 *  =======
@@ -18,7 +18,7 @@ C     ..
 *  where alpha is a real scalar, x is an n element vector and A is an
 *  n by n hermitian matrix, supplied in packed form.
 *
-*  Parameters
+*  Arguments
 *  ==========
 *
 *  UPLO   - CHARACTER*1.
@@ -84,24 +84,24 @@ C     ..
 *     Richard Hanson, Sandia National Labs.
 *
 *
-C     .. Parameters ..
+*     .. Parameters ..
       COMPLEX ZERO
       PARAMETER (ZERO= (0.0E+0,0.0E+0))
-C     ..
-C     .. Local Scalars ..
+*     ..
+*     .. Local Scalars ..
       COMPLEX TEMP
       INTEGER I,INFO,IX,J,JX,K,KK,KX
-C     ..
-C     .. External Functions ..
+*     ..
+*     .. External Functions ..
       LOGICAL LSAME
       EXTERNAL LSAME
-C     ..
-C     .. External Subroutines ..
+*     ..
+*     .. External Subroutines ..
       EXTERNAL XERBLA
-C     ..
-C     .. Intrinsic Functions ..
+*     ..
+*     .. Intrinsic Functions ..
       INTRINSIC CONJG,REAL
-C     ..
+*     ..
 *
 *     Test the input parameters.
 *

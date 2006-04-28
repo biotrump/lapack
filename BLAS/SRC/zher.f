@@ -1,12 +1,12 @@
       SUBROUTINE ZHER(UPLO,N,ALPHA,X,INCX,A,LDA)
-C     .. Scalar Arguments ..
+*     .. Scalar Arguments ..
       DOUBLE PRECISION ALPHA
       INTEGER INCX,LDA,N
       CHARACTER UPLO
-C     ..
-C     .. Array Arguments ..
+*     ..
+*     .. Array Arguments ..
       DOUBLE COMPLEX A(LDA,*),X(*)
-C     ..
+*     ..
 *
 *  Purpose
 *  =======
@@ -18,7 +18,7 @@ C     ..
 *  where alpha is a real scalar, x is an n element vector and A is an
 *  n by n hermitian matrix.
 *
-*  Parameters
+*  Arguments
 *  ==========
 *
 *  UPLO   - CHARACTER*1.
@@ -87,24 +87,24 @@ C     ..
 *     Richard Hanson, Sandia National Labs.
 *
 *
-C     .. Parameters ..
+*     .. Parameters ..
       DOUBLE COMPLEX ZERO
       PARAMETER (ZERO= (0.0D+0,0.0D+0))
-C     ..
-C     .. Local Scalars ..
+*     ..
+*     .. Local Scalars ..
       DOUBLE COMPLEX TEMP
       INTEGER I,INFO,IX,J,JX,KX
-C     ..
-C     .. External Functions ..
+*     ..
+*     .. External Functions ..
       LOGICAL LSAME
       EXTERNAL LSAME
-C     ..
-C     .. External Subroutines ..
+*     ..
+*     .. External Subroutines ..
       EXTERNAL XERBLA
-C     ..
-C     .. Intrinsic Functions ..
+*     ..
+*     .. Intrinsic Functions ..
       INTRINSIC DBLE,DCONJG,MAX
-C     ..
+*     ..
 *
 *     Test the input parameters.
 *

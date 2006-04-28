@@ -1,32 +1,36 @@
       REAL FUNCTION SDOT(N,SX,INCX,SY,INCY)
-c
-c     forms the dot product of two vectors.
-c     uses unrolled loops for increments equal to one.
-c     jack dongarra, linpack, 3/11/78.
-c     modified 12/3/93, array(1) declarations changed to array(*)
-c
-c
-C     .. Scalar Arguments ..
+*     .. Scalar Arguments ..
       INTEGER INCX,INCY,N
-C     ..
-C     .. Array Arguments ..
+*     ..
+*     .. Array Arguments ..
       REAL SX(*),SY(*)
-C     ..
-C     .. Local Scalars ..
+*     ..
+*
+*  Purpose
+*  =======
+*
+*     forms the dot product of two vectors.
+*     uses unrolled loops for increments equal to one.
+*     jack dongarra, linpack, 3/11/78.
+*     modified 12/3/93, array(1) declarations changed to array(*)
+*
+*
+
+*     .. Local Scalars ..
       REAL STEMP
       INTEGER I,IX,IY,M,MP1
-C     ..
-C     .. Intrinsic Functions ..
+*     ..
+*     .. Intrinsic Functions ..
       INTRINSIC MOD
-C     ..
+*     ..
       STEMP = 0.0e0
       SDOT = 0.0e0
       IF (N.LE.0) RETURN
       IF (INCX.EQ.1 .AND. INCY.EQ.1) GO TO 20
-c
-c        code for unequal increments or equal increments
-c          not equal to 1
-c
+*
+*        code for unequal increments or equal increments
+*          not equal to 1
+*
       IX = 1
       IY = 1
       IF (INCX.LT.0) IX = (-N+1)*INCX + 1
@@ -38,12 +42,12 @@ c
    10 CONTINUE
       SDOT = STEMP
       RETURN
-c
-c        code for both increments equal to 1
-c
-c
-c        clean-up loop
-c
+*
+*        code for both increments equal to 1
+*
+*
+*        clean-up loop
+*
    20 M = MOD(N,5)
       IF (M.EQ.0) GO TO 40
       DO 30 I = 1,M

@@ -1,43 +1,46 @@
       DOUBLE PRECISION FUNCTION DASUM(N,DX,INCX)
-c
-c     takes the sum of the absolute values.
-c     jack dongarra, linpack, 3/11/78.
-c     modified 3/93 to return if incx .le. 0.
-c     modified 12/3/93, array(1) declarations changed to array(*)
-c
-c
-C     .. Scalar Arguments ..
+*     .. Scalar Arguments ..
       INTEGER INCX,N
-C     ..
-C     .. Array Arguments ..
+*     ..
+*     .. Array Arguments ..
       DOUBLE PRECISION DX(*)
-C     ..
-C     .. Local Scalars ..
+*     ..
+*
+*  Purpose
+*  =======
+*
+*     takes the sum of the absolute values.
+*     jack dongarra, linpack, 3/11/78.
+*     modified 3/93 to return if incx .le. 0.
+*     modified 12/3/93, array(1) declarations changed to array(*)
+*
+*
+*     .. Local Scalars ..
       DOUBLE PRECISION DTEMP
       INTEGER I,M,MP1,NINCX
-C     ..
-C     .. Intrinsic Functions ..
+*     ..
+*     .. Intrinsic Functions ..
       INTRINSIC DABS,MOD
-C     ..
+*     ..
       DASUM = 0.0d0
       DTEMP = 0.0d0
       IF (N.LE.0 .OR. INCX.LE.0) RETURN
       IF (INCX.EQ.1) GO TO 20
-c
-c        code for increment not equal to 1
-c
+*
+*        code for increment not equal to 1
+*
       NINCX = N*INCX
       DO 10 I = 1,NINCX,INCX
           DTEMP = DTEMP + DABS(DX(I))
    10 CONTINUE
       DASUM = DTEMP
       RETURN
-c
-c        code for increment equal to 1
-c
-c
-c        clean-up loop
-c
+*
+*        code for increment equal to 1
+*
+*
+*        clean-up loop
+*
    20 M = MOD(N,6)
       IF (M.EQ.0) GO TO 40
       DO 30 I = 1,M

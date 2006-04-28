@@ -1,12 +1,12 @@
       SUBROUTINE SGEMV(TRANS,M,N,ALPHA,A,LDA,X,INCX,BETA,Y,INCY)
-C     .. Scalar Arguments ..
+*     .. Scalar Arguments ..
       REAL ALPHA,BETA
       INTEGER INCX,INCY,LDA,M,N
       CHARACTER TRANS
-C     ..
-C     .. Array Arguments ..
+*     ..
+*     .. Array Arguments ..
       REAL A(LDA,*),X(*),Y(*)
-C     ..
+*     ..
 *
 *  Purpose
 *  =======
@@ -18,7 +18,7 @@ C     ..
 *  where alpha and beta are scalars, x and y are vectors and A is an
 *  m by n matrix.
 *
-*  Parameters
+*  Arguments
 *  ==========
 *
 *  TRANS  - CHARACTER*1.
@@ -99,24 +99,24 @@ C     ..
 *     Richard Hanson, Sandia National Labs.
 *
 *
-C     .. Parameters ..
+*     .. Parameters ..
       REAL ONE,ZERO
       PARAMETER (ONE=1.0E+0,ZERO=0.0E+0)
-C     ..
-C     .. Local Scalars ..
+*     ..
+*     .. Local Scalars ..
       REAL TEMP
       INTEGER I,INFO,IX,IY,J,JX,JY,KX,KY,LENX,LENY
-C     ..
-C     .. External Functions ..
+*     ..
+*     .. External Functions ..
       LOGICAL LSAME
       EXTERNAL LSAME
-C     ..
-C     .. External Subroutines ..
+*     ..
+*     .. External Subroutines ..
       EXTERNAL XERBLA
-C     ..
-C     .. Intrinsic Functions ..
+*     ..
+*     .. Intrinsic Functions ..
       INTRINSIC MAX
-C     ..
+*     ..
 *
 *     Test the input parameters.
 *

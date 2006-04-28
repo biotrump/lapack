@@ -1,12 +1,12 @@
       SUBROUTINE DSYMM(SIDE,UPLO,M,N,ALPHA,A,LDA,B,LDB,BETA,C,LDC)
-C     .. Scalar Arguments ..
+*     .. Scalar Arguments ..
       DOUBLE PRECISION ALPHA,BETA
       INTEGER LDA,LDB,LDC,M,N
       CHARACTER SIDE,UPLO
-C     ..
-C     .. Array Arguments ..
+*     ..
+*     .. Array Arguments ..
       DOUBLE PRECISION A(LDA,*),B(LDB,*),C(LDC,*)
-C     ..
+*     ..
 *
 *  Purpose
 *  =======
@@ -22,7 +22,7 @@ C     ..
 *  where alpha and beta are scalars,  A is a symmetric matrix and  B and
 *  C are  m by n matrices.
 *
-*  Parameters
+*  Arguments
 *  ==========
 *
 *  SIDE   - CHARACTER*1.
@@ -132,25 +132,25 @@ C     ..
 *     Sven Hammarling, Numerical Algorithms Group Ltd.
 *
 *
-C     .. External Functions ..
+*     .. External Functions ..
       LOGICAL LSAME
       EXTERNAL LSAME
-C     ..
-C     .. External Subroutines ..
+*     ..
+*     .. External Subroutines ..
       EXTERNAL XERBLA
-C     ..
-C     .. Intrinsic Functions ..
+*     ..
+*     .. Intrinsic Functions ..
       INTRINSIC MAX
-C     ..
-C     .. Local Scalars ..
+*     ..
+*     .. Local Scalars ..
       DOUBLE PRECISION TEMP1,TEMP2
       INTEGER I,INFO,J,K,NROWA
       LOGICAL UPPER
-C     ..
-C     .. Parameters ..
+*     ..
+*     .. Parameters ..
       DOUBLE PRECISION ONE,ZERO
       PARAMETER (ONE=1.0D+0,ZERO=0.0D+0)
-C     ..
+*     ..
 *
 *     Set NROWA as the number of rows of A.
 *

@@ -1,10 +1,13 @@
       DOUBLE PRECISION FUNCTION DNRM2(N,X,INCX)
-C     .. Scalar Arguments ..
+*     .. Scalar Arguments ..
       INTEGER INCX,N
-C     ..
-C     .. Array Arguments ..
+*     ..
+*     .. Array Arguments ..
       DOUBLE PRECISION X(*)
-C     ..
+*     ..
+*
+*  Purpose
+*  =======
 *
 *  DNRM2 returns the euclidean norm of a vector via the function
 *  name, so that
@@ -12,23 +15,22 @@ C     ..
 *     DNRM2 := sqrt( x'*x )
 *
 *
-*
 *  -- This version written on 25-October-1982.
 *     Modified on 14-October-1993 to inline the call to DLASSQ.
 *     Sven Hammarling, Nag Ltd.
 *
 *
-C     .. Parameters ..
+*     .. Parameters ..
       DOUBLE PRECISION ONE,ZERO
       PARAMETER (ONE=1.0D+0,ZERO=0.0D+0)
-C     ..
-C     .. Local Scalars ..
+*     ..
+*     .. Local Scalars ..
       DOUBLE PRECISION ABSXI,NORM,SCALE,SSQ
       INTEGER IX
-C     ..
-C     .. Intrinsic Functions ..
+*     ..
+*     .. Intrinsic Functions ..
       INTRINSIC ABS,SQRT
-C     ..
+*     ..
       IF (N.LT.1 .OR. INCX.LT.1) THEN
           NORM = ZERO
       ELSE IF (N.EQ.1) THEN

@@ -1,10 +1,13 @@
       DOUBLE PRECISION FUNCTION DZNRM2(N,X,INCX)
-C     .. Scalar Arguments ..
+*     .. Scalar Arguments ..
       INTEGER INCX,N
-C     ..
-C     .. Array Arguments ..
+*     ..
+*     .. Array Arguments ..
       DOUBLE COMPLEX X(*)
-C     ..
+*     ..
+*
+*  Purpose
+*  =======
 *
 *  DZNRM2 returns the euclidean norm of a vector via the function
 *  name, so that
@@ -12,23 +15,22 @@ C     ..
 *     DZNRM2 := sqrt( conjg( x' )*x )
 *
 *
-*
 *  -- This version written on 25-October-1982.
 *     Modified on 14-October-1993 to inline the call to ZLASSQ.
 *     Sven Hammarling, Nag Ltd.
 *
 *
-C     .. Parameters ..
+*     .. Parameters ..
       DOUBLE PRECISION ONE,ZERO
       PARAMETER (ONE=1.0D+0,ZERO=0.0D+0)
-C     ..
-C     .. Local Scalars ..
+*     ..
+*     .. Local Scalars ..
       DOUBLE PRECISION NORM,SCALE,SSQ,TEMP
       INTEGER IX
-C     ..
-C     .. Intrinsic Functions ..
+*     ..
+*     .. Intrinsic Functions ..
       INTRINSIC ABS,DBLE,DIMAG,SQRT
-C     ..
+*     ..
       IF (N.LT.1 .OR. INCX.LT.1) THEN
           NORM = ZERO
       ELSE
