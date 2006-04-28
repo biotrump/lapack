@@ -19,13 +19,13 @@ PLAT = _SUN4SOL2
 FORTRAN  = f77
 #OPTS     = -O4 -u -f -mt
 #OPTS     = -u -f -dalign -native -xO5 -xarch=v8plusa
-OPTS     = -u -f -dalign -native -xO5 -xarch=v8plusa
+OPTS     = -u -f -dalign -native -xO2 -xarch=v8plusa
 DRVOPTS  = $(OPTS)
 NOOPT    = -u -f
 #NOOPT    = -u -f -mt
 LOADER   = f77
 #LOADOPTS = -mt
-LOADOPTS = -f -dalign -native -xO5 -xarch=v8plusa
+LOADOPTS = -f -dalign -native -xO2 -xarch=v8plusa
 #
 #  The archiver and the flag(s) to use when building archive (library)
 #  If you system has no ranlib, set RANLIB = echo.
