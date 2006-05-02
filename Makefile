@@ -63,18 +63,18 @@ lapack_timing:
 
 blas_timing:
 	( cd TIMING/LIN; $(MAKE) )
-	( cd TIMING; ./xlintims < sblasa.in > sblasa.out ; \
-	             ./xlintims < sblasb.in > sblasb.out ; \
-	             ./xlintims < sblasc.in > sblasc.out )
-	( cd TIMING; ./xlintimd < dblasa.in > dblasa.out ; \
-	             ./xlintimd < dblasb.in > dblasb.out ; \
-	             ./xlintimd < dblasc.in > dblasc.out )
-	( cd TIMING; ./xlintimc < cblasa.in > cblasa.out ; \
-	             ./xlintimc < cblasb.in > cblasb.out ; \
-	             ./xlintimc < cblasc.in > cblasc.out )
-	( cd TIMING; ./xlintimz < zblasa.in > zblasa.out ; \
-	             ./xlintimz < zblasb.in > zblasb.out ; \
-	             ./xlintimz < zblasc.in > zblasc.out )
+	( cd TIMING; ./xlintims < sblasa_small.in > sblasa_small.out ; \
+	             ./xlintims < sblasb_small.in > sblasb_small.out ; \
+	             ./xlintims < sblasc_small.in > sblasc_small.out )
+	( cd TIMING; ./xlintimd < dblasa_small.in > dblasa_small.out ; \
+	             ./xlintimd < dblasb_small.in > dblasb_small.out ; \
+	             ./xlintimd < dblasc_small.in > dblasc_small.out )
+	( cd TIMING; ./xlintimc < cblasa_small.in > cblasa_small.out ; \
+	             ./xlintimc < cblasb_small.in > cblasb_small.out ; \
+	             ./xlintimc < cblasc_small.in > cblasc_small.out )
+	( cd TIMING; ./xlintimz < zblasa_small.in > zblasa_small.out ; \
+	             ./xlintimz < zblasb_small.in > zblasb_small.out ; \
+	             ./xlintimz < zblasc_small.in > zblasc_small.out )
 
 cleanlib:
 	( cd INSTALL; $(MAKE) clean )
