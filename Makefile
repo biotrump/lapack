@@ -99,3 +99,8 @@ cleantiming:
 	( cd TIMING/EIG; $(MAKE) clean )
 	( cd TIMING/EIG/EIGSRC; $(MAKE) clean )
 	( cd TIMING; rm -f xlin* xeig* )
+
+cleanall: cleanlib cleanblas_testing cleantesting cleantiming
+	rm -f *.a TESTING/*.out TIMING/*.out INSTALL/test* \
+                 BLAS/*.out TIMING/LIN/*.a TIMING/EIG/*.a
+
