@@ -67,18 +67,21 @@
 *  Further Details
 *  ===============
 *
-*  Based on contributions by
+*  30/06/99: Based on contributions by
 *     Ren-Cang Li, Computer Science Division, University of California
 *     at Berkeley, USA
 *
-*  This version has a few statements commented out for thread safety
-*  (machine parameters are computed on each entry). 10 feb 03, SJH.
+*  10/02/03: This version has a few statements commented out for thread safety
+*     (machine parameters are computed on each entry). SJH.
+*
+*  05/10/06: Modified from a new version of Ren-Cang Li, use
+*     Gragg-Thornton-Warner cubic convergent scheme for better stability.
 *
 *  =====================================================================
 *
 *     .. Parameters ..
       INTEGER            MAXIT
-      PARAMETER          ( MAXIT = 20 )
+      PARAMETER          ( MAXIT = 40 )
       DOUBLE PRECISION   ZERO, ONE, TWO, THREE, FOUR, EIGHT
       PARAMETER          ( ZERO = 0.0D0, ONE = 1.0D0, TWO = 2.0D0,
      $                   THREE = 3.0D0, FOUR = 4.0D0, EIGHT = 8.0D0 )
@@ -91,39 +94,32 @@
       DOUBLE PRECISION   DSCALE( 3 ), ZSCALE( 3 )
 *     ..
 *     .. Local Scalars ..
-*     LOGICAL            FIRST
       LOGICAL            SCALE
       INTEGER            I, ITER, NITER
       DOUBLE PRECISION   A, B, BASE, C, DDF, DF, EPS, ERRETM, ETA, F,
      $                   FC, SCLFAC, SCLINV, SMALL1, SMALL2, SMINV1,
-     $                   SMINV2, TEMP, TEMP1, TEMP2, TEMP3, TEMP4
-*     ..
-*     .. Save statement ..
-*     SAVE               FIRST, SMALL1, SMINV1, SMALL2, SMINV2, EPS
+     $                   SMINV2, TEMP, TEMP1, TEMP2, TEMP3, TEMP4, 
+     $                   LBD, UBD
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, INT, LOG, MAX, MIN, SQRT
-*     ..
-*     .. Data statements ..
-*     DATA               FIRST / .TRUE. /
 *     ..
 *     .. Executable Statements ..
 *
       INFO = 0
 *
-*     On first call to routine, get machine parameters for
-*     possible scaling to avoid overflow
-*
-*     IF( FIRST ) THEN
-         EPS = DLAMCH( 'Epsilon' )
-         BASE = DLAMCH( 'Base' )
-         SMALL1 = BASE**( INT( LOG( DLAMCH( 'SafMin' ) ) / LOG( BASE ) /
-     $            THREE ) )
-         SMINV1 = ONE / SMALL1
-         SMALL2 = SMALL1*SMALL1
-         SMINV2 = SMINV1*SMINV1
-*        FIRST = .FALSE.
-*     END IF
+      IF( ORGATI ) THEN
+         LBD = D(2)
+         UBD = D(3)
+      ELSE
+         LBD = D(1)
+         UBD = D(2)
+      END IF
+      IF( FINIT .LT. ZERO )THEN
+         LBD = ZERO
+      ELSE
+         UBD = ZERO 
+      END IF
 *
       NITER = 1
       TAU = ZERO
@@ -150,11 +146,33 @@
          ELSE
             TAU = TWO*B / ( A+SQRT( ABS( A*A-FOUR*B*C ) ) )
          END IF
-         TEMP = RHO + Z( 1 ) / ( D( 1 )-TAU ) +
-     $          Z( 2 ) / ( D( 2 )-TAU ) + Z( 3 ) / ( D( 3 )-TAU )
+         IF( TAU .LT. LBD .OR. TAU .GT. UBD )
+     $      TAU = ( LBD+UBD )/TWO
+         TEMP = FINIT + TAU*Z(1)/( D(1)*( D( 1 )-TAU ) ) +
+     $                  TAU*Z(2)/( D(2)*( D( 2 )-TAU ) ) +
+     $                  TAU*Z(3)/( D(3)*( D( 3 )-TAU ) )
+         IF( TEMP .LE. ZERO )THEN
+            LBD = TAU
+         ELSE
+            UBD = TAU
+         END IF
          IF( ABS( FINIT ).LE.ABS( TEMP ) )
      $      TAU = ZERO
       END IF
+*
+*     get machine parameters for possible scaling to avoid overflow
+*
+*     modified by Sven: parameters SMALL1, SMINV1, SMALL2,
+*     SMINV2, EPS are not SAVEd anymore between one call to the
+*     others but recomputed at each call
+*
+      EPS = DLAMCH( 'Epsilon' )
+      BASE = DLAMCH( 'Base' )
+      SMALL1 = BASE**( INT( LOG( DLAMCH( 'SafMin' ) ) / LOG( BASE ) /
+     $         THREE ) )
+      SMINV1 = ONE / SMALL1
+      SMALL2 = SMALL1*SMALL1
+      SMINV2 = SMINV1*SMINV1
 *
 *     Determine if scaling of inputs necessary to avoid overflow
 *     when computing 1/TEMP**3
@@ -188,6 +206,8 @@
             ZSCALE( I ) = Z( I )*SCLFAC
    10    CONTINUE
          TAU = TAU*SCLFAC
+         LBD = LBD*SCLFAC
+         UBD = UBD*SCLFAC
       ELSE
 *
 *        Copy D and Z to DSCALE and ZSCALE
@@ -214,8 +234,14 @@
 *
       IF( ABS( F ).LE.ZERO )
      $   GO TO 60
+      IF( F .LE. ZERO )THEN
+         LBD = TAU
+      ELSE
+         UBD = TAU
+      END IF
 *
-*        Iteration begins
+*        Iteration begins -- Use Gragg-Thornton-Warner cubic convergent
+*                            scheme
 *
 *     It is not hard to see that
 *
@@ -254,19 +280,9 @@
             ETA = -F / DF
          END IF
 *
-         TEMP = ETA + TAU
-         IF( ORGATI ) THEN
-            IF( ETA.GT.ZERO .AND. TEMP.GE.DSCALE( 3 ) )
-     $         ETA = ( DSCALE( 3 )-TAU ) / TWO
-            IF( ETA.LT.ZERO .AND. TEMP.LE.DSCALE( 2 ) )
-     $         ETA = ( DSCALE( 2 )-TAU ) / TWO
-         ELSE
-            IF( ETA.GT.ZERO .AND. TEMP.GE.DSCALE( 2 ) )
-     $         ETA = ( DSCALE( 2 )-TAU ) / TWO
-            IF( ETA.LT.ZERO .AND. TEMP.LE.DSCALE( 1 ) )
-     $         ETA = ( DSCALE( 1 )-TAU ) / TWO
-         END IF
          TAU = TAU + ETA
+         IF( TAU .LT. LBD .OR. TAU .GT. UBD )
+     $      TAU = ( LBD + UBD )/TWO 
 *
          FC = ZERO
          ERRETM = ZERO
@@ -288,6 +304,11 @@
      $            ABS( TAU )*DF
          IF( ABS( F ).LE.EPS*ERRETM )
      $      GO TO 60
+         IF( F .LE. ZERO )THEN
+            LBD = TAU
+         ELSE
+            UBD = TAU
+         END IF
    50 CONTINUE
       INFO = 1
    60 CONTINUE
