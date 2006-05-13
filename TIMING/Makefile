@@ -52,9 +52,21 @@
 
 include ../make.inc
 
-all:     single complex double complex16
-large:	 single_large complex_large double_large complex16_large
-small:   single complex double complex16
+all:
+	$(MAKE) single
+	$(MAKE) complex
+	$(MAKE) double
+	$(MAKE) complex16
+large:
+	$(MAKE) single_large
+	$(MAKE) complex_large
+	$(MAKE) double_large
+	$(MAKE) complex16_large
+small:
+	$(MAKE) single
+	$(MAKE) complex
+	$(MAKE) double
+	$(MAKE) complex16
 
 SEIGTIM= sgeptim_small.out \
          sneptim_small.out \
@@ -128,15 +140,23 @@ ZLINTM2= ztime_large.out \
 	 zband_large.out \
 	 ztime2_large.out
 
-single:         $(SLINTIM) $(SEIGTIM)
-complex:        $(CLINTIM) $(CEIGTIM)
-double:         $(DLINTIM) $(DEIGTIM)
-complex16:      $(ZLINTIM) $(ZEIGTIM)
+single:	xlintims xeigtims
+	for outfile in $(SLINTIM) $(SEIGTIM) ; do $(MAKE) $$outfile; done
+complex:	xlintimc xeigtimc
+	for outfile in $(CLINTIM) $(CEIGTIM) ; do $(MAKE) $$outfile; done
+double:	xlintimd xeigtimd
+	for outfile in $(DLINTIM) $(DEIGTIM) ; do $(MAKE) $$outfile; done
+complex16:	xlintimz xeigtimz
+	for outfile in $(ZLINTIM) $(ZEIGTIM) ; do $(MAKE) $$outfile; done
 
-single_large:     $(SLINTM2) $(SEIGTM2)
-complex_large:    $(CLINTM2) $(CEIGTM2)
-double_large:     $(DLINTM2) $(DEIGTM2)
-complex16_large:  $(ZLINTM2) $(ZEIGTM2)
+single_large:	xlintims xeigtims
+	for outfile in $(SLINTM2) $(SEIGTM2) ; do $(MAKE) $$outfile; done
+complex_large:	xlintimc xeigtimc
+	for outfile in $(CLINTM2) $(CEIGTM2) ; do $(MAKE) $$outfile; done
+double_large:	xlintimd xeigtimd
+	for outfile in $(DLINTM2) $(DEIGTM2) ; do $(MAKE) $$outfile; done
+complex16_large:	xlintimz xeigtimz
+	for outfile in $(ZLINTM2) $(ZEIGTM2) ; do $(MAKE) $$outfile; done
 
 #
 # ======== SINGLE LIN TIMINGS ===========================
@@ -382,36 +402,28 @@ zsvdtim_large.out: zsvdtim_large.in xeigtimz
 # ==============================================================================
 
 xlintims:
-	cd LIN/LINSRC ; $(MAKE) single
 	cd LIN ; $(MAKE) single
 
 xlintimc:
-	cd LIN/LINSRC ; $(MAKE) complex
 	cd LIN ; $(MAKE) complex
 
 xlintimd:
-	cd LIN/LINSRC ; $(MAKE) double
 	cd LIN ; $(MAKE) double
 
 xlintimz:
-	cd LIN/LINSRC ; $(MAKE) complex16
 	cd LIN ; $(MAKE) complex16
 
 
 xeigtims:
-	cd EIG/EIGSRC ; $(MAKE) single
 	cd EIG ; $(MAKE) single
 
 xeigtimc:
-	cd EIG/EIGSRC ; $(MAKE) complex
 	cd EIG ; $(MAKE) complex
 
 xeigtimd:
-	cd EIG/EIGSRC ; $(MAKE) double
 	cd EIG ; $(MAKE) double
 
 xeigtimz:
-	cd EIG/EIGSRC ; $(MAKE) complex16
 	cd EIG ; $(MAKE) complex16
 
 clean:

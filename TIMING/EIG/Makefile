@@ -64,25 +64,28 @@ double: ../xeigtimd
 complex: ../xeigtimc
 complex16: ../xeigtimz
 
-../xeigtims:$(AEIGTIM) $(SCIGTIM) $(SEIGTIM)
+../xeigtims:$(AEIGTIM) $(SCIGTIM) $(SEIGTIM) $(EIGSRCLIB)
 	$(LOADER) $(LOADOPTS)  $(AEIGTIM) $(SCIGTIM) $(SEIGTIM) \
         ../../$(TMGLIB) $(EIGSRCLIB) ../../$(LAPACKLIB) \
 	$(BLASLIB) -o ../xeigtims
 
-../xeigtimc:$(AEIGTIM) $(SCIGTIM) $(CEIGTIM)
+../xeigtimc:$(AEIGTIM) $(SCIGTIM) $(CEIGTIM) $(EIGSRCLIB)
 	$(LOADER) $(LOADOPTS)  $(AEIGTIM) $(SCIGTIM) $(CEIGTIM) \
         ../../$(TMGLIB) $(EIGSRCLIB) ../../$(LAPACKLIB) \
 	$(BLASLIB) -o ../xeigtimc
 
-../xeigtimd:$(AEIGTIM) $(DZIGTIM) $(DEIGTIM)
+../xeigtimd:$(AEIGTIM) $(DZIGTIM) $(DEIGTIM) $(EIGSRCLIB)
 	$(LOADER) $(LOADOPTS)  $(AEIGTIM) $(DZIGTIM) $(DEIGTIM) \
         ../../$(TMGLIB) $(EIGSRCLIB) ../../$(LAPACKLIB) \
 	$(BLASLIB) -o ../xeigtimd
 
-../xeigtimz:$(AEIGTIM) $(DZIGTIM) $(ZEIGTIM)
+../xeigtimz:$(AEIGTIM) $(DZIGTIM) $(ZEIGTIM) $(EIGSRCLIB)
 	$(LOADER) $(LOADOPTS)  $(AEIGTIM) $(DZIGTIM) $(ZEIGTIM) \
         ../../$(TMGLIB) $(EIGSRCLIB) ../../$(LAPACKLIB) \
 	$(BLASLIB) -o ../xeigtimz
+
+$(EIGSRCLIB):
+	cd EIGSRC; $(MAKE) ../$(EIGSRCLIB)
 
 $(AEIGTIM): $(FRC)
 $(SCIGTIM): $(FRC)

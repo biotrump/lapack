@@ -70,7 +70,12 @@ ZEIGSRC = \
    zlaed0.o zlaed7.o zlaed8.o zlaein.o zlahqr.o zlar1v.o zlarrv.o \
    zpteqr.o zstedc.o zstegr.o zstein.o zsteqr.o ztgevc.o ztrevc.o
 
-all: single complex double complex16
+all:	../$(EIGSRCLIB)
+ALLOBJ=$(SEIGSRC) $(CEIGSRC) $(SCIGSRC) $(DEIGSRC) $(ZEIGSRC)	\
+	$(DZIGSRC)
+../$(EIGSRCLIB): $(ALLOBJ)
+	$(ARCH) $(ARCHFLAGS) $@ $(ALLOBJ)
+	$(RANLIB) $@
 
 single: $(SEIGSRC) $(SCIGSRC)
 	$(ARCH) $(ARCHFLAGS) ../$(EIGSRCLIB) $(SEIGSRC) $(SCIGSRC)

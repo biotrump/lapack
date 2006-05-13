@@ -53,7 +53,15 @@ ZMATGEN = zlatms.o zlatme.o zlatmr.o \
    zlagge.o zlaghe.o zlagsy.o zlakf2.o zlarge.o zlaror.o zlarot.o \
    zlatm1.o zlarnd.o zlatm2.o zlatm3.o zlatm5.o zlatm6.o
 
-all: single complex double complex16
+all:	../../$(TMGLIB)
+
+ALLOBJ=$(SMATGEN) $(CMATGEN) $(SCATGEN) $(DMATGEN) $(ZMATGEN)	\
+	$(DZATGEN)
+
+../../$(TMGLIB): $(SMATGEN) $(CMATGEN) $(SCATGEN) $(DMATGEN)	\
+		$(ZMATGEN) $(DZATGEN)
+	$(ARCH) $(ARCHFLAGS) $@ $(ALLOBJ)
+	$(RANLIB) $@
 
 single: $(SMATGEN) $(SCATGEN)
 	$(ARCH) $(ARCHFLAGS) ../../$(TMGLIB) $(SMATGEN) $(SCATGEN)

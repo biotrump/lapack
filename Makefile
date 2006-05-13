@@ -24,13 +24,13 @@ lapack_install:
 blaslib:
 	( cd BLAS/SRC; $(MAKE) )
 
-lapacklib:
+lapacklib:	lapack_install
 	( cd SRC; $(MAKE) )
 
 tmglib:
 	( cd TESTING/MATGEN; $(MAKE) )
 
-lapack_testing:
+lapack_testing:	lib
 	( cd TESTING ; $(MAKE) )
 
 blas_testing:
@@ -58,10 +58,10 @@ blas_testing:
 	           ./xblat3z < zblat3.in     ; \
 	           mv ZBLAT3.SUMM zblat3.out )
 
-lapack_timing:
+lapack_timing:	lib lapack_testing blas_testing
 	( cd TIMING; $(MAKE) )
 
-blas_timing:
+blas_timing:	lapack_timing
 	( cd TIMING/LIN; $(MAKE) )
 	( cd TIMING; ./xlintims < sblasa_small.in > sblasa_small.out ; \
 	             ./xlintims < sblasb_small.in > sblasb_small.out ; \

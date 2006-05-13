@@ -52,7 +52,11 @@ ZLINSRC = \
    zgels.o  zgelsd.o zgelss.o zgelsx.o zgelsy.o zlaic1.o zlals0.o \
    zlalsa.o zlalsd.o
 
-all: single complex double complex16
+all: ../$(LINSRCLIB)
+ALLOBJ=$(SLINSRC) $(CLINSRC) $(SCAUX) $(DLINSRC) $(ZLINSRC) $(DZAUX)
+../$(LINSRCLIB): $(ALLOBJ)
+	$(ARCH) $(ARCHFLAGS) $@ $(ALLOBJ)
+	$(RANLIB) $@
 
 single: $(SLINSRC) $(SCAUX)
 	$(ARCH) $(ARCHFLAGS) ../$(LINSRCLIB) $(SLINSRC) $(SCAUX)

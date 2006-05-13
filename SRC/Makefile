@@ -277,7 +277,14 @@ ZLASRC = \
    zunmtr.o zupgtr.o \
    zupmtr.o izmax1.o dzsum1.o
 
-all: single complex double complex16
+all: ../$(LAPACKLIB)
+
+ALLOBJ=$(SLASRC) $(DLASRC) $(CLASRC) $(ZLASRC) $(SCLAUX) $(DZLAUX)	\
+	$(ALLAUX)
+
+../$(LAPACKLIB): $(ALLOBJ)
+	$(ARCH) $(ARCHFLAGS) $@ $(ALLOBJ)
+	$(RANLIB) $@
 
 single: $(SLASRC) $(ALLAUX) $(SCLAUX) 
 	$(ARCH) $(ARCHFLAGS) ../$(LAPACKLIB) $(SLASRC) $(ALLAUX) \

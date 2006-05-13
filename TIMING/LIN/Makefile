@@ -79,21 +79,24 @@ double: ../xlintimd
 complex: ../xlintimc
 complex16: ../xlintimz
 
-../xlintims : $(ALINTIM) $(SCINTIM) $(SLINTIM)
+../xlintims : $(ALINTIM) $(SCINTIM) $(SLINTIM) $(LINSRCLIB)
 	$(LOADER) $(LOADOPTS)  $(ALINTIM) $(SCINTIM) $(SLINTIM) \
 	../../$(TMGLIB) $(LINSRCLIB) ../../$(LAPACKLIB) $(BLASLIB) -o $@
 
-../xlintimc : $(ALINTIM) $(SCINTIM) $(CLINTIM)
+../xlintimc : $(ALINTIM) $(SCINTIM) $(CLINTIM) $(LINSRCLIB)
 	$(LOADER) $(LOADOPTS)  $(ALINTIM) $(SCINTIM) $(CLINTIM) \
 	../../$(TMGLIB) $(LINSRCLIB) ../../$(LAPACKLIB) $(BLASLIB) -o $@
 
-../xlintimd : $(ALINTIM) $(DZINTIM) $(DLINTIM)
+../xlintimd : $(ALINTIM) $(DZINTIM) $(DLINTIM) $(LINSRCLIB)
 	$(LOADER) $(LOADOPTS)  $(ALINTIM) $(DZINTIM) $(DLINTIM) \
 	../../$(TMGLIB) $(LINSRCLIB) ../../$(LAPACKLIB) $(BLASLIB)  -o $@
 
-../xlintimz : $(ALINTIM) $(DZINTIM) $(ZLINTIM)
+../xlintimz : $(ALINTIM) $(DZINTIM) $(ZLINTIM) $(LINSRCLIB)
 	$(LOADER) $(LOADOPTS)  $(ALINTIM) $(DZINTIM) $(ZLINTIM) \
 	../../$(TMGLIB) $(LINSRCLIB) ../../$(LAPACKLIB) $(BLASLIB)  -o $@
+
+$(LINSRCLIB):
+	cd LINSRC; $(MAKE) ../$(LINSRCLIB)
 
 $(ALINTIM): $(FRC)
 $(SCINTIM): $(FRC)
