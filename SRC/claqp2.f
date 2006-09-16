@@ -2,8 +2,8 @@
      $                   WORK )
 *
 *  -- LAPACK auxiliary routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
+*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.
+*     July 06, 2006
 *     June 30, 1999
 *
 *     .. Scalar Arguments ..
@@ -38,10 +38,10 @@
 *  A       (input/output) COMPLEX array, dimension (LDA,N)
 *          On entry, the M-by-N matrix A.
 *          On exit, the upper triangle of block A(OFFSET+1:M,1:N) is 
-*          the triangular factor obtained; the elements in block 
-*          A(OFFSET+1:M,1:N) below the diagonal, together with the 
+*          the triangular factor obtained; the elements in block
+*          A(OFFSET+1:M,1:N) below the diagonal, together with the
 *          array TAU, represent the orthogonal matrix Q as a product of
-*          elementary reflectors. Block A(1:OFFSET,1:N) has been 
+*          elementary reflectors. Block A(1:OFFSET,1:N) has been
 *          accordingly pivoted, but no factorized.
 *
 *  LDA     (input) INTEGER
@@ -72,6 +72,11 @@
 *    G. Quintana-Orti, Depto. de Informatica, Universidad Jaime I, Spain
 *    X. Sun, Computer Science Dept., Duke University, USA
 *
+*  Partial column norm updating strategy modified by
+*    Z. Drmac and Z. Bujanovic, Dept. of Mathematics,
+*    University of Zagreb, Croatia.
+*    June 2006.
+*  For more details see LAPACK Working Note 176.
 *  =====================================================================
 *
 *     .. Parameters ..
@@ -82,23 +87,24 @@
 *     ..
 *     .. Local Scalars ..
       INTEGER            I, ITEMP, J, MN, OFFPI, PVT
-      REAL               TEMP, TEMP2
+      REAL               TEMP, TEMP2, TOL3Z
       COMPLEX            AII
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           CLARF, CLARFG, CSWAP
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          ABS, CONJG, MAX, MIN, SQRT
+      INTRINSIC          ABS, CONJG, MAX, MIN, REAL, SQRT
 *     ..
 *     .. External Functions ..
       INTEGER            ISAMAX
-      REAL               SCNRM2
-      EXTERNAL           ISAMAX, SCNRM2
+      REAL               SCNRM2, SLAMCH
+      EXTERNAL           ISAMAX, SCNRM2, SLAMCH
 *     ..
 *     .. Executable Statements ..
 *
       MN = MIN( M-OFFSET, N )
+      TOL3Z = SQRT(SLAMCH('Epsilon'))
 *
 *     Compute factorization.
 *
@@ -144,10 +150,14 @@
 *
          DO 10 J = I + 1, N
             IF( VN1( J ).NE.ZERO ) THEN
+*
+*              NOTE: The following 4 lines follow from the analysis in
+*              Lapack Working Note 176.
+*
                TEMP = ONE - ( ABS( A( OFFPI, J ) ) / VN1( J ) )**2
                TEMP = MAX( TEMP, ZERO )
-               TEMP2 = ONE + 0.05*TEMP*( VN1( J ) / VN2( J ) )**2
-               IF( TEMP2.EQ.ONE ) THEN
+               TEMP2 = TEMP*( VN1( J ) / VN2( J ) )**2
+               IF( TEMP2 .LE. TOL3Z ) THEN
                   IF( OFFPI.LT.M ) THEN
                      VN1( J ) = SCNRM2( M-OFFPI, A( OFFPI+1, J ), 1 )
                      VN2( J ) = VN1( J )

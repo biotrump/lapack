@@ -2,8 +2,8 @@
      $                   VN2, AUXV, F, LDF )
 *
 *  -- LAPACK auxiliary routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
+*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.
+*     July 06, 2006
 *     June 30, 1999
 *
 *     .. Scalar Arguments ..
@@ -88,6 +88,11 @@
 *    G. Quintana-Orti, Depto. de Informatica, Universidad Jaime I, Spain
 *    X. Sun, Computer Science Dept., Duke University, USA
 *
+*  Partial column norm updating strategy modified by
+*    Z. Drmac and Z. Bujanovic, Dept. of Mathematics,
+*    University of Zagreb, Croatia.
+*    June 2006.
+*  For more details see LAPACK Working Note 176.
 *  =====================================================================
 *
 *     .. Parameters ..
@@ -99,7 +104,7 @@
 *     ..
 *     .. Local Scalars ..
       INTEGER            ITEMP, J, K, LASTRK, LSTICC, PVT, RK
-      REAL               TEMP, TEMP2
+      REAL               TEMP, TEMP2, TOL3Z
       COMPLEX            AKK
 *     ..
 *     .. External Subroutines ..
@@ -110,14 +115,15 @@
 *     ..
 *     .. External Functions ..
       INTEGER            ISAMAX
-      REAL               SCNRM2
-      EXTERNAL           ISAMAX, SCNRM2
+      REAL               SCNRM2, SLAMCH
+      EXTERNAL           ISAMAX, SCNRM2, SLAMCH
 *     ..
 *     .. Executable Statements ..
 *
       LASTRK = MIN( M, N+OFFSET )
       LSTICC = 0
       K = 0
+      TOL3Z = SQRT(SLAMCH('Epsilon'))
 *
 *     Beginning of while loop.
 *
@@ -143,9 +149,6 @@
 *        A(RK:M,K) := A(RK:M,K) - A(RK:M,1:K-1)*F(K,1:K-1)'.
 *
          IF( K.GT.1 ) THEN
-*CC            CALL CGEMM( 'No transpose', 'Conjugate transpose',
-*CC     $                  M-RK+1, 1, K-1, -CONE, A( RK, 1 ), LDA,
-*CC     $                  F( K, 1 ), LDF, CONE, A( RK, K ), LDA )
             DO 20 J = 1, K - 1
                F( K, J ) = CONJG( F( K, J ) )
    20       CONTINUE
@@ -210,10 +213,14 @@
          IF( RK.LT.LASTRK ) THEN
             DO 50 J = K + 1, N
                IF( VN1( J ).NE.ZERO ) THEN
+*
+*                 NOTE: The following 4 lines follow from the analysis in
+*                 Lapack Working Note 176.
+*
                   TEMP = ABS( A( RK, J ) ) / VN1( J )
                   TEMP = MAX( ZERO, ( ONE+TEMP )*( ONE-TEMP ) )
-                  TEMP2 = ONE + 0.05*TEMP*( VN1( J ) / VN2( J ) )**2
-                  IF( TEMP2.EQ.ONE ) THEN
+                  TEMP2 = TEMP*( VN1( J ) / VN2( J ) )**2
+                  IF( TEMP2 .LE. TOL3Z ) THEN
                      VN2( J ) = REAL( LSTICC )
                      LSTICC = J
                   ELSE
@@ -248,6 +255,11 @@
       IF( LSTICC.GT.0 ) THEN
          ITEMP = NINT( VN2( LSTICC ) )
          VN1( LSTICC ) = SCNRM2( M-RK, A( RK+1, LSTICC ), 1 )
+*
+*        NOTE: The computation of VN1( LSTICC ) relies on the fact that 
+*        SNRM2 does not fail on vectors with norm below the value of
+*        SQRT(DLAMCH('S')) 
+*
          VN2( LSTICC ) = VN1( LSTICC )
          LSTICC = ITEMP
          GO TO 60
