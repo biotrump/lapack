@@ -1,10 +1,10 @@
       SUBROUTINE ZLAHQR( WANTT, WANTZ, N, ILO, IHI, H, LDH, W, ILOZ,
      $                   IHIZ, Z, LDZ, INFO )
 *
-*     This is a modified version of ZLAHQR from LAPACK version 3.0.
-*     It is (1) more robust against overflow and underflow and
-*     (2) adopts the more conservative Ahues & Tisseur stopping
-*     criterion (LAWN 122, 1997).
+*  -- LAPACK auxiliary routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.
+*     July 06, 2006
+*
 *     .. Scalar Arguments ..
       INTEGER            IHI, IHIZ, ILO, ILOZ, INFO, LDH, LDZ, N
       LOGICAL            WANTT, WANTZ
@@ -101,6 +101,20 @@
 *                      (final value of Z)  = (initial value of Z)*U
 *                  where U is the orthogonal matrix in (*)
 *                  (regardless of the value of WANTT.)
+*
+*     Further Details
+*     ===============
+*
+*     02-96 Based on modifications by
+*     David Day, Sandia National Laboratory, USA
+*
+*     12-04 Further modifications by
+*     Ralph Byers, University of Kansas, USA
+*
+*       This is a modified version of ZLAHQR from LAPACK version 3.0.
+*       It is (1) more robust against overflow and underflow and
+*       (2) adopts the more conservative Ahues & Tisseur stopping
+*       criterion (LAWN 122, 1997).
 *
 *     =========================================================
 *

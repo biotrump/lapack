@@ -1,4 +1,9 @@
       SUBROUTINE DLAQR1( N, H, LDH, SR1, SI1, SR2, SI2, V )
+*
+*  -- LAPACK auxiliary routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.
+*     July 06, 2006
+*
 *     .. Scalar Arguments ..
       DOUBLE PRECISION   SI1, SI2, SR1, SR2
       INTEGER            LDH, N

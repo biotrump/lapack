@@ -1,4 +1,9 @@
       SUBROUTINE CLAQR1( N, H, LDH, S1, S2, V )
+*
+*  -- LAPACK auxiliary routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.
+*     July 06, 2006
+*
 *     .. Scalar Arguments ..
       COMPLEX            S1, S2
       INTEGER            LDH, N
