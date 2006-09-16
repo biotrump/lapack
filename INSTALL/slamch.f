@@ -72,7 +72,6 @@
 *     .. Executable Statements ..
 *
       IF( FIRST ) THEN
-         FIRST = .FALSE.
          CALL SLAMC2( BETA, IT, LRND, EPS, IMIN, RMIN, IMAX, RMAX )
          BASE = BETA
          T = IT
@@ -120,6 +119,7 @@
       END IF
 *
       SLAMCH = RMACH
+      FIRST  = .FALSE.
       RETURN
 *
 *     End of SLAMCH
@@ -198,7 +198,6 @@
 *     .. Executable Statements ..
 *
       IF( FIRST ) THEN
-         FIRST = .FALSE.
          ONE = 1
 *
 *        LBETA,  LIEEE1,  LT and  LRND  are the  local values  of  BETA,
@@ -307,6 +306,7 @@
       T = LT
       RND = LRND
       IEEE1 = LIEEE1
+      FIRST = .FALSE.
       RETURN
 *
 *     End of SLAMC1
@@ -407,7 +407,6 @@
 *     .. Executable Statements ..
 *
       IF( FIRST ) THEN
-         FIRST = .FALSE.
          ZERO = 0
          ONE = 1
          TWO = 2
@@ -521,6 +520,7 @@
 *         ( A guess; no known machine )
             IWARN = .TRUE.
          END IF
+         FIRST = .FALSE.
 ***
 * Comment out this if block if EMIN is ok
          IF( IWARN ) THEN
@@ -595,7 +595,8 @@
 *  Arguments
 *  =========
 *
-*  A, B    (input) REAL
+*  A       (input) REAL
+*  B       (input) REAL
 *          The values A and B.
 *
 * =====================================================================
@@ -620,7 +621,8 @@
 *     October 31, 1992
 *
 *     .. Scalar Arguments ..
-      INTEGER            BASE, EMIN
+      INTEGER            BASE
+      INTEGER            EMIN
       REAL               START
 *     ..
 *
@@ -632,7 +634,7 @@
 *  Arguments
 *  =========
 *
-*  EMIN    (output) EMIN
+*  EMIN    (output) INTEGER 
 *          The minimum exponent before (gradual) underflow, computed by
 *          setting A = START and dividing by BASE until the previous A
 *          can not be recovered.

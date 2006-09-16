@@ -72,7 +72,6 @@
 *     .. Executable Statements ..
 *
       IF( FIRST ) THEN
-         FIRST = .FALSE.
          CALL DLAMC2( BETA, IT, LRND, EPS, IMIN, RMIN, IMAX, RMAX )
          BASE = BETA
          T = IT
@@ -120,6 +119,7 @@
       END IF
 *
       DLAMCH = RMACH
+      FIRST  = .FALSE.
       RETURN
 *
 *     End of DLAMCH
@@ -198,7 +198,6 @@
 *     .. Executable Statements ..
 *
       IF( FIRST ) THEN
-         FIRST = .FALSE.
          ONE = 1
 *
 *        LBETA,  LIEEE1,  LT and  LRND  are the  local values  of  BETA,
@@ -307,6 +306,7 @@
       T = LT
       RND = LRND
       IEEE1 = LIEEE1
+      FIRST = .FALSE.
       RETURN
 *
 *     End of DLAMC1
@@ -407,7 +407,6 @@
 *     .. Executable Statements ..
 *
       IF( FIRST ) THEN
-         FIRST = .FALSE.
          ZERO = 0
          ONE = 1
          TWO = 2
@@ -521,6 +520,7 @@
 *         ( A guess; no known machine )
             IWARN = .TRUE.
          END IF
+         FIRST = .FALSE.
 ***
 * Comment out this if block if EMIN is ok
          IF( IWARN ) THEN
@@ -595,7 +595,8 @@
 *  Arguments
 *  =========
 *
-*  A, B    (input) DOUBLE PRECISION
+*  A       (input) DOUBLE PRECISION
+*  B       (input) DOUBLE PRECISION
 *          The values A and B.
 *
 * =====================================================================
@@ -632,7 +633,7 @@
 *  Arguments
 *  =========
 *
-*  EMIN    (output) EMIN
+*  EMIN    (output) INTEGER 
 *          The minimum exponent before (gradual) underflow, computed by
 *          setting A = START and dividing by BASE until the previous A
 *          can not be recovered.
