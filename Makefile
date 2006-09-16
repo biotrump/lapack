@@ -6,7 +6,7 @@
 
 include make.inc
 
-all: lapack_install lib lapack_testing blas_testing lapack_timing blas_timing
+all: lapack_install lib lapack_testing blas_testing
 
 lib: lapacklib tmglib
 #lib: blaslib lapacklib tmglib
