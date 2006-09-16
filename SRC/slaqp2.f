@@ -1,10 +1,9 @@
       SUBROUTINE SLAQP2( M, N, OFFSET, A, LDA, JPVT, TAU, VN1, VN2,
      $                   WORK )
 *
-*  -- LAPACK auxiliary routine (version 3.0) --
+*  -- LAPACK auxiliary routine (version 3.1) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.
 *     July 06, 2006
-*     June 30, 1999
 *
 *     .. Scalar Arguments ..
       INTEGER            LDA, M, N, OFFSET

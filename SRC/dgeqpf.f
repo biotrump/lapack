@@ -1,9 +1,8 @@
       SUBROUTINE DGEQPF( M, N, A, LDA, JPVT, TAU, WORK, INFO )
 *
-*  -- LAPACK deprecated driver routine (version 3.0) --
+*  -- LAPACK deprecated driver routine (version 3.1) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.
 *     July 06, 2006
-*     March 31, 1993
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, M, N
