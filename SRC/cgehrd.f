@@ -1,9 +1,9 @@
       SUBROUTINE CGEHRD( N, ILO, IHI, A, LDA, TAU, WORK, LWORK, INFO )
 *
-*  -- LAPACK routine (version 3.0) --
+*  -- LAPACK routine (version 3.X) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     June 30, 1999
+*     Jan 2006
 *
 *     .. Scalar Arguments ..
       INTEGER            IHI, ILO, INFO, LDA, LWORK, N
@@ -15,8 +15,8 @@
 *  Purpose
 *  =======
 *
-*  CGEHRD reduces a complex general matrix A to upper Hessenberg form H
-*  by a unitary similarity transformation:  Q' * A * Q = H .
+*  CGEHRD reduces a complex general matrix A to upper Hessenberg form H by
+*  an unitary similarity transformation:  Q' * A * Q = H .
 *
 *  Arguments
 *  =========
@@ -48,7 +48,7 @@
 *          Details). Elements 1:ILO-1 and IHI:N-1 of TAU are set to
 *          zero.
 *
-*  WORK    (workspace/output) COMPLEX array, dimension (MAX(1,LWORK))
+*  WORK    (workspace/output) COMPLEX array, dimension (LWORK)
 *          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER
@@ -98,26 +98,31 @@
 *  modified element of the upper Hessenberg matrix H, and vi denotes an
 *  element of the vector defining H(i).
 *
+*  This file is a slight modification of LAPACK-3.0's CGEHRD
+*  subroutine incorporating improvements proposed by Quintana-Orti and
+*  Van de Geijn (2005). 
+*
 *  =====================================================================
 *
 *     .. Parameters ..
       INTEGER            NBMAX, LDT
       PARAMETER          ( NBMAX = 64, LDT = NBMAX+1 )
       COMPLEX            ZERO, ONE
-      PARAMETER          ( ZERO = ( 0.0E+0, 0.0E+0 ),
-     $                   ONE = ( 1.0E+0, 0.0E+0 ) )
+      PARAMETER          ( ZERO = ( 0.0E+0, 0.0E+0 ), 
+     $                     ONE = ( 1.0E+0, 0.0E+0 ) )
 *     ..
 *     .. Local Scalars ..
       LOGICAL            LQUERY
-      INTEGER            I, IB, IINFO, IWS, LDWORK, LWKOPT, NB, NBMIN,
-     $                   NH, NX
+      INTEGER            I, IB, IINFO, IWS, J, LDWORK, LWKOPT, NB,
+     $                   NBMIN, NH, NX
       COMPLEX            EI
 *     ..
 *     .. Local Arrays ..
       COMPLEX            T( LDT, NBMAX )
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CGEHD2, CGEMM, CLAHRD, CLARFB, XERBLA
+      EXTERNAL           CAXPY, CGEHD2, CGEMM, CLAHRD, CLARFB, CTRMM,
+     $                   XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX, MIN
@@ -170,24 +175,27 @@
          RETURN
       END IF
 *
+*     Determine the block size
+*
+      NB = MIN( NBMAX, ILAENV( 1, 'CGEHRD', ' ', N, ILO, IHI, -1 ) )
       NBMIN = 2
       IWS = 1
       IF( NB.GT.1 .AND. NB.LT.NH ) THEN
 *
 *        Determine when to cross over from blocked to unblocked code
-*        (last block is always handled by unblocked code).
+*        (last block is always handled by unblocked code)
 *
          NX = MAX( NB, ILAENV( 3, 'CGEHRD', ' ', N, ILO, IHI, -1 ) )
          IF( NX.LT.NH ) THEN
 *
-*           Determine if workspace is large enough for blocked code.
+*           Determine if workspace is large enough for blocked code
 *
             IWS = N*NB
             IF( LWORK.LT.IWS ) THEN
 *
 *              Not enough workspace to use optimal NB:  determine the
 *              minimum value of NB, and reduce NB or force use of
-*              unblocked code.
+*              unblocked code
 *
                NBMIN = MAX( 2, ILAENV( 2, 'CGEHRD', ' ', N, ILO, IHI,
      $                 -1 ) )
@@ -211,7 +219,7 @@
 *
 *        Use blocked code
 *
-         DO 30 I = ILO, IHI - 1 - NX, NB
+         DO 40 I = ILO, IHI - 1 - NX, NB
             IB = MIN( NB, IHI-I )
 *
 *           Reduce columns i:i+ib-1 to Hessenberg form, returning the
@@ -223,23 +231,35 @@
 *
 *           Apply the block reflector H to A(1:ihi,i+ib:ihi) from the
 *           right, computing  A := A - Y * V'. V(i+ib,ib-1) must be set
-*           to 1.
+*           to 1
 *
             EI = A( I+IB, I+IB-1 )
             A( I+IB, I+IB-1 ) = ONE
-            CALL CGEMM( 'No transpose', 'Conjugate transpose', IHI,
-     $                  IHI-I-IB+1, IB, -ONE, WORK, LDWORK,
-     $                  A( I+IB, I ), LDA, ONE, A( 1, I+IB ), LDA )
+            CALL CGEMM( 'No transpose', 'Conjugate transpose', 
+     $                  IHI, IHI-I-IB+1,
+     $                  IB, -ONE, WORK, LDWORK, A( I+IB, I ), LDA, ONE,
+     $                  A( 1, I+IB ), LDA )
             A( I+IB, I+IB-1 ) = EI
+*
+*           Apply the block reflector H to A(1:i,i+1:i+ib-1) from the
+*           right
+*
+            CALL CTRMM( 'Right', 'Lower', 'Conjugate transpose',
+     $                  'Unit', I, IB-1,
+     $                  ONE, A( I+1, I ), LDA, WORK, LDWORK )
+            DO 30 J = 0, IB-2
+               CALL CAXPY( I, -ONE, WORK( LDWORK*J+1 ), 1,
+     $                     A( 1, I+J+1 ), 1 )
+   30       CONTINUE
 *
 *           Apply the block reflector H to A(i+1:ihi,i+ib:n) from the
 *           left
 *
             CALL CLARFB( 'Left', 'Conjugate transpose', 'Forward',
-     $                   'Columnwise', IHI-I, N-I-IB+1, IB, A( I+1, I ),
-     $                   LDA, T, LDT, A( I+1, I+IB ), LDA, WORK,
-     $                   LDWORK )
-   30    CONTINUE
+     $                   'Columnwise',
+     $                   IHI-I, N-I-IB+1, IB, A( I+1, I ), LDA, T, LDT,
+     $                   A( I+1, I+IB ), LDA, WORK, LDWORK )
+   40    CONTINUE
       END IF
 *
 *     Use unblocked code to reduce the rest of the matrix

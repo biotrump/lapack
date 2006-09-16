@@ -1,9 +1,9 @@
       SUBROUTINE CLAHRD( N, K, NB, A, LDA, TAU, T, LDT, Y, LDY )
 *
-*  -- LAPACK auxiliary routine (version 3.0) --
+*  -- LAPACK auxiliary routine (version 3.X) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     June 30, 1999
+*     Jan 2006
 *
 *     .. Scalar Arguments ..
       INTEGER            K, LDA, LDT, LDY, N, NB
@@ -16,9 +16,9 @@
 *  Purpose
 *  =======
 *
-*  CLAHRD reduces the first NB columns of a complex general n-by-(n-k+1)
+*  CLAHRD reduces the first NB columns of A complex general n-BY-(n-k+1)
 *  matrix A so that elements below the k-th subdiagonal are zero. The
-*  reduction is performed by a unitary similarity transformation
+*  reduction is performed by an unitary similarity transformation
 *  Q' * A * Q. The routine returns the matrices V and T which determine
 *  Q as a block reflector I - V*T*V', and also the matrix Y = A * V * T.
 *
@@ -33,6 +33,7 @@
 *  K       (input) INTEGER
 *          The offset for the reduction. Elements below the k-th
 *          subdiagonal in the first NB columns are reduced to zero.
+*          K < N.
 *
 *  NB      (input) INTEGER
 *          The number of columns to be reduced.
@@ -63,7 +64,7 @@
 *          The n-by-nb matrix Y.
 *
 *  LDY     (input) INTEGER
-*          The leading dimension of the array Y. LDY >= max(1,N).
+*          The leading dimension of the array Y. LDY >= N.
 *
 *  Further Details
 *  ===============
@@ -88,9 +89,9 @@
 *  The contents of A on exit are illustrated by the following example
 *  with n = 7, k = 3 and nb = 2:
 *
-*     ( a   h   a   a   a )
-*     ( a   h   a   a   a )
-*     ( a   h   a   a   a )
+*     ( a   a   a   a   a )
+*     ( a   a   a   a   a )
+*     ( a   a   a   a   a )
 *     ( h   h   a   a   a )
 *     ( v1  h   a   a   a )
 *     ( v1  v2  a   a   a )
@@ -100,20 +101,26 @@
 *  modified element of the upper Hessenberg matrix H, and vi denotes an
 *  element of the vector defining H(i).
 *
+*  This file is a slight modification of LAPACK-3.0's CLAHRD
+*  incorporating improvements proposed by Quintana-Orti and Van de
+*  Gejin. Note that the entries of A(1:K,2:NB) differ from those
+*  returned by the original LAPACK routine. This function is
+*  not backward compatible with LAPACK3.0.
+*
 *  =====================================================================
 *
 *     .. Parameters ..
       COMPLEX            ZERO, ONE
-      PARAMETER          ( ZERO = ( 0.0E+0, 0.0E+0 ),
-     $                   ONE = ( 1.0E+0, 0.0E+0 ) )
+      PARAMETER          ( ZERO = ( 0.0E+0, 0.0E+0 ), 
+     $                     ONE = ( 1.0E+0, 0.0E+0 ) )
 *     ..
 *     .. Local Scalars ..
       INTEGER            I
       COMPLEX            EI
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CAXPY, CCOPY, CGEMV, CLACGV, CLARFG, CSCAL,
-     $                   CTRMV
+      EXTERNAL           CAXPY, CCOPY, CGEMM, CGEMV, CLACPY,
+     $                   CLARFG, CSCAL, CTRMM, CTRMV, CLACGV
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          MIN
@@ -128,14 +135,14 @@
       DO 10 I = 1, NB
          IF( I.GT.1 ) THEN
 *
-*           Update A(1:n,i)
+*           Update A(K+1:N,I)
 *
-*           Compute i-th column of A - Y * V'
+*           Update I-th column of A - Y * V'
 *
-            CALL CLACGV( I-1, A( K+I-1, 1 ), LDA )
-            CALL CGEMV( 'No transpose', N, I-1, -ONE, Y, LDY,
-     $                  A( K+I-1, 1 ), LDA, ONE, A( 1, I ), 1 )
-            CALL CLACGV( I-1, A( K+I-1, 1 ), LDA )
+            CALL CLACGV( I-1, A( K+I-1, 1 ), LDA ) 
+            CALL CGEMV( 'NO TRANSPOSE', N-K, I-1, -ONE, Y(K+1,1), LDY,
+     $                  A( K+I-1, 1 ), LDA, ONE, A( K+1, I ), 1 )
+            CALL CLACGV( I-1, A( K+I-1, 1 ), LDA ) 
 *
 *           Apply I - V * T' * V' to this column (call it b) from the
 *           left, using the last column of T as workspace
@@ -148,62 +155,84 @@
 *           w := V1' * b1
 *
             CALL CCOPY( I-1, A( K+1, I ), 1, T( 1, NB ), 1 )
-            CALL CTRMV( 'Lower', 'Conjugate transpose', 'Unit', I-1,
-     $                  A( K+1, 1 ), LDA, T( 1, NB ), 1 )
+            CALL CTRMV( 'Lower', 'Conjugate transpose', 'UNIT', 
+     $                  I-1, A( K+1, 1 ),
+     $                  LDA, T( 1, NB ), 1 )
 *
 *           w := w + V2'*b2
 *
-            CALL CGEMV( 'Conjugate transpose', N-K-I+1, I-1, ONE,
-     $                  A( K+I, 1 ), LDA, A( K+I, I ), 1, ONE,
-     $                  T( 1, NB ), 1 )
+            CALL CGEMV( 'Conjugate transpose', N-K-I+1, I-1, 
+     $                  ONE, A( K+I, 1 ),
+     $                  LDA, A( K+I, I ), 1, ONE, T( 1, NB ), 1 )
 *
 *           w := T'*w
 *
-            CALL CTRMV( 'Upper', 'Conjugate transpose', 'Non-unit', I-1,
-     $                  T, LDT, T( 1, NB ), 1 )
+            CALL CTRMV( 'Upper', 'Conjugate transpose', 'NON-UNIT', 
+     $                  I-1, T, LDT,
+     $                  T( 1, NB ), 1 )
 *
 *           b2 := b2 - V2*w
 *
-            CALL CGEMV( 'No transpose', N-K-I+1, I-1, -ONE, A( K+I, 1 ),
+            CALL CGEMV( 'NO TRANSPOSE', N-K-I+1, I-1, -ONE, 
+     $                  A( K+I, 1 ),
      $                  LDA, T( 1, NB ), 1, ONE, A( K+I, I ), 1 )
 *
 *           b1 := b1 - V1*w
 *
-            CALL CTRMV( 'Lower', 'No transpose', 'Unit', I-1,
+            CALL CTRMV( 'Lower', 'NO TRANSPOSE', 
+     $                  'UNIT', I-1,
      $                  A( K+1, 1 ), LDA, T( 1, NB ), 1 )
             CALL CAXPY( I-1, -ONE, T( 1, NB ), 1, A( K+1, I ), 1 )
 *
             A( K+I-1, I-1 ) = EI
          END IF
 *
-*        Generate the elementary reflector H(i) to annihilate
-*        A(k+i+1:n,i)
+*        Generate the elementary reflector H(I) to annihilate
+*        A(K+I+1:N,I)
 *
-         EI = A( K+I, I )
-         CALL CLARFG( N-K-I+1, EI, A( MIN( K+I+1, N ), I ), 1,
+         CALL CLARFG( N-K-I+1, A( K+I, I ), A( MIN( K+I+1, N ), I ), 1,
      $                TAU( I ) )
+         EI = A( K+I, I )
          A( K+I, I ) = ONE
 *
-*        Compute  Y(1:n,i)
+*        Compute  Y(K+1:N,I)
 *
-         CALL CGEMV( 'No transpose', N, N-K-I+1, ONE, A( 1, I+1 ), LDA,
-     $               A( K+I, I ), 1, ZERO, Y( 1, I ), 1 )
-         CALL CGEMV( 'Conjugate transpose', N-K-I+1, I-1, ONE,
-     $               A( K+I, 1 ), LDA, A( K+I, I ), 1, ZERO, T( 1, I ),
-     $               1 )
-         CALL CGEMV( 'No transpose', N, I-1, -ONE, Y, LDY, T( 1, I ), 1,
-     $               ONE, Y( 1, I ), 1 )
-         CALL CSCAL( N, TAU( I ), Y( 1, I ), 1 )
+         CALL CGEMV( 'NO TRANSPOSE', N-K, N-K-I+1, 
+     $               ONE, A( K+1, I+1 ),
+     $               LDA, A( K+I, I ), 1, ZERO, Y( K+1, I ), 1 )
+         CALL CGEMV( 'Conjugate transpose', N-K-I+1, I-1, 
+     $               ONE, A( K+I, 1 ), LDA,
+     $               A( K+I, I ), 1, ZERO, T( 1, I ), 1 )
+         CALL CGEMV( 'NO TRANSPOSE', N-K, I-1, -ONE, 
+     $               Y( K+1, 1 ), LDY,
+     $               T( 1, I ), 1, ONE, Y( K+1, I ), 1 )
+         CALL CSCAL( N-K, TAU( I ), Y( K+1, I ), 1 )
 *
-*        Compute T(1:i,i)
+*        Compute T(1:I,I)
 *
          CALL CSCAL( I-1, -TAU( I ), T( 1, I ), 1 )
-         CALL CTRMV( 'Upper', 'No transpose', 'Non-unit', I-1, T, LDT,
+         CALL CTRMV( 'Upper', 'No Transpose', 'NON-UNIT', 
+     $               I-1, T, LDT,
      $               T( 1, I ), 1 )
          T( I, I ) = TAU( I )
 *
    10 CONTINUE
       A( K+NB, NB ) = EI
+*
+*     Compute Y(1:K,1:NB)
+*
+      CALL CLACPY( 'ALL', K, NB, A( 1, 2 ), LDA, Y, LDY )
+      CALL CTRMM( 'RIGHT', 'Lower', 'NO TRANSPOSE', 
+     $            'UNIT', K, NB,
+     $            ONE, A( K+1, 1 ), LDA, Y, LDY )
+      IF( N.GT.K+NB )
+     $   CALL CGEMM( 'NO TRANSPOSE', 'NO TRANSPOSE', K, 
+     $               NB, N-K-NB, ONE,
+     $               A( 1, 2+NB ), LDA, A( K+1+NB, 1 ), LDA, ONE, Y,
+     $               LDY )
+      CALL CTRMM( 'RIGHT', 'Upper', 'NO TRANSPOSE', 
+     $            'NON-UNIT', K, NB,
+     $            ONE, T, LDT, Y, LDY )
 *
       RETURN
 *
