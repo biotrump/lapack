@@ -121,7 +121,7 @@
       COMPLEX*16        T( LDT, NBMAX )
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ZAXPY, ZGEHD2, ZGEMM, ZLAHRD, ZLARFB, ZTRMM,
+      EXTERNAL           ZAXPY, ZGEHD2, ZGEMM, ZLAHR2, ZLARFB, ZTRMM,
      $                   XERBLA
 *     ..
 *     .. Intrinsic Functions ..
@@ -226,7 +226,7 @@
 *           matrices V and T of the block reflector H = I - V*T*V'
 *           which performs the reduction, and also the matrix Y = A*V*T
 *
-            CALL ZLAHRD( IHI, I, IB, A( 1, I ), LDA, TAU( I ), T, LDT,
+            CALL ZLAHR2( IHI, I, IB, A( 1, I ), LDA, TAU( I ), T, LDT,
      $                   WORK, LDWORK )
 *
 *           Apply the block reflector H to A(1:ihi,i+ib:ihi) from the

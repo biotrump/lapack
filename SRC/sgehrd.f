@@ -121,7 +121,7 @@
       REAL              T( LDT, NBMAX )
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SAXPY, SGEHD2, SGEMM, SLAHRD, SLARFB, STRMM,
+      EXTERNAL           SAXPY, SGEHD2, SGEMM, SLAHR2, SLARFB, STRMM,
      $                   XERBLA
 *     ..
 *     .. Intrinsic Functions ..
@@ -226,7 +226,7 @@
 *           matrices V and T of the block reflector H = I - V*T*V'
 *           which performs the reduction, and also the matrix Y = A*V*T
 *
-            CALL SLAHRD( IHI, I, IB, A( 1, I ), LDA, TAU( I ), T, LDT,
+            CALL SLAHR2( IHI, I, IB, A( 1, I ), LDA, TAU( I ), T, LDT,
      $                   WORK, LDWORK )
 *
 *           Apply the block reflector H to A(1:ihi,i+ib:ihi) from the

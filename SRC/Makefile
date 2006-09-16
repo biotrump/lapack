@@ -85,7 +85,7 @@ SLASRC = \
    sgtsvx.o sgttrf.o sgttrs.o sgtts2.o shgeqz.o \
    shsein.o shseqr.o slabrd.o slacon.o slacn2.o \
    slaein.o slaexc.o slag2.o  slags2.o slagtm.o slagv2.o slahqr.o \
-   slahrd.o slaic1.o slaln2.o slals0.o slalsa.o slalsd.o \
+   slahrd.o slahr2.o slaic1.o slaln2.o slals0.o slalsa.o slalsd.o \
    slangb.o slange.o slangt.o slanhs.o slansb.o slansp.o \
    slansy.o slantb.o slantp.o slantr.o slanv2.o \
    slapll.o slapmt.o \
@@ -143,7 +143,7 @@ CLASRC = \
    claed0.o claed7.o claed8.o \
    claein.o claesy.o claev2.o clags2.o clagtm.o \
    clahef.o clahqr.o \
-   clahrd.o claic1.o clals0.o clalsa.o clalsd.o clangb.o clange.o clangt.o \
+   clahrd.o clahr2.o claic1.o clals0.o clalsa.o clalsd.o clangb.o clange.o clangt.o \
    clanhb.o clanhe.o \
    clanhp.o clanhs.o clanht.o clansb.o clansp.o clansy.o clantb.o \
    clantp.o clantr.o clapll.o clapmt.o clarcm.o claqgb.o claqge.o \
@@ -186,7 +186,7 @@ DLASRC = \
    dgtsvx.o dgttrf.o dgttrs.o dgtts2.o dhgeqz.o \
    dhsein.o dhseqr.o dlabrd.o dlacon.o dlacn2.o \
    dlaein.o dlaexc.o dlag2.o  dlags2.o dlagtm.o dlagv2.o dlahqr.o \
-   dlahrd.o dlaic1.o dlaln2.o dlals0.o dlalsa.o dlalsd.o \
+   dlahrd.o dlahr2.o dlaic1.o dlaln2.o dlals0.o dlalsa.o dlalsd.o \
    dlangb.o dlange.o dlangt.o dlanhs.o dlansb.o dlansp.o \
    dlansy.o dlantb.o dlantp.o dlantr.o dlanv2.o \
    dlapll.o dlapmt.o \
@@ -245,7 +245,7 @@ ZLASRC = \
    zlaed0.o zlaed7.o zlaed8.o \
    zlaein.o zlaesy.o zlaev2.o zlags2.o zlagtm.o \
    zlahef.o zlahqr.o \
-   zlahrd.o zlaic1.o zlals0.o zlalsa.o zlalsd.o zlangb.o zlange.o \
+   zlahrd.o zlahr2.o zlaic1.o zlals0.o zlalsa.o zlalsd.o zlangb.o zlange.o \
    zlangt.o zlanhb.o \
    zlanhe.o \
    zlanhp.o zlanhs.o zlanht.o zlansb.o zlansp.o zlansy.o zlantb.o \

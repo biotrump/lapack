@@ -121,7 +121,7 @@
       COMPLEX            T( LDT, NBMAX )
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CAXPY, CGEHD2, CGEMM, CLAHRD, CLARFB, CTRMM,
+      EXTERNAL           CAXPY, CGEHD2, CGEMM, CLAHR2, CLARFB, CTRMM,
      $                   XERBLA
 *     ..
 *     .. Intrinsic Functions ..
@@ -226,7 +226,7 @@
 *           matrices V and T of the block reflector H = I - V*T*V'
 *           which performs the reduction, and also the matrix Y = A*V*T
 *
-            CALL CLAHRD( IHI, I, IB, A( 1, I ), LDA, TAU( I ), T, LDT,
+            CALL CLAHR2( IHI, I, IB, A( 1, I ), LDA, TAU( I ), T, LDT,
      $                   WORK, LDWORK )
 *
 *           Apply the block reflector H to A(1:ihi,i+ib:ihi) from the
