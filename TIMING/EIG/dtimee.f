@@ -252,7 +252,7 @@
 *     .. Local Scalars ..
       LOGICAL            FATAL, GEP, NEP, SEP, SVD
       CHARACTER*3        C3, PATH
-      CHARACTER*6        VNAME
+      CHARACTER*3        VNAME
       CHARACTER*80       LINE
       INTEGER            I, INFO, MAXTYP, NN, NPARMS, NTYPES
       DOUBLE PRECISION   S1, S2, TIMMIN
