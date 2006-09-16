@@ -4,6 +4,8 @@
 #  June 30, 1999                                                  #
 ####################################################################
 #
+# See the INSTALL/ directory for more examples.
+#
 SHELL = /bin/sh
 #
 #  The machine (platform) identifier to append to the library names
