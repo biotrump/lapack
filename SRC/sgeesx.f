@@ -2,10 +2,9 @@
      $                   WR, WI, VS, LDVS, RCONDE, RCONDV, WORK, LWORK,
      $                   IWORK, LIWORK, BWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     June 30, 1999 
+*  -- LAPACK driver routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.
+*     July 5, 2006
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBVS, SENSE, SORT
@@ -195,7 +194,7 @@
      $                   WANTSE, WANTSN, WANTST, WANTSV, WANTVS
       INTEGER            HSWORK, I, I1, I2, IBAL, ICOND, IERR, IEVAL,
      $                   IHI, ILO, INXT, IP, ITAU, IWRK, K, LWRK, LIWRK,
-     $                   MAXB, MAXWRK, MINWRK
+     $                   MAXWRK, MINWRK
       REAL               ANRM, BIGNUM, CSCALE, EPS, SMLNUM
 *     ..
 *     .. Local Arrays ..
@@ -263,19 +262,16 @@
          ELSE
             MAXWRK = 2*N + N*ILAENV( 1, 'SGEHRD', ' ', N, 1, N, 0 )
             MINWRK = 3*N
+*
+            CALL SHSEQR( 'S', JOBVS, N, 1, N, A, LDA, WR, WI, VS, LDVS,
+     $             WORK, -1, IEVAL )
+            HSWORK = WORK( 1 )
+*
             IF( .NOT.WANTVS ) THEN
-               MAXB = MAX( ILAENV( 8, 'SHSEQR', 'SN', N, 1, N, -1 ), 2 )
-               K = MIN( MAXB, N, MAX( 2, ILAENV( 4, 'SHSEQR', 'SN', N,
-     $                                1, N, -1 ) ) )
-               HSWORK = MAX( K*( K + 2 ), 2*N )
                MAXWRK = MAX( MAXWRK, N + HSWORK )
             ELSE
                MAXWRK = MAX( MAXWRK, 2*N + ( N - 1 )*ILAENV( 1,
      $                       'SORGHR', ' ', N, 1, N, -1 ) )
-               MAXB = MAX( ILAENV( 8, 'SHSEQR', 'SV', N, 1, N, -1 ), 2 )
-               K = MIN( MAXB, N, MAX( 2, ILAENV( 4, 'SHSEQR', 'SV', N,
-     $                                1, N, -1 ) ) )
-               HSWORK = MAX( K*( K + 2 ), 2*N )
                MAXWRK = MAX( MAXWRK, N + HSWORK )
             END IF
             LWRK = MAXWRK

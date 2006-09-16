@@ -1,10 +1,9 @@
       SUBROUTINE SGEEV( JOBVL, JOBVR, N, A, LDA, WR, WI, VL, LDVL, VR,
      $                  LDVR, WORK, LWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     December 8, 1999
+*  -- LAPACK driver routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.
+*     July 5, 2006
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBVL, JOBVR
@@ -121,7 +120,7 @@
       LOGICAL            LQUERY, SCALEA, WANTVL, WANTVR
       CHARACTER          SIDE
       INTEGER            HSWORK, I, IBAL, IERR, IHI, ILO, ITAU, IWRK, K,
-     $                   MAXB, MAXWRK, MINWRK, NOUT
+     $                   MAXWRK, MINWRK, NOUT
       REAL               ANRM, BIGNUM, CS, CSCALE, EPS, R, SCL, SMLNUM,
      $                   SN
 *     ..
@@ -182,23 +181,30 @@
             MAXWRK = 1
          ELSE
             MAXWRK = 2*N + N*ILAENV( 1, 'SGEHRD', ' ', N, 1, N, 0 )
-            IF( ( .NOT.WANTVL ) .AND. ( .NOT.WANTVR ) ) THEN
-               MINWRK = 3*N
-               MAXB = MAX( ILAENV( 8, 'SHSEQR', 'EN', N, 1, N, -1 ), 2 )
-               K = MIN( MAXB, N, MAX( 2, ILAENV( 4, 'SHSEQR', 'EN', N,
-     $                                1, N, -1 ) ) )
-               HSWORK = MAX( K*( K + 2 ), 2*N )
-               MAXWRK = MAX( MAXWRK, N + 1, N + HSWORK )
-            ELSE
+            IF( WANTVL ) THEN
                MINWRK = 4*N
                MAXWRK = MAX( MAXWRK, 2*N + ( N - 1 )*ILAENV( 1,
      $                       'SORGHR', ' ', N, 1, N, -1 ) )
-               MAXB = MAX( ILAENV( 8, 'SHSEQR', 'SV', N, 1, N, -1 ), 2 )
-               K = MIN( MAXB, N, MAX( 2, ILAENV( 4, 'SHSEQR', 'SV', N,
-     $                                1, N, -1 ) ) )
-               HSWORK = MAX( K*( K + 2 ), 2*N )
+               CALL SHSEQR( 'S', 'V', N, 1, N, A, LDA, WR, WI, VL, LDVL,
+     $                WORK, -1, INFO )
+               HSWORK = WORK( 1 )
                MAXWRK = MAX( MAXWRK, N + 1, N + HSWORK )
                MAXWRK = MAX( MAXWRK, 4*N )
+            ELSE IF( WANTVR ) THEN
+               MINWRK = 4*N
+               MAXWRK = MAX( MAXWRK, 2*N + ( N - 1 )*ILAENV( 1,
+     $                       'SORGHR', ' ', N, 1, N, -1 ) )
+               CALL SHSEQR( 'S', 'V', N, 1, N, A, LDA, WR, WI, VR, LDVR,
+     $                WORK, -1, INFO )
+               HSWORK = WORK( 1 )
+               MAXWRK = MAX( MAXWRK, N + 1, N + HSWORK )
+               MAXWRK = MAX( MAXWRK, 4*N )
+            ELSE 
+               MINWRK = 3*N
+               CALL SHSEQR( 'E', 'N', N, 1, N, A, LDA, WR, WI, VR, LDVR,
+     $                WORK, -1, INFO )
+               HSWORK = WORK( 1 )
+               MAXWRK = MAX( MAXWRK, N + 1, N + HSWORK )
             END IF
             MAXWRK = MAX( MAXWRK, MINWRK )
          END IF

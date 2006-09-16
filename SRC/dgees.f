@@ -1,10 +1,9 @@
       SUBROUTINE DGEES( JOBVS, SORT, SELECT, N, A, LDA, SDIM, WR, WI,
      $                  VS, LDVS, WORK, LWORK, BWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     June 30, 1999
+*  -- LAPACK driver routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.
+*     July 5, 2006
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBVS, SORT
@@ -145,8 +144,7 @@
       LOGICAL            CURSL, LASTSL, LQUERY, LST2SL, SCALEA, WANTST,
      $                   WANTVS
       INTEGER            HSWORK, I, I1, I2, IBAL, ICOND, IERR, IEVAL,
-     $                   IHI, ILO, INXT, IP, ITAU, IWRK, K, MAXB,
-     $                   MAXWRK, MINWRK
+     $                   IHI, ILO, INXT, IP, ITAU, IWRK, MAXWRK, MINWRK
       DOUBLE PRECISION   ANRM, BIGNUM, CSCALE, EPS, S, SEP, SMLNUM
 *     ..
 *     .. Local Arrays ..
@@ -203,19 +201,16 @@
          ELSE
             MAXWRK = 2*N + N*ILAENV( 1, 'DGEHRD', ' ', N, 1, N, 0 )
             MINWRK = 3*N
+*
+            CALL DHSEQR( 'S', JOBVS, N, 1, N, A, LDA, WR, WI, VS, LDVS,
+     $             WORK, -1, IEVAL )
+            HSWORK = WORK( 1 )
+*
             IF( .NOT.WANTVS ) THEN
-               MAXB = MAX( ILAENV( 8, 'DHSEQR', 'SN', N, 1, N, -1 ), 2 )
-               K = MIN( MAXB, N, MAX( 2, ILAENV( 4, 'DHSEQR', 'SN', N,
-     $                                1, N, -1 ) ) )
-               HSWORK = MAX( K*( K + 2 ), 2*N )
                MAXWRK = MAX( MAXWRK, N + HSWORK )
             ELSE
                MAXWRK = MAX( MAXWRK, 2*N + ( N - 1 )*ILAENV( 1,
      $                       'DORGHR', ' ', N, 1, N, -1 ) )
-               MAXB = MAX( ILAENV( 8, 'DHSEQR', 'EN', N, 1, N, -1 ), 2 )
-               K = MIN( MAXB, N, MAX( 2, ILAENV( 4, 'DHSEQR', 'EN', N,
-     $                                1, N, -1 ) ) )
-               HSWORK = MAX( K*( K + 2 ), 2*N )
                MAXWRK = MAX( MAXWRK, N + HSWORK )
             END IF
          END IF

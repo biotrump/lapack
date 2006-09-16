@@ -44,6 +44,9 @@
 *               (used by xGELSD and xGESDD)
 *          =10: ieee NaN arithmetic can be trusted not to trap
 *          =11: infinity arithmetic can be trusted not to trap
+*          12 <= ISPEC <= 16:
+*               xHSEQR or one of its subroutines,
+*               see IPARMQ for detailed explanation
 *
 *  NVALUE  (input) INTEGER
 *          The value of the parameter specified by ISPEC.
@@ -61,7 +64,7 @@
 *     ..
 *     .. Executable Statements ..
 *
-      IF( ISPEC.GE.1 .AND. ISPEC.LE.9 ) THEN
+      IF( ISPEC.GE.1 .AND. ISPEC.LE.16 ) THEN
          IPARMS( ISPEC ) = NVALUE
       END IF
 *

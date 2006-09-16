@@ -2,10 +2,9 @@
      $                   LDVL, VR, LDVR, ILO, IHI, SCALE, ABNRM, RCONDE,
      $                   RCONDV, WORK, LWORK, RWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     June 30, 1999
+*  -- LAPACK driver routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.
+*     July 5, 2006
 *
 *     .. Scalar Arguments ..
       CHARACTER          BALANC, JOBVL, JOBVR, SENSE
@@ -192,8 +191,8 @@
       LOGICAL            LQUERY, SCALEA, WANTVL, WANTVR, WNTSNB, WNTSNE,
      $                   WNTSNN, WNTSNV
       CHARACTER          JOB, SIDE
-      INTEGER            HSWORK, I, ICOND, IERR, ITAU, IWRK, K, MAXB,
-     $                   MAXWRK, MINWRK, NOUT
+      INTEGER            HSWORK, I, ICOND, IERR, ITAU, IWRK, K, MAXWRK,
+     $                   MINWRK, NOUT
       DOUBLE PRECISION   ANRM, BIGNUM, CSCALE, EPS, SCL, SMLNUM
       COMPLEX*16         TMP
 *     ..
@@ -265,19 +264,28 @@
             MAXWRK = 1
          ELSE
             MAXWRK = N + N*ILAENV( 1, 'ZGEHRD', ' ', N, 1, N, 0 )
+*
+            IF( WANTVL ) THEN
+               CALL ZHSEQR( 'S', 'V', N, 1, N, A, LDA, W, VL, LDVL,
+     $                WORK, -1, INFO )
+            ELSE IF( WANTVR ) THEN
+               CALL ZHSEQR( 'S', 'V', N, 1, N, A, LDA, W, VR, LDVR,
+     $                WORK, -1, INFO )
+            ELSE
+               IF( WNTSNN ) THEN
+                  CALL ZHSEQR( 'E', 'N', N, 1, N, A, LDA, W, VR, LDVR,
+     $                WORK, -1, INFO )
+               ELSE
+                  CALL ZHSEQR( 'S', 'N', N, 1, N, A, LDA, W, VR, LDVR,
+     $                WORK, -1, INFO )
+               END IF
+            END IF
+            HSWORK = WORK( 1 )
+*
             IF( ( .NOT.WANTVL ) .AND. ( .NOT.WANTVR ) ) THEN
                MINWRK = 2*N
                IF( .NOT.( WNTSNN .OR. WNTSNE ) )
      $            MINWRK = MAX( MINWRK, N*N + 2*N )
-               MAXB = MAX( ILAENV( 8, 'ZHSEQR', 'SN', N, 1, N, -1 ), 2 )
-               IF( WNTSNN ) THEN
-                  K = MIN( MAXB, N, MAX( 2, ILAENV( 4, 'ZHSEQR', 'EN',
-     $                                   N, 1, N, -1 ) ) )
-               ELSE
-                  K = MIN( MAXB, N, MAX( 2, ILAENV( 4, 'ZHSEQR', 'SN',
-     $                                   N, 1, N, -1 ) ) )
-               END IF
-               HSWORK = MAX( K*( K + 2 ), 2*N )
                MAXWRK = MAX( MAXWRK, HSWORK )
                IF( .NOT.( WNTSNN .OR. WNTSNE ) )
      $            MAXWRK = MAX( MAXWRK, N*N + 2*N )
@@ -285,10 +293,6 @@
                MINWRK = 2*N
                IF( .NOT.( WNTSNN .OR. WNTSNE ) )
      $            MINWRK = MAX( MINWRK, N*N + 2*N )
-               MAXB = MAX( ILAENV( 8, 'ZHSEQR', 'SN', N, 1, N, -1 ), 2 )
-               K = MIN( MAXB, N, MAX( 2, ILAENV( 4, 'ZHSEQR', 'EN', N,
-     $                                1, N, -1 ) ) )
-               HSWORK = MAX( K*( K + 2 ), 2*N )
                MAXWRK = MAX( MAXWRK, HSWORK )
                MAXWRK = MAX( MAXWRK, N + ( N - 1 )*ILAENV( 1, 'ZUNGHR',
      $                       ' ', N, 1, N, -1 ) )

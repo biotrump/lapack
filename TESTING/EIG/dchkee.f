@@ -152,31 +152,40 @@
 *  line 7:  NXVAL, INTEGER array, dimension (NPARMS)
 *           The values for the crossover point NX.
 *
-*  line 8:  NSVAL, INTEGER array, dimension (NPARMS)
-*           The values for the number of shifts.
+*  line 8:  INMIN, INTEGER array, dimension (NPARMS)
+*           LAHQR vs TTQRE crossover point, >= 11
 *
-*  line 9:  MXBVAL, INTEGER array, dimension (NPARMS)
-*           The values for MAXB, used in determining minimum blocksize.
+*  line 9:  INWIN, INTEGER array, dimension (NPARMS)
+*           recommended deflation window size
 *
-*  line 10: THRESH
+*  line 10: INIBL, INTEGER array, dimension (NPARMS)
+*           nibble crossover point
+*
+*  line 11: ISHFTS, INTEGER array, dimension (NPARMS)
+*           number of simultaneous shifts)
+*
+*  line 12: IACC22, INTEGER array, dimension (NPARMS)
+*           select structured matrix multiply: 0, 1 or 2)
+*
+*  line 13: THRESH
 *           Threshold value for the test ratios.  Information will be
 *           printed about each test for which the test ratio is greater
 *           than or equal to the threshold.  To have all of the test
 *           ratios printed, use THRESH = 0.0 .
 *
-*  line 11: NEWSD, INTEGER
+*  line 14: NEWSD, INTEGER
 *           A code indicating how to set the random number seed.
 *           = 0:  Set the seed to a default value before each run
 *           = 1:  Initialize the seed to a default value only before the
 *                 first run
 *           = 2:  Like 1, but use the seed values on the next line
 *
-*  If line 11 was 2:
+*  If line 14 was 2:
 *
-*  line 12: INTEGER array, dimension (4)
+*  line 15: INTEGER array, dimension (4)
 *           Four integer values for the random number seed.
 *
-*  lines 12-EOF:  The remaining lines occur in sets of 1 or 2 and allow
+*  lines 15-EOF:  The remaining lines occur in sets of 1 or 2 and allow
 *           the user to specify the matrix types.  Each line contains
 *           a 3-character path name in columns 1-3, and the number
 *           of matrix types must be the first nonblank item in columns
@@ -997,6 +1006,8 @@
      $                   NBCOL( MAXIN ), NBMIN( MAXIN ), NBVAL( MAXIN ),
      $                   NSVAL( MAXIN ), NVAL( MAXIN ), NXVAL( MAXIN ),
      $                   PVAL( MAXIN )
+      INTEGER            INMIN( MAXIN ), INWIN( MAXIN ), INIBL( MAXIN ),
+     $                   ISHFTS( MAXIN ), IACC22( MAXIN )
       DOUBLE PRECISION   A( NMAX*NMAX, NEED ), B( NMAX*NMAX, 5 ),
      $                   C( NCMAX*NCMAX, NCMAX*NCMAX ), D( NMAX, 12 ),
      $                   RESULT( 500 ), TAUA( NMAX ), TAUB( NMAX ),
@@ -1248,10 +1259,58 @@
          WRITE( NOUT, FMT = 9983 )'K:    ', ( KVAL( I ), I = 1, NK )
       END IF
 *
-      IF( DEV .OR. DES .OR. DVX .OR. DSX .OR. DGS .OR. DGX .OR. DGV .OR.
-     $    DXV ) THEN
+      IF( DEV .OR. DES .OR. DVX .OR. DSX ) THEN
 *
-*        For the nonsymmetric driver routines, only one set of
+*        For the nonsymmetric QR driver routines, only one set of
+*        parameters is allowed.
+*
+         READ( NIN, FMT = * )NBVAL( 1 ), NBMIN( 1 ), NXVAL( 1 ),
+     $      INMIN( 1 ), INWIN( 1 ), INIBL(1), ISHFTS(1), IACC22(1)
+         IF( NBVAL( 1 ).LT.1 ) THEN
+            WRITE( NOUT, FMT = 9989 )'   NB ', NBVAL( 1 ), 1
+            FATAL = .TRUE.
+         ELSE IF( NBMIN( 1 ).LT.1 ) THEN
+            WRITE( NOUT, FMT = 9989 )'NBMIN ', NBMIN( 1 ), 1
+            FATAL = .TRUE.
+         ELSE IF( NXVAL( 1 ).LT.1 ) THEN
+            WRITE( NOUT, FMT = 9989 )'   NX ', NXVAL( 1 ), 1
+            FATAL = .TRUE.
+         ELSE IF( INMIN( 1 ).LT.1 ) THEN
+            WRITE( NOUT, FMT = 9989 )'   INMIN ', INMIN( 1 ), 1
+            FATAL = .TRUE.
+         ELSE IF( INWIN( 1 ).LT.1 ) THEN
+            WRITE( NOUT, FMT = 9989 )'   INWIN ', INWIN( 1 ), 1
+            FATAL = .TRUE.
+         ELSE IF( INIBL( 1 ).LT.1 ) THEN
+            WRITE( NOUT, FMT = 9989 )'   INIBL ', INIBL( 1 ), 1
+            FATAL = .TRUE.
+         ELSE IF( ISHFTS( 1 ).LT.1 ) THEN
+            WRITE( NOUT, FMT = 9989 )'   ISHFTS ', ISHFTS( 1 ), 1
+            FATAL = .TRUE.
+         ELSE IF( IACC22( 1 ).LT.0 ) THEN
+            WRITE( NOUT, FMT = 9989 )'   IACC22 ', IACC22( 1 ), 0
+            FATAL = .TRUE.
+         END IF
+         CALL XLAENV( 1, NBVAL( 1 ) )
+         CALL XLAENV( 2, NBMIN( 1 ) )
+         CALL XLAENV( 3, NXVAL( 1 ) )
+         CALL XLAENV(12, MAX( 11, INMIN( 1 ) ) )
+         CALL XLAENV(13, INWIN( 1 ) )
+         CALL XLAENV(14, INIBL( 1 ) )
+         CALL XLAENV(15, ISHFTS( 1 ) )
+         CALL XLAENV(16, IACC22( 1 ) )
+         WRITE( NOUT, FMT = 9983 )'NB:   ', NBVAL( 1 )
+         WRITE( NOUT, FMT = 9983 )'NBMIN:', NBMIN( 1 )
+         WRITE( NOUT, FMT = 9983 )'NX:   ', NXVAL( 1 )
+         WRITE( NOUT, FMT = 9983 )'INMIN:   ', INMIN( 1 )
+         WRITE( NOUT, FMT = 9983 )'INWIN: ', INWIN( 1 )
+         WRITE( NOUT, FMT = 9983 )'INIBL: ', INIBL( 1 )
+         WRITE( NOUT, FMT = 9983 )'ISHFTS: ', ISHFTS( 1 )
+         WRITE( NOUT, FMT = 9983 )'IACC22: ', IACC22( 1 )
+*
+      ELSEIF( DGS .OR. DGX .OR. DGV .OR.  DXV ) THEN
+*
+*        For the nonsymmetric generalized driver routines, only one set of
 *        parameters is allowed.
 *
          READ( NIN, FMT = * )NBVAL( 1 ), NBMIN( 1 ), NXVAL( 1 ),
@@ -1282,6 +1341,7 @@
          WRITE( NOUT, FMT = 9983 )'NX:   ', NXVAL( 1 )
          WRITE( NOUT, FMT = 9983 )'NS:   ', NSVAL( 1 )
          WRITE( NOUT, FMT = 9983 )'MAXB: ', MXBVAL( 1 )
+*
       ELSE IF( .NOT.DSB .AND. .NOT.GLM .AND. .NOT.GQR .AND. .NOT.
      $         GSV .AND. .NOT.LSE ) THEN
 *
@@ -1358,10 +1418,10 @@
   110       CONTINUE
          END IF
 *
-*        Read the values of NSHIFT (if NEP or DGG) or NRHS (if SVD
+*        Read the values of NSHIFT (if DGG) or NRHS (if SVD
 *        or DBB).
 *
-         IF( NEP .OR. SVD .OR. DBB .OR. DGG ) THEN
+         IF( SVD .OR. DBB .OR. DGG ) THEN
             READ( NIN, FMT = * )( NSVAL( I ), I = 1, NPARMS )
             DO 120 I = 1, NPARMS
                IF( NSVAL( I ).LT.0 ) THEN
@@ -1382,7 +1442,7 @@
 *
 *        Read the values for MAXB.
 *
-         IF( NEP .OR. DGG ) THEN
+         IF( DGG ) THEN
             READ( NIN, FMT = * )( MXBVAL( I ), I = 1, NPARMS )
             DO 140 I = 1, NPARMS
                IF( MXBVAL( I ).LT.0 ) THEN
@@ -1399,6 +1459,96 @@
             DO 150 I = 1, NPARMS
                MXBVAL( I ) = 1
   150       CONTINUE
+         END IF
+*
+*        Read the values for INMIN.
+*
+         IF( NEP ) THEN
+            READ( NIN, FMT = * )( INMIN( I ), I = 1, NPARMS )
+            DO 540 I = 1, NPARMS
+               IF( INMIN( I ).LT.0 ) THEN
+                  WRITE( NOUT, FMT = 9989 )' INMIN ', INMIN( I ), 0
+                  FATAL = .TRUE.
+               END IF
+  540       CONTINUE
+            WRITE( NOUT, FMT = 9983 )'INMIN: ',
+     $         ( INMIN( I ), I = 1, NPARMS )
+         ELSE
+            DO 550 I = 1, NPARMS
+               INMIN( I ) = 1
+  550       CONTINUE
+         END IF
+*
+*        Read the values for INWIN.
+*
+         IF( NEP ) THEN
+            READ( NIN, FMT = * )( INWIN( I ), I = 1, NPARMS )
+            DO 560 I = 1, NPARMS
+               IF( INWIN( I ).LT.0 ) THEN
+                  WRITE( NOUT, FMT = 9989 )' INWIN ', INWIN( I ), 0
+                  FATAL = .TRUE.
+               END IF
+  560       CONTINUE
+            WRITE( NOUT, FMT = 9983 )'INWIN: ',
+     $         ( INWIN( I ), I = 1, NPARMS )
+         ELSE
+            DO 570 I = 1, NPARMS
+               INWIN( I ) = 1
+  570       CONTINUE
+         END IF
+*
+*        Read the values for INIBL.
+*
+         IF( NEP ) THEN
+            READ( NIN, FMT = * )( INIBL( I ), I = 1, NPARMS )
+            DO 580 I = 1, NPARMS
+               IF( INIBL( I ).LT.0 ) THEN
+                  WRITE( NOUT, FMT = 9989 )' INIBL ', INIBL( I ), 0
+                  FATAL = .TRUE.
+               END IF
+  580       CONTINUE
+            WRITE( NOUT, FMT = 9983 )'INIBL: ',
+     $         ( INIBL( I ), I = 1, NPARMS )
+         ELSE
+            DO 590 I = 1, NPARMS
+               INIBL( I ) = 1
+  590       CONTINUE
+         END IF
+*
+*        Read the values for ISHFTS.
+*
+         IF( NEP ) THEN
+            READ( NIN, FMT = * )( ISHFTS( I ), I = 1, NPARMS )
+            DO 600 I = 1, NPARMS
+               IF( ISHFTS( I ).LT.0 ) THEN
+                  WRITE( NOUT, FMT = 9989 )' ISHFTS ', ISHFTS( I ), 0
+                  FATAL = .TRUE.
+               END IF
+  600       CONTINUE
+            WRITE( NOUT, FMT = 9983 )'ISHFTS: ',
+     $         ( ISHFTS( I ), I = 1, NPARMS )
+         ELSE
+            DO 610 I = 1, NPARMS
+               ISHFTS( I ) = 1
+  610       CONTINUE
+         END IF
+*
+*        Read the values for IACC22.
+*
+         IF( NEP ) THEN
+            READ( NIN, FMT = * )( IACC22( I ), I = 1, NPARMS )
+            DO 620 I = 1, NPARMS
+               IF( IACC22( I ).LT.0 ) THEN
+                  WRITE( NOUT, FMT = 9989 )' IACC22 ', IACC22( I ), 0
+                  FATAL = .TRUE.
+               END IF
+  620       CONTINUE
+            WRITE( NOUT, FMT = 9983 )'IACC22: ',
+     $         ( IACC22( I ), I = 1, NPARMS )
+         ELSE
+            DO 630 I = 1, NPARMS
+               IACC22( I ) = 1
+  630       CONTINUE
          END IF
 *
 *        Read the values for NBCOL.
@@ -1565,16 +1715,20 @@
             CALL XLAENV( 1, NBVAL( I ) )
             CALL XLAENV( 2, NBMIN( I ) )
             CALL XLAENV( 3, NXVAL( I ) )
-            CALL XLAENV( 4, NSVAL( I ) )
-            CALL XLAENV( 8, MXBVAL( I ) )
+            CALL XLAENV(12, MAX( 11, INMIN( I ) ) )
+            CALL XLAENV(13, INWIN( I ) )
+            CALL XLAENV(14, INIBL( I ) )
+            CALL XLAENV(15, ISHFTS( I ) )
+            CALL XLAENV(16, IACC22( I ) )
 *
             IF( NEWSD.EQ.0 ) THEN
                DO 260 K = 1, 4
                   ISEED( K ) = IOLDSD( K )
   260          CONTINUE
             END IF
-            WRITE( NOUT, FMT = 9998 )C3, NBVAL( I ), NBMIN( I ),
-     $         NXVAL( I ), NSVAL( I ), MXBVAL( I )
+            WRITE( NOUT, FMT = 9961 )C3, NBVAL( I ), NBMIN( I ),
+     $         NXVAL( I ), MAX( 11, INMIN(I)),
+     $         INWIN( I ), INIBL( I ), ISHFTS( I ), IACC22( I )
             CALL DCHKHS( NN, NVAL, MAXTYP, DOTYPE, ISEED, THRESH, NOUT,
      $                   A( 1, 1 ), NMAX, A( 1, 2 ), A( 1, 3 ),
      $                   A( 1, 4 ), A( 1, 5 ), NMAX, A( 1, 6 ),
@@ -2178,6 +2332,10 @@
      $      'Problem Driver DGGEV' )
  9962 FORMAT( / ' Tests of the Generalized Nonsymmetric Eigenvalue ',
      $      'Problem Expert Driver DGGEVX' )
+ 9961 FORMAT( / / 1X, A3, ':  NB =', I4, ', NBMIN =', I4, ', NX =', I4,
+     $      ', INMIN=', I4, 
+     $      ', INWIN =', I4, ', INIBL =', I4, ', ISHFTS =', I4,
+     $      ', IACC22 =', I4)
 *
 *     End of DCHKEE
 *

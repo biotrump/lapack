@@ -38,7 +38,7 @@ include ../make.inc
 #
 #######################################################################
  
-ALLAUX = ilaenv.o ieeeck.o lsame.o lsamen.o xerbla.o ilaver.o
+ALLAUX = ilaenv.o ieeeck.o lsame.o lsamen.o xerbla.o ilaver.o iparmq.o
 
 SCLAUX = \
    sbdsdc.o \
@@ -90,6 +90,7 @@ SLASRC = \
    slansy.o slantb.o slantp.o slantr.o slanv2.o \
    slapll.o slapmt.o \
    slaqgb.o slaqge.o slaqp2.o slaqps.o slaqsb.o slaqsp.o slaqsy.o \
+   slaqr0.o slaqr1.o slaqr2.o slaqr3.o slaqr4.o slaqr5.o \
    slaqtr.o slar1v.o slar2v.o \
    slarf.o  slarfb.o slarfg.o slarft.o slarfx.o slargv.o \
    slarrv.o slartv.o \
@@ -148,6 +149,7 @@ CLASRC = \
    clanhp.o clanhs.o clanht.o clansb.o clansp.o clansy.o clantb.o \
    clantp.o clantr.o clapll.o clapmt.o clarcm.o claqgb.o claqge.o \
    claqhb.o claqhe.o claqhp.o claqp2.o claqps.o claqsb.o \
+   claqr0.o claqr1.o claqr2.o claqr3.o claqr4.o claqr5.o \
    claqsp.o claqsy.o clar1v.o clar2v.o clarf.o  clarfb.o clarfg.o clarft.o \
    clarfx.o clargv.o clarnv.o clarrv.o clartg.o clartv.o \
    clarz.o  clarzb.o clarzt.o clascl.o claset.o clasr.o  classq.o \
@@ -191,6 +193,7 @@ DLASRC = \
    dlansy.o dlantb.o dlantp.o dlantr.o dlanv2.o \
    dlapll.o dlapmt.o \
    dlaqgb.o dlaqge.o dlaqp2.o dlaqps.o dlaqsb.o dlaqsp.o dlaqsy.o \
+   dlaqr0.o dlaqr1.o dlaqr2.o dlaqr3.o dlaqr4.o dlaqr5.o \
    dlaqtr.o dlar1v.o dlar2v.o \
    dlarf.o  dlarfb.o dlarfg.o dlarft.o dlarfx.o dlargv.o \
    dlarrv.o dlartv.o \
@@ -251,6 +254,7 @@ ZLASRC = \
    zlanhp.o zlanhs.o zlanht.o zlansb.o zlansp.o zlansy.o zlantb.o \
    zlantp.o zlantr.o zlapll.o zlapmt.o zlaqgb.o zlaqge.o \
    zlaqhb.o zlaqhe.o zlaqhp.o zlaqp2.o zlaqps.o zlaqsb.o \
+   zlaqr0.o zlaqr1.o zlaqr2.o zlaqr3.o zlaqr4.o zlaqr5.o \
    zlaqsp.o zlaqsy.o zlar1v.o zlar2v.o zlarcm.o zlarf.o  zlarfb.o \
    zlarfg.o zlarft.o \
    zlarfx.o zlargv.o zlarnv.o zlarrv.o zlartg.o zlartv.o \

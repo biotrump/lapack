@@ -1,7 +1,7 @@
 SEV               Data file for the Real Nonsymmetric Eigenvalue Driver
 6                 Number of matrix dimensions
 0 1 2 3 5 10 20   Matrix dimensions
-3 3 1 4 1         Parameters NB, NBMIN, NXOVER, NS, NBCOL
+3 3 1 11 4 8 2 0  Parameters NB, NBMIN, NXOVER, INMIN, INWIN, INIBL, ISHFTS, IACC22
 20.0              Threshold for test ratios
 T
 2                 Read another line with random number generator seed
@@ -10,7 +10,7 @@ SEV 21            Use all matrix types
 SES               Data file for the Real Nonsymmetric Schur Form Driver
 6                 Number of matrix dimensions
 0 1 2 3 5 10 20   Matrix dimensions
-3 3 1 4 1         Parameters NB, NBMIN, NXOVER, NS, NBCOL
+3 3 1 11 4 8 2 0  Parameters NB, NBMIN, NXOVER, INMIN, INWIN, INIBL, ISHFTS, IACC22
 20.0              Threshold for test ratios
 T
 2                 Read another line with random number generator seed
@@ -19,7 +19,7 @@ SES 21            Use all matrix types
 SVX               Data file for the Real Nonsymmetric Eigenvalue Expert Driver
 6                 Number of matrix dimensions
 0 1 2 3 5 10 20   Matrix dimensions
-3 3 1 4 1         Parameters NB, NBMIN, NXOVER, NS, NBCOL
+3 3 1 11 4 8 2 0  Parameters NB, NBMIN, NXOVER, INMIN, INWIN, INIBL, ISHFTS, IACC22
 20.0              Threshold for test ratios
 T
 2                 Read another line with random number generator seed
@@ -544,7 +544,7 @@ SVX 21            Use all matrix types
 SSX               Data file for the Real Nonsymmetric Schur Form Expert Driver
 6                 Number of matrix dimensions
 0 1 2 3 5 10 20   Matrix dimensions
-3 3 1 4 1         Parameters NB, NBMIN, NXOVER, NS, NBCOL
+3 3 1 11 4 8 2 0  Parameters NB, NBMIN, NXOVER, INMIN, INWIN, INIBL, ISHFTS, IACC22
 20.0              Threshold for test ratios
 T
 2                 Read another line with random number generator seed
