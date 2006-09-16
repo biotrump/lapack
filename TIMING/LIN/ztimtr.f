@@ -92,7 +92,7 @@
 *     .. Local Scalars ..
       CHARACTER          UPLO
       CHARACTER*3        PATH
-      CHARACTER*6        CNAME
+      CHARACTER(32)      CNAME
       INTEGER            I, I3, IC, ICL, ILDA, IN, INB, INFO, ISUB,
      $                   IUPLO, LDA, LDB, MAT, N, NB, NRHS
       DOUBLE PRECISION   OPS, S1, S2, TIME, UNTIME
@@ -100,9 +100,11 @@
 *     .. Local Arrays ..
       LOGICAL            TIMSUB( NSUBS )
       CHARACTER          UPLOS( 2 )
-      CHARACTER*6        SUBNAM( NSUBS )
+      CHARACTER(32)      SUBNAM( NSUBS )
 *     ..
 *     .. External Functions ..
+      INTEGER ILA_LEN_TRIM
+      EXTERNAL ILA_LEN_TRIM
       LOGICAL            LSAME
       DOUBLE PRECISION   DMFLOP, DOPLA, DSECND
       EXTERNAL           LSAME, DMFLOP, DOPLA, DSECND
@@ -133,7 +135,7 @@
       CNAME = LINE( 1: 6 )
       CALL ATIMCK( 2, CNAME, NN, NVAL, NLDA, LDAVAL, NOUT, INFO )
       IF( INFO.GT.0 ) THEN
-         WRITE( NOUT, FMT = 9999 )CNAME
+         WRITE( NOUT, FMT = 9999 )CNAME(1:ILA_LEN_TRIM(CNAME))
          GO TO 130
       END IF
 *
@@ -254,7 +256,8 @@
       DO 120 ISUB = 1, NSUBS
          IF( .NOT.TIMSUB( ISUB ) )
      $      GO TO 120
-         WRITE( NOUT, FMT = 9998 )SUBNAM( ISUB )
+         WRITE( NOUT, FMT = 9998 )
+     $     SUBNAM( ISUB )(1:ILA_LEN_TRIM( SUBNAM( ISUB ) ))
          IF( NLDA.GT.1 ) THEN
             DO 100 I = 1, NLDA
                WRITE( NOUT, FMT = 9997 )I, LDAVAL( I )
@@ -262,7 +265,9 @@
          END IF
          WRITE( NOUT, FMT = * )
          DO 110 IUPLO = 1, 2
-            WRITE( NOUT, FMT = 9996 )SUBNAM( ISUB ), UPLOS( IUPLO )
+            WRITE( NOUT, FMT = 9996 )
+     $     SUBNAM( ISUB )(1:ILA_LEN_TRIM( SUBNAM( ISUB ) )),
+     $     UPLOS( IUPLO )
             I3 = ( IUPLO-1 )*NLDA + 1
             IF( ISUB.EQ.1 ) THEN
                CALL DPRTBL( 'NB', 'N', NNB, NBVAL, NN, NVAL, NLDA,
@@ -275,10 +280,10 @@
   120 CONTINUE
 *
   130 CONTINUE
- 9999 FORMAT( 1X, A6, ' timing run not attempted', / )
- 9998 FORMAT( / ' *** Speed of ', A6, ' in megaflops ***' )
+ 9999 FORMAT( 1X, A, ' timing run not attempted', / )
+ 9998 FORMAT( / ' *** Speed of ', A, ' in megaflops ***' )
  9997 FORMAT( 5X, 'line ', I2, ' with LDA = ', I5 )
- 9996 FORMAT( 5X, A6, ' with UPLO = ''', A1, '''', / )
+ 9996 FORMAT( 5X, A, ' with UPLO = ''', A1, '''', / )
       RETURN
 *
 *     End of ZTIMTR

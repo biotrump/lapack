@@ -99,7 +99,7 @@
 *     .. Local Scalars ..
       CHARACTER          SIDE, TRANSA, TRANSB, UPLO
       CHARACTER*3        PATH
-      CHARACTER*6        CNAME
+      CHARACTER(32)      CNAME
       INTEGER            I, IC, ICL, IK, ILDA, IM, IMAT, IN, INFO,
      $                   ISIDE, ISUB, ITA, ITB, IUPLO, K, LDA, M, N
       REAL               OPS, S1, S2, TIME, UNTIME
@@ -108,9 +108,11 @@
       LOGICAL            TIMSUB( NSUBS )
       CHARACTER          SIDES( NSIDES ), TRANS( NTRANS ),
      $                   UPLOS( NUPLOS )
-      CHARACTER*6        NAMES( NSUBS )
+      CHARACTER(32)      NAMES( NSUBS )
 *     ..
 *     .. External Functions ..
+      INTEGER ILA_LEN_TRIM
+      EXTERNAL ILA_LEN_TRIM
       LOGICAL            LSAME
       REAL               SECOND, SMFLOP, SOPBL3
       EXTERNAL           LSAME, SECOND, SMFLOP, SOPBL3
@@ -147,7 +149,7 @@
       CNAME = LINE( 1: 6 )
       CALL ATIMCK( 1, CNAME, NM, MVAL, NLDA, LDAVAL, NOUT, INFO )
       IF( INFO.GT.0 ) THEN
-         WRITE( NOUT, FMT = 9999 )CNAME
+         WRITE( NOUT, FMT = 9999 )CNAME(1:ILA_LEN_TRIM(CNAME))
          GO TO 690
       END IF
 *
@@ -160,7 +162,7 @@
 *        Print header.
 *
          CNAME = NAMES( ISUB )
-         WRITE( NOUT, FMT = 9998 )CNAME
+         WRITE( NOUT, FMT = 9998 )CNAME(1:ILA_LEN_TRIM(CNAME))
          IF( NLDA.EQ.1 ) THEN
             WRITE( NOUT, FMT = 9997 )LDAVAL( 1 )
          ELSE
@@ -426,7 +428,8 @@
   260                      CONTINUE
   270                   CONTINUE
   280                CONTINUE
-                     WRITE( NOUT, FMT = 9992 )CNAME, UPLO, TRANSA
+                     WRITE( NOUT, FMT = 9992 )
+     $     CNAME(1:ILA_LEN_TRIM(CNAME)), UPLO, TRANSA
                      CALL SPRTBL( 'K', 'N', NK, KVAL, NN, NVAL, NLDA,
      $                            RESLTS, LDR1, LDR2, NOUT )
                   END IF
@@ -493,7 +496,8 @@
   330                      CONTINUE
   340                   CONTINUE
   350                CONTINUE
-                     WRITE( NOUT, FMT = 9992 )CNAME, UPLO, TRANSB
+                     WRITE( NOUT, FMT = 9992 )
+     $     CNAME(1:ILA_LEN_TRIM(CNAME)), UPLO, TRANSB
                      CALL SPRTBL( 'K', 'N', NK, KVAL, NN, NVAL, NLDA,
      $                            RESLTS, LDR1, LDR2, NOUT )
                   END IF
@@ -558,7 +562,8 @@
   400                      CONTINUE
   410                   CONTINUE
   420                CONTINUE
-                     WRITE( NOUT, FMT = 9992 )CNAME, UPLO, TRANSA
+                     WRITE( NOUT, FMT = 9992 )
+     $     CNAME(1:ILA_LEN_TRIM(CNAME)), UPLO, TRANSA
                      CALL SPRTBL( 'K', 'N', NK, KVAL, NN, NVAL, NLDA,
      $                            RESLTS, LDR1, LDR2, NOUT )
                   END IF
@@ -625,7 +630,8 @@
   470                      CONTINUE
   480                   CONTINUE
   490                CONTINUE
-                     WRITE( NOUT, FMT = 9992 )CNAME, UPLO, TRANSB
+                     WRITE( NOUT, FMT = 9992 )
+     $     CNAME(1:ILA_LEN_TRIM(CNAME)), UPLO, TRANSB
                      CALL SPRTBL( 'K', 'N', NK, KVAL, NN, NVAL, NLDA,
      $                            RESLTS, LDR1, LDR2, NOUT )
                   END IF
@@ -692,7 +698,8 @@
   540                      CONTINUE
   550                   CONTINUE
   560                CONTINUE
-                     WRITE( NOUT, FMT = 9991 )CNAME, SIDE, UPLO, TRANSA
+                     WRITE( NOUT, FMT = 9991 )
+     $     CNAME(1:ILA_LEN_TRIM(CNAME)), SIDE, UPLO, TRANSA
                      CALL SPRTBL( 'M', 'N', NM, MVAL, NN, NVAL, NLDA,
      $                            RESLTS, LDR1, LDR2, NOUT )
   570             CONTINUE
@@ -759,7 +766,8 @@
   620                      CONTINUE
   630                   CONTINUE
   640                CONTINUE
-                     WRITE( NOUT, FMT = 9991 )CNAME, SIDE, UPLO, TRANSA
+                     WRITE( NOUT, FMT = 9991 )
+     $     CNAME(1:ILA_LEN_TRIM(CNAME)), SIDE, UPLO, TRANSA
                      CALL SPRTBL( 'M', 'N', NM, MVAL, NN, NVAL, NLDA,
      $                            RESLTS, LDR1, LDR2, NOUT )
   650             CONTINUE
@@ -770,18 +778,18 @@
   680 CONTINUE
   690 CONTINUE
 *
- 9999 FORMAT( 1X, A6, ' timing run not attempted', / )
- 9998 FORMAT( / ' *** Speed of ', A6, ' in megaflops ***' )
+ 9999 FORMAT( 1X, A, ' timing run not attempted', / )
+ 9998 FORMAT( / ' *** Speed of ', A, ' in megaflops ***' )
  9997 FORMAT( 5X, 'with LDA = ', I5 )
  9996 FORMAT( 5X, 'line ', I2, ' with LDA = ', I5 )
  9995 FORMAT( / 1X, 'CGEMM  with TRANSA = ''', A1, ''', TRANSB = ''',
      $      A1, '''' )
  9994 FORMAT( / 1X, 'K = ', I4, / )
- 9993 FORMAT( / 1X, A6, ' with SIDE = ''', A1, ''', UPLO = ''', A1,
+ 9993 FORMAT( / 1X, A, ' with SIDE = ''', A1, ''', UPLO = ''', A1,
      $      '''', / )
- 9992 FORMAT( / 1X, A6, ' with UPLO = ''', A1, ''', TRANS = ''', A1,
+ 9992 FORMAT( / 1X, A, ' with UPLO = ''', A1, ''', TRANS = ''', A1,
      $      '''', / )
- 9991 FORMAT( / 1X, A6, ' with SIDE = ''', A1, ''', UPLO = ''', A1,
+ 9991 FORMAT( / 1X, A, ' with SIDE = ''', A1, ''', UPLO = ''', A1,
      $      ''',', ' TRANS = ''', A1, '''', / )
  9990 FORMAT( / / / / / )
       RETURN

@@ -86,7 +86,7 @@
 *     .. Local Scalars ..
       CHARACTER          TRANS
       CHARACTER*3        PATH
-      CHARACTER*6        CNAME
+      CHARACTER(32)      CNAME
       INTEGER            I, IC, ICL, ILDA, IM, INFO, ISUB, ITRAN, LDB,
      $                   M, N, NRHS
       DOUBLE PRECISION   OPS, S1, S2, TIME, UNTIME
@@ -94,10 +94,12 @@
 *     .. Local Arrays ..
       LOGICAL            TIMSUB( NSUBS )
       CHARACTER          TRANSS( 2 )
-      CHARACTER*6        SUBNAM( NSUBS )
+      CHARACTER(32)      SUBNAM( NSUBS )
       INTEGER            LAVAL( 1 )
 *     ..
 *     .. External Functions ..
+      INTEGER ILA_LEN_TRIM
+      EXTERNAL ILA_LEN_TRIM
       DOUBLE PRECISION   DMFLOP, DSECND, DOPGB
       EXTERNAL           DMFLOP, DSECND, DOPGB
 *     ..
@@ -131,7 +133,7 @@
          CNAME = SUBNAM( ISUB )
          CALL ATIMCK( 2, CNAME, NM, MVAL, NLDA, LDAVAL, NOUT, INFO )
          IF( INFO.GT.0 ) THEN
-            WRITE( NOUT, FMT = 9998 )CNAME
+            WRITE( NOUT, FMT = 9998 )CNAME(1:ILA_LEN_TRIM(CNAME))
             TIMSUB( ISUB ) = .FALSE.
          END IF
    10 CONTINUE
@@ -322,7 +324,8 @@
       DO 170 ISUB = 1, NSUBS
          IF( .NOT.TIMSUB( ISUB ) )
      $      GO TO 170
-         WRITE( NOUT, FMT = 9997 )SUBNAM( ISUB )
+         WRITE( NOUT, FMT = 9997 )
+     $     SUBNAM( ISUB )(1:ILA_LEN_TRIM( SUBNAM( ISUB ) ))
          IF( NLDA.GT.1 .AND. ( TIMSUB( 2 ) .OR. TIMSUB( 3 ) ) ) THEN
             DO 160 I = 1, NLDA
                WRITE( NOUT, FMT = 9996 )I, LDAVAL( I )
@@ -350,8 +353,8 @@
   170 CONTINUE
 *
   180 CONTINUE
- 9998 FORMAT( 1X, A6, ' timing run not attempted', / )
- 9997 FORMAT( / ' *** Speed of ', A6, ' in megaflops ***' )
+ 9998 FORMAT( 1X, A, ' timing run not attempted', / )
+ 9997 FORMAT( / ' *** Speed of ', A, ' in megaflops ***' )
  9996 FORMAT( 5X, 'line ', I2, ' with LDA = ', I5 )
       RETURN
 *

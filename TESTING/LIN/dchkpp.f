@@ -119,7 +119,7 @@
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
-      CHARACTER*6        SRNAMT
+      CHARACTER(32)      SRNAMT
       INTEGER            INFOT, NUNIT
 *     ..
 *     .. Common blocks ..

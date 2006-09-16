@@ -83,16 +83,18 @@
 *     ..
 *     .. Local Scalars ..
       CHARACTER          LAB1, LAB2
-      CHARACTER*6        CNAME
+      CHARACTER(32)      CNAME
       INTEGER            I, IB, IC, ICL, IK, ILDA, IN, INFO, ISUB, K,
      $                   KL, KU, LDA, LDB, N, NRHS
       REAL               OPS, S1, S2, TIME, UNTIME
 *     ..
 *     .. Local Arrays ..
       LOGICAL            TIMSUB( NSUBS )
-      CHARACTER*6        SUBNAM( NSUBS )
+      CHARACTER(32)      SUBNAM( NSUBS )
 *     ..
 *     .. External Functions ..
+      INTEGER ILA_LEN_TRIM
+      EXTERNAL ILA_LEN_TRIM
       LOGICAL            LSAME, LSAMEN
       REAL               SECOND, SMFLOP, SOPBL2
       EXTERNAL           LSAME, LSAMEN, SECOND, SMFLOP, SOPBL2
@@ -114,7 +116,7 @@
          IF( TIMSUB( ISUB ) )
      $      GO TO 20
    10 CONTINUE
-      WRITE( NOUT, FMT = 9999 )CNAME
+      WRITE( NOUT, FMT = 9999 )CNAME(1:ILA_LEN_TRIM(CNAME))
       GO TO 150
    20 CONTINUE
 *
@@ -130,7 +132,7 @@
          LAB2 = 'N'
       END IF
       IF( INFO.GT.0 ) THEN
-         WRITE( NOUT, FMT = 9998 )CNAME
+         WRITE( NOUT, FMT = 9998 )CNAME(1:ILA_LEN_TRIM(CNAME))
          GO TO 150
       END IF
 *
@@ -257,9 +259,9 @@
       END IF
 *
   150 CONTINUE
- 9999 FORMAT( 1X, A6, ':  Unrecognized path or subroutine name', / )
- 9998 FORMAT( 1X, A6, ' timing run not attempted', / )
- 9997 FORMAT( / ' *** Speed of ', A6, ' in megaflops ***' )
+ 9999 FORMAT( 1X, A, ':  Unrecognized path or subroutine name', / )
+ 9998 FORMAT( 1X, A, ' timing run not attempted', / )
+ 9997 FORMAT( / ' *** Speed of ', A, ' in megaflops ***' )
  9996 FORMAT( 5X, 'with LDA = ', I5 )
  9995 FORMAT( 5X, 'line ', I2, ' with LDA = ', I5 )
       RETURN

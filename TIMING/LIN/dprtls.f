@@ -8,7 +8,7 @@
 *     June 30, 1999
 *
 *     .. Scalar Arguments ..
-      CHARACTER*6        SUBNAM
+      CHARACTER*(*)       SUBNAM
       INTEGER            ISUB, MTYPE, NDATA, NLDA, NM, NN, NNB,
      $                   NNS, NOUT
 *     ..
@@ -29,7 +29,7 @@
 *  ISUB    (input) INTEGER
 *          Subroutine index.
 *
-*  SUBNAM  (input) CHARACTER*6
+*  SUBNAM  (input) CHARACTER*(*)
 *          Subroutine name. 
 *
 *  NDATA   (input) INTEGER
@@ -99,7 +99,8 @@
                   LDA = MAX( 1, LDAVAL( ILDA ) )
                   IF( ISUB.EQ.2 ) THEN
                      WRITE( NOUT, FMT = 9999 ) M, N, NRHS, LDA
-                     WRITE( NOUT, FMT = 9998 ) SUBNAM, ( IDATA,
+                     WRITE( NOUT, FMT = 9998 )
+     $     SUBNAM(1:ILA_LEN_TRIM( SUBNAM )), ( IDATA,
      $                    IDATA = 1, NDATA-1 )
                      DO 10 ITYPE = 1, MTYPE
                         WRITE( NOUT, FMT = 9997 ) ITYPE,
@@ -113,7 +114,8 @@
                         NX = NXVAL( INB )
                         WRITE( NOUT, FMT = 9996 ) M, N, NRHS, LDA,
      $                       NB, NX               
-                        WRITE( NOUT, FMT = 9998 ) SUBNAM, ( IDATA,
+                        WRITE( NOUT, FMT = 9998 )
+     $     SUBNAM(1:ILA_LEN_TRIM( SUBNAM )), ( IDATA,
      $                       IDATA = 1, NDATA-1 )
                         DO 20 ITYPE = 1, MTYPE
                            WRITE( NOUT, FMT = 9997 ) ITYPE,
@@ -130,7 +132,7 @@
 *   
  9999 FORMAT( / ' M = ', I5, ', N = ', I5, ', NRHS = ', I5,
      $        ', LDA = ', I5 )
- 9998 FORMAT( / ' TYPE ', 4X, A6, 1X, 8( 4X, 'comp.', I2, : ) )
+ 9998 FORMAT( / ' TYPE ', 4X, A, 1X, 8( 4X, 'comp.', I2, : ) )
  9997 FORMAT( I5, 2X, 1P, 6G11.2 )
  9996 FORMAT( / ' M = ', I5, ', N = ', I5, ', NRHS = ', I5,
      $        ', LDA = ', I5, ', NB = ', I3, ', NX = ', I3 )

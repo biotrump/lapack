@@ -96,17 +96,19 @@
 *     ..
 *     .. Local Scalars ..
       CHARACTER*3        PATH
-      CHARACTER*6        CNAME
+      CHARACTER(32)      CNAME
       INTEGER            I, IC, ICL, ILDA, IM, IMODE, INFO, LDA, M,
      $                   MINMN, MODE, N
       DOUBLE PRECISION   COND, DMAX, OPS, S1, S2, TIME, UNTIME
 *     ..
 *     .. Local Arrays ..
       LOGICAL            TIMSUB( NSUBS )
-      CHARACTER*6        SUBNAM( NSUBS )
+      CHARACTER(32)      SUBNAM( NSUBS )
       INTEGER            ISEED( 4 ), MODES( NMODE )
 *     ..
 *     .. External Functions ..
+      INTEGER ILA_LEN_TRIM
+      EXTERNAL ILA_LEN_TRIM
       DOUBLE PRECISION   DLAMCH, DMFLOP, DOPLA, DSECND
       EXTERNAL           DLAMCH, DMFLOP, DOPLA, DSECND
 *     ..
@@ -137,7 +139,7 @@
       CNAME = LINE( 1: 6 )
       CALL ATIMCK( 1, CNAME, NM, MVAL, NLDA, LDAVAL, NOUT, INFO )
       IF( INFO.GT.0 ) THEN
-         WRITE( NOUT, FMT = 9999 )CNAME
+         WRITE( NOUT, FMT = 9999 )CNAME(1:ILA_LEN_TRIM(CNAME))
          GO TO 80
       END IF
 *
@@ -212,7 +214,8 @@
 *
 *     Print tables of results
 *
-      WRITE( NOUT, FMT = 9998 )SUBNAM( 1 )
+      WRITE( NOUT, FMT = 9998 )
+     $     SUBNAM( 1 )(1:ILA_LEN_TRIM( SUBNAM( 1 ) ))
       IF( NLDA.GT.1 ) THEN
          DO 70 I = 1, NLDA
             WRITE( NOUT, FMT = 9997 )I, LDAVAL( I )
@@ -222,8 +225,8 @@
       CALL DPRTB5( 'Type', 'M', 'N', NMODE, MODES, NM, MVAL, NVAL, NLDA,
      $             RESLTS, LDR1, LDR2, NOUT )
    80 CONTINUE
- 9999 FORMAT( 1X, A6, ' timing run not attempted', / )
- 9998 FORMAT( / ' *** Speed of ', A6, ' in megaflops ***' )
+ 9999 FORMAT( 1X, A, ' timing run not attempted', / )
+ 9998 FORMAT( / ' *** Speed of ', A, ' in megaflops ***' )
  9997 FORMAT( 5X, 'line ', I2, ' with LDA = ', I5 )
       RETURN
 *

@@ -61,6 +61,8 @@
      $                   CHKXER
 *     ..
 *     .. External Functions ..
+      INTEGER ILA_LEN_TRIM
+      EXTERNAL ILA_LEN_TRIM
       LOGICAL            CSLECT, LSAMEN
       EXTERNAL           CSLECT, LSAMEN
 *     ..
@@ -70,7 +72,7 @@
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
-      CHARACTER*6        SRNAMT
+      CHARACTER(32)      SRNAMT
       INTEGER            INFOT, NOUT, SELDIM, SELOPT
 *     ..
 *     .. Common blocks ..
@@ -284,7 +286,7 @@
          CALL CHKXER( 'CGESVD', INFOT, NOUT, LERR, OK )
          NT = NT + 8
          IF( OK ) THEN
-            WRITE( NOUT, FMT = 9999 )SRNAMT, NT
+            WRITE( NOUT, FMT = 9999 )SRNAMT(1:ILA_LEN_TRIM(SRNAMT)), NT
          ELSE
             WRITE( NOUT, FMT = 9998 )
          END IF
@@ -318,7 +320,7 @@
          CALL CHKXER( 'CGESDD', INFOT, NOUT, LERR, OK )
          NT = NT - 2
          IF( OK ) THEN
-            WRITE( NOUT, FMT = 9999 )SRNAMT, NT
+            WRITE( NOUT, FMT = 9999 )SRNAMT(1:ILA_LEN_TRIM(SRNAMT)), NT
          ELSE
             WRITE( NOUT, FMT = 9998 )
          END IF
@@ -328,15 +330,15 @@
 *
       IF( .NOT.LSAMEN( 2, C2, 'BD' ) ) THEN
          IF( OK ) THEN
-            WRITE( NOUT, FMT = 9999 )SRNAMT, NT
+            WRITE( NOUT, FMT = 9999 )SRNAMT(1:ILA_LEN_TRIM(SRNAMT)), NT
          ELSE
             WRITE( NOUT, FMT = 9998 )
          END IF
       END IF
 *
- 9999 FORMAT( 1X, A6, ' passed the tests of the error exits (', I3,
+ 9999 FORMAT( 1X, A, ' passed the tests of the error exits (', I3,
      $      ' tests done)' )
- 9998 FORMAT( ' *** ', A6, ' failed the tests of the error exits ***' )
+ 9998 FORMAT( ' *** ', A, ' failed the tests of the error exits ***' )
       RETURN
 *
 *     End of CERRED

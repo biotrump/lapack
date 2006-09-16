@@ -127,7 +127,7 @@
 *     .. Local Scalars ..
       CHARACTER          LABK, LABM, LABN, SIDE, TRANS, VECT
       CHARACTER*3        PATH
-      CHARACTER*6        CNAME
+      CHARACTER(32)      CNAME
       INTEGER            I, I3, I4, IC, ICL, IK, ILDA, IM, INB, INFO,
      $                   INFO2, ISIDE, ISUB, ITOFF, ITRAN, IVECT, K, K1,
      $                   LDA, LW, M, M1, MINMN, N, N1, NB, NQ, NX
@@ -136,10 +136,12 @@
 *     .. Local Arrays ..
       LOGICAL            TIMSUB( NSUBS )
       CHARACTER          SIDES( 2 ), TRANSS( 2 ), VECTS( 2 )
-      CHARACTER*6        SUBNAM( NSUBS )
+      CHARACTER(32)      SUBNAM( NSUBS )
       INTEGER            ISEED( 4 ), RESEED( 4 )
 *     ..
 *     .. External Functions ..
+      INTEGER ILA_LEN_TRIM
+      EXTERNAL ILA_LEN_TRIM
       DOUBLE PRECISION   DMFLOP, DOPLA, DSECND
       EXTERNAL           DMFLOP, DOPLA, DSECND
 *     ..
@@ -171,7 +173,7 @@
       CNAME = LINE( 1: 6 )
       CALL ATIMCK( 1, CNAME, NM, MVAL, NLDA, LDAVAL, NOUT, INFO )
       IF( INFO.GT.0 ) THEN
-         WRITE( NOUT, FMT = 9999 )CNAME
+         WRITE( NOUT, FMT = 9999 )CNAME(1:ILA_LEN_TRIM(CNAME))
          GO TO 220
       END IF
 *
@@ -181,7 +183,8 @@
          CALL ATIMCK( 2, CNAME, NM, NVAL, NLDA, LDAVAL, NOUT, INFO )
          CALL ATIMCK( 3, CNAME, NK, KVAL, NLDA, LDAVAL, NOUT, INFO2 )
          IF( INFO.GT.0 .OR. INFO2.GT.0 ) THEN
-            WRITE( NOUT, FMT = 9999 )SUBNAM( 3 )
+            WRITE( NOUT, FMT = 9999 )
+     $     SUBNAM( 3 )(1:ILA_LEN_TRIM( SUBNAM( 3 ) ))
             TIMSUB( 3 ) = .FALSE.
          END IF
       END IF
@@ -446,7 +449,8 @@
       DO 210 ISUB = 1, NSUBS
          IF( .NOT.TIMSUB( ISUB ) )
      $      GO TO 210
-         WRITE( NOUT, FMT = 9998 )SUBNAM( ISUB )
+         WRITE( NOUT, FMT = 9998 )
+     $     SUBNAM( ISUB )(1:ILA_LEN_TRIM( SUBNAM( ISUB ) ))
          IF( NLDA.GT.1 ) THEN
             DO 150 I = 1, NLDA
                WRITE( NOUT, FMT = 9997 )I, LDAVAL( I )
@@ -469,7 +473,9 @@
                   LABM = 'K'
                   LABN = 'N'
                END IF
-               WRITE( NOUT, FMT = 9996 )SUBNAM( ISUB ), VECTS( IVECT ),
+               WRITE( NOUT, FMT = 9996 )
+     $     SUBNAM( ISUB )(1:ILA_LEN_TRIM( SUBNAM( ISUB ) )),
+     $     VECTS( IVECT ),
      $            LABK, LABM, LABN
                CALL DPRTB4( '(  NB,  NX)', LABM, LABN, NNB, NBVAL,
      $                      NXVAL, NM, MVAL, NVAL, NLDA,
@@ -501,7 +507,8 @@
                   END IF
                   DO 180 ITRAN = 1, 2
                      DO 170 IK = 1, NK
-                        WRITE( NOUT, FMT = 9995 )SUBNAM( ISUB ),
+                        WRITE( NOUT, FMT = 9995 )
+     $     SUBNAM( ISUB )(1:ILA_LEN_TRIM( SUBNAM( ISUB ) )),
      $                     VECTS( IVECT ), SIDES( ISIDE ),
      $                     TRANSS( ITRAN ), LABK, KVAL( IK )
                         CALL DPRTB5( 'NB', LABM, LABN, NNB, NBVAL, NM,
@@ -516,12 +523,12 @@
          END IF
   210 CONTINUE
   220 CONTINUE
- 9999 FORMAT( 1X, A6, ' timing run not attempted', / )
- 9998 FORMAT( / ' *** Speed of ', A6, ' in megaflops ***' )
+ 9999 FORMAT( 1X, A, ' timing run not attempted', / )
+ 9998 FORMAT( / ' *** Speed of ', A, ' in megaflops ***' )
  9997 FORMAT( 5X, 'line ', I2, ' with LDA = ', I5 )
- 9996 FORMAT( / 5X, A6, ' with VECT = ''', A1, ''', ', A1, ' = MIN(',
+ 9996 FORMAT( / 5X, A, ' with VECT = ''', A1, ''', ', A1, ' = MIN(',
      $      A1, ',', A1, ')', / )
- 9995 FORMAT( / 5X, A6, ' with VECT = ''', A1, ''', SIDE = ''', A1,
+ 9995 FORMAT( / 5X, A, ' with VECT = ''', A1, ''', SIDE = ''', A1,
      $      ''', TRANS = ''', A1, ''', ', A1, ' =', I6, / )
       RETURN
 *

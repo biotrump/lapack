@@ -63,7 +63,7 @@
 *  =====================================================================
 *
 *     .. Local Scalars ..
-      CHARACTER*6        COLLAB
+      CHARACTER(32)      COLLAB
       INTEGER            I, IC, INB, J, K, LNB
 *     ..
 *     .. Intrinsic Functions ..
@@ -121,7 +121,7 @@
 *
  9999 FORMAT( 6X, A4, I6, 11I8 )
  9998 FORMAT( 3X, A4 )
- 9997 FORMAT( 1X, A6, 1X, 12F8.1 )
+ 9997 FORMAT( 1X, A, 1X, 12F8.1 )
  9996 FORMAT( 8X, 12F8.1 )
 *
       RETURN

@@ -697,11 +697,11 @@
  9990 FORMAT( / ' ------------------------------',
      $      / ' >>>>>    Sample BLAS     <<<<<',
      $      / ' ------------------------------' )
- 9989 FORMAT( 1X, A6, ' not timed due to input errors', / )
+ 9989 FORMAT( 1X, A, ' not timed due to input errors', / )
  9988 FORMAT( / ' ------------------------------',
      $      / ' >>>>>    Timing data     <<<<<',
      $      / ' ------------------------------' )
- 9987 FORMAT( 1X, A6, ':  Unrecognized path or subroutine name', / )
+ 9987 FORMAT( 1X, A, ':  Unrecognized path or subroutine name', / )
  9986 FORMAT( ' End of tests' )
  9985 FORMAT( ' Total time used = ', F12.2, ' seconds' )
  9984 FORMAT( / ' Tests not done due to input errors' )

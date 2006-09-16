@@ -118,17 +118,19 @@
 *     ..
 *     .. Local Scalars ..
       CHARACTER*3        PATH
-      CHARACTER*6        CNAME
+      CHARACTER(32)      CNAME
       INTEGER            I, IC, ICL, ILDA, IM, IMODE, INB, INFO, LDA,
      $                   LW, M, MINMN, MODE, N, NB, NX
       DOUBLE PRECISION   COND, DMAX, OPS, S1, S2, TIME, UNTIME
 *     ..
 *     .. Local Arrays ..
       LOGICAL            TIMSUB( NSUBS )
-      CHARACTER*6        SUBNAM( NSUBS )
+      CHARACTER(32)      SUBNAM( NSUBS )
       INTEGER            ISEED( 4 ), MODES( NMODE )
 *     ..
 *     .. External Functions ..
+      INTEGER ILA_LEN_TRIM
+      EXTERNAL ILA_LEN_TRIM
       DOUBLE PRECISION   DLAMCH, DMFLOP, DOPLA, DSECND
       EXTERNAL           DLAMCH, DMFLOP, DOPLA, DSECND
 *     ..
@@ -159,7 +161,7 @@
       CNAME = LINE( 1: 6 )
       CALL ATIMCK( 1, CNAME, NM, MVAL, NLDA, LDAVAL, NOUT, INFO )
       IF( INFO.GT.0 ) THEN
-         WRITE( NOUT, FMT = 9996 )CNAME
+         WRITE( NOUT, FMT = 9996 )CNAME(1:ILA_LEN_TRIM(CNAME))
          GO TO 90
       END IF
 *
@@ -269,7 +271,8 @@
 *
 *        Print the results for each value of K and type of matrix.
 *
-         WRITE( NOUT, FMT = 9999 )SUBNAM( 1 )
+         WRITE( NOUT, FMT = 9999 )
+     $     SUBNAM( 1 )(1:ILA_LEN_TRIM( SUBNAM( 1 ) ))
          WRITE( NOUT, FMT = 9998 )IMODE
          DO 70 I = 1, NLDA
             WRITE( NOUT, FMT = 9997 )I, LDAVAL( I )
@@ -281,10 +284,10 @@
 *
    80 CONTINUE
 *
- 9999 FORMAT( / ' *** Speed of ', A6, ' in megaflops ***' )
+ 9999 FORMAT( / ' *** Speed of ', A, ' in megaflops ***' )
  9998 FORMAT( 5X, 'type of matrix:', I4 )
  9997 FORMAT( 5X, 'line ', I4, ' with LDA = ', I4 )
- 9996 FORMAT( 1X, A6, ' timing run not attempted', / )
+ 9996 FORMAT( 1X, A, ' timing run not attempted', / )
 *
    90 CONTINUE
       RETURN

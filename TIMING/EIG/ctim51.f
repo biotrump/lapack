@@ -307,11 +307,13 @@
 *     ..
 *     .. Local Arrays ..
       LOGICAL            TIMSUB( NSUBS )
-      CHARACTER*6        PNAMES( 6 )
+      CHARACTER(32)      PNAMES( 6 )
       CHARACTER*11       SUBNAM( NSUBS )
       INTEGER            INPARM( NSUBS ), IOLDSD( 4 ), KATYPE( MAXTYP )
 *     ..
 *     .. External Functions ..
+      INTEGER ILA_LEN_TRIM
+      EXTERNAL ILA_LEN_TRIM
       REAL               SECOND, SLAMCH, SOPLA
       COMPLEX            CLARND
       EXTERNAL           SECOND, SLAMCH, SOPLA, CLARND
@@ -594,7 +596,8 @@
                      CALL CLAQZH( .FALSE., .FALSE., N, 1, N, H, LDA, T,
      $                            LDA, Q, LDA, Z, LDA, WORK, IINFO )
                      IF( IINFO.NE.0 ) THEN
-                        WRITE( NOUT, FMT = 9997 )SUBNAM( 1 ), IINFO, N,
+                        WRITE( NOUT, FMT = 9997 )
+     $     SUBNAM( 1 )(1:ILA_LEN_TRIM( SUBNAM( 1 ) )), IINFO, N,
      $                     ITYPE, IPAR, IOLDSD
                         INFO = ABS( IINFO )
                         GO TO 930
@@ -635,7 +638,8 @@
                CALL CLAQZH( .FALSE., .FALSE., N, 1, N, H, N1, T, N1, Q,
      $                      N1, Z, N1, WORK, IINFO )
                IF( IINFO.NE.0 ) THEN
-                  WRITE( NOUT, FMT = 9997 )SUBNAM( 1 ), IINFO, N,
+                  WRITE( NOUT, FMT = 9997 )
+     $     SUBNAM( 1 )(1:ILA_LEN_TRIM( SUBNAM( 1 ) )), IINFO, N,
      $               ITYPE, 0, IOLDSD
                   INFO = ABS( IINFO )
                   GO TO 930
@@ -679,7 +683,8 @@
                      CALL CLAQZH( .TRUE., .FALSE., N, 1, N, H, LDA, T,
      $                            LDA, Q, LDA, Z, LDA, WORK, IINFO )
                      IF( IINFO.NE.0 ) THEN
-                        WRITE( NOUT, FMT = 9997 )SUBNAM( 2 ), IINFO, N,
+                        WRITE( NOUT, FMT = 9997 )
+     $     SUBNAM( 2 )(1:ILA_LEN_TRIM( SUBNAM( 2 ) )), IINFO, N,
      $                     ITYPE, IPAR, IOLDSD
                         INFO = ABS( IINFO )
                         GO TO 930
@@ -753,7 +758,8 @@
                      CALL CLAQZH( .FALSE., .TRUE., N, 1, N, H, LDA, T,
      $                            LDA, Q, LDA, Z, LDA, WORK, IINFO )
                      IF( IINFO.NE.0 ) THEN
-                        WRITE( NOUT, FMT = 9997 )SUBNAM( 3 ), IINFO, N,
+                        WRITE( NOUT, FMT = 9997 )
+     $     SUBNAM( 3 )(1:ILA_LEN_TRIM( SUBNAM( 3 ) )), IINFO, N,
      $                     ITYPE, IPAR, IOLDSD
                         INFO = ABS( IINFO )
                         GO TO 930
@@ -826,7 +832,8 @@
                      CALL CLAQZH( .TRUE., .TRUE., N, 1, N, H, LDA, T,
      $                            LDA, Q, LDA, Z, LDA, WORK, IINFO )
                      IF( IINFO.NE.0 ) THEN
-                        WRITE( NOUT, FMT = 9997 )SUBNAM( 4 ), IINFO, N,
+                        WRITE( NOUT, FMT = 9997 )
+     $     SUBNAM( 4 )(1:ILA_LEN_TRIM( SUBNAM( 4 ) )), IINFO, N,
      $                     ITYPE, IPAR, IOLDSD
                         INFO = ABS( IINFO )
                         GO TO 930
@@ -902,7 +909,8 @@
      $                            LDA, W, W( LDA+1 ), Q, LDA, Z, LDA,
      $                            WORK, LWORK, RWORK, IINFO )
                      IF( IINFO.NE.0 ) THEN
-                        WRITE( NOUT, FMT = 9997 )SUBNAM( 5 ), IINFO, N,
+                        WRITE( NOUT, FMT = 9997 )
+     $     SUBNAM( 5 )(1:ILA_LEN_TRIM( SUBNAM( 5 ) )), IINFO, N,
      $                     ITYPE, IPAR, IOLDSD
                         INFO = ABS( IINFO )
                         GO TO 930
@@ -972,7 +980,8 @@
      $                            LDA, W, W( LDA+1 ), Q, LDA, Z, LDA,
      $                            WORK, LWORK, RWORK, IINFO )
                      IF( IINFO.NE.0 ) THEN
-                        WRITE( NOUT, FMT = 9997 )SUBNAM( 6 ), IINFO, N,
+                        WRITE( NOUT, FMT = 9997 )
+     $     SUBNAM( 6 )(1:ILA_LEN_TRIM( SUBNAM( 6 ) )), IINFO, N,
      $                     ITYPE, IPAR, IOLDSD
                         INFO = ABS( IINFO )
                         GO TO 930
@@ -1012,7 +1021,8 @@
      $                      W( N1+1 ), Q, N1, Z, N1, WORK,
      $                      LWORK, RWORK, IINFO )
                IF( IINFO.NE.0 ) THEN
-                  WRITE( NOUT, FMT = 9997 )SUBNAM( 6 ), IINFO, N,
+                  WRITE( NOUT, FMT = 9997 )
+     $     SUBNAM( 6 )(1:ILA_LEN_TRIM( SUBNAM( 6 ) )), IINFO, N,
      $               ITYPE, 0, IOLDSD
                   INFO = ABS( IINFO )
                   GO TO 930
@@ -1056,7 +1066,8 @@
      $                            LDA, W, W( LDA+1 ), Q, LDA, Z, LDA,
      $                            WORK, LWORK, RWORK, IINFO )
                      IF( IINFO.NE.0 ) THEN
-                        WRITE( NOUT, FMT = 9997 )SUBNAM( 7 ), IINFO, N,
+                        WRITE( NOUT, FMT = 9997 )
+     $     SUBNAM( 7 )(1:ILA_LEN_TRIM( SUBNAM( 7 ) )), IINFO, N,
      $                     ITYPE, IPAR, IOLDSD
                         INFO = ABS( IINFO )
                         GO TO 930
@@ -1096,7 +1107,8 @@
      $                      W( N1+1 ), Q, N1, Z, N1, WORK,
      $                      LWORK, RWORK, IINFO )
                IF( IINFO.NE.0 ) THEN
-                  WRITE( NOUT, FMT = 9997 )SUBNAM( 7 ), IINFO, N,
+                  WRITE( NOUT, FMT = 9997 )
+     $     SUBNAM( 7 )(1:ILA_LEN_TRIM( SUBNAM( 7 ) )), IINFO, N,
      $               ITYPE, 0, IOLDSD
                   INFO = ABS( IINFO )
                   GO TO 930
@@ -1152,7 +1164,8 @@
      $                            LDA, W, W( LDA+1 ), Z, LDA, Q, LDA,
      $                            WORK, LWORK, RWORK, IINFO )
                      IF( IINFO.NE.0 ) THEN
-                        WRITE( NOUT, FMT = 9997 )SUBNAM( 8 ), IINFO, N,
+                        WRITE( NOUT, FMT = 9997 )
+     $     SUBNAM( 8 )(1:ILA_LEN_TRIM( SUBNAM( 8 ) )), IINFO, N,
      $                     ITYPE, IPAR, IOLDSD
                         INFO = ABS( IINFO )
                         GO TO 930
@@ -1222,7 +1235,8 @@
      $                            LDA, W, W( LDA+1 ), Q, LDA, Z, LDA,
      $                            WORK, LWORK, RWORK, IINFO )
                      IF( IINFO.NE.0 ) THEN
-                        WRITE( NOUT, FMT = 9997 )SUBNAM( 9 ), IINFO, N,
+                        WRITE( NOUT, FMT = 9997 )
+     $     SUBNAM( 9 )(1:ILA_LEN_TRIM( SUBNAM( 9 ) )), IINFO, N,
      $                     ITYPE, IPAR, IOLDSD
                         INFO = ABS( IINFO )
                         GO TO 930
@@ -1324,7 +1338,8 @@
      $                               LDA, H, LDA, T, LDA, N, ITEMP,
      $                               WORK, RWORK, IINFO )
                         IF( IINFO.NE.0 ) THEN
-                           WRITE( NOUT, FMT = 9997 )SUBNAM( 10 ),
+                           WRITE( NOUT, FMT = 9997 )
+     $     SUBNAM( 10 )(1:ILA_LEN_TRIM( SUBNAM( 10 ) )),
      $                        IINFO, N, ITYPE, IPAR, IOLDSD
                            INFO = ABS( IINFO )
                            GO TO 930
@@ -1352,7 +1367,8 @@
      $                               LDA, H, LDA, T, LDA, N, ITEMP,
      $                               WORK, RWORK, IINFO )
                         IF( IINFO.NE.0 ) THEN
-                           WRITE( NOUT, FMT = 9997 )SUBNAM( 11 ),
+                           WRITE( NOUT, FMT = 9997 )
+     $     SUBNAM( 11 )(1:ILA_LEN_TRIM( SUBNAM( 11 ) )),
      $                        IINFO, N, ITYPE, IPAR, IOLDSD
                            INFO = ABS( IINFO )
                            GO TO 930
@@ -1389,7 +1405,8 @@
      $                               LDA, H, LDA, T, LDA, N, ITEMP,
      $                               WORK, RWORK, IINFO )
                         IF( IINFO.NE.0 ) THEN
-                           WRITE( NOUT, FMT = 9997 )SUBNAM( 12 ),
+                           WRITE( NOUT, FMT = 9997 )
+     $     SUBNAM( 12 )(1:ILA_LEN_TRIM( SUBNAM( 12 ) )),
      $                        IINFO, N, ITYPE, IPAR, IOLDSD
                            INFO = ABS( IINFO )
                            GO TO 930
@@ -1417,7 +1434,8 @@
      $                               LDA, H, LDA, T, LDA, N, ITEMP,
      $                               WORK, RWORK, IINFO )
                         IF( IINFO.NE.0 ) THEN
-                           WRITE( NOUT, FMT = 9997 )SUBNAM( 13 ),
+                           WRITE( NOUT, FMT = 9997 )
+     $     SUBNAM( 13 )(1:ILA_LEN_TRIM( SUBNAM( 13 ) )),
      $                        IINFO, N, ITYPE, IPAR, IOLDSD
                            INFO = ABS( IINFO )
                            GO TO 930
@@ -1746,7 +1764,8 @@
      $                            WR( LDA+1 ), WR( 2*LDA+1 ), .FALSE.,
      $                            QR, QI, IINFO )
                      IF( IINFO.NE.0 ) THEN
-                        WRITE( NOUT, FMT = 9997 )SUBNAM( 16 ), IINFO,
+                        WRITE( NOUT, FMT = 9997 )
+     $     SUBNAM( 16 )(1:ILA_LEN_TRIM( SUBNAM( 16 ) )), IINFO,
      $                     N, ITYPE, IPAR, IOLDSD
                         INFO = ABS( IINFO )
                         GO TO 930
@@ -1822,7 +1841,8 @@
      $                            WR( LDA+1 ), WR( 2*LDA+1 ), .TRUE.,
      $                            QR, QI, IINFO )
                      IF( IINFO.NE.0 ) THEN
-                        WRITE( NOUT, FMT = 9997 )SUBNAM( 17 ), IINFO,
+                        WRITE( NOUT, FMT = 9997 )
+     $     SUBNAM( 17 )(1:ILA_LEN_TRIM( SUBNAM( 17 ) )), IINFO,
      $                     N, ITYPE, IPAR, IOLDSD
                         INFO = ABS( IINFO )
                         GO TO 930
@@ -1870,7 +1890,8 @@
                CALL CQZVAL( N1, N, AR, AI, BR, BI, ZERO, WR, WR( N1+1 ),
      $                      WR( 2*N1+1 ), .TRUE., QR, QI, IINFO )
                IF( IINFO.NE.0 ) THEN
-                  WRITE( NOUT, FMT = 9997 )SUBNAM( 17 ), IINFO, N,
+                  WRITE( NOUT, FMT = 9997 )
+     $     SUBNAM( 17 )(1:ILA_LEN_TRIM( SUBNAM( 17 ) )), IINFO, N,
      $               ITYPE, IPAR, IOLDSD
                   INFO = ABS( IINFO )
                   GO TO 930

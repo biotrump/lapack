@@ -80,7 +80,7 @@
 *     .. Local Scalars ..
       CHARACTER          UPLO
       CHARACTER*3        PATH
-      CHARACTER*6        CNAME
+      CHARACTER(32)      CNAME
       INTEGER            I, IC, ICL, IN, INFO, ISUB, IUPLO, LDA, LDB,
      $                   MAT, N, NRHS
       DOUBLE PRECISION   OPS, S1, S2, TIME, UNTIME
@@ -88,10 +88,12 @@
 *     .. Local Arrays ..
       LOGICAL            TIMSUB( NSUBS )
       CHARACTER          UPLOS( 2 )
-      CHARACTER*6        SUBNAM( NSUBS )
+      CHARACTER(32)      SUBNAM( NSUBS )
       INTEGER            IDUMMY( 1 ), LAVAL( 1 )
 *     ..
 *     .. External Functions ..
+      INTEGER ILA_LEN_TRIM
+      EXTERNAL ILA_LEN_TRIM
       LOGICAL            LSAME
       DOUBLE PRECISION   DMFLOP, DOPLA, DSECND
       EXTERNAL           LSAME, DMFLOP, DOPLA, DSECND
@@ -122,7 +124,7 @@
       LAVAL( 1 ) = LA
       CALL ATIMCK( 4, CNAME, NN, NVAL, 1, LAVAL, NOUT, INFO )
       IF( INFO.GT.0 ) THEN
-         WRITE( NOUT, FMT = 9999 )CNAME
+         WRITE( NOUT, FMT = 9999 )CNAME(1:ILA_LEN_TRIM(CNAME))
          GO TO 100
       END IF
 *
@@ -229,9 +231,12 @@
       DO 90 ISUB = 1, NSUBS
          IF( .NOT.TIMSUB( ISUB ) )
      $      GO TO 90
-         WRITE( NOUT, FMT = 9998 )SUBNAM( ISUB )
+         WRITE( NOUT, FMT = 9998 )
+     $     SUBNAM( ISUB )(1:ILA_LEN_TRIM( SUBNAM( ISUB ) ))
          DO 80 IUPLO = 1, 2
-            WRITE( NOUT, FMT = 9997 )SUBNAM( ISUB ), UPLOS( IUPLO )
+            WRITE( NOUT, FMT = 9997 )
+     $     SUBNAM( ISUB )(1:ILA_LEN_TRIM( SUBNAM( ISUB ) )),
+     $     UPLOS( IUPLO )
             IF( ISUB.EQ.1 ) THEN
                CALL DPRTBL( ' ', 'N', 1, IDUMMY, NN, NVAL, 1,
      $                      RESLTS( 1, 1, IUPLO, 1 ), LDR1, LDR2, NOUT )
@@ -243,9 +248,9 @@
    90 CONTINUE
 *
   100 CONTINUE
- 9999 FORMAT( 1X, A6, ' timing run not attempted', / )
- 9998 FORMAT( / ' *** Speed of ', A6, ' in megaflops ***', / )
- 9997 FORMAT( 5X, A6, ' with UPLO = ''', A1, '''', / )
+ 9999 FORMAT( 1X, A, ' timing run not attempted', / )
+ 9998 FORMAT( / ' *** Speed of ', A, ' in megaflops ***', / )
+ 9997 FORMAT( 5X, A, ' with UPLO = ''', A1, '''', / )
       RETURN
 *
 *     End of DTIMTP

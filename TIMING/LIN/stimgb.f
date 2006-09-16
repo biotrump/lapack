@@ -99,16 +99,18 @@
 *     ..
 *     .. Local Scalars ..
       CHARACTER*3        PATH
-      CHARACTER*6        CNAME
+      CHARACTER(32)      CNAME
       INTEGER            I, IC, ICL, IK, ILDA, IM, INB, INFO, ISUB, K,
      $                   KL, KU, LDA, LDB, M, N, NB, NRHS
       REAL               OPS, S1, S2, TIME, UNTIME
 *     ..
 *     .. Local Arrays ..
       LOGICAL            TIMSUB( NSUBS )
-      CHARACTER*6        SUBNAM( NSUBS )
+      CHARACTER(32)      SUBNAM( NSUBS )
 *     ..
 *     .. External Functions ..
+      INTEGER ILA_LEN_TRIM
+      EXTERNAL ILA_LEN_TRIM
       REAL               SECOND, SMFLOP, SOPGB, SOPLA
       EXTERNAL           SECOND, SMFLOP, SOPGB, SOPLA
 *     ..
@@ -137,7 +139,7 @@
       CNAME = LINE( 1: 6 )
       CALL ATIMCK( 0, CNAME, NK, KVAL, NLDA, LDAVAL, NOUT, INFO )
       IF( INFO.GT.0 ) THEN
-         WRITE( NOUT, FMT = 9999 )CNAME
+         WRITE( NOUT, FMT = 9999 )CNAME(1:ILA_LEN_TRIM(CNAME))
          GO TO 120
       END IF
 *
@@ -266,7 +268,8 @@
 *           Print header for routine names.
 *
             IF( IM.EQ.1 .OR. CNAME.EQ.'SGB   ' ) THEN
-               WRITE( NOUT, FMT = 9998 )SUBNAM( ISUB )
+               WRITE( NOUT, FMT = 9998 )
+     $     SUBNAM( ISUB )(1:ILA_LEN_TRIM( SUBNAM( ISUB ) ))
                IF( NLDA.EQ.1 ) THEN
                   WRITE( NOUT, FMT = 9997 )LDAVAL( 1 )
                ELSE
@@ -276,7 +279,8 @@
                END IF
             END IF
 *
-            WRITE( NOUT, FMT = 9995 )SUBNAM( ISUB ), N
+            WRITE( NOUT, FMT = 9995 )
+     $     SUBNAM( ISUB )(1:ILA_LEN_TRIM( SUBNAM( ISUB ) )), N
             IF( ISUB.EQ.1 ) THEN
                CALL SPRTBL( 'NB', 'K', NNB, NBVAL, NK, KVAL, NLDA,
      $                      RESLTS( 1, 1, 1, 1 ), LDR1, LDR2, NOUT )
@@ -288,11 +292,11 @@
   110 CONTINUE
   120 CONTINUE
 *
- 9999 FORMAT( 1X, A6, ' timing run not attempted', / )
- 9998 FORMAT( / ' *** Speed of ', A6, ' in megaflops ***' )
+ 9999 FORMAT( 1X, A, ' timing run not attempted', / )
+ 9998 FORMAT( / ' *** Speed of ', A, ' in megaflops ***' )
  9997 FORMAT( 5X, 'with LDA = ', I5 )
  9996 FORMAT( 5X, 'line ', I2, ' with LDA = ', I5 )
- 9995 FORMAT( / 5X, A6, ' with M =', I6, / )
+ 9995 FORMAT( / 5X, A, ' with M =', I6, / )
 *
       RETURN
 *

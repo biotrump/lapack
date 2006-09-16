@@ -123,7 +123,7 @@
 *     .. Local Scalars ..
       CHARACTER          LAB1, LAB2, SIDE, TRANS, UPLO
       CHARACTER*3        PATH
-      CHARACTER*6        CNAME
+      CHARACTER(32)      CNAME
       INTEGER            I, I3, I4, IC, ICL, ILDA, IM, IN, INB, INFO,
      $                   ISIDE, ISUB, ITOFF, ITRAN, IUPLO, LDA, LW, M,
      $                   M1, N, N1, NB, NX
@@ -132,10 +132,12 @@
 *     .. Local Arrays ..
       LOGICAL            TIMSUB( NSUBS )
       CHARACTER          SIDES( 2 ), TRANSS( 2 ), UPLOS( 2 )
-      CHARACTER*6        SUBNAM( NSUBS )
+      CHARACTER(32)      SUBNAM( NSUBS )
       INTEGER            ISEED( 4 ), RESEED( 4 )
 *     ..
 *     .. External Functions ..
+      INTEGER ILA_LEN_TRIM
+      EXTERNAL ILA_LEN_TRIM
       REAL               SECOND, SMFLOP, SOPLA
       EXTERNAL           SECOND, SMFLOP, SOPLA
 *     ..
@@ -169,7 +171,7 @@
       CNAME = LINE( 1: 6 )
       CALL ATIMCK( 2, CNAME, NM, MVAL, NLDA, LDAVAL, NOUT, INFO )
       IF( INFO.GT.0 ) THEN
-         WRITE( NOUT, FMT = 9999 )CNAME
+         WRITE( NOUT, FMT = 9999 )CNAME(1:ILA_LEN_TRIM(CNAME))
          GO TO 240
       END IF
 *
@@ -178,7 +180,8 @@
       IF( TIMSUB( 4 ) ) THEN
          CALL ATIMCK( 3, CNAME, NN, NVAL, NLDA, LDAVAL, NOUT, INFO )
          IF( INFO.GT.0 ) THEN
-            WRITE( NOUT, FMT = 9999 )SUBNAM( 4 )
+            WRITE( NOUT, FMT = 9999 )
+     $     SUBNAM( 4 )(1:ILA_LEN_TRIM( SUBNAM( 4 ) ))
             TIMSUB( 4 ) = .FALSE.
          END IF
       END IF
@@ -426,7 +429,8 @@
       DO 180 ISUB = 1, NSUBS - 1
          IF( .NOT.TIMSUB( ISUB ) )
      $      GO TO 180
-         WRITE( NOUT, FMT = 9998 )SUBNAM( ISUB )
+         WRITE( NOUT, FMT = 9998 )
+     $     SUBNAM( ISUB )(1:ILA_LEN_TRIM( SUBNAM( ISUB ) ))
          IF( NLDA.GT.1 ) THEN
             DO 160 I = 1, NLDA
                WRITE( NOUT, FMT = 9997 )I, LDAVAL( I )
@@ -439,7 +443,9 @@
          ELSE
             I3 = 1
             DO 170 IUPLO = 1, 2
-               WRITE( NOUT, FMT = 9996 )SUBNAM( ISUB ), UPLOS( IUPLO )
+               WRITE( NOUT, FMT = 9996 )
+     $     SUBNAM( ISUB )(1:ILA_LEN_TRIM( SUBNAM( ISUB ) )),
+     $     UPLOS( IUPLO )
                CALL SPRTB3( '(  NB,  NX)', 'N', NNB, NBVAL, NXVAL, NM,
      $                      MVAL, NLDA, RESLTS( 1, 1, I3, ISUB ), LDR1,
      $                      LDR2, NOUT )
@@ -458,7 +464,8 @@
                LAB1 = 'M'
                LAB2 = 'N'
                IF( NLDA.GT.1 ) THEN
-                  WRITE( NOUT, FMT = 9998 )SUBNAM( ISUB )
+                  WRITE( NOUT, FMT = 9998 )
+     $     SUBNAM( ISUB )(1:ILA_LEN_TRIM( SUBNAM( ISUB ) ))
                   DO 190 I = 1, NLDA
                      WRITE( NOUT, FMT = 9997 )I, LDAVAL( I )
   190             CONTINUE
@@ -471,7 +478,8 @@
                DO 210 IN = 1, NN
                   I3 = 1
                   DO 200 IUPLO = 1, 2
-                     WRITE( NOUT, FMT = 9995 )SUBNAM( ISUB ),
+                     WRITE( NOUT, FMT = 9995 )
+     $     SUBNAM( ISUB )(1:ILA_LEN_TRIM( SUBNAM( ISUB ) )),
      $                  SIDES( ISIDE ), UPLOS( IUPLO ), TRANSS( ITRAN ),
      $                  LAB2, NVAL( IN )
                      CALL SPRTBL( 'NB', LAB1, NNB, NBVAL, NM, MVAL,
@@ -488,11 +496,11 @@
 *
 *     Print a table of results for each timed routine.
 *
- 9999 FORMAT( 1X, A6, ' timing run not attempted', / )
- 9998 FORMAT( / ' *** Speed of ', A6, ' in megaflops *** ' )
+ 9999 FORMAT( 1X, A, ' timing run not attempted', / )
+ 9998 FORMAT( / ' *** Speed of ', A, ' in megaflops *** ' )
  9997 FORMAT( 5X, 'line ', I2, ' with LDA = ', I5 )
- 9996 FORMAT( / 5X, A6, ' with UPLO = ''', A1, '''', / )
- 9995 FORMAT( / 5X, A6, ' with SIDE = ''', A1, ''', UPLO = ''', A1,
+ 9996 FORMAT( / 5X, A, ' with UPLO = ''', A1, '''', / )
+ 9995 FORMAT( / 5X, A, ' with SIDE = ''', A1, ''', UPLO = ''', A1,
      $      ''', TRANS = ''', A1, ''', ', A1, ' =', I6, / )
       RETURN
 *

@@ -89,10 +89,12 @@
 *
 *     .. Local Scalars ..
       LOGICAL            REQ
-      CHARACTER*6        CNAME
+      CHARACTER(32)      CNAME
       INTEGER            I, ISTART, ISTOP, ISUB, LCNAME, LNAMES, LPATH
 *     ..
 *     .. External Functions ..
+      INTEGER ILA_LEN_TRIM
+      EXTERNAL ILA_LEN_TRIM
       LOGICAL            LSAME, LSAMEN
       EXTERNAL           LSAME, LSAMEN
 *     ..
@@ -137,7 +139,7 @@
       END IF
 *
       IF( ISTOP.EQ.0 ) THEN
-         WRITE( NOUT, FMT = 9999 )CNAME
+         WRITE( NOUT, FMT = 9999 )CNAME(1:ILA_LEN_TRIM(CNAME))
  9999    FORMAT( 1X, A, ':  Unrecognized path or subroutine name', / )
          INFO = -1
          GO TO 110
@@ -173,7 +175,7 @@
             REQ = REQ .OR. TIMSUB( I )
    80    CONTINUE
          IF( .NOT.REQ ) THEN
-            WRITE( NOUT, FMT = 9998 )CNAME
+            WRITE( NOUT, FMT = 9998 )CNAME(1:ILA_LEN_TRIM(CNAME))
  9998       FORMAT( 1X, A, ' was not timed', / )
             INFO = 1
             GO TO 110

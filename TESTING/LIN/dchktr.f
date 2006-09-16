@@ -122,7 +122,7 @@
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
-      CHARACTER*6        SRNAMT
+      CHARACTER(32)      SRNAMT
       INTEGER            INFOT, IOUNIT
 *     ..
 *     .. Common blocks ..
@@ -476,7 +476,7 @@
      $      test(', I2, ')= ', G12.5 )
  9997 FORMAT( ' NORM=''', A1, ''', UPLO =''', A1, ''', N=', I5, ',',
      $      11X, ' type ', I2, ', test(', I2, ')=', G12.5 )
- 9996 FORMAT( 1X, A6, '( ''', A1, ''', ''', A1, ''', ''', A1, ''', ''',
+ 9996 FORMAT( 1X, A, '( ''', A1, ''', ''', A1, ''', ''', A1, ''', ''',
      $      A1, ''',', I5, ', ... ), type ', I2, ', test(', I2, ')=',
      $      G12.5 )
       RETURN

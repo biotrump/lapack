@@ -10,12 +10,12 @@
 *
 *     .. Scalar Arguments ..
       LOGICAL            LERR, OK
-      CHARACTER*6        SRNAMT
+      CHARACTER*(*)       SRNAMT
       INTEGER            INFOT, NOUT
 *     ..
 *     .. Executable Statements ..
       IF( .NOT.LERR ) THEN
-         WRITE( NOUT, FMT = 9999 )INFOT, SRNAMT
+         WRITE( NOUT, FMT = 9999 )INFOT, SRNAMT(1:ILA_LEN_TRIM(SRNAMT))
          OK = .FALSE.
       END IF
       LERR = .FALSE.

@@ -7,7 +7,7 @@
 *     March 31, 1993
 *
 *     .. Scalar Arguments ..
-      CHARACTER*6        SUBNAM
+      CHARACTER*(*)       SUBNAM
       INTEGER            ICHK, INFO, NLDA, NN, NOUT
 *     ..
 *     .. Array Arguments ..
@@ -35,7 +35,7 @@
 *          = 4:  N*(N+1)/2 <= LA
 *          = 0 or other value:  Determined from name passed in SUBNAM
 *
-*  SUBNAM  (input) CHARACTER*6
+*  SUBNAM  (input) CHARACTER*(*)
 *          The name of the subroutine or path for which the input
 *          values are to be tested.
 *
@@ -64,6 +64,8 @@
       INTEGER            I, J, LDA, N
 *     ..
 *     .. External Functions ..
+      INTEGER ILA_LEN_TRIM
+      EXTERNAL ILA_LEN_TRIM
       LOGICAL            LSAMEN
       EXTERNAL           LSAMEN
 *     ..
@@ -82,11 +84,14 @@
                   INFO = INFO + 1
                   IF( NOUT.GT.0 ) THEN
                      IF( ICHK.EQ.1 ) THEN
-                        WRITE( NOUT, FMT = 9999 )SUBNAM, NVAL( I ), LDA
+                        WRITE( NOUT, FMT = 9999 )
+     $     SUBNAM(1:ILA_LEN_TRIM( SUBNAM )), NVAL( I ), LDA
                      ELSE IF( ICHK.EQ.2 ) THEN
-                        WRITE( NOUT, FMT = 9998 )SUBNAM, NVAL( I ), LDA
+                        WRITE( NOUT, FMT = 9998 )
+     $     SUBNAM(1:ILA_LEN_TRIM( SUBNAM )), NVAL( I ), LDA
                      ELSE
-                        WRITE( NOUT, FMT = 9997 )SUBNAM, NVAL( I ), LDA
+                        WRITE( NOUT, FMT = 9997 )
+     $     SUBNAM(1:ILA_LEN_TRIM( SUBNAM )), NVAL( I ), LDA
                      END IF
                   END IF
                END IF
@@ -103,7 +108,8 @@
             IF( N*( N+1 ) / 2.GT.LDA ) THEN
                INFO = INFO + 1
                IF( NOUT.GT.0 )
-     $            WRITE( NOUT, FMT = 9996 )SUBNAM, N, LDA
+     $            WRITE( NOUT, FMT = 9996 )
+     $     SUBNAM(1:ILA_LEN_TRIM( SUBNAM )), N, LDA
             END IF
    30    CONTINUE
 *
@@ -119,7 +125,8 @@
                   IF( 2*NVAL( I )+1.GT.LDA ) THEN
                      INFO = INFO + 1
                      IF( NOUT.GT.0 )
-     $                  WRITE( NOUT, FMT = 9994 )SUBNAM, NVAL( I ),
+     $                  WRITE( NOUT, FMT = 9994 )
+     $     SUBNAM(1:ILA_LEN_TRIM( SUBNAM )), NVAL( I ),
      $                  LDA, 2*NVAL( I ) + 1
                   END IF
    40          CONTINUE
@@ -131,7 +138,8 @@
                   IF( 3*NVAL( I )+1.GT.LDA ) THEN
                      INFO = INFO + 1
                      IF( NOUT.GT.0 )
-     $                  WRITE( NOUT, FMT = 9995 )SUBNAM, NVAL( I ),
+     $                  WRITE( NOUT, FMT = 9995 )
+     $     SUBNAM(1:ILA_LEN_TRIM( SUBNAM )), NVAL( I ),
      $                  LDA, 3*NVAL( I ) + 1
                   END IF
    60          CONTINUE
@@ -149,7 +157,8 @@
                IF( NVAL( I )+1.GT.LDA ) THEN
                   INFO = INFO + 1
                   IF( NOUT.GT.0 )
-     $               WRITE( NOUT, FMT = 9993 )SUBNAM, NVAL( I ), LDA
+     $               WRITE( NOUT, FMT = 9993 )
+     $     SUBNAM(1:ILA_LEN_TRIM( SUBNAM )), NVAL( I ), LDA
                END IF
    80       CONTINUE
    90    CONTINUE
@@ -166,28 +175,29 @@
                   IF( NVAL( I )+1.GT.LDA ) THEN
                      INFO = INFO + 1
                      IF( NOUT.GT.0 )
-     $                  WRITE( NOUT, FMT = 9992 )SUBNAM, NVAL( I ), LDA
+     $                  WRITE( NOUT, FMT = 9992 )
+     $     SUBNAM(1:ILA_LEN_TRIM( SUBNAM )), NVAL( I ), LDA
                   END IF
   100          CONTINUE
   110       CONTINUE
          END IF
 *
       END IF
- 9999 FORMAT( ' *** Error for ', A6, ':  M > LDA for M =', I6,
+ 9999 FORMAT( ' *** Error for ', A, ':  M > LDA for M =', I6,
      $      ', LDA =', I7 )
- 9998 FORMAT( ' *** Error for ', A6, ':  N > LDA for N =', I6,
+ 9998 FORMAT( ' *** Error for ', A, ':  N > LDA for N =', I6,
      $      ', LDA =', I7 )
- 9997 FORMAT( ' *** Error for ', A6, ':  K > LDA for K =', I6,
+ 9997 FORMAT( ' *** Error for ', A, ':  K > LDA for K =', I6,
      $      ', LDA =', I7 )
- 9996 FORMAT( ' *** Error for ', A6, ':  N*(N+1)/2 > LA for N =', I6,
+ 9996 FORMAT( ' *** Error for ', A, ':  N*(N+1)/2 > LA for N =', I6,
      $      ', LA =', I7 )
- 9995 FORMAT( ' *** Error for ', A6, ':  3*K+1 > LDA for K =', I6,
+ 9995 FORMAT( ' *** Error for ', A, ':  3*K+1 > LDA for K =', I6,
      $      ', LDA =', I7, / ' --> Increase LDA to at least ', I7 )
- 9994 FORMAT( ' *** Error for ', A6, ':  2*K+1 > LDA for K =', I6,
+ 9994 FORMAT( ' *** Error for ', A, ':  2*K+1 > LDA for K =', I6,
      $      ', LDA =', I7, / ' --> Increase LDA to at least ', I7 )
- 9993 FORMAT( ' *** Error for ', A6, ':  K+1 > LDA for K =', I6, ', LD',
+ 9993 FORMAT( ' *** Error for ', A, ':  K+1 > LDA for K =', I6, ', LD',
      $      'A =', I7 )
- 9992 FORMAT( ' *** Error for ', A6, ':  2*K+2 > LDA for K =', I6, ', ',
+ 9992 FORMAT( ' *** Error for ', A, ':  2*K+2 > LDA for K =', I6, ', ',
      $      'LDA =', I7 )
 *
       RETURN

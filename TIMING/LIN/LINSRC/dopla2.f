@@ -6,7 +6,7 @@
 *     February 29, 1992
 *
 *     .. Scalar Arguments ..
-      CHARACTER*6        SUBNAM
+      CHARACTER*(*)       SUBNAM
       CHARACTER*( * )    OPTS
       INTEGER            K, L, M, N, NB
 *     ..
@@ -24,7 +24,7 @@
 *  Arguments
 *  =========
 *
-*  SUBNAM  (input) CHARACTER*6
+*  SUBNAM  (input) CHARACTER*(*)
 *          The name of the subroutine.
 *
 *  OPTS    (input) CHRACTER*(*)
@@ -64,7 +64,7 @@
       CHARACTER          C1, SIDE, UPLO, VECT
       CHARACTER*2        C2
       CHARACTER*3        C3
-      CHARACTER*6        SUB2
+      CHARACTER(32)      SUB2
       INTEGER            IHI, ILO, ISIDE, MI, NI, NQ
 *     ..
 *     .. External Functions ..

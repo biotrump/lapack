@@ -108,7 +108,7 @@
       LOGICAL            IXANDY
       CHARACTER          TRANSA, UPLO
       CHARACTER*3        PATH
-      CHARACTER*6        CNAME
+      CHARACTER(32)      CNAME
       INTEGER            I, I3, IC, ICL, IINC, IK, ILDA, IM, IMAT, IN,
      $                   INCX, INFO, ISUB, ITA, IUPLO, J, K, LDA, M, N,
      $                   NX, NY
@@ -117,10 +117,12 @@
 *     .. Local Arrays ..
       LOGICAL            TIMSUB( NSUBS )
       CHARACTER          TRANS( NTRANS ), UPLOS( NUPLOS )
-      CHARACTER*6        NAMES( NSUBS )
+      CHARACTER(32)      NAMES( NSUBS )
       INTEGER            LAVAL( 1 )
 *     ..
 *     .. External Functions ..
+      INTEGER ILA_LEN_TRIM
+      EXTERNAL ILA_LEN_TRIM
       DOUBLE PRECISION   DMFLOP, DOPBL2, DSECND
       EXTERNAL           DMFLOP, DOPBL2, DSECND
 *     ..
@@ -174,13 +176,13 @@
             CALL ATIMCK( 2, CNAME, NN, NVAL, NLDA, LDAVAL, NOUT, INFO )
          END IF
          IF( INFO.GT.0 ) THEN
-            WRITE( NOUT, FMT = 9999 )CNAME
+            WRITE( NOUT, FMT = 9999 )CNAME(1:ILA_LEN_TRIM(CNAME))
             GO TO 1060
          END IF
 *
 *        Print header.
 *
-         WRITE( NOUT, FMT = 9998 )CNAME
+         WRITE( NOUT, FMT = 9998 )CNAME(1:ILA_LEN_TRIM(CNAME))
          IXANDY = ISUB.LE.5 .OR. ISUB.EQ.12 .OR. ISUB.EQ.15 .OR.
      $            ISUB.EQ.16
          IF( CNAME( 3: 3 ).NE.'P' ) THEN
@@ -394,7 +396,8 @@
   200                CONTINUE
   210             CONTINUE
   220          CONTINUE
-               WRITE( NOUT, FMT = 9986 )CNAME, UPLO
+               WRITE( NOUT, FMT = 9986 )
+     $     CNAME(1:ILA_LEN_TRIM(CNAME)), UPLO
                CALL DPRTBL( ' ', 'N', 1, NVAL, NN, NVAL, NINC*NLDA,
      $                      RESLTS, LDR1, LDR2, NOUT )
   230       CONTINUE
@@ -454,7 +457,8 @@
   270                CONTINUE
   280             CONTINUE
   290          CONTINUE
-               WRITE( NOUT, FMT = 9986 )CNAME, UPLO
+               WRITE( NOUT, FMT = 9986 )
+     $     CNAME(1:ILA_LEN_TRIM(CNAME)), UPLO
                CALL DPRTBL( 'K', 'N', NK, KVAL, NN, NVAL, NINC*NLDA,
      $                      RESLTS, LDR1, LDR2, NOUT )
   300       CONTINUE
@@ -508,7 +512,8 @@
                      RESLTS( 1, IN, IINC ) = DMFLOP( OPS, TIME, 0 )
   330             CONTINUE
   340          CONTINUE
-               WRITE( NOUT, FMT = 9986 )CNAME, UPLO
+               WRITE( NOUT, FMT = 9986 )
+     $     CNAME(1:ILA_LEN_TRIM(CNAME)), UPLO
                CALL DPRTBL( ' ', 'N', 1, NVAL, NN, NVAL, NINC, RESLTS,
      $                      LDR1, LDR2, NOUT )
   350       CONTINUE
@@ -566,7 +571,8 @@
   380                   CONTINUE
   390                CONTINUE
   400             CONTINUE
-                  WRITE( NOUT, FMT = 9987 )CNAME, UPLO, TRANSA
+                  WRITE( NOUT, FMT = 9987 )
+     $     CNAME(1:ILA_LEN_TRIM(CNAME)), UPLO, TRANSA
                   CALL DPRTBL( ' ', 'N', 1, NVAL, NN, NVAL, NINC*NLDA,
      $                         RESLTS, LDR1, LDR2, NOUT )
   410          CONTINUE
@@ -625,7 +631,8 @@
   450                   CONTINUE
   460                CONTINUE
   470             CONTINUE
-                  WRITE( NOUT, FMT = 9987 )CNAME, UPLO, TRANSA
+                  WRITE( NOUT, FMT = 9987 )
+     $     CNAME(1:ILA_LEN_TRIM(CNAME)), UPLO, TRANSA
                   CALL DPRTBL( ' ', 'N', 1, NVAL, NN, NVAL, NINC*NLDA,
      $                         RESLTS, LDR1, LDR2, NOUT )
   480          CONTINUE
@@ -688,7 +695,8 @@
   530                   CONTINUE
   540                CONTINUE
   550             CONTINUE
-                  WRITE( NOUT, FMT = 9987 )CNAME, UPLO, TRANSA
+                  WRITE( NOUT, FMT = 9987 )
+     $     CNAME(1:ILA_LEN_TRIM(CNAME)), UPLO, TRANSA
                   CALL DPRTBL( 'K', 'N', NK, KVAL, NN, NVAL, NINC*NLDA,
      $                         RESLTS, LDR1, LDR2, NOUT )
   560          CONTINUE
@@ -751,7 +759,8 @@
   610                   CONTINUE
   620                CONTINUE
   630             CONTINUE
-                  WRITE( NOUT, FMT = 9987 )CNAME, UPLO, TRANSA
+                  WRITE( NOUT, FMT = 9987 )
+     $     CNAME(1:ILA_LEN_TRIM(CNAME)), UPLO, TRANSA
                   CALL DPRTBL( 'K', 'N', NK, KVAL, NN, NVAL, NINC*NLDA,
      $                         RESLTS, LDR1, LDR2, NOUT )
   640          CONTINUE
@@ -808,7 +817,8 @@
                         RESLTS( 1, IN, IINC ) = DMFLOP( OPS, TIME, 0 )
   680                CONTINUE
   690             CONTINUE
-                  WRITE( NOUT, FMT = 9987 )CNAME, UPLO, TRANSA
+                  WRITE( NOUT, FMT = 9987 )
+     $     CNAME(1:ILA_LEN_TRIM(CNAME)), UPLO, TRANSA
                   CALL DPRTBL( ' ', 'N', 1, NVAL, NN, NVAL, NINC,
      $                         RESLTS, LDR1, LDR2, NOUT )
   700          CONTINUE
@@ -865,7 +875,8 @@
                         RESLTS( 1, IN, IINC ) = DMFLOP( OPS, TIME, 0 )
   740                CONTINUE
   750             CONTINUE
-                  WRITE( NOUT, FMT = 9987 )CNAME, UPLO, TRANSA
+                  WRITE( NOUT, FMT = 9987 )
+     $     CNAME(1:ILA_LEN_TRIM(CNAME)), UPLO, TRANSA
                   CALL DPRTBL( ' ', 'N', 1, NVAL, NN, NVAL, NINC,
      $                         RESLTS, LDR1, LDR2, NOUT )
   760          CONTINUE
@@ -976,7 +987,8 @@
   860                CONTINUE
   870             CONTINUE
   880          CONTINUE
-               WRITE( NOUT, FMT = 9986 )CNAME, UPLO
+               WRITE( NOUT, FMT = 9986 )
+     $     CNAME(1:ILA_LEN_TRIM(CNAME)), UPLO
                CALL DPRTBL( ' ', 'N', 1, NVAL, NN, NVAL, NINC*NLDA,
      $                      RESLTS, LDR1, LDR2, NOUT )
   890       CONTINUE
@@ -1033,7 +1045,8 @@
   920                CONTINUE
   930             CONTINUE
   940          CONTINUE
-               WRITE( NOUT, FMT = 9986 )CNAME, UPLO
+               WRITE( NOUT, FMT = 9986 )
+     $     CNAME(1:ILA_LEN_TRIM(CNAME)), UPLO
                CALL DPRTBL( ' ', 'N', 1, NVAL, NN, NVAL, NINC*NLDA,
      $                      RESLTS, LDR1, LDR2, NOUT )
   950       CONTINUE
@@ -1088,7 +1101,8 @@
                      RESLTS( 1, IN, IINC ) = DMFLOP( OPS, TIME, 0 )
   980             CONTINUE
   990          CONTINUE
-               WRITE( NOUT, FMT = 9986 )CNAME, UPLO
+               WRITE( NOUT, FMT = 9986 )
+     $     CNAME(1:ILA_LEN_TRIM(CNAME)), UPLO
                CALL DPRTBL( ' ', 'N', 1, NVAL, NN, NVAL, NINC, RESLTS,
      $                      LDR1, LDR2, NOUT )
  1000       CONTINUE
@@ -1143,7 +1157,8 @@
                      RESLTS( 1, IN, IINC ) = DMFLOP( OPS, TIME, 0 )
  1030             CONTINUE
  1040          CONTINUE
-               WRITE( NOUT, FMT = 9986 )CNAME, UPLO
+               WRITE( NOUT, FMT = 9986 )
+     $     CNAME(1:ILA_LEN_TRIM(CNAME)), UPLO
                CALL DPRTBL( ' ', 'N', 1, NVAL, NN, NVAL, NINC, RESLTS,
      $                      LDR1, LDR2, NOUT )
  1050       CONTINUE
@@ -1152,8 +1167,8 @@
  1060 CONTINUE
  1070 CONTINUE
 *
- 9999 FORMAT( 1X, A6, ' timing run not attempted', / )
- 9998 FORMAT( / ' *** Speed of ', A6, ' in megaflops ***' )
+ 9999 FORMAT( 1X, A, ' timing run not attempted', / )
+ 9998 FORMAT( / ' *** Speed of ', A, ' in megaflops ***' )
  9997 FORMAT( 5X, 'with LDA = ', I5, ' and INCX = INCY = ', I5 )
  9996 FORMAT( 5X, 'with LDA = ', I5, ' and INCX = ', I5 )
  9995 FORMAT( 5X, 'with INCX = INCY = ', I5 )
@@ -1166,9 +1181,9 @@
  9989 FORMAT( / 1X, 'DGEMV  with TRANS = ''', A1, '''', / )
  9988 FORMAT( / 1X, 'DGBMV  with TRANS = ''', A1,
      $      ''', M = N and KL = K', 'U ', '= K', / )
- 9987 FORMAT( / 1X, A6, ' with UPLO = ''', A1, ''', TRANS = ''', A1,
+ 9987 FORMAT( / 1X, A, ' with UPLO = ''', A1, ''', TRANS = ''', A1,
      $      '''', / )
- 9986 FORMAT( / 1X, A6, ' with UPLO = ''', A1, '''', / )
+ 9986 FORMAT( / 1X, A, ' with UPLO = ''', A1, '''', / )
  9985 FORMAT( / 1X, 'DGER', / )
  9984 FORMAT( / / / / / )
       RETURN

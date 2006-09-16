@@ -127,7 +127,7 @@
 *     .. Local Scalars ..
       CHARACTER          LABM, SIDE, TRANS
       CHARACTER*3        PATH
-      CHARACTER*6        CNAME
+      CHARACTER(32)      CNAME
       INTEGER            I, I4, IC, ICL, IK, ILDA, IM, IMX, INB, INFO,
      $                   ISIDE, ISUB, ITOFF, ITRAN, K, K1, LDA, LW, M,
      $                   M1, MINMN, N, N1, NB, NX
@@ -136,10 +136,12 @@
 *     .. Local Arrays ..
       LOGICAL            TIMSUB( NSUBS )
       CHARACTER          SIDES( 2 ), TRANSS( 2 )
-      CHARACTER*6        SUBNAM( NSUBS )
+      CHARACTER(32)      SUBNAM( NSUBS )
       INTEGER            ISEED( 4 ), MUSE( 12 ), NUSE( 12 ), RESEED( 4 )
 *     ..
 *     .. External Functions ..
+      INTEGER ILA_LEN_TRIM
+      EXTERNAL ILA_LEN_TRIM
       REAL               SECOND, SMFLOP, SOPLA
       EXTERNAL           SECOND, SMFLOP, SOPLA
 *     ..
@@ -170,7 +172,7 @@
       CNAME = LINE( 1: 6 )
       CALL ATIMCK( 1, CNAME, NM, MVAL, NLDA, LDAVAL, NOUT, INFO )
       IF( INFO.GT.0 ) THEN
-         WRITE( NOUT, FMT = 9999 )CNAME
+         WRITE( NOUT, FMT = 9999 )CNAME(1:ILA_LEN_TRIM(CNAME))
          GO TO 230
       END IF
 *
@@ -292,7 +294,8 @@
       DO 90 ISUB = 1, NSUBS - 1
          IF( .NOT.TIMSUB( ISUB ) )
      $      GO TO 90
-         WRITE( NOUT, FMT = 9998 )SUBNAM( ISUB )
+         WRITE( NOUT, FMT = 9998 )
+     $     SUBNAM( ISUB )(1:ILA_LEN_TRIM( SUBNAM( ISUB ) ))
          IF( NLDA.GT.1 ) THEN
             DO 80 I = 1, NLDA
                WRITE( NOUT, FMT = 9997 )I, LDAVAL( I )
@@ -315,7 +318,8 @@
 *
          CALL ATIMCK( 3, CNAME, NK, KVAL, NLDA, LDAVAL, NOUT, INFO )
          IF( INFO.GT.0 ) THEN
-            WRITE( NOUT, FMT = 9999 )SUBNAM( 3 )
+            WRITE( NOUT, FMT = 9999 )
+     $     SUBNAM( 3 )(1:ILA_LEN_TRIM( SUBNAM( 3 ) ))
             GO TO 230
          END IF
 *
@@ -440,7 +444,8 @@
             DO 220 ISIDE = 1, 2
                SIDE = SIDES( ISIDE )
                IF( ISIDE.EQ.1 ) THEN
-                  WRITE( NOUT, FMT = 9998 )SUBNAM( ISUB )
+                  WRITE( NOUT, FMT = 9998 )
+     $     SUBNAM( ISUB )(1:ILA_LEN_TRIM( SUBNAM( ISUB ) ))
                   IF( NLDA.GT.1 ) THEN
                      DO 190 I = 1, NLDA
                         WRITE( NOUT, FMT = 9997 )I, LDAVAL( I )
@@ -452,12 +457,14 @@
                   DO 200 IK = 1, NK
                      IF( ISIDE.EQ.1 ) THEN
                         N = KVAL( IK )
-                        WRITE( NOUT, FMT = 9995 )SUBNAM( ISUB ), SIDE,
+                        WRITE( NOUT, FMT = 9995 )
+     $     SUBNAM( ISUB )(1:ILA_LEN_TRIM( SUBNAM( ISUB ) )), SIDE,
      $                     TRANS, 'N', N
                         LABM = 'M'
                      ELSE
                         M = KVAL( IK )
-                        WRITE( NOUT, FMT = 9995 )SUBNAM( ISUB ), SIDE,
+                        WRITE( NOUT, FMT = 9995 )
+     $     SUBNAM( ISUB )(1:ILA_LEN_TRIM( SUBNAM( ISUB ) )), SIDE,
      $                     TRANS, 'M', M
                         LABM = 'N'
                      END IF
@@ -470,17 +477,18 @@
   210          CONTINUE
   220       CONTINUE
          ELSE
-            WRITE( NOUT, FMT = 9994 )SUBNAM( ISUB )
+            WRITE( NOUT, FMT = 9994 )
+     $     SUBNAM( ISUB )(1:ILA_LEN_TRIM( SUBNAM( ISUB ) ))
          END IF
       END IF
   230 CONTINUE
- 9999 FORMAT( 1X, A6, ' timing run not attempted', / )
- 9998 FORMAT( / ' *** Speed of ', A6, ' in megaflops ***' )
+ 9999 FORMAT( 1X, A, ' timing run not attempted', / )
+ 9998 FORMAT( / ' *** Speed of ', A, ' in megaflops ***' )
  9997 FORMAT( 5X, 'line ', I2, ' with LDA = ', I5 )
  9996 FORMAT( 5X, 'K = min(M,N)', / )
- 9995 FORMAT( / 5X, A6, ' with SIDE = ''', A1, ''', TRANS = ''', A1,
+ 9995 FORMAT( / 5X, A, ' with SIDE = ''', A1, ''', TRANS = ''', A1,
      $      ''', ', A1, ' =', I6, / )
- 9994 FORMAT( ' *** No pairs (M,N) found with M >= N:  ', A6,
+ 9994 FORMAT( ' *** No pairs (M,N) found with M >= N:  ', A,
      $      ' not timed' )
       RETURN
 *

@@ -649,9 +649,9 @@
 *
  9997 FORMAT( ' Total time used = ', F12.2, ' seconds', / )
  9996 FORMAT( 1X, A3, ':  Unrecognized path name' )
- 9995 FORMAT( ' *** Invalid input value: ', A6, '=', I6, '; must be >=',
+ 9995 FORMAT( ' *** Invalid input value: ', A, '=', I6, '; must be >=',
      $      I6 )
- 9994 FORMAT( ' *** Invalid input value: ', A6, '=', I6, '; must be <=',
+ 9994 FORMAT( ' *** Invalid input value: ', A, '=', I6, '; must be <=',
      $      I6 )
  9993 FORMAT( ' Timing the Nonsymmetric Eigenvalue Problem routines',
      $      / '    CGEHRD, CHSEQR, CTREVC, and CHSEIN' )
@@ -665,7 +665,7 @@
  9988 FORMAT( '    Values of ', A5, ':  ', 10I6, / 19X, 10I6 )
  9987 FORMAT( / ' Minimum time a subroutine will be timed = ', F8.2,
      $      ' seconds', / )
- 9986 FORMAT( ' *** Error code from ', A6, ' = ', I4 )
+ 9986 FORMAT( ' *** Error code from ', A, ' = ', I4 )
  9985 FORMAT( / ' LAPACK VERSION 3.0, released June 30, 1999 ' )
 *
 *     End of CTIMEE

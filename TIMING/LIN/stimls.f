@@ -140,10 +140,12 @@
 *     ..
 *     .. Local Arrays ..
       LOGICAL            TIMSUB( NSUBS )
-      CHARACTER*6        SUBNAM( NSUBS )
+      CHARACTER(32)      SUBNAM( NSUBS )
       INTEGER            ISEED( 4 ), ISEEDY( 4 ), NDATA( NSUBS )
 *     ..
 *     .. External Functions ..
+      INTEGER ILA_LEN_TRIM
+      EXTERNAL ILA_LEN_TRIM
       REAL               SECOND, SASUM, SLAMCH, SMFLOP
       EXTERNAL           SECOND, SASUM, SLAMCH, SMFLOP
 *     ..
@@ -157,7 +159,7 @@
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
-      CHARACTER*6        SRNAMT
+      CHARACTER(32)      SRNAMT
       INTEGER            INFOT, IOUNIT
 *     ..
 *     .. Common blocks ..
@@ -538,7 +540,8 @@
 *
       DO 220 ISUB = 1, NSUBS
          IF( TIMSUB( ISUB ) ) THEN
-            WRITE( NOUT, FMT = 9999 ) SUBNAM( ISUB )
+            WRITE( NOUT, FMT = 9999 )
+     $     SUBNAM( ISUB )(1:ILA_LEN_TRIM( SUBNAM( ISUB ) ))
             IF( ISUB.EQ.1 ) THEN
                WRITE( NOUT, FMT = 9998 )
             ELSE IF( ISUB.EQ.2 ) THEN

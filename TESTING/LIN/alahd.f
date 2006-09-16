@@ -58,10 +58,12 @@
       LOGICAL            CORZ, SORD
       CHARACTER          C1, C3
       CHARACTER*2        P2
-      CHARACTER*6        SUBNAM
+      CHARACTER(32)      SUBNAM
       CHARACTER*9        SYM
 *     ..
 *     .. External Functions ..
+      INTEGER ILA_LEN_TRIM
+      EXTERNAL ILA_LEN_TRIM
       LOGICAL            LSAME, LSAMEN
       EXTERNAL           LSAME, LSAMEN
 *     ..
@@ -260,7 +262,7 @@
             SUBNAM = PATH( 1: 1 ) // 'LATPS'
          END IF
          WRITE( IOUNIT, FMT = 9966 )PATH
-         WRITE( IOUNIT, FMT = 9965 )SUBNAM
+         WRITE( IOUNIT, FMT = 9965 )SUBNAM(1:ILA_LEN_TRIM( SUBNAM ))
          WRITE( IOUNIT, FMT = '( '' Test ratios:'' )' )
          WRITE( IOUNIT, FMT = 9961 )1
          WRITE( IOUNIT, FMT = 9960 )2
@@ -269,7 +271,7 @@
          WRITE( IOUNIT, FMT = 9957 )5
          WRITE( IOUNIT, FMT = 9956 )6
          WRITE( IOUNIT, FMT = 9955 )7
-         WRITE( IOUNIT, FMT = 9951 )SUBNAM, 8
+         WRITE( IOUNIT, FMT = 9951 )SUBNAM(1:ILA_LEN_TRIM( SUBNAM )), 8
          WRITE( IOUNIT, FMT = '( '' Messages:'' )' )
 *
       ELSE IF( LSAMEN( 2, P2, 'TB' ) ) THEN
@@ -279,7 +281,7 @@
          WRITE( IOUNIT, FMT = 9988 )PATH
          SUBNAM = PATH( 1: 1 ) // 'LATBS'
          WRITE( IOUNIT, FMT = 9964 )PATH
-         WRITE( IOUNIT, FMT = 9963 )SUBNAM
+         WRITE( IOUNIT, FMT = 9963 )SUBNAM(1:ILA_LEN_TRIM( SUBNAM ))
          WRITE( IOUNIT, FMT = '( '' Test ratios:'' )' )
          WRITE( IOUNIT, FMT = 9960 )1
          WRITE( IOUNIT, FMT = 9959 )2
@@ -287,7 +289,7 @@
          WRITE( IOUNIT, FMT = 9957 )4
          WRITE( IOUNIT, FMT = 9956 )5
          WRITE( IOUNIT, FMT = 9955 )6
-         WRITE( IOUNIT, FMT = 9951 )SUBNAM, 7
+         WRITE( IOUNIT, FMT = 9951 )SUBNAM(1:ILA_LEN_TRIM( SUBNAM )), 7
          WRITE( IOUNIT, FMT = '( '' Messages:'' )' )
 *
       ELSE IF( LSAMEN( 2, P2, 'QR' ) ) THEN
@@ -617,7 +619,7 @@
      $      '9. Unit, CNDNUM = sqrt(0.1/EPS)', / 4X,
      $      '5. Scaled near underflow', 10X,
      $      '10. Unit, CNDNUM = 0.1/EPS' )
- 9965 FORMAT( ' Special types for testing ', A6, ':', / 3X,
+ 9965 FORMAT( ' Special types for testing ', A, ':', / 3X,
      $      '11. Matrix elements are O(1), large right hand side', / 3X,
      $      '12. First diagonal causes overflow,',
      $      ' offdiagonal column norms < 1', / 3X,
@@ -640,7 +642,7 @@
      $      '4. Scaled near underflow', 11X,
      $      '9. Unit, CNDNUM = 0.1/EPS', / 4X,
      $      '5. Scaled near overflow' )
- 9963 FORMAT( ' Special types for testing ', A6, ':', / 3X,
+ 9963 FORMAT( ' Special types for testing ', A, ':', / 3X,
      $      '10. Matrix elements are O(1), large right hand side', / 3X,
      $      '11. First diagonal causes overflow,',
      $      ' offdiagonal column norms < 1', / 3X,
@@ -676,7 +678,7 @@
  9952 FORMAT( 3X, I2, ': norm( U''*D*U - A ) / ( N * norm(A) * EPS )',
      $      ', or', / 7X, 'norm( L*D*L'' - A ) / ( N * norm(A) * EPS )'
      $       )
- 9951 FORMAT( ' Test ratio for ', A6, ':', / 3X, I2,
+ 9951 FORMAT( ' Test ratio for ', A, ':', / 3X, I2,
      $      ': norm( s*b - A*x )  / ( norm(A) * norm(x) * EPS )' )
  9950 FORMAT( 3X, I2, ': norm( R - Q'' * A ) / ( M * norm(A) * EPS )' )
  9949 FORMAT( 3X, I2, ': norm( L - A * Q'' ) / ( N * norm(A) * EPS )' )

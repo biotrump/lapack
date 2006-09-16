@@ -6,7 +6,7 @@
 *     February 29, 1992
 *
 *     .. Scalar Arguments ..
-      CHARACTER*6        SUBNAM
+      CHARACTER*(*)       SUBNAM
       INTEGER            KL, KU, M, N, NB
 *     ..
 *
@@ -22,7 +22,7 @@
 *  Arguments
 *  =========
 *
-*  SUBNAM  (input) CHARACTER*6
+*  SUBNAM  (input) CHARACTER*(*)
 *          The name of the subroutine.
 *
 *  M       (input) INTEGER

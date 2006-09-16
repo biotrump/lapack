@@ -100,7 +100,7 @@
       INTRINSIC          CMPLX, MAX, REAL
 *     ..
 *     .. Scalars in Common ..
-      CHARACTER*6        SRNAMT
+      CHARACTER(32)      SRNAMT
 *     ..
 *     .. Common blocks ..
       COMMON             / SRNAMC / SRNAMT

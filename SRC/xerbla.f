@@ -6,7 +6,7 @@
 *     September 30, 1994
 *
 *     .. Scalar Arguments ..
-      CHARACTER*6        SRNAME
+      CHARACTER*(*)       SRNAME
       INTEGER            INFO
 *     ..
 *
@@ -23,7 +23,7 @@
 *  Arguments
 *  =========
 *
-*  SRNAME  (input) CHARACTER*6
+*  SRNAME  (input) CHARACTER*(*)
 *          The name of the routine which called XERBLA.
 *
 *  INFO    (input) INTEGER
@@ -32,13 +32,17 @@
 *
 * =====================================================================
 *
+*     .. External Functions ..
+      INTEGER ILA_LEN_TRIM
+      EXTERNAL ILA_LEN_TRIM
+*     ..
 *     .. Executable Statements ..
 *
-      WRITE( *, FMT = 9999 )SRNAME, INFO
+      WRITE( *, FMT = 9999 )SRNAME(1:ILA_LEN_TRIM(SRNAME)), INFO
 *
       STOP
 *
- 9999 FORMAT( ' ** On entry to ', A6, ' parameter number ', I2, ' had ',
+ 9999 FORMAT( ' ** On entry to ', A, ' parameter number ', I2, ' had ',
      $      'an illegal value' )
 *
 *     End of XERBLA

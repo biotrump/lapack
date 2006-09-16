@@ -6,7 +6,7 @@
 *     February 29, 1992
 *
 *     .. Scalar Arguments ..
-      CHARACTER*6        SRNAME
+      CHARACTER*(*)       SRNAME
       INTEGER            INFO
 *     ..
 *
@@ -21,7 +21,7 @@
 *  Arguments
 *  =========
 *
-*  SRNAME  (input) CHARACTER*6
+*  SRNAME  (input) CHARACTER*(*)
 *          The name of the subroutine calling XERBLA.  This name should
 *          match the COMMON variable SRNAMT.
 *
@@ -40,12 +40,12 @@
 *  OK      LOGICAL      Set to .TRUE. if INFO = INFOT and
 *                       SRNAME = SRNAMT, otherwise set to .FALSE.
 *  LERR    LOGICAL      Set to .TRUE., indicating that XERBLA was called
-*  SRNAMT  CHARACTER*6  Expected name of calling subroutine
+*  SRNAMT  CHARACTER*(*) Expected name of calling subroutine
 *
 *
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
-      CHARACTER*6        SRNAMT
+      CHARACTER(32)      SRNAMT
       INTEGER            INFOT, NOUT
 *     ..
 *     .. Common blocks ..
@@ -57,23 +57,27 @@
       LERR = .TRUE.
       IF( INFO.NE.INFOT ) THEN
          IF( INFOT.NE.0 ) THEN
-            WRITE( NOUT, FMT = 9999 )SRNAMT, INFO, INFOT
+            WRITE( NOUT, FMT = 9999 )
+     $     SRNAMT(1:ILA_LEN_TRIM(SRNAMT)), INFO, INFOT
          ELSE
-            WRITE( NOUT, FMT = 9997 )SRNAME, INFO
+            WRITE( NOUT, FMT = 9997 )
+     $     SRNAME(1:ILA_LEN_TRIM(SRNAME)), INFO
          END IF
          OK = .FALSE.
       END IF
       IF( SRNAME.NE.SRNAMT ) THEN
-         WRITE( NOUT, FMT = 9998 )SRNAME, SRNAMT
+         WRITE( NOUT, FMT = 9998 )
+     $     SRNAME(1:ILA_LEN_TRIM(SRNAME)),
+     $     SRNAMT(1:ILA_LEN_TRIM(SRNAMT))
          OK = .FALSE.
       END IF
       RETURN
 *
- 9999 FORMAT( ' *** XERBLA was called from ', A6, ' with INFO = ', I6,
+ 9999 FORMAT( ' *** XERBLA was called from ', A, ' with INFO = ', I6,
      $      ' instead of ', I2, ' ***' )
- 9998 FORMAT( ' *** XERBLA was called with SRNAME = ', A6,
+ 9998 FORMAT( ' *** XERBLA was called with SRNAME = ', A,
      $      ' instead of ', A6, ' ***' )
- 9997 FORMAT( ' *** On entry to ', A6, ' parameter number ', I6,
+ 9997 FORMAT( ' *** On entry to ', A, ' parameter number ', I6,
      $      ' had an illegal value ***' )
 *
 *     End of XERBLA
