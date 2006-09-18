@@ -110,7 +110,7 @@ dot: dot-test
 dot-lib: common-lib
 	cd $(SRC_DIR)/dot && $(MAKE) lib
 
-dot-test-lib:  common-lib dot
+dot-test-lib: common-lib dot-lib
 	cd $(TEST_DIR)/test-dot && $(MAKE) do_test_dot 
 
 dot-test: dot-test-lib
@@ -129,7 +129,7 @@ sum: sum-test
 sum-lib: common-lib
 	cd $(SRC_DIR)/sum && $(MAKE) lib
 
-sum-test-lib:  common-lib sum
+sum-test-lib: common-lib sum-lib
 	cd $(TEST_DIR)/test-sum && $(MAKE) do_test_sum 
 
 sum-test: sum-test-lib
@@ -148,7 +148,7 @@ axpby: axpby-test
 axpby-lib: common-lib
 	cd $(SRC_DIR)/axpby && $(MAKE) lib
 
-axpby-test-lib:  common-lib axpby
+axpby-test-lib: common-lib axpby-lib
 	cd $(TEST_DIR)/test-axpby && $(MAKE) do_test_axpby 
 
 axpby-test: axpby-test-lib
@@ -167,7 +167,7 @@ waxpby: waxpby-test
 waxpby-lib: common-lib
 	cd $(SRC_DIR)/waxpby && $(MAKE) lib
 
-waxpby-test-lib:  common-lib waxpby
+waxpby-test-lib: common-lib waxpby-lib
 	cd $(TEST_DIR)/test-waxpby && $(MAKE) do_test_waxpby 
 
 waxpby-test: waxpby-test-lib
@@ -186,7 +186,7 @@ gemv: gemv-test
 gemv-lib: common-lib
 	cd $(SRC_DIR)/gemv && $(MAKE) lib
 
-gemv-test-lib:  common-lib gemv
+gemv-test-lib: common-lib gemv-lib
 	cd $(TEST_DIR)/test-gemv && $(MAKE) do_test_gemv 
 
 gemv-test: gemv-test-lib
@@ -205,7 +205,7 @@ ge_sum_mv: ge_sum_mv-test
 ge_sum_mv-lib: common-lib
 	cd $(SRC_DIR)/ge_sum_mv && $(MAKE) lib
 
-ge_sum_mv-test-lib:  common-lib ge_sum_mv
+ge_sum_mv-test-lib: common-lib ge_sum_mv-lib
 	cd $(TEST_DIR)/test-ge_sum_mv && $(MAKE) do_test_ge_sum_mv 
 
 ge_sum_mv-test: ge_sum_mv-test-lib
@@ -224,7 +224,7 @@ gbmv: gbmv-test
 gbmv-lib: common-lib
 	cd $(SRC_DIR)/gbmv && $(MAKE) lib
 
-gbmv-test-lib:  common-lib gbmv
+gbmv-test-lib: common-lib gbmv-lib
 	cd $(TEST_DIR)/test-gbmv && $(MAKE) do_test_gbmv 
 
 gbmv-test: gbmv-test-lib
@@ -243,7 +243,7 @@ symv: symv-test
 symv-lib: common-lib
 	cd $(SRC_DIR)/symv && $(MAKE) lib
 
-symv-test-lib:  common-lib symv
+symv-test-lib: common-lib symv-lib
 	cd $(TEST_DIR)/test-symv && $(MAKE) do_test_symv 
 
 symv-test: symv-test-lib
@@ -262,7 +262,7 @@ spmv: spmv-test
 spmv-lib: common-lib
 	cd $(SRC_DIR)/spmv && $(MAKE) lib
 
-spmv-test-lib:  common-lib spmv
+spmv-test-lib: common-lib spmv-lib
 	cd $(TEST_DIR)/test-spmv && $(MAKE) do_test_spmv 
 
 spmv-test: spmv-test-lib
@@ -281,7 +281,7 @@ sbmv: sbmv-test
 sbmv-lib: common-lib
 	cd $(SRC_DIR)/sbmv && $(MAKE) lib
 
-sbmv-test-lib:  common-lib sbmv
+sbmv-test-lib: common-lib sbmv-lib
 	cd $(TEST_DIR)/test-sbmv && $(MAKE) do_test_sbmv 
 
 sbmv-test: sbmv-test-lib
@@ -300,7 +300,7 @@ hemv: hemv-test
 hemv-lib: common-lib
 	cd $(SRC_DIR)/hemv && $(MAKE) lib
 
-hemv-test-lib:  common-lib hemv
+hemv-test-lib: common-lib hemv-lib
 	cd $(TEST_DIR)/test-hemv && $(MAKE) do_test_hemv 
 
 hemv-test: hemv-test-lib
@@ -319,7 +319,7 @@ hpmv: hpmv-test
 hpmv-lib: common-lib
 	cd $(SRC_DIR)/hpmv && $(MAKE) lib
 
-hpmv-test-lib:  common-lib hpmv
+hpmv-test-lib: common-lib hpmv-lib
 	cd $(TEST_DIR)/test-hpmv && $(MAKE) do_test_hpmv 
 
 hpmv-test: hpmv-test-lib
@@ -338,7 +338,7 @@ hbmv: hbmv-test
 hbmv-lib: common-lib
 	cd $(SRC_DIR)/hbmv && $(MAKE) lib
 
-hbmv-test-lib:  common-lib hbmv
+hbmv-test-lib: common-lib hbmv-lib
 	cd $(TEST_DIR)/test-hbmv && $(MAKE) do_test_hbmv 
 
 hbmv-test: hbmv-test-lib
@@ -357,7 +357,7 @@ trmv: trmv-test
 trmv-lib: common-lib
 	cd $(SRC_DIR)/trmv && $(MAKE) lib
 
-trmv-test-lib:  common-lib trmv
+trmv-test-lib: common-lib trmv-lib
 	cd $(TEST_DIR)/test-trmv && $(MAKE) do_test_trmv 
 
 trmv-test: trmv-test-lib
@@ -376,7 +376,7 @@ tpmv: tpmv-test
 tpmv-lib: common-lib
 	cd $(SRC_DIR)/tpmv && $(MAKE) lib
 
-tpmv-test-lib:  common-lib tpmv
+tpmv-test-lib: common-lib tpmv-lib
 	cd $(TEST_DIR)/test-tpmv && $(MAKE) do_test_tpmv 
 
 tpmv-test: tpmv-test-lib
@@ -395,7 +395,7 @@ trsv: trsv-test
 trsv-lib: common-lib
 	cd $(SRC_DIR)/trsv && $(MAKE) lib
 
-trsv-test-lib:  common-lib trsv
+trsv-test-lib: common-lib trsv-lib
 	cd $(TEST_DIR)/test-trsv && $(MAKE) do_test_trsv 
 
 trsv-test: trsv-test-lib
@@ -414,7 +414,7 @@ tbsv: tbsv-test
 tbsv-lib: common-lib
 	cd $(SRC_DIR)/tbsv && $(MAKE) lib
 
-tbsv-test-lib:  common-lib tbsv
+tbsv-test-lib: common-lib tbsv-lib
 	cd $(TEST_DIR)/test-tbsv && $(MAKE) do_test_tbsv 
 
 tbsv-test: tbsv-test-lib
@@ -433,7 +433,7 @@ gemm: gemm-test
 gemm-lib: common-lib
 	cd $(SRC_DIR)/gemm && $(MAKE) lib
 
-gemm-test-lib:  common-lib gemm
+gemm-test-lib: common-lib gemm-lib
 	cd $(TEST_DIR)/test-gemm && $(MAKE) do_test_gemm 
 
 gemm-test: gemm-test-lib
@@ -452,7 +452,7 @@ symm: symm-test
 symm-lib: common-lib
 	cd $(SRC_DIR)/symm && $(MAKE) lib
 
-symm-test-lib:  common-lib symm
+symm-test-lib: common-lib symm-lib
 	cd $(TEST_DIR)/test-symm && $(MAKE) do_test_symm 
 
 symm-test: symm-test-lib
@@ -471,7 +471,7 @@ hemm: hemm-test
 hemm-lib: common-lib
 	cd $(SRC_DIR)/hemm && $(MAKE) lib
 
-hemm-test-lib:  common-lib hemm
+hemm-test-lib: common-lib hemm-lib
 	cd $(TEST_DIR)/test-hemm && $(MAKE) do_test_hemm 
 
 hemm-test: hemm-test-lib
@@ -490,7 +490,7 @@ gemv2: gemv2-test
 gemv2-lib: common-lib
 	cd $(SRC_DIR)/gemv2 && $(MAKE) lib
 
-gemv2-test-lib:  common-lib gemv2
+gemv2-test-lib: common-lib gemv2-lib
 	cd $(TEST_DIR)/test-gemv2 && $(MAKE) do_test_gemv2 
 
 gemv2-test: gemv2-test-lib
