@@ -41,8 +41,6 @@ test: do_test_axpby
 do_test_axpby: $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB)
 	$(LINKER) $(LINKOPT) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) -o do_test_axpby -lm
 
-$(TEST_OBJS): $(TEST_SRCS)
-
 .c.o:
 	$(CC) $(CFLAGS) -I$(HEADER_PATH) -c -o $@ $<
 

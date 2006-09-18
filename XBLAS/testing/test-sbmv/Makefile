@@ -23,7 +23,6 @@ DOT_OBJS = $(DOT_PATH)/BLAS_sdot_x.o $(DOT_PATH)/BLAS_ddot_x.o
 SYMV_OBJS = $(TEST_SYMV_PATH)/symv-support.o \
 		$(TEST_SYMV_PATH)/BLAS_symv_testgen.o
 
-
 TEST_DOT_OBJS = $(TEST_DOT_PATH)/testgen_BLAS_sdot.o \
 		$(TEST_DOT_PATH)/testgen_BLAS_ddot.o \
 		$(TEST_DOT_PATH)/testgen_BLAS_cdot.o \
@@ -69,5 +68,4 @@ test-lib: $(TEST_OBJS)
 
 clean:
 	rm -f *.o *~ *.BAK sbmv.results do_test_sbmv core
-
 

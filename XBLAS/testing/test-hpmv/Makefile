@@ -22,7 +22,6 @@ HEADER_PATH = ../../src
 
 DOT_OBJS = $(DOT_PATH)/BLAS_sdot_x.o $(DOT_PATH)/BLAS_ddot_x.o
 
-
 HEMM_TEST_OBJS	= $(TEST_HEMM_PATH)/hemm-support.o
 HEMV_TEST_OBJS	= $(TEST_HEMV_PATH)/hemv-support.o \
 		$(TEST_HEMV_PATH)/BLAS_hemv_testgen.o

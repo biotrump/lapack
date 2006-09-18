@@ -63,7 +63,6 @@ do_test_hemm: $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB)
 	$(LINKER) $(LINKOPT) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
 	-o do_test_hemm -lm
 
-
 # $(GEMM_TEST_OBJS):
 #	cd $(TEST_GEMM_PATH); $(MAKE) test-lib
 #
@@ -75,6 +74,4 @@ do_test_hemm: $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB)
 
 clean:
 	rm -f *.o *~ *.BAK hemm.results do_test_hemm core
-
-
 

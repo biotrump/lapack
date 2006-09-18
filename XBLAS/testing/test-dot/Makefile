@@ -29,8 +29,6 @@ do_test_dot: $(TEST_OBJS)  $(LIB_PATH)/$(XBLASLIB)
 	$(LINKER) $(LINKOPT) $(TEST_OBJS) $(LIB_PATH)/$(XBLASLIB) \
 	-o do_test_dot -lm
 
-$(TEST_OBJS): $(TEST_SRCS)
-
 .c.o:
 	$(CC) $(CFLAGS) -I$(HEADER_PATH) -c -o $@ $<
 

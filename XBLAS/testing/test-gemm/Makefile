@@ -48,5 +48,3 @@ do_test_gemm: $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB)
 clean:
 	rm -f *.o *~ *.BAK gemm.results do_test_gemm core
 
-
-

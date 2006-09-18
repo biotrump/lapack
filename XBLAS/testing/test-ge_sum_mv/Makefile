@@ -28,7 +28,6 @@ GEMM_OBJS = $(TEST_GEMM_PATH)/gemm-support.o \
 	$(TEST_GEMM_PATH)/BLAS_gemm_testgen.o
 SYMV_OBJS = $(TEST_SYMV_PATH)/symv-support.o
 
-
 TEST_DOT_OBJS = $(TEST_DOT_PATH)/testgen_BLAS_sdot.o \
 		$(TEST_DOT_PATH)/testgen_BLAS_ddot.o \
 		$(TEST_DOT_PATH)/testgen_BLAS_cdot.o \

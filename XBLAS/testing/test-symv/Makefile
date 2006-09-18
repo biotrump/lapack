@@ -21,7 +21,6 @@ HEADER_PATH = ../../src
 
 DOT_OBJS = $(DOT_PATH)/BLAS_sdot_x.o $(DOT_PATH)/BLAS_ddot_x.o
 
-
 TEST_DOT_OBJS = $(TEST_DOT_PATH)/testgen_BLAS_sdot.o \
 		$(TEST_DOT_PATH)/testgen_BLAS_ddot.o \
 		$(TEST_DOT_PATH)/testgen_BLAS_cdot.o \
@@ -66,5 +65,4 @@ test-lib: $(TEST_OBJS)
 
 clean:
 	rm -f *.o *~ *.BAK symv.results do_test_symv core
-
 

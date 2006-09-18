@@ -46,5 +46,3 @@ do_test_gemv: $(LIB_PATH)/$(XBLASLIB) $(ALL_OBJS)
 clean:
 	rm -f *.o *~ *.BAK gemv.results do_test_gemv core
 
-
-

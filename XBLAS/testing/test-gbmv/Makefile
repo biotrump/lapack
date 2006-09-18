@@ -40,8 +40,6 @@ do_test_gbmv: $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB)
 	$(LINKER) $(LINKOPT) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
 	-o do_test_gbmv -lm
 
-$(TEST_OBJS): $(TEST_SRCS)
-
 .c.o:
 	$(CC) $(CFLAGS) -I$(HEADER_PATH) -c -o $@ $<
 

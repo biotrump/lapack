@@ -21,7 +21,6 @@ HEADER_PATH = ../../src
 
 DOT_OBJS = $(DOT_PATH)/BLAS_sdot_x.o $(DOT_PATH)/BLAS_ddot_x.o
 
-
 HEMM_TEST_OBJS	= $(TEST_HEMM_PATH)/hemm-support.o
 SYMV_TEST_OBJS  = $(TEST_SYMV_PATH)/symv-support.o \
 		$(TEST_SYMV_PATH)/BLAS_symv_testgen.o
@@ -55,5 +54,4 @@ test-lib: $(TEST_OBJS)
 
 clean:
 	rm -f *.o *~ *.BAK hemv.results do_test_hemv core
-
 
