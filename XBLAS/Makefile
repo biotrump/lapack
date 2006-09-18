@@ -11,15 +11,13 @@
 #  Modified:	    
 ############################################################################
 
-# To generate all sources, libraries, and test results, 
-# just type `make'
+# To generate all libraries and test results, just type make
 #
-# To generate the library, type `make lib'
+# To generate the library, type make lib
 #
-# To generate the library, and the test library, 
-# type `make test-lib'
+# To generate all the library, and the test library, type make test-lib
 #
-# To clean out all the object files, type `make clean'
+# To clean out all the object files, type make clean
 #
 include ../make.inc
 
@@ -103,9 +101,10 @@ dot2-test: dot2-test-lib
 dot2-clean:
 	cd $(TEST_DIR)/test-dot2; $(MAKE) clean
 
+
 # dot stuff
 
-dot: common-lib 
+dot: common-lib
 	cd $(SRC_DIR)/dot; $(MAKE)
 
 dot-test-lib:  common-lib dot
@@ -121,7 +120,7 @@ dot-clean:
 
 # sum stuff
 
-sum: common-lib 
+sum: common-lib
 	cd $(SRC_DIR)/sum; $(MAKE)
 
 sum-test-lib:  common-lib sum
@@ -134,9 +133,10 @@ sum-clean:
 	cd $(SRC_DIR)/sum; $(MAKE) clean
 	cd $(TEST_DIR)/test-sum; $(MAKE) clean
 
+
 # axpby stuff
 
-axpby: common-lib 
+axpby: common-lib
 	cd $(SRC_DIR)/axpby; $(MAKE)
 
 axpby-test-lib:  common-lib axpby
@@ -149,9 +149,10 @@ axpby-clean:
 	cd $(SRC_DIR)/axpby; $(MAKE) clean
 	cd $(TEST_DIR)/test-axpby; $(MAKE) clean
 
+
 # waxpby stuff
 
-waxpby: common-lib 
+waxpby: common-lib
 	cd $(SRC_DIR)/waxpby; $(MAKE)
 
 waxpby-test-lib:  common-lib waxpby
@@ -164,9 +165,10 @@ waxpby-clean:
 	cd $(SRC_DIR)/waxpby; $(MAKE) clean
 	cd $(TEST_DIR)/test-waxpby; $(MAKE) clean
 
+
 # gemv stuff
 
-gemv: common-lib 
+gemv: common-lib
 	cd $(SRC_DIR)/gemv; $(MAKE)
 
 gemv-test-lib:  common-lib gemv
@@ -179,9 +181,10 @@ gemv-clean:
 	cd $(SRC_DIR)/gemv; $(MAKE) clean
 	cd $(TEST_DIR)/test-gemv; $(MAKE) clean
 
+
 # ge_sum_mv stuff
 
-ge_sum_mv: common-lib 
+ge_sum_mv: common-lib
 	cd $(SRC_DIR)/ge_sum_mv; $(MAKE)
 
 ge_sum_mv-test-lib:  common-lib ge_sum_mv
@@ -194,9 +197,10 @@ ge_sum_mv-clean:
 	cd $(SRC_DIR)/ge_sum_mv; $(MAKE) clean
 	cd $(TEST_DIR)/test-ge_sum_mv; $(MAKE) clean
 
+
 # gbmv stuff
 
-gbmv: common-lib 
+gbmv: common-lib
 	cd $(SRC_DIR)/gbmv; $(MAKE)
 
 gbmv-test-lib:  common-lib gbmv
@@ -209,9 +213,10 @@ gbmv-clean:
 	cd $(SRC_DIR)/gbmv; $(MAKE) clean
 	cd $(TEST_DIR)/test-gbmv; $(MAKE) clean
 
+
 # symv stuff
 
-symv: common-lib 
+symv: common-lib
 	cd $(SRC_DIR)/symv; $(MAKE)
 
 symv-test-lib:  common-lib symv
@@ -224,9 +229,10 @@ symv-clean:
 	cd $(SRC_DIR)/symv; $(MAKE) clean
 	cd $(TEST_DIR)/test-symv; $(MAKE) clean
 
+
 # spmv stuff
 
-spmv: common-lib 
+spmv: common-lib
 	cd $(SRC_DIR)/spmv; $(MAKE)
 
 spmv-test-lib:  common-lib spmv
@@ -239,9 +245,10 @@ spmv-clean:
 	cd $(SRC_DIR)/spmv; $(MAKE) clean
 	cd $(TEST_DIR)/test-spmv; $(MAKE) clean
 
+
 # sbmv stuff
 
-sbmv: common-lib 
+sbmv: common-lib
 	cd $(SRC_DIR)/sbmv; $(MAKE)
 
 sbmv-test-lib:  common-lib sbmv
@@ -254,9 +261,10 @@ sbmv-clean:
 	cd $(SRC_DIR)/sbmv; $(MAKE) clean
 	cd $(TEST_DIR)/test-sbmv; $(MAKE) clean
 
+
 # hemv stuff
 
-hemv: common-lib 
+hemv: common-lib
 	cd $(SRC_DIR)/hemv; $(MAKE)
 
 hemv-test-lib:  common-lib hemv
@@ -269,9 +277,10 @@ hemv-clean:
 	cd $(SRC_DIR)/hemv; $(MAKE) clean
 	cd $(TEST_DIR)/test-hemv; $(MAKE) clean
 
+
 # hpmv stuff
 
-hpmv: common-lib 
+hpmv: common-lib
 	cd $(SRC_DIR)/hpmv; $(MAKE)
 
 hpmv-test-lib:  common-lib hpmv
@@ -284,9 +293,10 @@ hpmv-clean:
 	cd $(SRC_DIR)/hpmv; $(MAKE) clean
 	cd $(TEST_DIR)/test-hpmv; $(MAKE) clean
 
+
 # hbmv stuff
 
-hbmv: common-lib 
+hbmv: common-lib
 	cd $(SRC_DIR)/hbmv; $(MAKE)
 
 hbmv-test-lib:  common-lib hbmv
@@ -298,6 +308,7 @@ hbmv-test: hbmv-test-lib
 hbmv-clean:
 	cd $(SRC_DIR)/hbmv; $(MAKE) clean
 	cd $(TEST_DIR)/test-hbmv; $(MAKE) clean
+
 
 # trmv stuff
 
@@ -314,9 +325,10 @@ trmv-clean:
 	cd $(SRC_DIR)/trmv; $(MAKE) clean
 	cd $(TEST_DIR)/test-trmv; $(MAKE) clean
 
+
 # tpmv stuff
 
-tpmv: common-lib 
+tpmv: common-lib
 	cd $(SRC_DIR)/tpmv; $(MAKE)
 
 tpmv-test-lib:  common-lib tpmv
@@ -329,9 +341,10 @@ tpmv-clean:
 	cd $(SRC_DIR)/tpmv; $(MAKE) clean
 	cd $(TEST_DIR)/test-tpmv; $(MAKE) clean
 
+
 # trsv stuff
 
-trsv: common-lib 
+trsv: common-lib
 	cd $(SRC_DIR)/trsv; $(MAKE)
 
 trsv-test-lib:  common-lib trsv
@@ -343,6 +356,7 @@ trsv-test: trsv-test-lib
 trsv-clean:
 	cd $(SRC_DIR)/trsv; $(MAKE) clean
 	cd $(TEST_DIR)/test-trsv; $(MAKE) clean
+
 
 # tbsv stuff
 
@@ -359,6 +373,7 @@ tbsv-clean:
 	cd $(SRC_DIR)/tbsv; $(MAKE) clean
 	cd $(TEST_DIR)/test-tbsv; $(MAKE) clean
 
+
 # gemm stuff
 
 gemm: common-lib
@@ -374,9 +389,10 @@ gemm-clean:
 	cd $(SRC_DIR)/gemm; $(MAKE) clean
 	cd $(TEST_DIR)/test-gemm; $(MAKE) clean
 
+
 # symm stuff
 
-symm: common-lib 
+symm: common-lib
 	cd $(SRC_DIR)/symm; $(MAKE)
 
 symm-test-lib:  common-lib symm
@@ -389,9 +405,10 @@ symm-clean:
 	cd $(SRC_DIR)/symm; $(MAKE) clean
 	cd $(TEST_DIR)/test-symm; $(MAKE) clean
 
+
 # hemm stuff
 
-hemm: common-lib 
+hemm: common-lib
 	cd $(SRC_DIR)/hemm; $(MAKE)
 
 hemm-test-lib:  common-lib hemm
@@ -404,12 +421,13 @@ hemm-clean:
 	cd $(SRC_DIR)/hemm; $(MAKE) clean
 	cd $(TEST_DIR)/test-hemm; $(MAKE) clean
 
+
 # gemv2 stuff
 
-gemv2: common-lib 
+gemv2: common-lib
 	cd $(SRC_DIR)/gemv2; $(MAKE)
 
-gemv2-test-lib: common-lib gemv2
+gemv2-test-lib:  common-lib gemv2
 	cd $(TEST_DIR)/test-gemv2; $(MAKE) do_test_gemv2 
 
 gemv2-test: gemv2-test-lib
@@ -418,6 +436,7 @@ gemv2-test: gemv2-test-lib
 gemv2-clean:
 	cd $(SRC_DIR)/gemv2; $(MAKE) clean
 	cd $(TEST_DIR)/test-gemv2; $(MAKE) clean
+
 
 
 # Test library dependencies
@@ -451,7 +470,6 @@ clean: $(CLEAN)
 dist-clean: clean
 	rm -f $(XBLASLIB) testall.result testall.summary
 
-.PHONY: $(SOURCES) $(LIBS) $(TEST_SOURCES) $(TEST_LIB) \
-        $(TESTS) $(CLEAN) $(SOURCE_CLEAN) \
-				all sources test-sources test-lib tests common-lib lib \
-				clean dist-clean source-clean maintainer-clean
+.PHONY: $(LIBS) $(TEST_LIB) $(TESTS) $(CLEAN) \
+        all test-lib tests common-lib lib clean dist-clean
+
