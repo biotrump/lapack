@@ -64,10 +64,10 @@ do_test_hemm: $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB)
 	-o do_test_hemm -lm
 
 # $(GEMM_TEST_OBJS):
-#	cd $(TEST_GEMM_PATH); $(MAKE) test-lib
+#	cd $(TEST_GEMM_PATH) && $(MAKE) test-lib
 #
 #$(SYMM_TEST_OBJS):
-#	cd $(TEST_SYMM_PATH); $(MAKE) test-lib
+#	cd $(TEST_SYMM_PATH) && $(MAKE) test-lib
 
 .c.o:
 	$(CC) $(CFLAGS) -I$(HEADER_PATH) -c -o $@ $<

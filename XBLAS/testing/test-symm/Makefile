@@ -62,7 +62,7 @@ do_test_symm: $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB)
 test-lib: $(TEST_OBJS)
 
 # $(GEMM_TEST_OBJS):
-#	cd $(TEST_GEMM_PATH); $(MAKE) test-lib
+#	cd $(TEST_GEMM_PATH) && $(MAKE) test-lib
 
 .c.o:
 	$(CC) $(CFLAGS) -I$(HEADER_PATH) -c -o $@ $<
