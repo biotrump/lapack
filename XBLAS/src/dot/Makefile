@@ -17,10 +17,6 @@ SRC_PATH = .
 HEADER_PATH = ..
 
 DOT_SRCS =\
-	$(SRC_PATH)/BLAS_sdot.c\
-	$(SRC_PATH)/BLAS_ddot.c\
-	$(SRC_PATH)/BLAS_cdot.c\
-	$(SRC_PATH)/BLAS_zdot.c\
 	$(SRC_PATH)/BLAS_ddot_d_s.c\
 	$(SRC_PATH)/BLAS_ddot_s_d.c\
 	$(SRC_PATH)/BLAS_ddot_s_s.c\
@@ -50,10 +46,6 @@ DOT_SRCS =\
 	$(SRC_PATH)/BLAS_zdot_d_z_x.c\
 	$(SRC_PATH)/BLAS_zdot_d_d_x.c \
 	\
-	$(SRC_PATH)/BLAS_sdot-f2c.c\
-	$(SRC_PATH)/BLAS_ddot-f2c.c\
-	$(SRC_PATH)/BLAS_cdot-f2c.c\
-	$(SRC_PATH)/BLAS_zdot-f2c.c\
 	$(SRC_PATH)/BLAS_ddot_d_s-f2c.c\
 	$(SRC_PATH)/BLAS_ddot_s_d-f2c.c\
 	$(SRC_PATH)/BLAS_ddot_s_s-f2c.c\

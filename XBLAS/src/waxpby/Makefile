@@ -17,10 +17,6 @@ SRC_PATH = .
 HEADER_PATH = ..
 
 WAXPBY_SRCS =\
-	$(SRC_PATH)/BLAS_swaxpby.c\
-	$(SRC_PATH)/BLAS_dwaxpby.c\
-	$(SRC_PATH)/BLAS_cwaxpby.c\
-	$(SRC_PATH)/BLAS_zwaxpby.c\
 	$(SRC_PATH)/BLAS_dwaxpby_d_s.c\
 	$(SRC_PATH)/BLAS_dwaxpby_s_d.c\
 	$(SRC_PATH)/BLAS_dwaxpby_s_s.c\
@@ -50,10 +46,6 @@ WAXPBY_SRCS =\
 	$(SRC_PATH)/BLAS_zwaxpby_d_z_x.c\
 	$(SRC_PATH)/BLAS_zwaxpby_d_d_x.c \
 	\
-	$(SRC_PATH)/BLAS_swaxpby-f2c.c\
-	$(SRC_PATH)/BLAS_dwaxpby-f2c.c\
-	$(SRC_PATH)/BLAS_cwaxpby-f2c.c\
-	$(SRC_PATH)/BLAS_zwaxpby-f2c.c\
 	$(SRC_PATH)/BLAS_dwaxpby_d_s-f2c.c\
 	$(SRC_PATH)/BLAS_dwaxpby_s_d-f2c.c\
 	$(SRC_PATH)/BLAS_dwaxpby_s_s-f2c.c\

@@ -17,8 +17,6 @@ SRC_PATH = .
 HEADER_PATH = ..
 
 HPMV_SRCS =\
-	$(SRC_PATH)/BLAS_chpmv.c\
-	$(SRC_PATH)/BLAS_zhpmv.c\
 	$(SRC_PATH)/BLAS_zhpmv_z_c.c\
 	$(SRC_PATH)/BLAS_zhpmv_c_z.c\
 	$(SRC_PATH)/BLAS_zhpmv_c_c.c\
@@ -32,8 +30,6 @@ HPMV_SRCS =\
 	$(SRC_PATH)/BLAS_chpmv_c_s_x.c\
 	$(SRC_PATH)/BLAS_zhpmv_z_d_x.c \
 	\
-	$(SRC_PATH)/BLAS_chpmv-f2c.c\
-	$(SRC_PATH)/BLAS_zhpmv-f2c.c\
 	$(SRC_PATH)/BLAS_zhpmv_z_c-f2c.c\
 	$(SRC_PATH)/BLAS_zhpmv_c_z-f2c.c\
 	$(SRC_PATH)/BLAS_zhpmv_c_c-f2c.c\

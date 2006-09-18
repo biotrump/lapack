@@ -17,10 +17,6 @@ SRC_PATH = .
 HEADER_PATH = ..
 
 AXPBY_SRCS =\
-	$(SRC_PATH)/BLAS_saxpby.c\
-	$(SRC_PATH)/BLAS_daxpby.c\
-	$(SRC_PATH)/BLAS_caxpby.c\
-	$(SRC_PATH)/BLAS_zaxpby.c\
 	$(SRC_PATH)/BLAS_daxpby_s.c\
 	$(SRC_PATH)/BLAS_caxpby_s.c\
 	$(SRC_PATH)/BLAS_zaxpby_c.c\
@@ -34,10 +30,6 @@ AXPBY_SRCS =\
 	$(SRC_PATH)/BLAS_caxpby_s_x.c\
 	$(SRC_PATH)/BLAS_zaxpby_d_x.c \
 	\
-	$(SRC_PATH)/BLAS_saxpby-f2c.c\
-	$(SRC_PATH)/BLAS_daxpby-f2c.c\
-	$(SRC_PATH)/BLAS_caxpby-f2c.c\
-	$(SRC_PATH)/BLAS_zaxpby-f2c.c\
 	$(SRC_PATH)/BLAS_daxpby_s-f2c.c\
 	$(SRC_PATH)/BLAS_caxpby_s-f2c.c\
 	$(SRC_PATH)/BLAS_zaxpby_c-f2c.c\

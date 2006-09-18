@@ -17,10 +17,6 @@ SRC_PATH = .
 HEADER_PATH = ..
 
 GBMV_SRCS =\
-	$(SRC_PATH)/BLAS_sgbmv.c\
-	$(SRC_PATH)/BLAS_dgbmv.c\
-	$(SRC_PATH)/BLAS_cgbmv.c\
-	$(SRC_PATH)/BLAS_zgbmv.c\
 	$(SRC_PATH)/BLAS_dgbmv_d_s.c\
 	$(SRC_PATH)/BLAS_dgbmv_s_d.c\
 	$(SRC_PATH)/BLAS_dgbmv_s_s.c\
@@ -50,10 +46,6 @@ GBMV_SRCS =\
 	$(SRC_PATH)/BLAS_zgbmv_d_z_x.c\
 	$(SRC_PATH)/BLAS_zgbmv_d_d_x.c \
 	\
-	$(SRC_PATH)/BLAS_sgbmv-f2c.c\
-	$(SRC_PATH)/BLAS_dgbmv-f2c.c\
-	$(SRC_PATH)/BLAS_cgbmv-f2c.c\
-	$(SRC_PATH)/BLAS_zgbmv-f2c.c\
 	$(SRC_PATH)/BLAS_dgbmv_d_s-f2c.c\
 	$(SRC_PATH)/BLAS_dgbmv_s_d-f2c.c\
 	$(SRC_PATH)/BLAS_dgbmv_s_s-f2c.c\

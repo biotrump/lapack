@@ -17,10 +17,6 @@ SRC_PATH = .
 HEADER_PATH = ..
 
 GEMV_SRCS =\
-	$(SRC_PATH)/BLAS_sgemv.c\
-	$(SRC_PATH)/BLAS_dgemv.c\
-	$(SRC_PATH)/BLAS_cgemv.c\
-	$(SRC_PATH)/BLAS_zgemv.c\
 	$(SRC_PATH)/BLAS_dgemv_d_s.c\
 	$(SRC_PATH)/BLAS_dgemv_s_d.c\
 	$(SRC_PATH)/BLAS_dgemv_s_s.c\
@@ -50,10 +46,6 @@ GEMV_SRCS =\
 	$(SRC_PATH)/BLAS_zgemv_d_z_x.c\
 	$(SRC_PATH)/BLAS_zgemv_d_d_x.c \
 	\
-	$(SRC_PATH)/BLAS_sgemv-f2c.c\
-	$(SRC_PATH)/BLAS_dgemv-f2c.c\
-	$(SRC_PATH)/BLAS_cgemv-f2c.c\
-	$(SRC_PATH)/BLAS_zgemv-f2c.c\
 	$(SRC_PATH)/BLAS_dgemv_d_s-f2c.c\
 	$(SRC_PATH)/BLAS_dgemv_s_d-f2c.c\
 	$(SRC_PATH)/BLAS_dgemv_s_s-f2c.c\

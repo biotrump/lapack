@@ -17,11 +17,7 @@ SRC_PATH = .
 HEADER_PATH = ..
 
 TRSV_SRCS =\
-	$(SRC_PATH)/BLAS_strsv.c\
-	$(SRC_PATH)/BLAS_dtrsv.c\
 	$(SRC_PATH)/BLAS_dtrsv_s.c\
-	$(SRC_PATH)/BLAS_ctrsv.c\
-	$(SRC_PATH)/BLAS_ztrsv.c\
 	$(SRC_PATH)/BLAS_ztrsv_c.c\
 	$(SRC_PATH)/BLAS_ctrsv_s.c\
 	$(SRC_PATH)/BLAS_ztrsv_d.c\
@@ -34,11 +30,7 @@ TRSV_SRCS =\
 	$(SRC_PATH)/BLAS_ctrsv_s_x.c\
 	$(SRC_PATH)/BLAS_ztrsv_d_x.c \
 	\
-	$(SRC_PATH)/BLAS_strsv-f2c.c\
-	$(SRC_PATH)/BLAS_dtrsv-f2c.c\
 	$(SRC_PATH)/BLAS_dtrsv_s-f2c.c\
-	$(SRC_PATH)/BLAS_ctrsv-f2c.c\
-	$(SRC_PATH)/BLAS_ztrsv-f2c.c\
 	$(SRC_PATH)/BLAS_ztrsv_c-f2c.c\
 	$(SRC_PATH)/BLAS_ctrsv_s-f2c.c\
 	$(SRC_PATH)/BLAS_ztrsv_d-f2c.c\

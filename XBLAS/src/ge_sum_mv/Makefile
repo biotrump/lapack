@@ -17,10 +17,6 @@ SRC_PATH = .
 HEADER_PATH = ..
 
 GE_SUM_MV_SRCS =\
-	$(SRC_PATH)/BLAS_sge_sum_mv.c\
-	$(SRC_PATH)/BLAS_dge_sum_mv.c\
-	$(SRC_PATH)/BLAS_cge_sum_mv.c\
-	$(SRC_PATH)/BLAS_zge_sum_mv.c\
 	$(SRC_PATH)/BLAS_dge_sum_mv_d_s.c\
 	$(SRC_PATH)/BLAS_dge_sum_mv_s_d.c\
 	$(SRC_PATH)/BLAS_dge_sum_mv_s_s.c\
@@ -50,10 +46,6 @@ GE_SUM_MV_SRCS =\
 	$(SRC_PATH)/BLAS_zge_sum_mv_d_z_x.c\
 	$(SRC_PATH)/BLAS_zge_sum_mv_d_d_x.c \
 	\
-	$(SRC_PATH)/BLAS_sge_sum_mv-f2c.c\
-	$(SRC_PATH)/BLAS_dge_sum_mv-f2c.c\
-	$(SRC_PATH)/BLAS_cge_sum_mv-f2c.c\
-	$(SRC_PATH)/BLAS_zge_sum_mv-f2c.c\
 	$(SRC_PATH)/BLAS_dge_sum_mv_d_s-f2c.c\
 	$(SRC_PATH)/BLAS_dge_sum_mv_s_d-f2c.c\
 	$(SRC_PATH)/BLAS_dge_sum_mv_s_s-f2c.c\

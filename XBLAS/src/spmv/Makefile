@@ -17,10 +17,6 @@ SRC_PATH = .
 HEADER_PATH = ..
 
 SPMV_SRCS =\
-	$(SRC_PATH)/BLAS_sspmv.c\
-	$(SRC_PATH)/BLAS_dspmv.c\
-	$(SRC_PATH)/BLAS_cspmv.c\
-	$(SRC_PATH)/BLAS_zspmv.c\
 	$(SRC_PATH)/BLAS_dspmv_d_s.c\
 	$(SRC_PATH)/BLAS_dspmv_s_d.c\
 	$(SRC_PATH)/BLAS_dspmv_s_s.c\
@@ -50,10 +46,6 @@ SPMV_SRCS =\
 	$(SRC_PATH)/BLAS_zspmv_d_z_x.c\
 	$(SRC_PATH)/BLAS_zspmv_d_d_x.c \
 	\
-	$(SRC_PATH)/BLAS_sspmv-f2c.c\
-	$(SRC_PATH)/BLAS_dspmv-f2c.c\
-	$(SRC_PATH)/BLAS_cspmv-f2c.c\
-	$(SRC_PATH)/BLAS_zspmv-f2c.c\
 	$(SRC_PATH)/BLAS_dspmv_d_s-f2c.c\
 	$(SRC_PATH)/BLAS_dspmv_s_d-f2c.c\
 	$(SRC_PATH)/BLAS_dspmv_s_s-f2c.c\

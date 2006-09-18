@@ -17,10 +17,6 @@ SRC_PATH = .
 HEADER_PATH = ..
 
 SYMM_SRCS =\
-	$(SRC_PATH)/BLAS_ssymm.c\
-	$(SRC_PATH)/BLAS_dsymm.c\
-	$(SRC_PATH)/BLAS_csymm.c\
-	$(SRC_PATH)/BLAS_zsymm.c\
 	$(SRC_PATH)/BLAS_dsymm_d_s.c\
 	$(SRC_PATH)/BLAS_dsymm_s_d.c\
 	$(SRC_PATH)/BLAS_dsymm_s_s.c\
@@ -50,10 +46,6 @@ SYMM_SRCS =\
 	$(SRC_PATH)/BLAS_zsymm_d_z_x.c\
 	$(SRC_PATH)/BLAS_zsymm_d_d_x.c \
 	\
-	$(SRC_PATH)/BLAS_ssymm-f2c.c\
-	$(SRC_PATH)/BLAS_dsymm-f2c.c\
-	$(SRC_PATH)/BLAS_csymm-f2c.c\
-	$(SRC_PATH)/BLAS_zsymm-f2c.c\
 	$(SRC_PATH)/BLAS_dsymm_d_s-f2c.c\
 	$(SRC_PATH)/BLAS_dsymm_s_d-f2c.c\
 	$(SRC_PATH)/BLAS_dsymm_s_s-f2c.c\

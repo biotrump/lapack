@@ -17,8 +17,6 @@ SRC_PATH = .
 HEADER_PATH = ..
 
 HEMV_SRCS =\
-	$(SRC_PATH)/BLAS_chemv.c\
-	$(SRC_PATH)/BLAS_zhemv.c\
 	$(SRC_PATH)/BLAS_zhemv_z_c.c\
 	$(SRC_PATH)/BLAS_zhemv_c_z.c\
 	$(SRC_PATH)/BLAS_zhemv_c_c.c\
@@ -32,8 +30,6 @@ HEMV_SRCS =\
 	$(SRC_PATH)/BLAS_chemv_c_s_x.c\
 	$(SRC_PATH)/BLAS_zhemv_z_d_x.c \
 	\
-	$(SRC_PATH)/BLAS_chemv-f2c.c\
-	$(SRC_PATH)/BLAS_zhemv-f2c.c\
 	$(SRC_PATH)/BLAS_zhemv_z_c-f2c.c\
 	$(SRC_PATH)/BLAS_zhemv_c_z-f2c.c\
 	$(SRC_PATH)/BLAS_zhemv_c_c-f2c.c\
