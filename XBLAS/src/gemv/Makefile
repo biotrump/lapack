@@ -48,7 +48,40 @@ GEMV_SRCS =\
 	$(SRC_PATH)/BLAS_cgemv_s_s_x.c\
 	$(SRC_PATH)/BLAS_zgemv_z_d_x.c\
 	$(SRC_PATH)/BLAS_zgemv_d_z_x.c\
-	$(SRC_PATH)/BLAS_zgemv_d_d_x.c
+	$(SRC_PATH)/BLAS_zgemv_d_d_x.c \
+	\
+	$(SRC_PATH)/BLAS_sgemv-f2c.c\
+	$(SRC_PATH)/BLAS_dgemv-f2c.c\
+	$(SRC_PATH)/BLAS_cgemv-f2c.c\
+	$(SRC_PATH)/BLAS_zgemv-f2c.c\
+	$(SRC_PATH)/BLAS_dgemv_d_s-f2c.c\
+	$(SRC_PATH)/BLAS_dgemv_s_d-f2c.c\
+	$(SRC_PATH)/BLAS_dgemv_s_s-f2c.c\
+	$(SRC_PATH)/BLAS_zgemv_z_c-f2c.c\
+	$(SRC_PATH)/BLAS_zgemv_c_z-f2c.c\
+	$(SRC_PATH)/BLAS_zgemv_c_c-f2c.c\
+	$(SRC_PATH)/BLAS_cgemv_c_s-f2c.c\
+	$(SRC_PATH)/BLAS_cgemv_s_c-f2c.c\
+	$(SRC_PATH)/BLAS_cgemv_s_s-f2c.c\
+	$(SRC_PATH)/BLAS_zgemv_z_d-f2c.c\
+	$(SRC_PATH)/BLAS_zgemv_d_z-f2c.c\
+	$(SRC_PATH)/BLAS_zgemv_d_d-f2c.c\
+	$(SRC_PATH)/BLAS_sgemv_x-f2c.c\
+	$(SRC_PATH)/BLAS_dgemv_x-f2c.c\
+	$(SRC_PATH)/BLAS_cgemv_x-f2c.c\
+	$(SRC_PATH)/BLAS_zgemv_x-f2c.c\
+	$(SRC_PATH)/BLAS_dgemv_d_s_x-f2c.c\
+	$(SRC_PATH)/BLAS_dgemv_s_d_x-f2c.c\
+	$(SRC_PATH)/BLAS_dgemv_s_s_x-f2c.c\
+	$(SRC_PATH)/BLAS_zgemv_z_c_x-f2c.c\
+	$(SRC_PATH)/BLAS_zgemv_c_z_x-f2c.c\
+	$(SRC_PATH)/BLAS_zgemv_c_c_x-f2c.c\
+	$(SRC_PATH)/BLAS_cgemv_c_s_x-f2c.c\
+	$(SRC_PATH)/BLAS_cgemv_s_c_x-f2c.c\
+	$(SRC_PATH)/BLAS_cgemv_s_s_x-f2c.c\
+	$(SRC_PATH)/BLAS_zgemv_z_d_x-f2c.c\
+	$(SRC_PATH)/BLAS_zgemv_d_z_x-f2c.c\
+	$(SRC_PATH)/BLAS_zgemv_d_d_x-f2c.c 
 
 GEMV_OBJS = $(GEMV_SRCS:.c=.o)
 

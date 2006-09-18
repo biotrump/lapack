@@ -30,7 +30,22 @@ HEMM_SRCS =\
 	$(SRC_PATH)/BLAS_zhemm_c_z_x.c\
 	$(SRC_PATH)/BLAS_zhemm_c_c_x.c\
 	$(SRC_PATH)/BLAS_chemm_c_s_x.c\
-	$(SRC_PATH)/BLAS_zhemm_z_d_x.c
+	$(SRC_PATH)/BLAS_zhemm_z_d_x.c \
+	\
+	$(SRC_PATH)/BLAS_chemm-f2c.c\
+	$(SRC_PATH)/BLAS_zhemm-f2c.c\
+	$(SRC_PATH)/BLAS_zhemm_z_c-f2c.c\
+	$(SRC_PATH)/BLAS_zhemm_c_z-f2c.c\
+	$(SRC_PATH)/BLAS_zhemm_c_c-f2c.c\
+	$(SRC_PATH)/BLAS_chemm_c_s-f2c.c\
+	$(SRC_PATH)/BLAS_zhemm_z_d-f2c.c\
+	$(SRC_PATH)/BLAS_chemm_x-f2c.c\
+	$(SRC_PATH)/BLAS_zhemm_x-f2c.c\
+	$(SRC_PATH)/BLAS_zhemm_z_c_x-f2c.c\
+	$(SRC_PATH)/BLAS_zhemm_c_z_x-f2c.c\
+	$(SRC_PATH)/BLAS_zhemm_c_c_x-f2c.c\
+	$(SRC_PATH)/BLAS_chemm_c_s_x-f2c.c\
+	$(SRC_PATH)/BLAS_zhemm_z_d_x-f2c.c 
 
 HEMM_OBJS = $(HEMM_SRCS:.c=.o)
 

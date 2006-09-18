@@ -1,3 +1,10 @@
+Table of Contents
+  1. Introduction
+  2. Content
+  3. Installation
+  4. Testing
+  5. Feedback
+
 1. Introduction
 
    This library of routines is part of a reference implementation for
@@ -36,9 +43,8 @@
 2. Content
 
    The BLAS Standard defines language bindings for Fortran 95, Fortran
-   77, and C. Here, we have only implemented the C version.  However,
-   our methodologies for code generation and correctness testing also
-   apply to Fortran.
+   77, and C. Here, we have only implemented the C version and
+   provided a method for binding to one Fortran 77 ABI.
 
    In this initial release, we provide the following 11 routines:
 	
@@ -84,7 +90,33 @@
        testing/test-sum  - SUM test code and results
        testing/...
 
-3. Testing
+3. Installation
+
+   The reference XBLAS are built similarly to the reference BLAS and
+   LAPACK.  You need to provide a make.inc file in the source
+   directory that defines the compiler, optimization flags, and
+   options for building a Fortran->C bridge.  Some examples are
+   provided.  The current build system produces a static libxblas.a.
+
+   The Fortran->C bridge uses details of a specific toolchain's binary
+   interface, in particular how the Fortran compiler mangles names.
+   See src/f2c-bridge.h for the available options.  Most compilers can
+   support different name mangling schemes; be sure to use the *SAME*
+   naming options for all your Fortran code.
+
+   The Fortran->C bridge is included in libxblas.a.  Each of the
+   bridge's object files matches *-f2c.o, so you can extract them with
+   ar if you need a to share one libxblas.a between multiple Fortran
+   compilers.  Example steps to strip the Fortran->C routines from
+   libxblas.a and place them in a separate libxblas-myfortran.a are as
+   follows:
+
+     ar t libxblas.a |fgrep -- -f2c.o | xargs ar x libxblas.a
+     ar ru libxblas-myfortran.a *-f2c.o
+     ar x libxblas.a *-f2c.o
+     rm *-f2c.o
+
+4. Testing
   
    The goal of the testing code is to validate the underlying
    implementation.  We must thoroughly test routines claiming to use extra
@@ -110,7 +142,7 @@
    order to reveal the internal precisions actually used. 
    For details, see the paper in file doc/report.ps.
 
-   3.1 Testing DOT
+   4.1 Testing DOT
 
        DOT performs the following function:
 
@@ -169,7 +201,7 @@
        and y(1:n) judiciously in order to cause as much cancellation in r as 
        possible.
 
-   3.2 Choosing input data and computing r_acc
+   4.2 Choosing input data and computing r_acc
 
        The general approach is to choose some of the input values of x(i) and y(i)
        so that the exact (partial) dot product of these values has a lot of
@@ -199,7 +231,7 @@
             x(1)*y(1) = -x(3)*y(3) >> x(2)*y(2)
        so that SUM_{i=1,3} x(i)*y(i) = x(2)*y(2) exactly.
 
-   3.3 Testing SPMV and GBMV
+   4.3 Testing SPMV and GBMV
     
        SPMV, GBMV, and many other BLAS2 routines perform the following function:
 		y <- beta * y + alpha * A * x
@@ -217,7 +249,7 @@
 
        This approach can be generalized to most other Level 2 and 3 BLAS.
 
-4. Making comments on this design
+5. Feedback
 
    Please send any comments or bug reports to extended_blas@cs.berkeley.edu.
    This code was developed by
@@ -233,4 +265,4 @@
    Teresa Tung,
    Daniel Yoo
    
-   with help from Ben Wanzo, Berkat Tung and Weihua Shen.
+   with help from Ben Wanzo, Berkat Tung, Weihua Shen, and Jason Riedy.

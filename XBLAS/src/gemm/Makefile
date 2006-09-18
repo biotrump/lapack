@@ -48,7 +48,40 @@ GEMM_SRCS =\
 	$(SRC_PATH)/BLAS_cgemm_s_s_x.c\
 	$(SRC_PATH)/BLAS_zgemm_z_d_x.c\
 	$(SRC_PATH)/BLAS_zgemm_d_z_x.c\
-	$(SRC_PATH)/BLAS_zgemm_d_d_x.c
+	$(SRC_PATH)/BLAS_zgemm_d_d_x.c \
+	\
+	$(SRC_PATH)/BLAS_sgemm-f2c.c\
+	$(SRC_PATH)/BLAS_dgemm-f2c.c\
+	$(SRC_PATH)/BLAS_cgemm-f2c.c\
+	$(SRC_PATH)/BLAS_zgemm-f2c.c\
+	$(SRC_PATH)/BLAS_dgemm_d_s-f2c.c\
+	$(SRC_PATH)/BLAS_dgemm_s_d-f2c.c\
+	$(SRC_PATH)/BLAS_dgemm_s_s-f2c.c\
+	$(SRC_PATH)/BLAS_zgemm_z_c-f2c.c\
+	$(SRC_PATH)/BLAS_zgemm_c_z-f2c.c\
+	$(SRC_PATH)/BLAS_zgemm_c_c-f2c.c\
+	$(SRC_PATH)/BLAS_cgemm_c_s-f2c.c\
+	$(SRC_PATH)/BLAS_cgemm_s_c-f2c.c\
+	$(SRC_PATH)/BLAS_cgemm_s_s-f2c.c\
+	$(SRC_PATH)/BLAS_zgemm_z_d-f2c.c\
+	$(SRC_PATH)/BLAS_zgemm_d_z-f2c.c\
+	$(SRC_PATH)/BLAS_zgemm_d_d-f2c.c\
+	$(SRC_PATH)/BLAS_sgemm_x-f2c.c\
+	$(SRC_PATH)/BLAS_dgemm_x-f2c.c\
+	$(SRC_PATH)/BLAS_cgemm_x-f2c.c\
+	$(SRC_PATH)/BLAS_zgemm_x-f2c.c\
+	$(SRC_PATH)/BLAS_dgemm_d_s_x-f2c.c\
+	$(SRC_PATH)/BLAS_dgemm_s_d_x-f2c.c\
+	$(SRC_PATH)/BLAS_dgemm_s_s_x-f2c.c\
+	$(SRC_PATH)/BLAS_zgemm_z_c_x-f2c.c\
+	$(SRC_PATH)/BLAS_zgemm_c_z_x-f2c.c\
+	$(SRC_PATH)/BLAS_zgemm_c_c_x-f2c.c\
+	$(SRC_PATH)/BLAS_cgemm_c_s_x-f2c.c\
+	$(SRC_PATH)/BLAS_cgemm_s_c_x-f2c.c\
+	$(SRC_PATH)/BLAS_cgemm_s_s_x-f2c.c\
+	$(SRC_PATH)/BLAS_zgemm_z_d_x-f2c.c\
+	$(SRC_PATH)/BLAS_zgemm_d_z_x-f2c.c\
+	$(SRC_PATH)/BLAS_zgemm_d_d_x-f2c.c 
 
 GEMM_OBJS = $(GEMM_SRCS:.c=.o)
 

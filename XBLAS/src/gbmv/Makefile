@@ -48,7 +48,40 @@ GBMV_SRCS =\
 	$(SRC_PATH)/BLAS_cgbmv_s_s_x.c\
 	$(SRC_PATH)/BLAS_zgbmv_z_d_x.c\
 	$(SRC_PATH)/BLAS_zgbmv_d_z_x.c\
-	$(SRC_PATH)/BLAS_zgbmv_d_d_x.c
+	$(SRC_PATH)/BLAS_zgbmv_d_d_x.c \
+	\
+	$(SRC_PATH)/BLAS_sgbmv-f2c.c\
+	$(SRC_PATH)/BLAS_dgbmv-f2c.c\
+	$(SRC_PATH)/BLAS_cgbmv-f2c.c\
+	$(SRC_PATH)/BLAS_zgbmv-f2c.c\
+	$(SRC_PATH)/BLAS_dgbmv_d_s-f2c.c\
+	$(SRC_PATH)/BLAS_dgbmv_s_d-f2c.c\
+	$(SRC_PATH)/BLAS_dgbmv_s_s-f2c.c\
+	$(SRC_PATH)/BLAS_zgbmv_z_c-f2c.c\
+	$(SRC_PATH)/BLAS_zgbmv_c_z-f2c.c\
+	$(SRC_PATH)/BLAS_zgbmv_c_c-f2c.c\
+	$(SRC_PATH)/BLAS_cgbmv_c_s-f2c.c\
+	$(SRC_PATH)/BLAS_cgbmv_s_c-f2c.c\
+	$(SRC_PATH)/BLAS_cgbmv_s_s-f2c.c\
+	$(SRC_PATH)/BLAS_zgbmv_z_d-f2c.c\
+	$(SRC_PATH)/BLAS_zgbmv_d_z-f2c.c\
+	$(SRC_PATH)/BLAS_zgbmv_d_d-f2c.c\
+	$(SRC_PATH)/BLAS_sgbmv_x-f2c.c\
+	$(SRC_PATH)/BLAS_dgbmv_x-f2c.c\
+	$(SRC_PATH)/BLAS_cgbmv_x-f2c.c\
+	$(SRC_PATH)/BLAS_zgbmv_x-f2c.c\
+	$(SRC_PATH)/BLAS_dgbmv_d_s_x-f2c.c\
+	$(SRC_PATH)/BLAS_dgbmv_s_d_x-f2c.c\
+	$(SRC_PATH)/BLAS_dgbmv_s_s_x-f2c.c\
+	$(SRC_PATH)/BLAS_zgbmv_z_c_x-f2c.c\
+	$(SRC_PATH)/BLAS_zgbmv_c_z_x-f2c.c\
+	$(SRC_PATH)/BLAS_zgbmv_c_c_x-f2c.c\
+	$(SRC_PATH)/BLAS_cgbmv_c_s_x-f2c.c\
+	$(SRC_PATH)/BLAS_cgbmv_s_c_x-f2c.c\
+	$(SRC_PATH)/BLAS_cgbmv_s_s_x-f2c.c\
+	$(SRC_PATH)/BLAS_zgbmv_z_d_x-f2c.c\
+	$(SRC_PATH)/BLAS_zgbmv_d_z_x-f2c.c\
+	$(SRC_PATH)/BLAS_zgbmv_d_d_x-f2c.c 
 
 GBMV_OBJS = $(GBMV_SRCS:.c=.o)
 
