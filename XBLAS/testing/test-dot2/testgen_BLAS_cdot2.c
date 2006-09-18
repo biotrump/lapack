@@ -287,7 +287,7 @@ testgen_BLAS_cdot2(int n, int n_fix2, int n_mix, int norm,
 	  case 2:
 	      /*
 	       * Make SUM_{i=0,1}(x[k+i] * y[k+i]) small ... alpha * eps^2
-	       * head_x[k]*[k] = -head_x[k+1]*y[k+1] exact,
+	       * head_x[k]*y[k] = -head_x[k+1]*y[k+1] exact,
 	       * tail_x[k]*y[k] + tail_x[k+1]*y[k+1] small
 	       * For complex, each real number is multiplied by (i+1),
 	       * the result is 2i * eps_out^2.
@@ -310,7 +310,7 @@ testgen_BLAS_cdot2(int n, int n_fix2, int n_mix, int norm,
 		  tail_x_i[k+1] = tail_x_i[k];
 		  tail_x_i[k+2] = -y_i[k] * b;
 		  tail_x_i[k+3] = tail_x_i[k+2];
-	      } else if (n_mix == 1) {  /* x[k] fixed, x[k+1] free. */
+	      } else {  /* x[k] fixed, x[k+1] fixed or free. */
 		  y_i[k] = xrand(seed);
 		  y_i[k + 1] = xrand(seed);
 		  gen_y_to_cancel(k+1, n, conj, alpha, head_x, tail_x, y);
