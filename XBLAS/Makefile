@@ -446,7 +446,7 @@ waxpby-test-lib: dot-test-lib
 gemv-test-lib: dot-test-lib
 ge-test-lib_sum_mv: dot-test-lib gemv-test-lib symv-test-lib gemm-test-lib
 gbmv-test-lib: dot-test-lib
-symv-test-lib: dot-test-lib gemm-test-lib symv-test-lib
+symv-test-lib: dot-test-lib gemm-test-lib
 spmv-test-lib: dot-test-lib symv-test-lib
 sbmv-test-lib: dot-test-lib symv-test-lib
 hemv-test-lib: dot-test-lib
