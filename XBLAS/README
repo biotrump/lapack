@@ -84,18 +84,14 @@
        testing/test-sum  - SUM test code and results
        testing/...
 
-3. Code
-
-4. Testing
+3. Testing
   
-   The goal of the testing code is to validate the underlying implementation.
-   The challenges are twofold: First, we must thoroughly test routines 
-   claiming to use extra precision internally, where the test code is not
-   allowed to declare any extra precision variables or use any other extra
-   precision facilities not available to the code being tested. This requires
-   great care in generating test data.  Second, we must use M4 to
-   automatically generate the many versions of test code needed for the many
-   versions of the code being tested.
+   The goal of the testing code is to validate the underlying
+   implementation.  We must thoroughly test routines claiming to use extra
+   precision internally, where the test code is not allowed to declare any
+   extra precision variables or use any other extra precision facilities
+   not available to the code being tested. This requires great care in
+   generating test data.
 
    For each BLAS routine, we perform the following steps in the test code:
      1) Generate input scalars, vectors and arrays, according to the 
@@ -114,7 +110,7 @@
    order to reveal the internal precisions actually used. 
    For details, see the paper in file doc/report.ps.
 
-   4.1 Testing DOT
+   3.1 Testing DOT
 
        DOT performs the following function:
 
@@ -173,7 +169,7 @@
        and y(1:n) judiciously in order to cause as much cancellation in r as 
        possible.
 
-   4.2 Choosing input data and computing r_acc
+   3.2 Choosing input data and computing r_acc
 
        The general approach is to choose some of the input values of x(i) and y(i)
        so that the exact (partial) dot product of these values has a lot of
@@ -203,7 +199,7 @@
             x(1)*y(1) = -x(3)*y(3) >> x(2)*y(2)
        so that SUM_{i=1,3} x(i)*y(i) = x(2)*y(2) exactly.
 
-   4.3 Testing SPMV and GBMV
+   3.3 Testing SPMV and GBMV
     
        SPMV, GBMV, and many other BLAS2 routines perform the following function:
 		y <- beta * y + alpha * A * x
@@ -221,7 +217,7 @@
 
        This approach can be generalized to most other Level 2 and 3 BLAS.
 
-5. Making comments on this design
+4. Making comments on this design
 
    Please send any comments or bug reports to extended_blas@cs.berkeley.edu.
    This code was developed by
