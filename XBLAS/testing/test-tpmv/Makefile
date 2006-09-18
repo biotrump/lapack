@@ -1,0 +1,66 @@
+############################################################################
+#
+#  Program:         XBLAS
+#
+#  Module:          Makefile
+#
+#  Purpose:         Makefile for TPMV testing
+#
+#  Creation date:   June 25, 2001, Version 1.0
+#
+#  Modified:	    
+############################################################################
+include ../../../make.inc
+
+DOT_PATH = ../../src/dot
+TEST_DOT_PATH = ../test-dot
+LIB_PATH = ../..
+HEADER_PATH = ../../src
+
+DOT_OBJS = $(DOT_PATH)/BLAS_sdot_x.o $(DOT_PATH)/BLAS_ddot_x.o
+
+TEST_DOT_OBJS = $(TEST_DOT_PATH)/testgen_BLAS_sdot.o \
+		$(TEST_DOT_PATH)/testgen_BLAS_ddot.o \
+		$(TEST_DOT_PATH)/testgen_BLAS_cdot.o \
+		$(TEST_DOT_PATH)/testgen_BLAS_zdot.o \
+		$(TEST_DOT_PATH)/testgen_aux.o \
+		$(TEST_DOT_PATH)/test_dot.o \
+		$(TEST_DOT_PATH)/BLAS_dot_testgen.o
+
+TEST_SRCS = do_test_tpmv.c BLAS_tpmv_testgen.c tpmv-support.c 
+TEST_OBJS = $(TEST_SRCS:.c=.o)
+
+ALL_OBJS = $(TEST_OBJS) $(TEST_DOT_OBJS) $(DOT_OBJS) $(GEMM_TEST_OBJS)
+
+test: do_test_tpmv
+	@echo Testing TPMV - default quick test
+	./do_test_tpmv 12 1 1.0 0 0.01 > tpmv.results
+
+test-few: do_test_tpmv
+	@echo Testing TPMV - preforming a small set of tests
+	./do_test_tpmv 12 1 1.0 0 $(DO_FEW_TESTS)
+
+test-some: do_test_tpmv
+	@echo Testing TPMV - preforming some tests : not all tests 
+	./do_test_tpmv 12 1 1.0 3 $(DO_SOME_TESTS)
+
+test-all: do_test_tpmv
+	@echo Testing TPMV Very Thoroughly
+	./do_test_tpmv 12 1 1.0 0 $(DO_ALL_TESTS)
+
+test-none: do_test_tpmv
+	@echo NOT Testing TPMV - PREFORMING NO TESTS. NOT TESTING
+	./do_test_tpmv 12 1 1.0 0 $(DO_NO_TESTS)
+
+do_test_tpmv: $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB)
+	$(LINKER) $(LINKOPT) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
+	-o do_test_tpmv -lm
+
+test-lib: $(TEST_OBJS)
+
+.c.o:
+	$(CC) $(CFLAGS) -I$(HEADER_PATH) -c -o $@ $<
+
+clean:
+	rm -f *.o *~ *.BAK tpmv.results do_test_tpmv core
+

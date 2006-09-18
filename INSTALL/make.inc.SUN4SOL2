@@ -24,8 +24,19 @@ DRVOPTS  = $(OPTS)
 NOOPT    = -u -f
 #NOOPT    = -u -f -mt
 LOADER   = f77
-#LOADOPTS = -mt
+# ADOPTS = -mt
 LOADOPTS = -f -dalign -native -xO2 -xarch=v8plusa
+#
+# For XBLAS library
+#  Modify the CC and CFLAGS definitions to refer to the
+#  compiler and desired compiler options for your machine.
+#  Define LINKER and LINKOPTS to refer to the loader and
+#  desired load options for your machine.
+#
+CC       = cc
+CFLAGS   = -xO4 
+LINKER   = $(CC)
+LINKOPTS = 
 #
 #  The archiver and the flag(s) to use when building archive (library)
 #  If you system has no ranlib, set RANLIB = echo.
@@ -38,6 +49,7 @@ RANLIB   = echo
 #  machine-specific, optimized BLAS library should be used whenever
 #  possible.)
 #
+XBLASLIB = libxblas.a
 #BLASLIB      = ../../blas$(PLAT).a
 #BLASLIB     = -xlic_lib=sunperf_mt
 BLASLIB     = -xlic_lib=sunperf

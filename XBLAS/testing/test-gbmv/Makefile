@@ -1,0 +1,50 @@
+############################################################################
+#
+#  Program:         XBLAS
+#
+#  Module:          Makefile
+#
+#  Purpose:         Makefile for GBMV testing
+#
+#  Creation date:   September 1, 1999, Version 0.0
+#
+#  Modified:	    June 1, 2000, Version 1.0
+############################################################################
+include ../../../make.inc
+
+DOT_PATH = ../../src/dot
+TEST_DOT_PATH = ../test-dot
+LIB_PATH = ../..
+HEADER_PATH = ../../src
+
+DOT_OBJS = $(DOT_PATH)/BLAS_sdot_x.o $(DOT_PATH)/BLAS_ddot_x.o
+
+TEST_DOT_OBJS = $(TEST_DOT_PATH)/testgen_BLAS_sdot.o \
+		$(TEST_DOT_PATH)/testgen_BLAS_ddot.o \
+		$(TEST_DOT_PATH)/testgen_BLAS_cdot.o \
+		$(TEST_DOT_PATH)/testgen_BLAS_zdot.o \
+		$(TEST_DOT_PATH)/testgen_aux.o \
+		$(TEST_DOT_PATH)/test_dot.o \
+		$(TEST_DOT_PATH)/BLAS_dot_testgen.o
+
+TEST_SRCS = do_test_gbmv.c BLAS_gbmv_testgen.c gbmv-support.c 
+TEST_OBJS = $(TEST_SRCS:.c=.o)
+
+ALL_OBJS = $(TEST_OBJS) $(TEST_DOT_OBJS) $(DOT_OBJS)
+
+test: do_test_gbmv
+	@echo Testing GBMV
+	./do_test_gbmv 12 1 1.0 0 0.01 > gbmv.results
+
+do_test_gbmv: $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB)
+	$(LINKER) $(LINKOPT) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
+	-o do_test_gbmv -lm
+
+$(TEST_OBJS): $(TEST_SRCS)
+
+.c.o:
+	$(CC) $(CFLAGS) -I$(HEADER_PATH) -c -o $@ $<
+
+clean:
+	rm -f *.o *~ *.BAK gbmv.results do_test_gbmv core
+

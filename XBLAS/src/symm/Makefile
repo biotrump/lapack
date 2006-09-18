@@ -1,0 +1,66 @@
+############################################################################
+#
+#  Program:         XBLAS
+#
+#  Module:          Makefile
+#
+#  Purpose:         Makefile to compile source code into the library
+#
+#  Creation date:   June 1, 2000, Version 1.0
+#
+#  Modified:	    
+############################################################################
+include ../../../make.inc
+
+LIB_PATH = ../..
+SRC_PATH = .
+HEADER_PATH = ..
+
+SYMM_SRCS =\
+	$(SRC_PATH)/BLAS_ssymm.c\
+	$(SRC_PATH)/BLAS_dsymm.c\
+	$(SRC_PATH)/BLAS_csymm.c\
+	$(SRC_PATH)/BLAS_zsymm.c\
+	$(SRC_PATH)/BLAS_dsymm_d_s.c\
+	$(SRC_PATH)/BLAS_dsymm_s_d.c\
+	$(SRC_PATH)/BLAS_dsymm_s_s.c\
+	$(SRC_PATH)/BLAS_zsymm_z_c.c\
+	$(SRC_PATH)/BLAS_zsymm_c_z.c\
+	$(SRC_PATH)/BLAS_zsymm_c_c.c\
+	$(SRC_PATH)/BLAS_csymm_c_s.c\
+	$(SRC_PATH)/BLAS_csymm_s_c.c\
+	$(SRC_PATH)/BLAS_csymm_s_s.c\
+	$(SRC_PATH)/BLAS_zsymm_z_d.c\
+	$(SRC_PATH)/BLAS_zsymm_d_z.c\
+	$(SRC_PATH)/BLAS_zsymm_d_d.c\
+	$(SRC_PATH)/BLAS_ssymm_x.c\
+	$(SRC_PATH)/BLAS_dsymm_x.c\
+	$(SRC_PATH)/BLAS_csymm_x.c\
+	$(SRC_PATH)/BLAS_zsymm_x.c\
+	$(SRC_PATH)/BLAS_dsymm_d_s_x.c\
+	$(SRC_PATH)/BLAS_dsymm_s_d_x.c\
+	$(SRC_PATH)/BLAS_dsymm_s_s_x.c\
+	$(SRC_PATH)/BLAS_zsymm_z_c_x.c\
+	$(SRC_PATH)/BLAS_zsymm_c_z_x.c\
+	$(SRC_PATH)/BLAS_zsymm_c_c_x.c\
+	$(SRC_PATH)/BLAS_csymm_c_s_x.c\
+	$(SRC_PATH)/BLAS_csymm_s_c_x.c\
+	$(SRC_PATH)/BLAS_csymm_s_s_x.c\
+	$(SRC_PATH)/BLAS_zsymm_z_d_x.c\
+	$(SRC_PATH)/BLAS_zsymm_d_z_x.c\
+	$(SRC_PATH)/BLAS_zsymm_d_d_x.c
+
+SYMM_OBJS = $(SYMM_SRCS:.c=.o)
+
+all: $(SYMM_OBJS)
+
+lib: $(SYMM_OBJS)
+	$(ARCH) $(ARCHFLAGS) $(LIB_PATH)/$(XBLASLIB) $(SYMM_OBJS)
+	$(RANLIB) $(LIB_PATH)/$(XBLASLIB)
+
+.c.o: 
+	$(CC) $(CFLAGS) -I$(HEADER_PATH) -c -o $@ $<
+
+clean:
+	rm -f *.o *~ *.BAK
+

@@ -1,0 +1,79 @@
+############################################################################
+#
+#  Program:         XBLAS
+#
+#  Module:          Makefile
+#
+#  Purpose:         Makefile for HBMV testing
+#
+#  Creation date:   June 1, 2000, Version 1.0
+#
+#  Modified:	    
+############################################################################
+include ../../../make.inc
+
+DOT_PATH = ../../src/dot
+TEST_DOT_PATH = ../test-dot
+TEST_HEMM_PATH = ../test-hemm
+TEST_SYMV_PATH = ../test-symv
+TEST_SBMV_PATH = ../test-sbmv
+LIB_PATH = ../..
+HEADER_PATH = ../../src
+
+DOT_OBJS = $(DOT_PATH)/BLAS_sdot_x.o $(DOT_PATH)/BLAS_ddot_x.o
+
+
+HEMM_TEST_OBJS	= $(TEST_HEMM_PATH)/hemm-support.o
+SYMV_TEST_OBJS  = $(TEST_SYMV_PATH)/symv-support.o \
+		$(TEST_SYMV_PATH)/BLAS_symv_testgen.o
+SBMV_TEST_OBJS  = $(TEST_SBMV_PATH)/sbmv-support.o \
+		$(TEST_SBMV_PATH)/BLAS_sbmv_testgen.o
+
+TEST_DOT_OBJS = $(TEST_DOT_PATH)/testgen_BLAS_sdot.o \
+		$(TEST_DOT_PATH)/testgen_BLAS_ddot.o \
+		$(TEST_DOT_PATH)/testgen_BLAS_cdot.o \
+		$(TEST_DOT_PATH)/testgen_BLAS_zdot.o \
+		$(TEST_DOT_PATH)/testgen_aux.o \
+		$(TEST_DOT_PATH)/test_dot.o \
+		$(TEST_DOT_PATH)/BLAS_dot_testgen.o
+
+TEST_SRCS = do_test_hbmv.c BLAS_hbmv_testgen.c hbmv-support.c 
+TEST_OBJS = $(TEST_SRCS:.c=.o)
+
+ALL_OBJS = $(TEST_OBJS) $(TEST_DOT_OBJS) $(DOT_OBJS) $(HEMM_TEST_OBJS) \
+		$(SYMV_TEST_OBJS) $(SBMV_TEST_OBJS)
+
+test: do_test_hbmv
+	@echo Testing HBMV - default quick test
+	./do_test_hbmv 7 1 1.0 3 0.01 > hbmv.results
+
+test-few: do_test_hbmv
+	@echo Testing HBMV - preforming a small set of tests
+	./do_test_hbmv 7 1 1.0 3 $(DO_FEW_TESTS) > hbmv.results
+
+test-some: do_test_hbmv
+	@echo Testing HBMV - preforming some tests : not all tests 
+	./do_test_hbmv 7 1 1.0 3 $(DO_SOME_TESTS) > hbmv.results
+
+test-all: do_test_hbmv
+	@echo Testing HBMV Very Thoroughly
+	./do_test_hbmv 7 1 1.0 3 $(DO_ALL_TESTS) > hbmv.results
+
+test-none: do_test_hbmv
+	@echo NOT Testing HBMV - PREFORMING NO TESTS. NOT TESTING
+	./do_test_hbmv 7 1 1.0 3 $(DO_NO_TESTS) > hbmv.results
+
+do_test_hbmv: $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB)
+	$(LINKER) $(LINKOPT) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
+	-o do_test_hbmv -lm
+
+test-lib: $(TEST_OBJS)
+
+.c.o: 
+	$(CC) $(CFLAGS) -I$(HEADER_PATH) -c -o $@ $<
+
+clean:
+	rm -f *.o *~ *.BAK hbmv.results do_test_hbmv core
+
+
+

@@ -1,0 +1,39 @@
+############################################################################
+#
+#  Program:         XBLAS
+#
+#  Module:          Makefile
+#
+#  Purpose:         Makefile for DOT testing
+#
+#  Creation date:   September 1, 1999, Version 0.0
+#
+#  Modified:	    June 1, 2000, Version 1.0
+############################################################################
+include ../../../make.inc
+LIB_PATH = ../..
+HEADER_PATH = ../../src
+
+TEST_SRCS = do_test_dot.c test_dot.c BLAS_dot_testgen.c testgen_aux.c\
+	    testgen_BLAS_sdot.c testgen_BLAS_ddot.c\
+	    testgen_BLAS_cdot.c testgen_BLAS_zdot.c
+TEST_OBJS = $(TEST_SRCS:.c=.o)
+
+test: do_test_dot
+	@echo Testing DOT
+	( ./do_test_dot 20 1 1.0 0 1 > dot.results )
+
+test-lib: $(TEST_OBJS)
+
+do_test_dot: $(TEST_OBJS)  $(LIB_PATH)/$(XBLASLIB)
+	$(LINKER) $(LINKOPT) $(TEST_OBJS) $(LIB_PATH)/$(XBLASLIB) \
+	-o do_test_dot -lm
+
+$(TEST_OBJS): $(TEST_SRCS)
+
+.c.o:
+	$(CC) $(CFLAGS) -I$(HEADER_PATH) -c -o $@ $<
+
+clean:
+	rm -f *.o *~ *.BAK dot.results do_test_dot core
+

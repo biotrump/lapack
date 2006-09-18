@@ -24,6 +24,9 @@ lapack_install:
 blaslib:
 	( cd BLAS/SRC; $(MAKE) )
 
+xblaslib:
+	( cd XBLAS;  $(MAKE) lib )
+
 lapacklib:	lapack_install
 	( cd SRC; $(MAKE) )
 
@@ -58,6 +61,9 @@ blas_testing:
 	           ./xblat3z < zblat3.in     ; \
 	           mv ZBLAT3.SUMM zblat3.out )
 
+xblas_testing:
+	( cd XBLAS;  $(MAKE) tests )
+
 lapack_timing:	lib lapack_testing blas_testing
 	( cd TIMING; $(MAKE) )
 
@@ -81,12 +87,16 @@ cleanlib:
 	( cd BLAS/SRC; $(MAKE) clean )
 	( cd SRC; $(MAKE) clean )
 	( cd TESTING/MATGEN; $(MAKE) clean )
+	( cd XBLAS; $(MAKE) clean )
 
 cleanblas_testing:	
 	( cd BLAS/TESTING; $(MAKE) -f Makeblat1 clean )
 	( cd BLAS/TESTING; $(MAKE) -f Makeblat2 clean )
 	( cd BLAS/TESTING; $(MAKE) -f Makeblat3 clean )
 	( cd BLAS; rm -f *.SUMM xblat* )
+
+cleanxblas:
+	( cd XBLAS; $(MAKE) clean ) 
 
 cleantesting:
 	( cd TESTING/LIN; $(MAKE) clean )
@@ -101,6 +111,7 @@ cleantiming:
 	( cd TIMING; rm -f xlin* xeig* )
 
 cleanall: cleanlib cleanblas_testing cleantesting cleantiming
+	(cd XBLAS; $(MAKE) dist-clean )
 	rm -f *.a TESTING/*.out TIMING/*.out INSTALL/test* \
                  BLAS/*.out TIMING/LIN/*.a TIMING/EIG/*.a
 

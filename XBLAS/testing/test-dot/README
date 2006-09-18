@@ -1,0 +1,5 @@
+The following generator kernels are manually created:
+	testgen_c_sdot.c
+	testgen_c_ddot.c
+	testgen_c_cdot.c
+	testgen_c_zdot.c

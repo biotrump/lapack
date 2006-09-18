@@ -1,0 +1,51 @@
+############################################################################
+#
+#  Program:         XBLAS
+#
+#  Module:          Makefile
+#
+#  Purpose:         Makefile for AXPBY testing
+#
+#  Creation date:   June 1, 2000, Version 1.0
+#
+#  Modified:	    
+############################################################################
+include ../../../make.inc
+
+LIB_PATH = ../..
+HEADER_PATH = ../../src
+DOT_PATH = ../../src/dot
+TEST_DOT_PATH = ../test-dot
+
+DOT_OBJS = $(DOT_PATH)/BLAS_sdot_x.o $(DOT_PATH)/BLAS_ddot_x.o
+
+TEST_SRCS = do_test_axpby.c 
+TEST_OBJS = $(TEST_SRCS:.c=.o)
+
+TEST_DOT_SRCS = $(TEST_DOT_PATH)/test_dot.c \
+           $(TEST_DOT_PATH)/testgen_BLAS_sdot.c \
+           $(TEST_DOT_PATH)/testgen_BLAS_ddot.c \
+           $(TEST_DOT_PATH)/testgen_BLAS_cdot.c \
+           $(TEST_DOT_PATH)/testgen_BLAS_zdot.c \
+	   $(TEST_DOT_PATH)/testgen_aux.c \
+           $(TEST_DOT_PATH)/BLAS_dot_testgen.c
+
+TEST_DOT_OBJS = $(TEST_DOT_SRCS:.c=.o)
+
+ALL_OBJS = $(DOT_OBJS) $(TEST_DOT_OBJS) $(TEST_OBJS)
+
+test: do_test_axpby
+	@echo Testing AXPBY
+	( ./do_test_axpby 10 1 1.0 1 1 > axpby.results )
+
+do_test_axpby: $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB)
+	$(LINKER) $(LINKOPT) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) -o do_test_axpby -lm
+
+$(TEST_OBJS): $(TEST_SRCS)
+
+.c.o:
+	$(CC) $(CFLAGS) -I$(HEADER_PATH) -c -o $@ $<
+
+clean:
+	rm -f *.o *~ *.BAK axpby.results do_test_axpby core
+

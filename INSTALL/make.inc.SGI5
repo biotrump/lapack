@@ -23,6 +23,17 @@ NOOPT    =
 LOADER   = f77
 LOADOPTS =
 #
+# For XBLAS library
+#  Modify the CC and CFLAGS definitions to refer to the
+#  compiler and desired compiler options for your machine.
+#  Define LINKER and LINKOPTS to refer to the loader and
+#  desired load options for your machine.
+#
+CC       = cc
+CFLAGS   = -O3  
+LINKER   = $(CC)
+LINKOPTS = 
+#
 #  The archiver and the flag(s) to use when building archive (library)
 #  If you system has no ranlib, set RANLIB = echo.
 #
@@ -34,6 +45,7 @@ RANLIB   = echo
 #  machine-specific, optimized BLAS library should be used whenever
 #  possible.)
 #
+XBLASLIB = libxblas.a
 BLASLIB      = ../../blas$(PLAT).a
 #BLASLIB     = -lblas
 LAPACKLIB    = lapack$(PLAT).a
