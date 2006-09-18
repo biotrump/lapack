@@ -20,7 +20,7 @@ void BLAS_cgemm_s_c(enum blas_order_type order, enum blas_trans_type transa,
  * =========
  *
  * order   (input) enum blas_order_type
- *         Storage  of input matrices A, B, and C.
+ *         Storage format of input matrices A, B, and C.
  *
  * transa  (input) enum blas_trans_type
  *         Operation to be done on matrix A before multiplication.

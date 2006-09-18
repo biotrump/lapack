@@ -50,7 +50,7 @@ void BLAS_sskew_testgen_hbmv(int norm, enum blas_order_type order,
  *           =  1: the vectors are scaled with norms near overflow.
  *
  * order   (input) enum blas_order_type
- *           storage  of the matrices
+ *           storage format of the matrices
  * 
  * uplo    (input) enum blas_uplo_type
  *           which half of the skew symmetric matrix a is to be stored.
@@ -224,7 +224,7 @@ void BLAS_dskew_testgen_hbmv(int norm, enum blas_order_type order,
  *           =  1: the vectors are scaled with norms near overflow.
  *
  * order   (input) enum blas_order_type
- *           storage  of the matrices
+ *           storage format of the matrices
  * 
  * uplo    (input) enum blas_uplo_type
  *           which half of the skew symmetric matrix a is to be stored.
@@ -398,7 +398,7 @@ void BLAS_dskew_testgen_hbmv_d_s(int norm, enum blas_order_type order,
  *           =  1: the vectors are scaled with norms near overflow.
  *
  * order   (input) enum blas_order_type
- *           storage  of the matrices
+ *           storage format of the matrices
  * 
  * uplo    (input) enum blas_uplo_type
  *           which half of the skew symmetric matrix a is to be stored.
@@ -572,7 +572,7 @@ void BLAS_dskew_testgen_hbmv_s_d(int norm, enum blas_order_type order,
  *           =  1: the vectors are scaled with norms near overflow.
  *
  * order   (input) enum blas_order_type
- *           storage  of the matrices
+ *           storage format of the matrices
  * 
  * uplo    (input) enum blas_uplo_type
  *           which half of the skew symmetric matrix a is to be stored.
@@ -746,7 +746,7 @@ void BLAS_dskew_testgen_hbmv_s_s(int norm, enum blas_order_type order,
  *           =  1: the vectors are scaled with norms near overflow.
  *
  * order   (input) enum blas_order_type
- *           storage  of the matrices
+ *           storage format of the matrices
  * 
  * uplo    (input) enum blas_uplo_type
  *           which half of the skew symmetric matrix a is to be stored.
@@ -921,7 +921,7 @@ void BLAS_chbmv_testgen(int norm, enum blas_order_type order,
  *           =  1: the vectors are scaled with norms near overflow.
  *
  * order   (input) enum blas_order_type
- *           storage  of the matrices
+ *           storage format of the matrices
  * 
  * uplo    (input) enum blas_uplo_type
  *           which half of the hermitian matrix a is to be stored.
@@ -1496,7 +1496,7 @@ void BLAS_zhbmv_testgen(int norm, enum blas_order_type order,
  *           =  1: the vectors are scaled with norms near overflow.
  *
  * order   (input) enum blas_order_type
- *           storage  of the matrices
+ *           storage format of the matrices
  * 
  * uplo    (input) enum blas_uplo_type
  *           which half of the hermitian matrix a is to be stored.
@@ -2071,7 +2071,7 @@ void BLAS_zhbmv_c_z_testgen(int norm, enum blas_order_type order,
  *           =  1: the vectors are scaled with norms near overflow.
  *
  * order   (input) enum blas_order_type
- *           storage  of the matrices
+ *           storage format of the matrices
  * 
  * uplo    (input) enum blas_uplo_type
  *           which half of the hermitian matrix a is to be stored.
@@ -2648,7 +2648,7 @@ void BLAS_zhbmv_z_c_testgen(int norm, enum blas_order_type order,
  *           =  1: the vectors are scaled with norms near overflow.
  *
  * order   (input) enum blas_order_type
- *           storage  of the matrices
+ *           storage format of the matrices
  * 
  * uplo    (input) enum blas_uplo_type
  *           which half of the hermitian matrix a is to be stored.
@@ -3225,7 +3225,7 @@ void BLAS_zhbmv_c_c_testgen(int norm, enum blas_order_type order,
  *           =  1: the vectors are scaled with norms near overflow.
  *
  * order   (input) enum blas_order_type
- *           storage  of the matrices
+ *           storage format of the matrices
  * 
  * uplo    (input) enum blas_uplo_type
  *           which half of the hermitian matrix a is to be stored.
@@ -3802,7 +3802,7 @@ void BLAS_zhbmv_z_d_testgen(int norm, enum blas_order_type order,
  *           =  1: the vectors are scaled with norms near overflow.
  *
  * order   (input) enum blas_order_type
- *           storage  of the matrices
+ *           storage format of the matrices
  * 
  * uplo    (input) enum blas_uplo_type
  *           which half of the hermitian matrix a is to be stored.
@@ -4327,7 +4327,7 @@ void BLAS_chbmv_c_s_testgen(int norm, enum blas_order_type order,
  *           =  1: the vectors are scaled with norms near overflow.
  *
  * order   (input) enum blas_order_type
- *           storage  of the matrices
+ *           storage format of the matrices
  * 
  * uplo    (input) enum blas_uplo_type
  *           which half of the hermitian matrix a is to be stored.

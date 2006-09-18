@@ -19,7 +19,7 @@ void BLAS_dsymv_d_s_x(enum blas_order_type order, enum blas_uplo_type uplo,
  * =========
  *
  * order   (input) enum blas_order_type
- *         Storage  of input symmetric matrix A.
+ *         Storage format of input symmetric matrix A.
  * 
  * uplo    (input) enum blas_uplo_type
  *         Determines which half of matrix A (upper or lower triangle)

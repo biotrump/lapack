@@ -265,7 +265,7 @@ void do_test_sspmv(int n,
 	for (test_no = 0; test_no < ntests; test_no++) {
 
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -681,7 +681,7 @@ void do_test_dspmv(int n,
 	for (test_no = 0; test_no < ntests; test_no++) {
 
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -1097,7 +1097,7 @@ void do_test_dspmv_s_d(int n,
 	for (test_no = 0; test_no < ntests; test_no++) {
 
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -1513,7 +1513,7 @@ void do_test_dspmv_d_s(int n,
 	for (test_no = 0; test_no < ntests; test_no++) {
 
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -1929,7 +1929,7 @@ void do_test_dspmv_s_s(int n,
 	for (test_no = 0; test_no < ntests; test_no++) {
 
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -2354,7 +2354,7 @@ void do_test_cspmv(int n,
 	for (test_no = 0; test_no < ntests; test_no++) {
 
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -2784,7 +2784,7 @@ void do_test_zspmv(int n,
 	for (test_no = 0; test_no < ntests; test_no++) {
 
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -3214,7 +3214,7 @@ void do_test_zspmv_z_c(int n,
 	for (test_no = 0; test_no < ntests; test_no++) {
 
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -3644,7 +3644,7 @@ void do_test_zspmv_c_z(int n,
 	for (test_no = 0; test_no < ntests; test_no++) {
 
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -4074,7 +4074,7 @@ void do_test_zspmv_c_c(int n,
 	for (test_no = 0; test_no < ntests; test_no++) {
 
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -4502,7 +4502,7 @@ void do_test_cspmv_s_c(int n,
 	for (test_no = 0; test_no < ntests; test_no++) {
 
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -4930,7 +4930,7 @@ void do_test_cspmv_c_s(int n,
 	for (test_no = 0; test_no < ntests; test_no++) {
 
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -5356,7 +5356,7 @@ void do_test_cspmv_s_s(int n,
 	for (test_no = 0; test_no < ntests; test_no++) {
 
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -5784,7 +5784,7 @@ void do_test_zspmv_d_z(int n,
 	for (test_no = 0; test_no < ntests; test_no++) {
 
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -6212,7 +6212,7 @@ void do_test_zspmv_z_d(int n,
 	for (test_no = 0; test_no < ntests; test_no++) {
 
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -6638,7 +6638,7 @@ void do_test_zspmv_d_d(int n,
 	for (test_no = 0; test_no < ntests; test_no++) {
 
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -7080,7 +7080,7 @@ void do_test_sspmv_x(int n,
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -7517,7 +7517,7 @@ void do_test_dspmv_x(int n,
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -7955,7 +7955,7 @@ void do_test_dspmv_s_d_x(int n,
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -8393,7 +8393,7 @@ void do_test_dspmv_d_s_x(int n,
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -8831,7 +8831,7 @@ void do_test_dspmv_s_s_x(int n,
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -9277,7 +9277,7 @@ void do_test_cspmv_x(int n,
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -9728,7 +9728,7 @@ void do_test_zspmv_x(int n,
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -10180,7 +10180,7 @@ void do_test_zspmv_z_c_x(int n,
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -10632,7 +10632,7 @@ void do_test_zspmv_c_z_x(int n,
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -11084,7 +11084,7 @@ void do_test_zspmv_c_c_x(int n,
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -11534,7 +11534,7 @@ void do_test_cspmv_s_c_x(int n,
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -11984,7 +11984,7 @@ void do_test_cspmv_c_s_x(int n,
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -12432,7 +12432,7 @@ void do_test_cspmv_s_s_x(int n,
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -12882,7 +12882,7 @@ void do_test_zspmv_d_z_x(int n,
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -13332,7 +13332,7 @@ void do_test_zspmv_z_d_x(int n,
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -13780,7 +13780,7 @@ void do_test_zspmv_d_d_x(int n,
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;

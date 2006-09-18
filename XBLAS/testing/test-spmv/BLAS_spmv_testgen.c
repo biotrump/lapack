@@ -38,7 +38,7 @@ void BLAS_sspmv_testgen(int norm, enum blas_order_type order,
  *           =  1: the vectors are scaled with norms near overflow.
  *
  * order   (input) enum blas_order_type
- *           storage  of the matrices
+ *           storage format of the matrices
  * 
  * uplo    (input) enum blas_uplo_type
  *           which half of the symmetric matrix a is to be stored.
@@ -142,7 +142,7 @@ void BLAS_dspmv_testgen(int norm, enum blas_order_type order,
  *           =  1: the vectors are scaled with norms near overflow.
  *
  * order   (input) enum blas_order_type
- *           storage  of the matrices
+ *           storage format of the matrices
  * 
  * uplo    (input) enum blas_uplo_type
  *           which half of the symmetric matrix a is to be stored.
@@ -246,7 +246,7 @@ void BLAS_dspmv_d_s_testgen(int norm, enum blas_order_type order,
  *           =  1: the vectors are scaled with norms near overflow.
  *
  * order   (input) enum blas_order_type
- *           storage  of the matrices
+ *           storage format of the matrices
  * 
  * uplo    (input) enum blas_uplo_type
  *           which half of the symmetric matrix a is to be stored.
@@ -350,7 +350,7 @@ void BLAS_dspmv_s_d_testgen(int norm, enum blas_order_type order,
  *           =  1: the vectors are scaled with norms near overflow.
  *
  * order   (input) enum blas_order_type
- *           storage  of the matrices
+ *           storage format of the matrices
  * 
  * uplo    (input) enum blas_uplo_type
  *           which half of the symmetric matrix a is to be stored.
@@ -454,7 +454,7 @@ void BLAS_dspmv_s_s_testgen(int norm, enum blas_order_type order,
  *           =  1: the vectors are scaled with norms near overflow.
  *
  * order   (input) enum blas_order_type
- *           storage  of the matrices
+ *           storage format of the matrices
  * 
  * uplo    (input) enum blas_uplo_type
  *           which half of the symmetric matrix a is to be stored.
@@ -559,7 +559,7 @@ void BLAS_cspmv_testgen(int norm, enum blas_order_type order,
  *           =  1: the vectors are scaled with norms near overflow.
  *
  * order   (input) enum blas_order_type
- *           storage  of the matrices
+ *           storage format of the matrices
  * 
  * uplo    (input) enum blas_uplo_type
  *           which half of the symmetric matrix a is to be stored.
@@ -663,7 +663,7 @@ void BLAS_zspmv_testgen(int norm, enum blas_order_type order,
  *           =  1: the vectors are scaled with norms near overflow.
  *
  * order   (input) enum blas_order_type
- *           storage  of the matrices
+ *           storage format of the matrices
  * 
  * uplo    (input) enum blas_uplo_type
  *           which half of the symmetric matrix a is to be stored.
@@ -767,7 +767,7 @@ void BLAS_zspmv_c_z_testgen(int norm, enum blas_order_type order,
  *           =  1: the vectors are scaled with norms near overflow.
  *
  * order   (input) enum blas_order_type
- *           storage  of the matrices
+ *           storage format of the matrices
  * 
  * uplo    (input) enum blas_uplo_type
  *           which half of the symmetric matrix a is to be stored.
@@ -871,7 +871,7 @@ void BLAS_zspmv_z_c_testgen(int norm, enum blas_order_type order,
  *           =  1: the vectors are scaled with norms near overflow.
  *
  * order   (input) enum blas_order_type
- *           storage  of the matrices
+ *           storage format of the matrices
  * 
  * uplo    (input) enum blas_uplo_type
  *           which half of the symmetric matrix a is to be stored.
@@ -975,7 +975,7 @@ void BLAS_zspmv_c_c_testgen(int norm, enum blas_order_type order,
  *           =  1: the vectors are scaled with norms near overflow.
  *
  * order   (input) enum blas_order_type
- *           storage  of the matrices
+ *           storage format of the matrices
  * 
  * uplo    (input) enum blas_uplo_type
  *           which half of the symmetric matrix a is to be stored.
@@ -1080,7 +1080,7 @@ void BLAS_zspmv_z_d_testgen(int norm, enum blas_order_type order,
  *           =  1: the vectors are scaled with norms near overflow.
  *
  * order   (input) enum blas_order_type
- *           storage  of the matrices
+ *           storage format of the matrices
  * 
  * uplo    (input) enum blas_uplo_type
  *           which half of the symmetric matrix a is to be stored.
@@ -1184,7 +1184,7 @@ void BLAS_zspmv_d_z_testgen(int norm, enum blas_order_type order,
  *           =  1: the vectors are scaled with norms near overflow.
  *
  * order   (input) enum blas_order_type
- *           storage  of the matrices
+ *           storage format of the matrices
  * 
  * uplo    (input) enum blas_uplo_type
  *           which half of the symmetric matrix a is to be stored.
@@ -1288,7 +1288,7 @@ void BLAS_zspmv_d_d_testgen(int norm, enum blas_order_type order,
  *           =  1: the vectors are scaled with norms near overflow.
  *
  * order   (input) enum blas_order_type
- *           storage  of the matrices
+ *           storage format of the matrices
  * 
  * uplo    (input) enum blas_uplo_type
  *           which half of the symmetric matrix a is to be stored.
@@ -1393,7 +1393,7 @@ void BLAS_cspmv_c_s_testgen(int norm, enum blas_order_type order,
  *           =  1: the vectors are scaled with norms near overflow.
  *
  * order   (input) enum blas_order_type
- *           storage  of the matrices
+ *           storage format of the matrices
  * 
  * uplo    (input) enum blas_uplo_type
  *           which half of the symmetric matrix a is to be stored.
@@ -1497,7 +1497,7 @@ void BLAS_cspmv_s_c_testgen(int norm, enum blas_order_type order,
  *           =  1: the vectors are scaled with norms near overflow.
  *
  * order   (input) enum blas_order_type
- *           storage  of the matrices
+ *           storage format of the matrices
  * 
  * uplo    (input) enum blas_uplo_type
  *           which half of the symmetric matrix a is to be stored.
@@ -1601,7 +1601,7 @@ void BLAS_cspmv_s_s_testgen(int norm, enum blas_order_type order,
  *           =  1: the vectors are scaled with norms near overflow.
  *
  * order   (input) enum blas_order_type
- *           storage  of the matrices
+ *           storage format of the matrices
  * 
  * uplo    (input) enum blas_uplo_type
  *           which half of the symmetric matrix a is to be stored.

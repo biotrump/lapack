@@ -273,7 +273,7 @@ void do_test_ssymm
 	/* number of tests */
 	for (test_no = 0; test_no < ntests; test_no++) {
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -730,7 +730,7 @@ void do_test_dsymm
 	/* number of tests */
 	for (test_no = 0; test_no < ntests; test_no++) {
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -1187,7 +1187,7 @@ void do_test_dsymm_s_d
 	/* number of tests */
 	for (test_no = 0; test_no < ntests; test_no++) {
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -1645,7 +1645,7 @@ void do_test_dsymm_d_s
 	/* number of tests */
 	for (test_no = 0; test_no < ntests; test_no++) {
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -2103,7 +2103,7 @@ void do_test_dsymm_s_s
 	/* number of tests */
 	for (test_no = 0; test_no < ntests; test_no++) {
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -2570,7 +2570,7 @@ void do_test_csymm
 	/* number of tests */
 	for (test_no = 0; test_no < ntests; test_no++) {
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -3041,7 +3041,7 @@ void do_test_zsymm
 	/* number of tests */
 	for (test_no = 0; test_no < ntests; test_no++) {
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -3512,7 +3512,7 @@ void do_test_zsymm_z_c
 	/* number of tests */
 	for (test_no = 0; test_no < ntests; test_no++) {
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -3984,7 +3984,7 @@ void do_test_zsymm_c_z
 	/* number of tests */
 	for (test_no = 0; test_no < ntests; test_no++) {
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -4456,7 +4456,7 @@ void do_test_zsymm_c_c
 	/* number of tests */
 	for (test_no = 0; test_no < ntests; test_no++) {
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -4926,7 +4926,7 @@ void do_test_csymm_s_c
 	/* number of tests */
 	for (test_no = 0; test_no < ntests; test_no++) {
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -5396,7 +5396,7 @@ void do_test_csymm_c_s
 	/* number of tests */
 	for (test_no = 0; test_no < ntests; test_no++) {
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -5864,7 +5864,7 @@ void do_test_csymm_s_s
 	/* number of tests */
 	for (test_no = 0; test_no < ntests; test_no++) {
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -6334,7 +6334,7 @@ void do_test_zsymm_d_z
 	/* number of tests */
 	for (test_no = 0; test_no < ntests; test_no++) {
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -6804,7 +6804,7 @@ void do_test_zsymm_z_d
 	/* number of tests */
 	for (test_no = 0; test_no < ntests; test_no++) {
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -7272,7 +7272,7 @@ void do_test_zsymm_d_d
 	/* number of tests */
 	for (test_no = 0; test_no < ntests; test_no++) {
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -7756,7 +7756,7 @@ void do_test_ssymm_x
 	  /* number of tests */
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -8236,7 +8236,7 @@ void do_test_dsymm_x
 	  /* number of tests */
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -8716,7 +8716,7 @@ void do_test_dsymm_s_d_x
 	  /* number of tests */
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -9196,7 +9196,7 @@ void do_test_dsymm_d_s_x
 	  /* number of tests */
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -9676,7 +9676,7 @@ void do_test_dsymm_s_s_x
 	  /* number of tests */
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -10165,7 +10165,7 @@ void do_test_csymm_x
 	  /* number of tests */
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -10659,7 +10659,7 @@ void do_test_zsymm_x
 	  /* number of tests */
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -11153,7 +11153,7 @@ void do_test_zsymm_z_c_x
 	  /* number of tests */
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -11647,7 +11647,7 @@ void do_test_zsymm_c_z_x
 	  /* number of tests */
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -12141,7 +12141,7 @@ void do_test_zsymm_c_c_x
 	  /* number of tests */
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -12633,7 +12633,7 @@ void do_test_csymm_s_c_x
 	  /* number of tests */
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -13125,7 +13125,7 @@ void do_test_csymm_c_s_x
 	  /* number of tests */
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -13615,7 +13615,7 @@ void do_test_csymm_s_s_x
 	  /* number of tests */
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -14107,7 +14107,7 @@ void do_test_zsymm_d_z_x
 	  /* number of tests */
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -14599,7 +14599,7 @@ void do_test_zsymm_z_d_x
 	  /* number of tests */
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -15089,7 +15089,7 @@ void do_test_zsymm_d_d_x
 	  /* number of tests */
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;

@@ -270,7 +270,7 @@ void do_test_sgemm
 	/* number of tests */
 	for (test_no = 0; test_no < ntests; test_no++) {
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    if (order_val == 0) {
@@ -760,7 +760,7 @@ void do_test_dgemm
 	/* number of tests */
 	for (test_no = 0; test_no < ntests; test_no++) {
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    if (order_val == 0) {
@@ -1251,7 +1251,7 @@ void do_test_dgemm_d_s
 	/* number of tests */
 	for (test_no = 0; test_no < ntests; test_no++) {
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    if (order_val == 0) {
@@ -1743,7 +1743,7 @@ void do_test_dgemm_s_d
 	/* number of tests */
 	for (test_no = 0; test_no < ntests; test_no++) {
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    if (order_val == 0) {
@@ -2235,7 +2235,7 @@ void do_test_dgemm_s_s
 	/* number of tests */
 	for (test_no = 0; test_no < ntests; test_no++) {
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    if (order_val == 0) {
@@ -2736,7 +2736,7 @@ void do_test_cgemm
 	/* number of tests */
 	for (test_no = 0; test_no < ntests; test_no++) {
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    if (order_val == 0) {
@@ -3240,7 +3240,7 @@ void do_test_zgemm
 	/* number of tests */
 	for (test_no = 0; test_no < ntests; test_no++) {
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    if (order_val == 0) {
@@ -3744,7 +3744,7 @@ void do_test_zgemm_z_c
 	/* number of tests */
 	for (test_no = 0; test_no < ntests; test_no++) {
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    if (order_val == 0) {
@@ -4250,7 +4250,7 @@ void do_test_zgemm_c_z
 	/* number of tests */
 	for (test_no = 0; test_no < ntests; test_no++) {
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    if (order_val == 0) {
@@ -4756,7 +4756,7 @@ void do_test_zgemm_c_c
 	/* number of tests */
 	for (test_no = 0; test_no < ntests; test_no++) {
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    if (order_val == 0) {
@@ -5260,7 +5260,7 @@ void do_test_cgemm_c_s
 	/* number of tests */
 	for (test_no = 0; test_no < ntests; test_no++) {
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    if (order_val == 0) {
@@ -5764,7 +5764,7 @@ void do_test_cgemm_s_c
 	/* number of tests */
 	for (test_no = 0; test_no < ntests; test_no++) {
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    if (order_val == 0) {
@@ -6266,7 +6266,7 @@ void do_test_cgemm_s_s
 	/* number of tests */
 	for (test_no = 0; test_no < ntests; test_no++) {
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    if (order_val == 0) {
@@ -6770,7 +6770,7 @@ void do_test_zgemm_z_d
 	/* number of tests */
 	for (test_no = 0; test_no < ntests; test_no++) {
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    if (order_val == 0) {
@@ -7274,7 +7274,7 @@ void do_test_zgemm_d_z
 	/* number of tests */
 	for (test_no = 0; test_no < ntests; test_no++) {
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    if (order_val == 0) {
@@ -7776,7 +7776,7 @@ void do_test_zgemm_d_d
 	/* number of tests */
 	for (test_no = 0; test_no < ntests; test_no++) {
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    if (order_val == 0) {
@@ -8293,7 +8293,7 @@ void do_test_sgemm_x
 	  /* number of tests */
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      if (order_val == 0) {
@@ -8819,7 +8819,7 @@ void do_test_dgemm_x
 	  /* number of tests */
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      if (order_val == 0) {
@@ -9345,7 +9345,7 @@ void do_test_dgemm_d_s_x
 	  /* number of tests */
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      if (order_val == 0) {
@@ -9872,7 +9872,7 @@ void do_test_dgemm_s_d_x
 	  /* number of tests */
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      if (order_val == 0) {
@@ -10399,7 +10399,7 @@ void do_test_dgemm_s_s_x
 	  /* number of tests */
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      if (order_val == 0) {
@@ -10935,7 +10935,7 @@ void do_test_cgemm_x
 	  /* number of tests */
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      if (order_val == 0) {
@@ -11475,7 +11475,7 @@ void do_test_zgemm_x
 	  /* number of tests */
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      if (order_val == 0) {
@@ -12015,7 +12015,7 @@ void do_test_zgemm_z_c_x
 	  /* number of tests */
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      if (order_val == 0) {
@@ -12556,7 +12556,7 @@ void do_test_zgemm_c_z_x
 	  /* number of tests */
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      if (order_val == 0) {
@@ -13097,7 +13097,7 @@ void do_test_zgemm_c_c_x
 	  /* number of tests */
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      if (order_val == 0) {
@@ -13636,7 +13636,7 @@ void do_test_cgemm_c_s_x
 	  /* number of tests */
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      if (order_val == 0) {
@@ -14175,7 +14175,7 @@ void do_test_cgemm_s_c_x
 	  /* number of tests */
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      if (order_val == 0) {
@@ -14712,7 +14712,7 @@ void do_test_cgemm_s_s_x
 	  /* number of tests */
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      if (order_val == 0) {
@@ -15251,7 +15251,7 @@ void do_test_zgemm_z_d_x
 	  /* number of tests */
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      if (order_val == 0) {
@@ -15790,7 +15790,7 @@ void do_test_zgemm_d_z_x
 	  /* number of tests */
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      if (order_val == 0) {
@@ -16327,7 +16327,7 @@ void do_test_zgemm_d_d_x
 	  /* number of tests */
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      if (order_val == 0) {

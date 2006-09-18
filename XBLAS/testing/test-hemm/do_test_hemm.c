@@ -254,7 +254,7 @@ void do_test_chemm(int m, int n,
 	/* number of tests */
 	for (test_no = 0; test_no < ntests; test_no++) {
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -734,7 +734,7 @@ void do_test_zhemm(int m, int n,
 	/* number of tests */
 	for (test_no = 0; test_no < ntests; test_no++) {
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -1214,7 +1214,7 @@ void do_test_zhemm_z_c(int m, int n,
 	/* number of tests */
 	for (test_no = 0; test_no < ntests; test_no++) {
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -1695,7 +1695,7 @@ void do_test_zhemm_c_z(int m, int n,
 	/* number of tests */
 	for (test_no = 0; test_no < ntests; test_no++) {
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -2176,7 +2176,7 @@ void do_test_zhemm_c_c(int m, int n,
 	/* number of tests */
 	for (test_no = 0; test_no < ntests; test_no++) {
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -2655,7 +2655,7 @@ void do_test_chemm_c_s(int m, int n,
 	/* number of tests */
 	for (test_no = 0; test_no < ntests; test_no++) {
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -3134,7 +3134,7 @@ void do_test_zhemm_z_d(int m, int n,
 	/* number of tests */
 	for (test_no = 0; test_no < ntests; test_no++) {
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -3634,7 +3634,7 @@ void do_test_chemm_x(int m, int n,
 	  /* number of tests */
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -4138,7 +4138,7 @@ void do_test_zhemm_x(int m, int n,
 	  /* number of tests */
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -4643,7 +4643,7 @@ void do_test_zhemm_z_c_x(int m, int n,
 	  /* number of tests */
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -5148,7 +5148,7 @@ void do_test_zhemm_c_z_x(int m, int n,
 	  /* number of tests */
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -5653,7 +5653,7 @@ void do_test_zhemm_c_c_x(int m, int n,
 	  /* number of tests */
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -6156,7 +6156,7 @@ void do_test_chemm_c_s_x(int m, int n,
 	  /* number of tests */
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -6659,7 +6659,7 @@ void do_test_zhemm_z_d_x(int m, int n,
 	  /* number of tests */
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;

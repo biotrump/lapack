@@ -20,7 +20,7 @@ void BLAS_dsymm_d_s(enum blas_order_type order, enum blas_side_type side,
  * =========
  *
  * order   (input) enum blas_order_type
- *         Storage  of input matrices A, B, and C.
+ *         Storage format of input matrices A, B, and C.
  * 
  * side    (input) enum blas_side_type
  *         Determines which side of matrix B is matrix A is multiplied.

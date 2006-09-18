@@ -19,7 +19,7 @@ void BLAS_zhemv_z_c(enum blas_order_type order, enum blas_uplo_type uplo,
  * =========
  *
  * order   (input) enum blas_order_type
- *         Storage  of input hermitian matrix A.
+ *         Storage format of input hermitian matrix A.
  * 
  * uplo    (input) enum blas_uplo_type
  *         Determines which half of matrix A (upper or lower triangle)

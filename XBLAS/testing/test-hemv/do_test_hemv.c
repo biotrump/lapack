@@ -278,7 +278,7 @@ void do_test_chemv
 	for (test_no = 0; test_no < ntests; test_no++) {
 
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -702,7 +702,7 @@ void do_test_zhemv
 	for (test_no = 0; test_no < ntests; test_no++) {
 
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -1126,7 +1126,7 @@ void do_test_zhemv_z_c
 	for (test_no = 0; test_no < ntests; test_no++) {
 
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -1551,7 +1551,7 @@ void do_test_zhemv_c_z
 	for (test_no = 0; test_no < ntests; test_no++) {
 
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -1976,7 +1976,7 @@ void do_test_zhemv_c_c
 	for (test_no = 0; test_no < ntests; test_no++) {
 
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -2399,7 +2399,7 @@ void do_test_chemv_c_s
 	for (test_no = 0; test_no < ntests; test_no++) {
 
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -2822,7 +2822,7 @@ void do_test_zhemv_z_d
 	for (test_no = 0; test_no < ntests; test_no++) {
 
 
-	  /* vary storage  */
+	  /* vary storage format */
 	  for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	    order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -3266,7 +3266,7 @@ void do_test_chemv_x
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -3712,7 +3712,7 @@ void do_test_zhemv_x
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -4158,7 +4158,7 @@ void do_test_zhemv_z_c_x
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -4605,7 +4605,7 @@ void do_test_zhemv_c_z_x
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -5052,7 +5052,7 @@ void do_test_zhemv_c_c_x
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -5497,7 +5497,7 @@ void do_test_chemv_c_s_x
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;
@@ -5942,7 +5942,7 @@ void do_test_zhemv_z_d_x
 	  for (test_no = 0; test_no < ntests; test_no++) {
 
 
-	    /* vary storage  */
+	    /* vary storage format */
 	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
 
 	      order_type = (order_val == 0) ? blas_colmajor : blas_rowmajor;

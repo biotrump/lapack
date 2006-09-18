@@ -53,7 +53,7 @@ void BLAS_sskew_testgen_hemv(int norm, enum blas_order_type order,
  *           =  1: the vectors are scaled with norms near overflow.
  *
  * order   (input) enum blas_order_type
- *           storage  of the matrices
+ *           storage format of the matrices
  * 
  * uplo    (input) enum blas_uplo_type
  *           which half of the skew symmetric matrix a is to be stored.
@@ -256,7 +256,7 @@ void BLAS_dskew_testgen_hemv(int norm, enum blas_order_type order,
  *           =  1: the vectors are scaled with norms near overflow.
  *
  * order   (input) enum blas_order_type
- *           storage  of the matrices
+ *           storage format of the matrices
  * 
  * uplo    (input) enum blas_uplo_type
  *           which half of the skew symmetric matrix a is to be stored.
@@ -459,7 +459,7 @@ void BLAS_dskew_testgen_hemv_d_s(int norm, enum blas_order_type order,
  *           =  1: the vectors are scaled with norms near overflow.
  *
  * order   (input) enum blas_order_type
- *           storage  of the matrices
+ *           storage format of the matrices
  * 
  * uplo    (input) enum blas_uplo_type
  *           which half of the skew symmetric matrix a is to be stored.
@@ -662,7 +662,7 @@ void BLAS_dskew_testgen_hemv_s_d(int norm, enum blas_order_type order,
  *           =  1: the vectors are scaled with norms near overflow.
  *
  * order   (input) enum blas_order_type
- *           storage  of the matrices
+ *           storage format of the matrices
  * 
  * uplo    (input) enum blas_uplo_type
  *           which half of the skew symmetric matrix a is to be stored.
@@ -865,7 +865,7 @@ void BLAS_dskew_testgen_hemv_s_s(int norm, enum blas_order_type order,
  *           =  1: the vectors are scaled with norms near overflow.
  *
  * order   (input) enum blas_order_type
- *           storage  of the matrices
+ *           storage format of the matrices
  * 
  * uplo    (input) enum blas_uplo_type
  *           which half of the skew symmetric matrix a is to be stored.
@@ -1069,7 +1069,7 @@ void BLAS_chemv_testgen(int norm, enum blas_order_type order,
  *           =  1: the vectors are scaled with norms near overflow.
  *
  * order   (input) enum blas_order_type
- *           storage  of the matrices
+ *           storage format of the matrices
  * 
  * uplo    (input) enum blas_uplo_type
  *           which half of the hemvetric matrix a is to be stored.
@@ -1634,7 +1634,7 @@ void BLAS_zhemv_testgen(int norm, enum blas_order_type order,
  *           =  1: the vectors are scaled with norms near overflow.
  *
  * order   (input) enum blas_order_type
- *           storage  of the matrices
+ *           storage format of the matrices
  * 
  * uplo    (input) enum blas_uplo_type
  *           which half of the hemvetric matrix a is to be stored.
@@ -2199,7 +2199,7 @@ void BLAS_zhemv_c_z_testgen(int norm, enum blas_order_type order,
  *           =  1: the vectors are scaled with norms near overflow.
  *
  * order   (input) enum blas_order_type
- *           storage  of the matrices
+ *           storage format of the matrices
  * 
  * uplo    (input) enum blas_uplo_type
  *           which half of the hemvetric matrix a is to be stored.
@@ -2765,7 +2765,7 @@ void BLAS_zhemv_z_c_testgen(int norm, enum blas_order_type order,
  *           =  1: the vectors are scaled with norms near overflow.
  *
  * order   (input) enum blas_order_type
- *           storage  of the matrices
+ *           storage format of the matrices
  * 
  * uplo    (input) enum blas_uplo_type
  *           which half of the hemvetric matrix a is to be stored.
@@ -3331,7 +3331,7 @@ void BLAS_zhemv_c_c_testgen(int norm, enum blas_order_type order,
  *           =  1: the vectors are scaled with norms near overflow.
  *
  * order   (input) enum blas_order_type
- *           storage  of the matrices
+ *           storage format of the matrices
  * 
  * uplo    (input) enum blas_uplo_type
  *           which half of the hemvetric matrix a is to be stored.
@@ -3897,7 +3897,7 @@ void BLAS_zhemv_z_d_testgen(int norm, enum blas_order_type order,
  *           =  1: the vectors are scaled with norms near overflow.
  *
  * order   (input) enum blas_order_type
- *           storage  of the matrices
+ *           storage format of the matrices
  * 
  * uplo    (input) enum blas_uplo_type
  *           which half of the hemvetric matrix a is to be stored.
@@ -4412,7 +4412,7 @@ void BLAS_chemv_c_s_testgen(int norm, enum blas_order_type order,
  *           =  1: the vectors are scaled with norms near overflow.
  *
  * order   (input) enum blas_order_type
- *           storage  of the matrices
+ *           storage format of the matrices
  * 
  * uplo    (input) enum blas_uplo_type
  *           which half of the hemvetric matrix a is to be stored.
