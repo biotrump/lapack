@@ -35,7 +35,7 @@ ALL_OBJS = $(TEST_OBJS) $(DOT_OBJS) $(TEST_DOT_OBJS)
 
 test: do_test_sum
 	@echo Testing SUM
-	( ./do_test_sum 20 1 1.0 0 1.0 > sum.results )
+	./do_test_sum 20 1 1.0 0 1.0 > sum.results
 
 do_test_sum: $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB)
 	$(LINKER) $(LINKOPTS) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \

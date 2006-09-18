@@ -21,7 +21,7 @@ TEST_OBJS = $(TEST_SRCS:.c=.o)
 
 test: do_test_dot
 	@echo Testing DOT
-	( ./do_test_dot 20 1 1.0 0 1 > dot.results )
+	./do_test_dot 20 1 1.0 0 1 > dot.results
 
 test-lib: $(TEST_OBJS)
 

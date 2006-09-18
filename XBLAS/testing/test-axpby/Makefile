@@ -36,7 +36,7 @@ ALL_OBJS = $(DOT_OBJS) $(TEST_DOT_OBJS) $(TEST_OBJS)
 
 test: do_test_axpby
 	@echo Testing AXPBY
-	( ./do_test_axpby 10 1 1.0 1 1 > axpby.results )
+	./do_test_axpby 10 1 1.0 1 1 > axpby.results
 
 do_test_axpby: $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB)
 	$(LINKER) $(LINKOPT) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) -o do_test_axpby -lm

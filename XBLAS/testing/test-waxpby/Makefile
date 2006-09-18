@@ -35,7 +35,7 @@ ALL_OBJS = $(TEST_OBJS) $(DOT_OBJS) $(TEST_DOT_OBJS)
 
 test: do_test_waxpby
 	@echo Testing WAXPBY
-	( ./do_test_waxpby 20 1 1.0 0 0.1 > waxpby.results )
+	./do_test_waxpby 20 1 1.0 0 0.1 > waxpby.results
 
 do_test_waxpby: $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB)
 	$(LINKER) $(LINKOPT) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
