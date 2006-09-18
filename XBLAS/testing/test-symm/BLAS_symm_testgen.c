@@ -290,6 +290,8 @@ void BLAS_ssymm_testgen(int norm, enum blas_order_type order,
       }
     }
 
+
+
   }
 
   free(a_vec);
@@ -570,6 +572,8 @@ void BLAS_dsymm_testgen(int norm, enum blas_order_type order,
 	r_true_t[cij] = r_true_t_elem;
       }
     }
+
+
 
   }
 
@@ -852,6 +856,8 @@ void BLAS_dsymm_d_s_testgen(int norm, enum blas_order_type order,
       }
     }
 
+
+
   }
 
   free(a_vec);
@@ -1133,6 +1139,8 @@ void BLAS_dsymm_s_d_testgen(int norm, enum blas_order_type order,
       }
     }
 
+
+
   }
 
   free(a_vec);
@@ -1413,6 +1421,8 @@ void BLAS_dsymm_s_s_testgen(int norm, enum blas_order_type order,
 	r_true_t[cij] = r_true_t_elem;
       }
     }
+
+
 
   }
 
@@ -1721,6 +1731,8 @@ void BLAS_csymm_testgen(int norm, enum blas_order_type order,
       }
     }
 
+
+
   }
 
   free(a_vec);
@@ -2026,6 +2038,8 @@ void BLAS_zsymm_testgen(int norm, enum blas_order_type order,
 	r_true_t[cij + 1] = r_true_t_elem[1];
       }
     }
+
+
 
   }
 
@@ -2333,6 +2347,8 @@ void BLAS_zsymm_c_z_testgen(int norm, enum blas_order_type order,
       }
     }
 
+
+
   }
 
   free(a_vec);
@@ -2639,6 +2655,8 @@ void BLAS_zsymm_z_c_testgen(int norm, enum blas_order_type order,
       }
     }
 
+
+
   }
 
   free(a_vec);
@@ -2944,6 +2962,8 @@ void BLAS_zsymm_c_c_testgen(int norm, enum blas_order_type order,
 	r_true_t[cij + 1] = r_true_t_elem[1];
       }
     }
+
+
 
   }
 
@@ -3260,6 +3280,8 @@ void BLAS_zsymm_z_d_testgen(int norm, enum blas_order_type order,
       }
     }
 
+
+    free(bb_vec);
   }
 
   free(a_vec);
@@ -3573,6 +3595,8 @@ void BLAS_zsymm_d_z_testgen(int norm, enum blas_order_type order,
 	r_true_t[cij + 1] = r_true_t_elem[1];
       }
     }
+
+    free(aa_vec);
 
   }
 
@@ -3895,6 +3919,8 @@ void BLAS_zsymm_d_d_testgen(int norm, enum blas_order_type order,
       }
     }
 
+    free(aa_vec);
+    free(bb_vec);
   }
 
   free(a_vec);
@@ -4210,6 +4236,8 @@ void BLAS_csymm_c_s_testgen(int norm, enum blas_order_type order,
       }
     }
 
+
+    free(bb_vec);
   }
 
   free(a_vec);
@@ -4523,6 +4551,8 @@ void BLAS_csymm_s_c_testgen(int norm, enum blas_order_type order,
 	r_true_t[cij + 1] = r_true_t_elem[1];
       }
     }
+
+    free(aa_vec);
 
   }
 
@@ -4845,6 +4875,8 @@ void BLAS_csymm_s_s_testgen(int norm, enum blas_order_type order,
       }
     }
 
+    free(aa_vec);
+    free(bb_vec);
   }
 
   free(a_vec);
