@@ -105,7 +105,7 @@ void BLAS_cgbmv_x(enum blas_order_type order, enum blas_trans_type trans,
  *
  */
 {
-  const char routine_name[] = "BLAS_cgbmv_x";
+  static const char routine_name[] = "BLAS_cgbmv_x";
 
   switch (prec) {
   case blas_prec_single:

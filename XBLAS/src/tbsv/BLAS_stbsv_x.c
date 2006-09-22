@@ -56,7 +56,7 @@ void BLAS_stbsv_x(enum blas_order_type order, enum blas_uplo_type uplo,
  */
 {
   /* Routine name */
-  const char routine_name[] = "BLAS_stbsv_x";
+  static const char routine_name[] = "BLAS_stbsv_x";
 
   int i, j;			/* used to keep track of loop counts */
   int xi;			/* used to index vector x */

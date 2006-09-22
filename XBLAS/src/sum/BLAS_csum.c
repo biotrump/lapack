@@ -26,7 +26,7 @@ void BLAS_csum(int n, const void *x, int incx, void *sum)
  * 
  */
 {
-  const char routine_name[] = "BLAS_csum";
+  static const char routine_name[] = "BLAS_csum";
 
   int i, xi;
   float *sum_i = (float *) sum;

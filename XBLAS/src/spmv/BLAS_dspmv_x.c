@@ -50,7 +50,7 @@ void BLAS_dspmv_x(enum blas_order_type order, enum blas_uplo_type uplo,
 		  const double *x, int incx, double beta,
 		  double *y, int incy, enum blas_prec_type prec)
 {
-  char routine_name[] = "BLAS_dspmv_x";
+  static const char routine_name[] = "BLAS_dspmv_x";
 
   switch (prec) {
   case blas_prec_single:{

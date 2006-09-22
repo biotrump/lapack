@@ -35,7 +35,7 @@ void BLAS_dsum_x(int n, const double *x, int incx,
  *
  */
 {
-  const char routine_name[] = "BLAS_dsum_x";
+  static const char routine_name[] = "BLAS_dsum_x";
   switch (prec) {
   case blas_prec_single:{
 

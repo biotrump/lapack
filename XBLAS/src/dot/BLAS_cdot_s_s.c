@@ -42,7 +42,7 @@ void BLAS_cdot_s_s(enum blas_conj_type conj, int n, const void *alpha,
  * 
  */
 {
-  const char routine_name[] = "BLAS_cdot_s_s";
+  static const char routine_name[] = "BLAS_cdot_s_s";
 
   int i, ix = 0, iy = 0;
   float *r_i = (float *) r;

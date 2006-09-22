@@ -53,7 +53,7 @@ void BLAS_csymv_s_c(enum blas_order_type order, enum blas_uplo_type uplo,
  */
 {
   /* Routine name */
-  const char routine_name[] = "BLAS_csymv_s_c";
+  static const char routine_name[] = "BLAS_csymv_s_c";
 
   /* Integer Index Variables */
   int i, k;

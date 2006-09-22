@@ -44,7 +44,7 @@ void BLAS_caxpby_x(int n, const void *alpha, const void *x, int incx,
  *
  */
 {
-  const char routine_name[] = "BLAS_caxpby_x";
+  static const char routine_name[] = "BLAS_caxpby_x";
 
   switch (prec) {
   case blas_prec_single:

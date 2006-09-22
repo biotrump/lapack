@@ -58,7 +58,7 @@ void BLAS_zgemv2_c_z_x(enum blas_order_type order, enum blas_trans_type trans,
  *
  */
 {
-  const char routine_name[] = "BLAS_zgemv2_c_z_x";
+  static const char routine_name[] = "BLAS_zgemv2_c_z_x";
   switch (prec) {
   case blas_prec_single:{
 

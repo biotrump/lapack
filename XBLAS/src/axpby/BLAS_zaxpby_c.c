@@ -35,7 +35,7 @@ void BLAS_zaxpby_c(int n, const void *alpha, const void *x, int incx,
  *
  */
 {
-  const char routine_name[] = "BLAS_zaxpby_c";
+  static const char routine_name[] = "BLAS_zaxpby_c";
 
   int i, ix = 0, iy = 0;
   const float *x_i = (float *) x;

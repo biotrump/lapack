@@ -41,7 +41,7 @@ void BLAS_ztpmv_c(enum blas_order_type order, enum blas_uplo_type uplo,
  *
  */
 {
-  const char *routine_name = "BLAS_ztpmv_c";
+  static const char routine_name[] = "BLAS_ztpmv_c";
 
   {
     int matrix_row, step, tp_index, tp_start, x_index, x_start;

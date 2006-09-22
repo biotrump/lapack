@@ -48,7 +48,7 @@ void BLAS_ctbsv_s(enum blas_order_type order, enum blas_uplo_type uplo,
  */
 {
   /* Routine name */
-  const char routine_name[] = "BLAS_ctbsv_s";
+  static const char routine_name[] = "BLAS_ctbsv_s";
 
   int i, j;			/* used to keep track of loop counts */
   int xi;			/* used to index vector x */

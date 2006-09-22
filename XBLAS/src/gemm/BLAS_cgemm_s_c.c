@@ -62,7 +62,7 @@ void BLAS_cgemm_s_c(enum blas_order_type order, enum blas_trans_type transa,
  *
  */
 {
-  const char routine_name[] = "BLAS_cgemm_s_c";
+  static const char routine_name[] = "BLAS_cgemm_s_c";
 
 
   /* Integer Index Variables */

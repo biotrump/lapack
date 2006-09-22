@@ -26,7 +26,7 @@ void BLAS_zsum(int n, const void *x, int incx, void *sum)
  * 
  */
 {
-  const char routine_name[] = "BLAS_zsum";
+  static const char routine_name[] = "BLAS_zsum";
 
   int i, xi;
   double *sum_i = (double *) sum;

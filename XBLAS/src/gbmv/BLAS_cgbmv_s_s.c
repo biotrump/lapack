@@ -96,7 +96,7 @@ void BLAS_cgbmv_s_s(enum blas_order_type order, enum blas_trans_type trans,
  *
  */
 {
-  const char routine_name[] = "BLAS_cgbmv_s_s";
+  static const char routine_name[] = "BLAS_cgbmv_s_s";
 
   int ky, iy, kx, jx, j, i, rbound, lbound, ra, la, lenx, leny;
   int incaij, aij, incai1, incai2, astart, ai;

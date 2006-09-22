@@ -48,7 +48,7 @@ void BLAS_zgemv_c_z(enum blas_order_type order, enum blas_trans_type trans,
  * 
  */
 {
-  const char routine_name[] = "BLAS_zgemv_c_z";
+  static const char routine_name[] = "BLAS_zgemv_c_z";
 
   int i, j;
   int iy, jx, kx, ky;

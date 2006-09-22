@@ -42,7 +42,7 @@ void BLAS_dspmv_s_s(enum blas_order_type order, enum blas_uplo_type uplo,
 		    const float *x, int incx, double beta,
 		    double *y, int incy)
 {
-  char routine_name[] = "BLAS_dspmv_s_s";
+  static const char routine_name[] = "BLAS_dspmv_s_s";
 
   {
     int matrix_row, step, ap_index, ap_start, x_index, x_start;

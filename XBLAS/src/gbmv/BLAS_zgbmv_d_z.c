@@ -96,7 +96,7 @@ void BLAS_zgbmv_d_z(enum blas_order_type order, enum blas_trans_type trans,
  *
  */
 {
-  const char routine_name[] = "BLAS_zgbmv_d_z";
+  static const char routine_name[] = "BLAS_zgbmv_d_z";
 
   int ky, iy, kx, jx, j, i, rbound, lbound, ra, la, lenx, leny;
   int incaij, aij, incai1, incai2, astart, ai;

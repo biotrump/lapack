@@ -46,7 +46,7 @@ void BLAS_ztrmv_c(enum blas_order_type order, enum blas_uplo_type uplo,
  *
  */
 {
-  const char routine_name[] = "BLAS_ztrmv_c";
+  static const char routine_name[] = "BLAS_ztrmv_c";
 
   int i, j;			/* used to idx matrix */
   int xj, xj0;

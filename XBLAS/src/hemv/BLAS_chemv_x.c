@@ -61,7 +61,7 @@ void BLAS_chemv_x(enum blas_order_type order, enum blas_uplo_type uplo,
  */
 {
   /* Routine name */
-  const char routine_name[] = "BLAS_chemv";
+  static const char routine_name[] = "BLAS_chemv";
   switch (prec) {
 
   case blas_prec_single:{

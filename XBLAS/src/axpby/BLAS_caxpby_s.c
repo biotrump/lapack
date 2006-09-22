@@ -35,7 +35,7 @@ void BLAS_caxpby_s(int n, const void *alpha, const float *x, int incx,
  *
  */
 {
-  const char routine_name[] = "BLAS_caxpby_s";
+  static const char routine_name[] = "BLAS_caxpby_s";
 
   int i, ix = 0, iy = 0;
   const float *x_i = x;

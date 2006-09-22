@@ -42,7 +42,7 @@ void BLAS_zspmv_d_z(enum blas_order_type order, enum blas_uplo_type uplo,
 		    const void *x, int incx, const void *beta,
 		    void *y, int incy)
 {
-  char routine_name[] = "BLAS_zspmv_d_z";
+  static const char routine_name[] = "BLAS_zspmv_d_z";
 
   {
     int matrix_row, step, ap_index, ap_start, x_index, x_start;

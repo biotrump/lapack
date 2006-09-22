@@ -49,7 +49,7 @@ void BLAS_dgemv2_d_s(enum blas_order_type order, enum blas_trans_type trans,
  * 
  */
 {
-  const char routine_name[] = "BLAS_dgemv2_d_s";
+  static const char routine_name[] = "BLAS_dgemv2_d_s";
 
   int i, j;
   int iy, jx, kx, ky;

@@ -60,7 +60,7 @@ void BLAS_sge_sum_mv_x(enum blas_order_type order, int m, int n,
  */
 {
   /* Routine name */
-  const char routine_name[] = "BLAS_sge_sum_mv";
+  static const char routine_name[] = "BLAS_sge_sum_mv";
   switch (prec) {
   case blas_prec_single:
     {

@@ -42,7 +42,7 @@ void BLAS_ctpmv_s(enum blas_order_type order, enum blas_uplo_type uplo,
  *
  */
 {
-  const char *routine_name = "BLAS_ctpmv_s";
+  static const char routine_name[] = "BLAS_ctpmv_s";
 
   {
     int matrix_row, step, tp_index, tp_start, x_index, x_start;

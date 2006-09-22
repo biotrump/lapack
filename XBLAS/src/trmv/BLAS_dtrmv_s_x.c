@@ -54,7 +54,7 @@ void BLAS_dtrmv_s_x(enum blas_order_type order, enum blas_uplo_type uplo,
  *
  */
 {
-  const char routine_name[] = "BLAS_dtrmv_s_x";
+  static const char routine_name[] = "BLAS_dtrmv_s_x";
 
   switch (prec) {
   case blas_prec_single:{

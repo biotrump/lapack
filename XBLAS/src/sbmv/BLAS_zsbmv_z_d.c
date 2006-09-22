@@ -107,7 +107,7 @@ void BLAS_zsbmv_z_d(enum blas_order_type order, enum blas_uplo_type uplo,
  *
  */
 {
-  const char routine_name[] = "BLAS_zsbmv_z_d";
+  static const char routine_name[] = "BLAS_zsbmv_z_d";
 
   /* Integer Index Variables */
   int i, j;

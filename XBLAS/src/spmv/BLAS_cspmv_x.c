@@ -50,7 +50,7 @@ void BLAS_cspmv_x(enum blas_order_type order, enum blas_uplo_type uplo,
 		  const void *x, int incx, const void *beta,
 		  void *y, int incy, enum blas_prec_type prec)
 {
-  char routine_name[] = "BLAS_cspmv_x";
+  static const char routine_name[] = "BLAS_cspmv_x";
 
   switch (prec) {
   case blas_prec_single:{

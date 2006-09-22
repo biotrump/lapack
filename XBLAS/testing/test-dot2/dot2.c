@@ -54,7 +54,7 @@ void BLAS_sdot2_x(enum blas_conj_type conj, int n, float alpha,
  *
  */
 {
-  const char routine_name[] = "BLAS_sdot2_x";
+  static const char routine_name[] = "BLAS_sdot2_x";
 
   switch (prec) {
   case blas_prec_single:
@@ -409,7 +409,7 @@ void BLAS_ddot2_x(enum blas_conj_type conj, int n, double alpha,
  *
  */
 {
-  const char routine_name[] = "BLAS_ddot2_x";
+  static const char routine_name[] = "BLAS_ddot2_x";
 
   switch (prec) {
   case blas_prec_single:
@@ -803,7 +803,7 @@ void BLAS_cdot2_x(enum blas_conj_type conj, int n, const void *alpha,
  *
  */
 {
-  const char routine_name[] = "BLAS_cdot2_x";
+  static const char routine_name[] = "BLAS_cdot2_x";
 
   switch (prec) {
   case blas_prec_single:
@@ -1909,7 +1909,7 @@ void BLAS_zdot2_x(enum blas_conj_type conj, int n, const void *alpha,
  *
  */
 {
-  const char routine_name[] = "BLAS_zdot2_x";
+  static const char routine_name[] = "BLAS_zdot2_x";
 
   switch (prec) {
   case blas_prec_single:

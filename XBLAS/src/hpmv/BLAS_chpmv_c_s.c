@@ -42,7 +42,7 @@ void BLAS_chpmv_c_s(enum blas_order_type order, enum blas_uplo_type uplo,
 		    const float *x, int incx, const void *beta, void *y,
 		    int incy)
 {
-  char routine_name[] = "BLAS_chpmv_c_s";
+  static const char routine_name[] = "BLAS_chpmv_c_s";
 
   {
     enum blas_order_type order_i;

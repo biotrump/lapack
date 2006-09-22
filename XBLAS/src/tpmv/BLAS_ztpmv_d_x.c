@@ -50,7 +50,7 @@ void BLAS_ztpmv_d_x(enum blas_order_type order, enum blas_uplo_type uplo,
  *
  */
 {
-  const char *routine_name = "BLAS_ztpmv_d_x";
+  static const char routine_name[] = "BLAS_ztpmv_d_x";
 
 
   switch (prec) {

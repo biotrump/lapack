@@ -51,7 +51,7 @@ void BLAS_cdot_c_s_x(enum blas_conj_type conj, int n, const void *alpha,
  *
  */
 {
-  const char routine_name[] = "BLAS_cdot_c_s_x";
+  static const char routine_name[] = "BLAS_cdot_c_s_x";
 
   switch (prec) {
   case blas_prec_single:

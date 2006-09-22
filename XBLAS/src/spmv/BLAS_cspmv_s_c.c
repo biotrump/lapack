@@ -42,7 +42,7 @@ void BLAS_cspmv_s_c(enum blas_order_type order, enum blas_uplo_type uplo,
 		    const void *x, int incx, const void *beta,
 		    void *y, int incy)
 {
-  char routine_name[] = "BLAS_cspmv_s_c";
+  static const char routine_name[] = "BLAS_cspmv_s_c";
 
   {
     int matrix_row, step, ap_index, ap_start, x_index, x_start;

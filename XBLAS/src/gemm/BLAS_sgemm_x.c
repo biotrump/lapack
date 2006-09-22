@@ -71,7 +71,7 @@ void BLAS_sgemm_x(enum blas_order_type order, enum blas_trans_type transa,
  *
  */
 {
-  const char routine_name[] = "BLAS_sgemm_x";
+  static const char routine_name[] = "BLAS_sgemm_x";
   switch (prec) {
 
   case blas_prec_single:{

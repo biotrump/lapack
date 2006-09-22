@@ -112,7 +112,7 @@ void BLAS_zhbmv_c_c(enum blas_order_type order,
  */
 {
   /* Routine name */
-  const char routine_name[] = "BLAS_zhbmv_c_c";
+  static const char routine_name[] = "BLAS_zhbmv_c_c";
 
   /* Integer Index Variables */
   int i, j;

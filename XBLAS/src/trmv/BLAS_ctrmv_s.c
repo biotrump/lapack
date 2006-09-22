@@ -46,7 +46,7 @@ void BLAS_ctrmv_s(enum blas_order_type order, enum blas_uplo_type uplo,
  *
  */
 {
-  const char routine_name[] = "BLAS_ctrmv_s";
+  static const char routine_name[] = "BLAS_ctrmv_s";
 
   int i, j;			/* used to idx matrix */
   int xj, xj0;

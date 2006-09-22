@@ -107,7 +107,7 @@ void BLAS_csbmv_s_c(enum blas_order_type order, enum blas_uplo_type uplo,
  *
  */
 {
-  const char routine_name[] = "BLAS_csbmv_s_c";
+  static const char routine_name[] = "BLAS_csbmv_s_c";
 
   /* Integer Index Variables */
   int i, j;

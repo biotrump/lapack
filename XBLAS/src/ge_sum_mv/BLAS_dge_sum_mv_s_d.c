@@ -52,7 +52,7 @@ void BLAS_dge_sum_mv_s_d(enum blas_order_type order, int m, int n,
  */
 {
   /* Routine name */
-  const char routine_name[] = "BLAS_dge_sum_mv_s_d";
+  static const char routine_name[] = "BLAS_dge_sum_mv_s_d";
   int i, j;
   int xi, yi;
   int x_starti, y_starti, incxi, incyi;
