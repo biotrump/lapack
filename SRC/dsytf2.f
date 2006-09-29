@@ -1,9 +1,8 @@
       SUBROUTINE DSYTF2( UPLO, N, A, LDA, IPIV, INFO )
 *
-*  -- LAPACK routine (version 3.0) --
+*  -- LAPACK routine (version 3.1) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     June 30, 1999
+*     September 29, 2006
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -76,6 +75,18 @@
 *  Further Details
 *  ===============
 *
+*  09-29-06 - patch from
+*    Bobby Cheng, MathWorks
+*
+*    Replace l.211 and l.383
+*         IF( MAX( ABSAKK, COLMAX ).EQ.ZERO ) THEN
+*    by
+*         IF( (MAX( ABSAKK, COLMAX ).EQ.ZERO) .OR. 
+*     $       (ABSAKK .NE. ABSAKK) ) THEN
+*
+*  01-01-96 - Based on modifications by
+*    J. Lewis, Boeing Computer Services Company
+*    A. Petitet, Computer Science Dept., Univ. of Tenn., Knoxville, USA
 *  1-96 - Based on modifications by J. Lewis, Boeing Computer Services
 *         Company
 *
@@ -191,7 +202,8 @@
             COLMAX = ZERO
          END IF
 *
-         IF( MAX( ABSAKK, COLMAX ).EQ.ZERO ) THEN
+         IF( (MAX( ABSAKK, COLMAX ).EQ.ZERO) .OR. 
+     $       (ABSAKK .NE. ABSAKK) ) THEN
 *
 *           Column K is zero: set INFO and continue
 *
@@ -359,7 +371,8 @@
             COLMAX = ZERO
          END IF
 *
-         IF( MAX( ABSAKK, COLMAX ).EQ.ZERO ) THEN
+         IF( (MAX( ABSAKK, COLMAX ).EQ.ZERO) .OR. 
+     $       (ABSAKK .NE. ABSAKK) ) THEN
 *
 *           Column K is zero: set INFO and continue
 *
