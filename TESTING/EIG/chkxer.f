@@ -13,6 +13,10 @@
       CHARACTER*(*)       SRNAMT
       INTEGER            INFOT, NOUT
 *     ..
+*     .. External Functions ..
+      INTEGER ILA_LEN_TRIM
+      EXTERNAL ILA_LEN_TRIM
+*     ..
 *     .. Executable Statements ..
       IF( .NOT.LERR ) THEN
          WRITE( NOUT, FMT = 9999 )INFOT, SRNAMT(1:ILA_LEN_TRIM(SRNAMT))

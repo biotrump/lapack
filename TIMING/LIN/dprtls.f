@@ -85,6 +85,10 @@
       INTEGER            ICASE, IDATA, ILDA, IM, IN, INB, INS,
      $                   ITYPE, LDA, M, N, NB, NRHS, NX
 *     ..
+*     .. External Functions ..
+      INTEGER ILA_LEN_TRIM
+      EXTERNAL ILA_LEN_TRIM
+*     ..
 *     .. Executable Statements ..
 *
       ICASE = 1
@@ -100,8 +104,8 @@
                   IF( ISUB.EQ.2 ) THEN
                      WRITE( NOUT, FMT = 9999 ) M, N, NRHS, LDA
                      WRITE( NOUT, FMT = 9998 )
-     $     SUBNAM(1:ILA_LEN_TRIM( SUBNAM )), ( IDATA,
-     $                    IDATA = 1, NDATA-1 )
+     $                    SUBNAM(1:ILA_LEN_TRIM( SUBNAM )), ( IDATA,
+     $                           IDATA = 1, NDATA-1 )
                      DO 10 ITYPE = 1, MTYPE
                         WRITE( NOUT, FMT = 9997 ) ITYPE,
      $                       ( RSLTS( IDATA, ITYPE, ICASE ),
@@ -115,8 +119,8 @@
                         WRITE( NOUT, FMT = 9996 ) M, N, NRHS, LDA,
      $                       NB, NX               
                         WRITE( NOUT, FMT = 9998 )
-     $     SUBNAM(1:ILA_LEN_TRIM( SUBNAM )), ( IDATA,
-     $                       IDATA = 1, NDATA-1 )
+     $                       SUBNAM(1:ILA_LEN_TRIM( SUBNAM )), ( IDATA,
+     $                              IDATA = 1, NDATA-1 )
                         DO 20 ITYPE = 1, MTYPE
                            WRITE( NOUT, FMT = 9997 ) ITYPE,
      $                          ( RSLTS( IDATA, ITYPE, ICASE ),

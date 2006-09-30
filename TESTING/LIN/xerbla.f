@@ -48,6 +48,10 @@
       CHARACTER(32)      SRNAMT
       INTEGER            INFOT, NOUT
 *     ..
+*     .. External Functions ..
+      INTEGER ILA_LEN_TRIM
+      EXTERNAL ILA_LEN_TRIM
+*     ..
 *     .. Common blocks ..
       COMMON             / INFOC / INFOT, NOUT, OK, LERR
       COMMON             / SRNAMC / SRNAMT
