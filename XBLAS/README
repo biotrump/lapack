@@ -106,7 +106,7 @@ Table of Contents
 
    The Fortran->C bridge is included in libxblas.a.  Each of the
    bridge's object files matches *-f2c.o, so you can extract them with
-   ar if you need a to share one libxblas.a between multiple Fortran
+   ar if you need to share one libxblas.a between multiple Fortran
    compilers.  Example steps to strip the Fortran->C routines from
    libxblas.a and place them in a separate libxblas-myfortran.a are as
    follows:
