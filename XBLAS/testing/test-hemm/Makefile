@@ -35,9 +35,10 @@ TEST_DOT_OBJS = $(TEST_DOT_PATH)/testgen_BLAS_sdot.o \
 
 TEST_SRCS = do_test_hemm.c BLAS_hemm_testgen.c hemm-support.c 
 TEST_OBJS = $(TEST_SRCS:.c=.o)
+COMMON_OBJS = ../common/dummy_main.o
 
 ALL_OBJS = $(TEST_OBJS) $(TEST_DOT_OBJS) \
-	   $(DOT_OBJS) $(GEMM_TEST_OBJS) $(SYMM_TEST_OBJS)
+	   $(DOT_OBJS) $(GEMM_TEST_OBJS) $(SYMM_TEST_OBJS) $(COMMON_OBJS)
 
 test: do_test_hemm
 	@echo Testing HEMM - default quick test

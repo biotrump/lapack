@@ -18,6 +18,7 @@ DOT_PATH = ../../src/dot
 TEST_DOT_PATH = ../test-dot
 
 DOT_OBJS = $(DOT_PATH)/BLAS_sdot_x.o $(DOT_PATH)/BLAS_ddot_x.o
+COMMON_OBJS = ../common/dummy_main.o
 
 TEST_SRCS = do_test_axpby.c 
 TEST_OBJS = $(TEST_SRCS:.c=.o)
@@ -32,7 +33,7 @@ TEST_DOT_SRCS = $(TEST_DOT_PATH)/test_dot.c \
 
 TEST_DOT_OBJS = $(TEST_DOT_SRCS:.c=.o)
 
-ALL_OBJS = $(DOT_OBJS) $(TEST_DOT_OBJS) $(TEST_OBJS)
+ALL_OBJS = $(DOT_OBJS) $(TEST_DOT_OBJS) $(TEST_OBJS) $(COMMON_OBJS)
 
 test: do_test_axpby
 	@echo Testing AXPBY

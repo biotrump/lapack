@@ -30,8 +30,9 @@ TEST_DOT_OBJS = $(TEST_DOT_PATH)/testgen_BLAS_sdot.o \
 TEST_SRCS = do_test_trsv.c BLAS_trsv_testgen.c trsv-support.c \
 	BLAS_dot_testgen_trsv.c testgen_BLAS_sdot_x.c
 TEST_OBJS = $(TEST_SRCS:.c=.o)
+COMMON_OBJS = ../common/dummy_main.o
 
-ALL_OBJS = $(TEST_OBJS) $(TEST_DOT_OBJS) $(DOT_OBJS)
+ALL_OBJS = $(TEST_OBJS) $(TEST_DOT_OBJS) $(DOT_OBJS) $(COMMON_OBJS)
 
 test: do_test_trsv
 	@echo Testing TRSV - default quick test

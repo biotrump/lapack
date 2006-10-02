@@ -37,9 +37,10 @@ TEST_DOT_OBJS = $(TEST_DOT_PATH)/testgen_BLAS_sdot.o \
 TEST_SRCS = do_test_tbsv.c BLAS_tbsv_testgen.c tbsv-support.c
 
 TEST_OBJS = $(TEST_SRCS:.c=.o) 
+COMMON_OBJS = ../common/dummy_main.o
 
 ALL_OBJS = $(TEST_OBJS) $(TEST_DOT_OBJS) $(DOT_OBJS) \
-	$(TEST_GBMV_OBJS) $(TEST_TRSV_OBJS) $(TEST_SYMV_OBJS)
+	$(TEST_GBMV_OBJS) $(TEST_TRSV_OBJS) $(TEST_SYMV_OBJS) $(COMMON_OBJS)
 
 test: do_test_tbsv
 	@echo Testing TBSV - default quick test

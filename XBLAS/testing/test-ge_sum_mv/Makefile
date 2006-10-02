@@ -38,9 +38,10 @@ TEST_DOT_OBJS = $(TEST_DOT_PATH)/testgen_BLAS_sdot.o \
 
 TEST_SRCS = do_test_ge_sum_mv.c ge_sum_mv-support.c BLAS_ge_sum_mv_testgen.c 
 TEST_OBJS = $(TEST_SRCS:.c=.o)
+COMMON_OBJS = ../common/dummy_main.o
 
 ALL_OBJS = $(TEST_OBJS) $(TEST_DOT_OBJS) $(DOT_OBJS) $(GEMV_OBJS) \
-	$(SYMV_OBJS) $(GEMM_OBJS)
+	$(SYMV_OBJS) $(GEMM_OBJS) $(COMMON_OBJS)
 
 test: do_test_ge_sum_mv warning
 	@echo Testing GE_SUM_MV - default quick test

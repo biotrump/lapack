@@ -19,6 +19,7 @@ TEST_SRCS = do_test_dot2.c test_dot2.c BLAS_dot2_testgen.c \
 	    testgen_BLAS_zdot2.c testgen_BLAS_cdot2.c
 
 TEST_OBJS = $(TEST_SRCS:.c=.o)
+COMMON_OBJS = ../common/dummy_main.o
 
 test: do_test_dot2
 	@echo Testing DOT2
@@ -26,8 +27,8 @@ test: do_test_dot2
 
 test-lib: $(TEST_OBJS)
 
-do_test_dot2: $(TEST_OBJS)  $(LIB_PATH)/$(XBLASLIB)
-	$(LINKER) $(LDFLAGS) $(TEST_OBJS) $(LIB_PATH)/$(XBLASLIB) \
+do_test_dot2: $(TEST_OBJS) $(COMMON_OBJS) $(LIB_PATH)/$(XBLASLIB)
+	$(LINKER) $(LDFLAGS) $(TEST_OBJS) $(COMMON_OBJS) $(LIB_PATH)/$(XBLASLIB) \
 	-o do_test_dot2 $(EXTRA_LIBS)
 
 .c.o:
