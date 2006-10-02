@@ -64,7 +64,7 @@ test-none: do_test_ge_sum_mv
 
 do_test_ge_sum_mv: $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB)
 	$(LINKER) $(LDFLAGS) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
-	-o do_test_ge_sum_mv -lm
+	-o do_test_ge_sum_mv $(EXTRA_LIBS)
 
 test-lib: $(TEST_OBJS)
 

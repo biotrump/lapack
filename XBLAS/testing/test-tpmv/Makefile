@@ -54,7 +54,7 @@ test-none: do_test_tpmv
 
 do_test_tpmv: $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB)
 	$(LINKER) $(LDFLAGS) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
-	-o do_test_tpmv -lm
+	-o do_test_tpmv $(EXTRA_LIBS)
 
 test-lib: $(TEST_OBJS)
 

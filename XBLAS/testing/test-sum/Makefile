@@ -39,7 +39,7 @@ test: do_test_sum
 
 do_test_sum: $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB)
 	$(LINKER) $(LDFLAGS) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
-	-o do_test_sum -lm
+	-o do_test_sum $(EXTRA_LIBS)
 
 .c.o:
 	$(CC) $(CFLAGS) -I$(HEADER_PATH) -c -o $@ $<

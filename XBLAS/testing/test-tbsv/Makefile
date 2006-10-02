@@ -63,7 +63,7 @@ test-none: do_test_tbsv
 
 do_test_tbsv: $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB)
 	$(LINKER) $(LDFLAGS) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
-	-o do_test_tbsv -lm
+	-o do_test_tbsv $(EXTRA_LIBS)
 
 .c.o:
 	$(CC) $(CFLAGS) -I$(HEADER_PATH) -c -o $@ $<

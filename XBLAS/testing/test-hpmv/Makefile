@@ -48,7 +48,7 @@ test: do_test_hpmv
 
 do_test_hpmv: $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB)
 	$(LINKER) $(LDFLAGS) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
-	-o do_test_hpmv -lm
+	-o do_test_hpmv $(EXTRA_LIBS)
 
 test-lib: $(TEST_OBJS)
 

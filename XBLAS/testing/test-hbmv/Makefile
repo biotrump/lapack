@@ -64,7 +64,7 @@ test-none: do_test_hbmv
 
 do_test_hbmv: $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB)
 	$(LINKER) $(LDFLAGS) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
-	-o do_test_hbmv -lm
+	-o do_test_hbmv $(EXTRA_LIBS)
 
 test-lib: $(TEST_OBJS)
 

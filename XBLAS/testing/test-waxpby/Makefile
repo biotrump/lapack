@@ -39,7 +39,7 @@ test: do_test_waxpby
 
 do_test_waxpby: $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB)
 	$(LINKER) $(LDFLAGS) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
-	-o do_test_waxpby -lm
+	-o do_test_waxpby $(EXTRA_LIBS)
 
 .c.o:
 	$(CC) $(CFLAGS) -I$(HEADER_PATH) -c -o $@ $<

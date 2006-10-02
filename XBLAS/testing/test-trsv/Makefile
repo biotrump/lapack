@@ -55,7 +55,7 @@ test-none: do_test_trsv
 
 do_test_trsv: $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB)
 	$(LINKER) $(LDFLAGS) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
-	-o do_test_trsv -lm
+	-o do_test_trsv $(EXTRA_LIBS)
 
 .c.o:
 	$(CC) $(CFLAGS) -I$(HEADER_PATH) -c -o $@ $<

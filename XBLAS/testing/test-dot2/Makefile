@@ -28,7 +28,7 @@ test-lib: $(TEST_OBJS)
 
 do_test_dot2: $(TEST_OBJS)  $(LIB_PATH)/$(XBLASLIB)
 	$(LINKER) $(LDFLAGS) $(TEST_OBJS) $(LIB_PATH)/$(XBLASLIB) \
-	-o do_test_dot2 -lm
+	-o do_test_dot2 $(EXTRA_LIBS)
 
 .c.o:
 	$(CC) $(CFLAGS) -I$(HEADER_PATH) -c -o $@ $<

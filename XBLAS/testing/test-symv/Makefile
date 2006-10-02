@@ -56,7 +56,7 @@ test-none: do_test_symv
 
 do_test_symv: $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB)
 	$(LINKER) $(LDFLAGS) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
-	-o do_test_symv -lm
+	-o do_test_symv $(EXTRA_LIBS)
 
 test-lib: $(TEST_OBJS)
 

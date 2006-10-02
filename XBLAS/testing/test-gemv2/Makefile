@@ -38,7 +38,7 @@ test: do_test_gemv2
 
 do_test_gemv2: $(LIB_PATH)/$(XBLASLIB) $(ALL_OBJS)
 	$(LINKER) $(LDFLAGS) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
-	-o do_test_gemv2 -lm
+	-o do_test_gemv2 $(EXTRA_LIBS)
 
 .c.o:
 	$(CC) $(CFLAGS) -I$(HEADER_PATH) -c -o $@ $<

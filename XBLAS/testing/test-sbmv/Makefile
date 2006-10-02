@@ -59,7 +59,7 @@ test-none: do_test_sbmv
 
 do_test_sbmv: $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB)
 	$(LINKER) $(LDFLAGS) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
-	-o do_test_sbmv -lm
+	-o do_test_sbmv $(EXTRA_LIBS)
 
 test-lib: $(TEST_OBJS)
 

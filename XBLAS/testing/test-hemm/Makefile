@@ -61,7 +61,7 @@ test-none: do_test_hemm
 
 do_test_hemm: $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB)
 	$(LINKER) $(LDFLAGS) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
-	-o do_test_hemm -lm
+	-o do_test_hemm $(EXTRA_LIBS)
 
 # $(GEMM_TEST_OBJS):
 #	cd $(TEST_GEMM_PATH) && $(MAKE) test-lib

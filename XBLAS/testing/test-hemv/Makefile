@@ -45,7 +45,7 @@ test: do_test_hemv
 
 do_test_hemv: $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB)
 	$(LINKER) $(LDFLAGS) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
-	-o do_test_hemv -lm
+	-o do_test_hemv $(EXTRA_LIBS)
 
 test-lib: $(TEST_OBJS)
 
