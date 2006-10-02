@@ -37,7 +37,7 @@ test: do_test_gbmv
 	./do_test_gbmv 12 1 1.0 0 0.01 > gbmv.results
 
 do_test_gbmv: $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB)
-	$(LINKER) $(LINKOPT) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
+	$(LINKER) $(LDFLAGS) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
 	-o do_test_gbmv -lm
 
 .c.o:

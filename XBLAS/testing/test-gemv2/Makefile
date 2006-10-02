@@ -37,7 +37,7 @@ test: do_test_gemv2
 	./do_test_gemv2 12 1 1.0 0 0.01 > gemv2.results
 
 do_test_gemv2: $(LIB_PATH)/$(XBLASLIB) $(ALL_OBJS)
-	$(LINKER) $(LINKOPT) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
+	$(LINKER) $(LDFLAGS) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
 	-o do_test_gemv2 -lm
 
 .c.o:

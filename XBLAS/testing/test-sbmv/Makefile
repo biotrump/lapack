@@ -58,7 +58,7 @@ test-none: do_test_sbmv
 	./do_test_sbmv 7 1 1.0 3 $(DO_NO_TESTS) > sbmv.results
 
 do_test_sbmv: $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB)
-	$(LINKER) $(LINKOPT) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
+	$(LINKER) $(LDFLAGS) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
 	-o do_test_sbmv -lm
 
 test-lib: $(TEST_OBJS)

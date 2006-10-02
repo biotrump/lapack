@@ -63,7 +63,7 @@ test-none: do_test_ge_sum_mv
 	./do_test_ge_sum_mv 7 1 1.0 3 $(DO_NO_TESTS) > ge_sum_mv.results
 
 do_test_ge_sum_mv: $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB)
-	$(LINKER) $(LINKOPT) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
+	$(LINKER) $(LDFLAGS) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
 	-o do_test_ge_sum_mv -lm
 
 test-lib: $(TEST_OBJS)

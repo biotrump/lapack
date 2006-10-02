@@ -35,7 +35,7 @@ ALL_OBJS = $(TEST_OBJS) $(TEST_DOT_OBJS) $(DOT_OBJS)
 all: test
 
 do_test_trmv: $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB)
-	$(LINKER) $(LINKOPT) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
+	$(LINKER) $(LDFLAGS) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
 	-o do_test_trmv -lm
 
 test: do_test_trmv

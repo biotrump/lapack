@@ -53,7 +53,7 @@ test-none: do_test_tpmv
 	./do_test_tpmv 12 1 1.0 0 $(DO_NO_TESTS)
 
 do_test_tpmv: $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB)
-	$(LINKER) $(LINKOPT) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
+	$(LINKER) $(LDFLAGS) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
 	-o do_test_tpmv -lm
 
 test-lib: $(TEST_OBJS)

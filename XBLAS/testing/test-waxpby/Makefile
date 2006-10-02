@@ -38,7 +38,7 @@ test: do_test_waxpby
 	./do_test_waxpby 20 1 1.0 0 0.1 > waxpby.results
 
 do_test_waxpby: $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB)
-	$(LINKER) $(LINKOPT) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
+	$(LINKER) $(LDFLAGS) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
 	-o do_test_waxpby -lm
 
 .c.o:

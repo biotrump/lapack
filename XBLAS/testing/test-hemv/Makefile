@@ -44,7 +44,7 @@ test: do_test_hemv
 	./do_test_hemv 7 1 1.0 3 0.01 > hemv.results
 
 do_test_hemv: $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB)
-	$(LINKER) $(LINKOPT) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
+	$(LINKER) $(LDFLAGS) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
 	-o do_test_hemv -lm
 
 test-lib: $(TEST_OBJS)

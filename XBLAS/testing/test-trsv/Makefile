@@ -54,7 +54,7 @@ test-none: do_test_trsv
 	./do_test_trsv 10 1 1.0 0 $(DO_NO_TESTS) > trsv.results
 
 do_test_trsv: $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB)
-	$(LINKER) $(LINKOPT) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
+	$(LINKER) $(LDFLAGS) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
 	-o do_test_trsv -lm
 
 .c.o:

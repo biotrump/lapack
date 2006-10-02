@@ -39,7 +39,7 @@ test: do_test_gemm
 test-lib: $(TEST_OBJS)
 
 do_test_gemm: $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB)
-	$(LINKER) $(LINKOPT) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
+	$(LINKER) $(LDFLAGS) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
 	-o do_test_gemm -lm
 
 .c.o:

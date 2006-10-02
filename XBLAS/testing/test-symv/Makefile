@@ -55,7 +55,7 @@ test-none: do_test_symv
 	./do_test_symv 7 1 1.0 3 $(DO_NO_TESTS) > symv.results
 
 do_test_symv: $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB)
-	$(LINKER) $(LINKOPT) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
+	$(LINKER) $(LDFLAGS) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
 	-o do_test_symv -lm
 
 test-lib: $(TEST_OBJS)

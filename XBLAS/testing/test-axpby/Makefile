@@ -39,7 +39,7 @@ test: do_test_axpby
 	./do_test_axpby 10 1 1.0 1 1 > axpby.results
 
 do_test_axpby: $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB)
-	$(LINKER) $(LINKOPT) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) -o do_test_axpby -lm
+	$(LINKER) $(LDFLAGS) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) -o do_test_axpby -lm
 
 .c.o:
 	$(CC) $(CFLAGS) -I$(HEADER_PATH) -c -o $@ $<

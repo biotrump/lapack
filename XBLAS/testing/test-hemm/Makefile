@@ -60,7 +60,7 @@ test-none: do_test_hemm
 	./do_test_hemm 7 1 1.0 0 $(DO_NO_TESTS) > hemm.results
 
 do_test_hemm: $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB)
-	$(LINKER) $(LINKOPT) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
+	$(LINKER) $(LDFLAGS) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
 	-o do_test_hemm -lm
 
 # $(GEMM_TEST_OBJS):

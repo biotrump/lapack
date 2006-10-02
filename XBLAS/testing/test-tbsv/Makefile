@@ -62,7 +62,7 @@ test-none: do_test_tbsv
 	./do_test_tbsv 9 1 1.0 3 $(DO_NO_TESTS) > tbsv.results
 
 do_test_tbsv: $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB)
-	$(LINKER) $(LINKOPT) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
+	$(LINKER) $(LDFLAGS) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
 	-o do_test_tbsv -lm
 
 .c.o:

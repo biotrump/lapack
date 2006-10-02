@@ -47,7 +47,7 @@ test: do_test_hpmv
 	./do_test_hpmv 7 1 1.0 3 0.01 > hpmv.results
 
 do_test_hpmv: $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB)
-	$(LINKER) $(LINKOPT) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
+	$(LINKER) $(LDFLAGS) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
 	-o do_test_hpmv -lm
 
 test-lib: $(TEST_OBJS)

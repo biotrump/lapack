@@ -56,7 +56,7 @@ test-none: do_test_symm
 	./do_test_symm 7 1 1.0 3 $(DO_NO_TESTS) > symm.results
 
 do_test_symm: $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB)
-	$(LINKER) $(LINKOPT) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
+	$(LINKER) $(LDFLAGS) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
 	-o do_test_symm -lm
 
 test-lib: $(TEST_OBJS)

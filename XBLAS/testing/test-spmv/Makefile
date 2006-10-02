@@ -57,7 +57,7 @@ test-none: do_test_spmv
 	./do_test_spmv 7 1 1.0 3 $(DO_NO_TESTS) > spmv.results
 
 do_test_spmv: $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB)
-	$(LINKER) $(LINKOPT) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
+	$(LINKER) $(LDFLAGS) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
 	-o do_test_spmv -lm
 
 .c.o:
