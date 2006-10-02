@@ -474,7 +474,7 @@ void BLAS_ctbsv_s_x(enum blas_order_type order, enum blas_uplo_type uplo,
 
 
 
-	  free(x_internal);
+	  blas_free(x_internal);
 	}
       }
       break;
@@ -1282,8 +1282,8 @@ void BLAS_ctbsv_s_x(enum blas_order_type order, enum blas_uplo_type uplo,
 
 	  FPU_FIX_STOP;
 
-	  free(head_x_internal);
-	  free(tail_x_internal);
+	  blas_free(head_x_internal);
+	  blas_free(tail_x_internal);
 	}
       }
       break;

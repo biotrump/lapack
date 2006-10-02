@@ -1092,8 +1092,8 @@ void BLAS_dtrsv_s_x(enum blas_order_type order, enum blas_uplo_type uplo,
 	    jx += inc_intx;
 	  }
 
-	  free(head_intx);
-	  free(tail_intx);
+	  blas_free(head_intx);
+	  blas_free(tail_intx);
 	}
       }
       FPU_FIX_STOP;

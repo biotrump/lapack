@@ -7471,8 +7471,8 @@ void BLAS_ztbsv_x(enum blas_order_type order, enum blas_uplo_type uplo,
 	  }
 	  FPU_FIX_STOP;
 
-	  free(head_x_internal);
-	  free(tail_x_internal);
+	  blas_free(head_x_internal);
+	  blas_free(tail_x_internal);
 	}
       }
       break;
