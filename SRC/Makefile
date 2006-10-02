@@ -38,8 +38,8 @@ include ../make.inc
 #
 #######################################################################
  
-ALLAUX = ilaenv.o ieeeck.o lsame.o lsamen.o xerbla.o ilaver.o iparmq.o \
-	ila_len_trim.o
+ALLAUX = ilaenv.o ieeeck.o lsame.o lsamen.o xerbla.o xerbla_array.o \
+	ilaver.o iparmq.o ila_len_trim.o
 
 SCLAUX = \
    sbdsdc.o \
