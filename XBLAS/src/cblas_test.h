@@ -1,8 +1,6 @@
 #ifndef __CBLAS_TEST_H_
 #define __CBLAS_TEST_H_
 
-#include <assert.h>
-
 #define TEST_PROBABILITY_DEFAULT 0.001
 #define MAX_BAD_TESTS 100
 #define TOTAL_FAILURE_THRESHOLD 1000

@@ -1,5 +1,5 @@
 #include "blas_extended.h"
-#include "blas_fpu.h"
+#include "blas_extended_private.h"
 void BLAS_dsum(int n, const double *x, int incx, double *sum)
 
 /*

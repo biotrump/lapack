@@ -1,5 +1,5 @@
 #include "blas_extended.h"
-#include "blas_fpu.h"
+#include "blas_extended_private.h"
 void BLAS_zsymv_z_d(enum blas_order_type order, enum blas_uplo_type uplo,
 		    int n, const void *alpha, const void *a, int lda,
 		    const double *x, int incx, const void *beta,

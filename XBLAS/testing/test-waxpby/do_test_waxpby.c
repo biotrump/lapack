@@ -1,5 +1,8 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <math.h>
 #include "blas_extended.h"
-#include "blas_fpu.h"
+#include "blas_extended_private.h"
 #include "cblas_test.h"
 
 

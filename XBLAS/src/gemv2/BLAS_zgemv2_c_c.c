@@ -1,5 +1,5 @@
 #include "blas_extended.h"
-#include "blas_fpu.h"
+#include "blas_extended_private.h"
 void BLAS_zgemv2_c_c(enum blas_order_type order, enum blas_trans_type trans,
 		     int m, int n, const void *alpha, const void *a, int lda,
 		     const void *head_x, const void *tail_x, int incx,

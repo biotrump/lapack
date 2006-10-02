@@ -1,5 +1,5 @@
 #include "blas_extended.h"
-#include "blas_fpu.h"
+#include "blas_extended_private.h"
 void BLAS_dsymm_s_s(enum blas_order_type order, enum blas_side_type side,
 		    enum blas_uplo_type uplo, int m, int n,
 		    double alpha, const float *a, int lda,

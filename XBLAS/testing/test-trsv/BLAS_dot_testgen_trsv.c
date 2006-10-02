@@ -1,6 +1,7 @@
+#include <stdlib.h>
+#include <stdio.h>
 #include "blas_extended.h"
 #include "cblas_test.h"
-#include <stdio.h>
 
 void
 BLAS_sdot_x_testgen(int n, int n_fix2, int n_mix, int norm,

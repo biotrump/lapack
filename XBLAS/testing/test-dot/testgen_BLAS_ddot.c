@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "blas_extended.h"
+#include "blas_extended_private.h"
 #include "cblas_test.h"
 
 

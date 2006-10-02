@@ -1,5 +1,5 @@
 #include "blas_extended.h"
-#include "blas_fpu.h"
+#include "blas_extended_private.h"
 void BLAS_cdot_c_s_x(enum blas_conj_type conj, int n, const void *alpha,
 		     const void *x, int incx, const void *beta,
 		     const float *y, int incy,

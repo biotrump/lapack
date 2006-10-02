@@ -1,5 +1,5 @@
 #include "blas_extended.h"
-#include "blas_fpu.h"
+#include "blas_extended_private.h"
 
 void BLAS_dwaxpby_s_d(int n, double alpha, const float *x, int incx,
 		      double beta, const double *y, int incy, double *w,

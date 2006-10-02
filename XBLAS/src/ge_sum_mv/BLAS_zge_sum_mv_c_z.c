@@ -1,5 +1,5 @@
 #include "blas_extended.h"
-#include "blas_fpu.h"
+#include "blas_extended_private.h"
 void BLAS_zge_sum_mv_c_z(enum blas_order_type order, int m, int n,
 			 const void *alpha, const void *a, int lda,
 			 const void *x, int incx,

@@ -1,5 +1,5 @@
 #include "blas_extended.h"
-#include "blas_fpu.h"
+#include "blas_extended_private.h"
 void BLAS_saxpby_x(int n, float alpha, const float *x, int incx,
 		   float beta, float *y, int incy, enum blas_prec_type prec)
 

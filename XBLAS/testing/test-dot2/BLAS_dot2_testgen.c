@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <assert.h>
 #include "blas_extended.h"
 #include "cblas_test.h"
 

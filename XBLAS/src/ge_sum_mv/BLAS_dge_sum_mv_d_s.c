@@ -1,5 +1,5 @@
 #include "blas_extended.h"
-#include "blas_fpu.h"
+#include "blas_extended_private.h"
 void BLAS_dge_sum_mv_d_s(enum blas_order_type order, int m, int n,
 			 double alpha, const double *a, int lda,
 			 const float *x, int incx,

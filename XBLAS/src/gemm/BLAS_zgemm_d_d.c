@@ -1,5 +1,5 @@
 #include "blas_extended.h"
-#include "blas_fpu.h"
+#include "blas_extended_private.h"
 void BLAS_zgemm_d_d(enum blas_order_type order, enum blas_trans_type transa,
 		    enum blas_trans_type transb, int m, int n, int k,
 		    const void *alpha, const double *a, int lda,
