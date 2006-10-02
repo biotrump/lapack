@@ -158,32 +158,28 @@ double do_test_strsv_x(int n,
   /* get space for calculation */
   x = (float *) blas_malloc(n * 2 * sizeof(float));
   if (n * 2 > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * 2 * incx_gen; i += incx_gen) {
     x[i] = 0.0;
   }
   x_gen = (float *) blas_malloc(n * sizeof(float));
   if (n > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * incx_gen; i += incx_gen) {
     x_gen[i] = 0.0;
   }
   T = (float *) blas_malloc(4 * n * n * sizeof(float));
   if (4 * n * n > 0 && T == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 4 * n * n * incT; i += incT) {
     T[i] = 0.0;
   }
   temp = (float *) blas_malloc(n * sizeof(float));
   if (n > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * incT; i += incT) {
     temp[i] = 0.0;
@@ -191,8 +187,7 @@ double do_test_strsv_x(int n,
   head_r_true = (double *) blas_malloc(n * sizeof(double));
   tail_r_true = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) malloc(n * sizeof(double));
   if (ratios == NULL) {
@@ -782,32 +777,28 @@ double do_test_dtrsv_x(int n,
   /* get space for calculation */
   x = (double *) blas_malloc(n * 2 * sizeof(double));
   if (n * 2 > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * 2 * incx_gen; i += incx_gen) {
     x[i] = 0.0;
   }
   x_gen = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * incx_gen; i += incx_gen) {
     x_gen[i] = 0.0;
   }
   T = (double *) blas_malloc(4 * n * n * sizeof(double));
   if (4 * n * n > 0 && T == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 4 * n * n * incT; i += incT) {
     T[i] = 0.0;
   }
   temp = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * incT; i += incT) {
     temp[i] = 0.0;
@@ -815,8 +806,7 @@ double do_test_dtrsv_x(int n,
   head_r_true = (double *) blas_malloc(n * sizeof(double));
   tail_r_true = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) malloc(n * sizeof(double));
   if (ratios == NULL) {
@@ -1406,32 +1396,28 @@ double do_test_dtrsv_s(int n,
   /* get space for calculation */
   x = (double *) blas_malloc(n * 2 * sizeof(double));
   if (n * 2 > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * 2 * incx_gen; i += incx_gen) {
     x[i] = 0.0;
   }
   x_gen = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * incx_gen; i += incx_gen) {
     x_gen[i] = 0.0;
   }
   T = (float *) blas_malloc(4 * n * n * sizeof(float));
   if (4 * n * n > 0 && T == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 4 * n * n * incT; i += incT) {
     T[i] = 0.0;
   }
   temp = (float *) blas_malloc(n * sizeof(float));
   if (n > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * incT; i += incT) {
     temp[i] = 0.0;
@@ -1439,8 +1425,7 @@ double do_test_dtrsv_s(int n,
   head_r_true = (double *) blas_malloc(n * sizeof(double));
   tail_r_true = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) malloc(n * sizeof(double));
   if (ratios == NULL) {
@@ -2009,32 +1994,28 @@ double do_test_dtrsv_s_x(int n,
   /* get space for calculation */
   x = (double *) blas_malloc(n * 2 * sizeof(double));
   if (n * 2 > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * 2 * incx_gen; i += incx_gen) {
     x[i] = 0.0;
   }
   x_gen = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * incx_gen; i += incx_gen) {
     x_gen[i] = 0.0;
   }
   T = (float *) blas_malloc(4 * n * n * sizeof(float));
   if (4 * n * n > 0 && T == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 4 * n * n * incT; i += incT) {
     T[i] = 0.0;
   }
   temp = (float *) blas_malloc(n * sizeof(float));
   if (n > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * incT; i += incT) {
     temp[i] = 0.0;
@@ -2042,8 +2023,7 @@ double do_test_dtrsv_s_x(int n,
   head_r_true = (double *) blas_malloc(n * sizeof(double));
   tail_r_true = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) malloc(n * sizeof(double));
   if (ratios == NULL) {
@@ -2634,8 +2614,7 @@ double do_test_ctrsv_s(int n,
   /* get space for calculation */
   x = (float *) blas_malloc(n * 2 * sizeof(float) * 2);
   if (n * 2 > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * 2 * incx_gen; i += incx_gen) {
     x[i] = 0.0;
@@ -2643,8 +2622,7 @@ double do_test_ctrsv_s(int n,
   }
   x_gen = (float *) blas_malloc(n * sizeof(float) * 2);
   if (n > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * incx_gen; i += incx_gen) {
     x_gen[i] = 0.0;
@@ -2652,16 +2630,14 @@ double do_test_ctrsv_s(int n,
   }
   T = (float *) blas_malloc(4 * n * n * sizeof(float));
   if (4 * n * n > 0 && T == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 4 * n * n * incT; i += incT) {
     T[i] = 0.0;
   }
   temp = (float *) blas_malloc(n * sizeof(float));
   if (n > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * incT; i += incT) {
     temp[i] = 0.0;
@@ -2669,8 +2645,7 @@ double do_test_ctrsv_s(int n,
   head_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   if (n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) malloc(n * sizeof(double));
   if (ratios == NULL) {
@@ -3271,8 +3246,7 @@ double do_test_ctrsv_s_x(int n,
   /* get space for calculation */
   x = (float *) blas_malloc(n * 2 * sizeof(float) * 2);
   if (n * 2 > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * 2 * incx_gen; i += incx_gen) {
     x[i] = 0.0;
@@ -3280,8 +3254,7 @@ double do_test_ctrsv_s_x(int n,
   }
   x_gen = (float *) blas_malloc(n * sizeof(float) * 2);
   if (n > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * incx_gen; i += incx_gen) {
     x_gen[i] = 0.0;
@@ -3289,16 +3262,14 @@ double do_test_ctrsv_s_x(int n,
   }
   T = (float *) blas_malloc(4 * n * n * sizeof(float));
   if (4 * n * n > 0 && T == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 4 * n * n * incT; i += incT) {
     T[i] = 0.0;
   }
   temp = (float *) blas_malloc(n * sizeof(float));
   if (n > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * incT; i += incT) {
     temp[i] = 0.0;
@@ -3306,8 +3277,7 @@ double do_test_ctrsv_s_x(int n,
   head_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   if (n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) malloc(n * sizeof(double));
   if (ratios == NULL) {
@@ -3930,8 +3900,7 @@ double do_test_ztrsv_d(int n,
   /* get space for calculation */
   x = (double *) blas_malloc(n * 2 * sizeof(double) * 2);
   if (n * 2 > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * 2 * incx_gen; i += incx_gen) {
     x[i] = 0.0;
@@ -3939,8 +3908,7 @@ double do_test_ztrsv_d(int n,
   }
   x_gen = (double *) blas_malloc(n * sizeof(double) * 2);
   if (n > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * incx_gen; i += incx_gen) {
     x_gen[i] = 0.0;
@@ -3948,16 +3916,14 @@ double do_test_ztrsv_d(int n,
   }
   T = (double *) blas_malloc(4 * n * n * sizeof(double));
   if (4 * n * n > 0 && T == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 4 * n * n * incT; i += incT) {
     T[i] = 0.0;
   }
   temp = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * incT; i += incT) {
     temp[i] = 0.0;
@@ -3965,8 +3931,7 @@ double do_test_ztrsv_d(int n,
   head_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   if (n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) malloc(n * sizeof(double));
   if (ratios == NULL) {
@@ -4568,8 +4533,7 @@ double do_test_ztrsv_d_x(int n,
   /* get space for calculation */
   x = (double *) blas_malloc(n * 2 * sizeof(double) * 2);
   if (n * 2 > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * 2 * incx_gen; i += incx_gen) {
     x[i] = 0.0;
@@ -4577,8 +4541,7 @@ double do_test_ztrsv_d_x(int n,
   }
   x_gen = (double *) blas_malloc(n * sizeof(double) * 2);
   if (n > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * incx_gen; i += incx_gen) {
     x_gen[i] = 0.0;
@@ -4586,16 +4549,14 @@ double do_test_ztrsv_d_x(int n,
   }
   T = (double *) blas_malloc(4 * n * n * sizeof(double));
   if (4 * n * n > 0 && T == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 4 * n * n * incT; i += incT) {
     T[i] = 0.0;
   }
   temp = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * incT; i += incT) {
     temp[i] = 0.0;
@@ -4603,8 +4564,7 @@ double do_test_ztrsv_d_x(int n,
   head_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   if (n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) malloc(n * sizeof(double));
   if (ratios == NULL) {
@@ -5227,8 +5187,7 @@ double do_test_ctrsv_x(int n,
   /* get space for calculation */
   x = (float *) blas_malloc(n * 2 * sizeof(float) * 2);
   if (n * 2 > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * 2 * incx_gen; i += incx_gen) {
     x[i] = 0.0;
@@ -5236,8 +5195,7 @@ double do_test_ctrsv_x(int n,
   }
   x_gen = (float *) blas_malloc(n * sizeof(float) * 2);
   if (n > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * incx_gen; i += incx_gen) {
     x_gen[i] = 0.0;
@@ -5245,8 +5203,7 @@ double do_test_ctrsv_x(int n,
   }
   T = (float *) blas_malloc(4 * n * n * sizeof(float) * 2);
   if (4 * n * n > 0 && T == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 4 * n * n * incT; i += incT) {
     T[i] = 0.0;
@@ -5254,8 +5211,7 @@ double do_test_ctrsv_x(int n,
   }
   temp = (float *) blas_malloc(n * sizeof(float) * 2);
   if (n > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * incT; i += incT) {
     temp[i] = 0.0;
@@ -5264,8 +5220,7 @@ double do_test_ctrsv_x(int n,
   head_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   if (n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) malloc(n * sizeof(double));
   if (ratios == NULL) {
@@ -5890,8 +5845,7 @@ double do_test_ztrsv_c(int n,
   /* get space for calculation */
   x = (double *) blas_malloc(n * 2 * sizeof(double) * 2);
   if (n * 2 > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * 2 * incx_gen; i += incx_gen) {
     x[i] = 0.0;
@@ -5899,8 +5853,7 @@ double do_test_ztrsv_c(int n,
   }
   x_gen = (double *) blas_malloc(n * sizeof(double) * 2);
   if (n > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * incx_gen; i += incx_gen) {
     x_gen[i] = 0.0;
@@ -5908,8 +5861,7 @@ double do_test_ztrsv_c(int n,
   }
   T = (float *) blas_malloc(4 * n * n * sizeof(float) * 2);
   if (4 * n * n > 0 && T == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 4 * n * n * incT; i += incT) {
     T[i] = 0.0;
@@ -5917,8 +5869,7 @@ double do_test_ztrsv_c(int n,
   }
   temp = (float *) blas_malloc(n * sizeof(float) * 2);
   if (n > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * incT; i += incT) {
     temp[i] = 0.0;
@@ -5927,8 +5878,7 @@ double do_test_ztrsv_c(int n,
   head_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   if (n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) malloc(n * sizeof(double));
   if (ratios == NULL) {
@@ -6531,8 +6481,7 @@ double do_test_ztrsv_c_x(int n,
   /* get space for calculation */
   x = (double *) blas_malloc(n * 2 * sizeof(double) * 2);
   if (n * 2 > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * 2 * incx_gen; i += incx_gen) {
     x[i] = 0.0;
@@ -6540,8 +6489,7 @@ double do_test_ztrsv_c_x(int n,
   }
   x_gen = (double *) blas_malloc(n * sizeof(double) * 2);
   if (n > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * incx_gen; i += incx_gen) {
     x_gen[i] = 0.0;
@@ -6549,8 +6497,7 @@ double do_test_ztrsv_c_x(int n,
   }
   T = (float *) blas_malloc(4 * n * n * sizeof(float) * 2);
   if (4 * n * n > 0 && T == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 4 * n * n * incT; i += incT) {
     T[i] = 0.0;
@@ -6558,8 +6505,7 @@ double do_test_ztrsv_c_x(int n,
   }
   temp = (float *) blas_malloc(n * sizeof(float) * 2);
   if (n > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * incT; i += incT) {
     temp[i] = 0.0;
@@ -6568,8 +6514,7 @@ double do_test_ztrsv_c_x(int n,
   head_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   if (n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) malloc(n * sizeof(double));
   if (ratios == NULL) {
@@ -7194,8 +7139,7 @@ double do_test_ztrsv_x(int n,
   /* get space for calculation */
   x = (double *) blas_malloc(n * 2 * sizeof(double) * 2);
   if (n * 2 > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * 2 * incx_gen; i += incx_gen) {
     x[i] = 0.0;
@@ -7203,8 +7147,7 @@ double do_test_ztrsv_x(int n,
   }
   x_gen = (double *) blas_malloc(n * sizeof(double) * 2);
   if (n > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * incx_gen; i += incx_gen) {
     x_gen[i] = 0.0;
@@ -7212,8 +7155,7 @@ double do_test_ztrsv_x(int n,
   }
   T = (double *) blas_malloc(4 * n * n * sizeof(double) * 2);
   if (4 * n * n > 0 && T == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 4 * n * n * incT; i += incT) {
     T[i] = 0.0;
@@ -7221,8 +7163,7 @@ double do_test_ztrsv_x(int n,
   }
   temp = (double *) blas_malloc(n * sizeof(double) * 2);
   if (n > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * incT; i += incT) {
     temp[i] = 0.0;
@@ -7231,8 +7172,7 @@ double do_test_ztrsv_x(int n,
   head_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   if (n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) malloc(n * sizeof(double));
   if (ratios == NULL) {

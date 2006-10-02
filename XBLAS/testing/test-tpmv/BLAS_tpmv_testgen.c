@@ -92,8 +92,7 @@ void BLAS_stpmv_testgen(int norm, enum blas_order_type order,
 
   temp = (float *) blas_malloc(n * 2 * inc_index * sizeof(float));
   if (n * 2 * inc_index > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * 2 * inc_index; i += inc_index) {
     temp[i] = 0.0;
@@ -298,8 +297,7 @@ void BLAS_dtpmv_testgen(int norm, enum blas_order_type order,
 
   temp = (double *) blas_malloc(n * 2 * inc_index * sizeof(double));
   if (n * 2 * inc_index > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * 2 * inc_index; i += inc_index) {
     temp[i] = 0.0;
@@ -505,8 +503,7 @@ void BLAS_ctpmv_testgen(int norm, enum blas_order_type order,
 
   temp = (float *) blas_malloc(n * 2 * inc_index * sizeof(float) * 2);
   if (n * 2 * inc_index > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * 2 * inc_index; i += inc_index) {
     temp[i] = 0.0;
@@ -732,8 +729,7 @@ void BLAS_ztpmv_testgen(int norm, enum blas_order_type order,
 
   temp = (double *) blas_malloc(n * 2 * inc_index * sizeof(double) * 2);
   if (n * 2 * inc_index > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * 2 * inc_index; i += inc_index) {
     temp[i] = 0.0;
@@ -959,8 +955,7 @@ void BLAS_dtpmv_s_testgen(int norm, enum blas_order_type order,
 
   temp = (float *) blas_malloc(n * 2 * inc_index * sizeof(float));
   if (n * 2 * inc_index > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * 2 * inc_index; i += inc_index) {
     temp[i] = 0.0;
@@ -1167,8 +1162,7 @@ void BLAS_ztpmv_c_testgen(int norm, enum blas_order_type order,
 
   temp = (float *) blas_malloc(n * 2 * inc_index * sizeof(float) * 2);
   if (n * 2 * inc_index > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * 2 * inc_index; i += inc_index) {
     temp[i] = 0.0;
@@ -1395,8 +1389,7 @@ void BLAS_ctpmv_s_testgen(int norm, enum blas_order_type order,
 
   temp = (float *) blas_malloc(n * 2 * inc_index * sizeof(float));
   if (n * 2 * inc_index > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * 2 * inc_index; i += inc_index) {
     temp[i] = 0.0;
@@ -1616,8 +1609,7 @@ void BLAS_ztpmv_d_testgen(int norm, enum blas_order_type order,
 
   temp = (double *) blas_malloc(n * 2 * inc_index * sizeof(double));
   if (n * 2 * inc_index > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * 2 * inc_index; i += inc_index) {
     temp[i] = 0.0;

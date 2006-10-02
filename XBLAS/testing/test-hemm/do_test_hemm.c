@@ -139,13 +139,11 @@ void do_test_zhemm_z_c(int m, int n,
   /* allocate memory for arrays */
   c = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && c == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   c_gen = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && c_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m * n * incc; i += incc) {
     c[i] = 0.0;
@@ -155,8 +153,7 @@ void do_test_zhemm_z_c(int m, int n,
   }
   a = (double *) blas_malloc(2 * max_mn * max_mn * sizeof(double) * 2);
   if (2 * max_mn * max_mn > 0 && a == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * max_mn * max_mn * inca; i += inca) {
     a[i] = 0.0;
@@ -164,8 +161,7 @@ void do_test_zhemm_z_c(int m, int n,
   }
   b = (float *) blas_malloc(2 * m * n * sizeof(float) * 2);
   if (2 * m * n > 0 && b == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m * n * incb; i += incb) {
     b[i] = 0.0;
@@ -173,8 +169,7 @@ void do_test_zhemm_z_c(int m, int n,
   }
   a_vec = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * inca; i += inca) {
     a_vec[i] = 0.0;
@@ -182,8 +177,7 @@ void do_test_zhemm_z_c(int m, int n,
   }
   b_vec = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && b_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incb; i += incb) {
     b_vec[i] = 0.0;
@@ -192,18 +186,15 @@ void do_test_zhemm_z_c(int m, int n,
 
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && tail_r_true == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && head_r_true == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
   if (2 * m * n > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   test_count = 0;
@@ -620,13 +611,11 @@ void do_test_zhemm_c_z(int m, int n,
   /* allocate memory for arrays */
   c = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && c == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   c_gen = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && c_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m * n * incc; i += incc) {
     c[i] = 0.0;
@@ -636,8 +625,7 @@ void do_test_zhemm_c_z(int m, int n,
   }
   a = (float *) blas_malloc(2 * max_mn * max_mn * sizeof(float) * 2);
   if (2 * max_mn * max_mn > 0 && a == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * max_mn * max_mn * inca; i += inca) {
     a[i] = 0.0;
@@ -645,8 +633,7 @@ void do_test_zhemm_c_z(int m, int n,
   }
   b = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && b == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m * n * incb; i += incb) {
     b[i] = 0.0;
@@ -654,8 +641,7 @@ void do_test_zhemm_c_z(int m, int n,
   }
   a_vec = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * inca; i += inca) {
     a_vec[i] = 0.0;
@@ -663,8 +649,7 @@ void do_test_zhemm_c_z(int m, int n,
   }
   b_vec = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && b_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incb; i += incb) {
     b_vec[i] = 0.0;
@@ -673,18 +658,15 @@ void do_test_zhemm_c_z(int m, int n,
 
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && tail_r_true == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && head_r_true == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
   if (2 * m * n > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   test_count = 0;
@@ -1101,13 +1083,11 @@ void do_test_zhemm_c_c(int m, int n,
   /* allocate memory for arrays */
   c = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && c == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   c_gen = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && c_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m * n * incc; i += incc) {
     c[i] = 0.0;
@@ -1117,8 +1097,7 @@ void do_test_zhemm_c_c(int m, int n,
   }
   a = (float *) blas_malloc(2 * max_mn * max_mn * sizeof(float) * 2);
   if (2 * max_mn * max_mn > 0 && a == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * max_mn * max_mn * inca; i += inca) {
     a[i] = 0.0;
@@ -1126,8 +1105,7 @@ void do_test_zhemm_c_c(int m, int n,
   }
   b = (float *) blas_malloc(2 * m * n * sizeof(float) * 2);
   if (2 * m * n > 0 && b == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m * n * incb; i += incb) {
     b[i] = 0.0;
@@ -1135,8 +1113,7 @@ void do_test_zhemm_c_c(int m, int n,
   }
   a_vec = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * inca; i += inca) {
     a_vec[i] = 0.0;
@@ -1144,8 +1121,7 @@ void do_test_zhemm_c_c(int m, int n,
   }
   b_vec = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && b_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incb; i += incb) {
     b_vec[i] = 0.0;
@@ -1154,18 +1130,15 @@ void do_test_zhemm_c_c(int m, int n,
 
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && tail_r_true == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && head_r_true == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
   if (2 * m * n > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   test_count = 0;
@@ -1582,13 +1555,11 @@ void do_test_chemm_c_s(int m, int n,
   /* allocate memory for arrays */
   c = (float *) blas_malloc(2 * m * n * sizeof(float) * 2);
   if (2 * m * n > 0 && c == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   c_gen = (float *) blas_malloc(2 * m * n * sizeof(float) * 2);
   if (2 * m * n > 0 && c_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m * n * incc; i += incc) {
     c[i] = 0.0;
@@ -1598,8 +1569,7 @@ void do_test_chemm_c_s(int m, int n,
   }
   a = (float *) blas_malloc(2 * max_mn * max_mn * sizeof(float) * 2);
   if (2 * max_mn * max_mn > 0 && a == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * max_mn * max_mn * inca; i += inca) {
     a[i] = 0.0;
@@ -1607,16 +1577,14 @@ void do_test_chemm_c_s(int m, int n,
   }
   b = (float *) blas_malloc(2 * m * n * sizeof(float));
   if (2 * m * n > 0 && b == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m * n * incb; i += incb) {
     b[i] = 0.0;
   }
   a_vec = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * inca; i += inca) {
     a_vec[i] = 0.0;
@@ -1624,8 +1592,7 @@ void do_test_chemm_c_s(int m, int n,
   }
   b_vec = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && b_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incb; i += incb) {
     b_vec[i] = 0.0;
@@ -1633,18 +1600,15 @@ void do_test_chemm_c_s(int m, int n,
 
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && tail_r_true == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && head_r_true == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
   if (2 * m * n > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   test_count = 0;
@@ -2061,13 +2025,11 @@ void do_test_zhemm_z_d(int m, int n,
   /* allocate memory for arrays */
   c = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && c == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   c_gen = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && c_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m * n * incc; i += incc) {
     c[i] = 0.0;
@@ -2077,8 +2039,7 @@ void do_test_zhemm_z_d(int m, int n,
   }
   a = (double *) blas_malloc(2 * max_mn * max_mn * sizeof(double) * 2);
   if (2 * max_mn * max_mn > 0 && a == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * max_mn * max_mn * inca; i += inca) {
     a[i] = 0.0;
@@ -2086,16 +2047,14 @@ void do_test_zhemm_z_d(int m, int n,
   }
   b = (double *) blas_malloc(2 * m * n * sizeof(double));
   if (2 * m * n > 0 && b == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m * n * incb; i += incb) {
     b[i] = 0.0;
   }
   a_vec = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * inca; i += inca) {
     a_vec[i] = 0.0;
@@ -2103,8 +2062,7 @@ void do_test_zhemm_z_d(int m, int n,
   }
   b_vec = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && b_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incb; i += incb) {
     b_vec[i] = 0.0;
@@ -2112,18 +2070,15 @@ void do_test_zhemm_z_d(int m, int n,
 
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && tail_r_true == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && head_r_true == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
   if (2 * m * n > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   test_count = 0;
@@ -2541,13 +2496,11 @@ void do_test_chemm_x(int m, int n,
   /* allocate memory for arrays */
   c = (float *) blas_malloc(2 * m * n * sizeof(float) * 2);
   if (2 * m * n > 0 && c == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   c_gen = (float *) blas_malloc(2 * m * n * sizeof(float) * 2);
   if (2 * m * n > 0 && c_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m * n * incc; i += incc) {
     c[i] = 0.0;
@@ -2557,8 +2510,7 @@ void do_test_chemm_x(int m, int n,
   }
   a = (float *) blas_malloc(2 * max_mn * max_mn * sizeof(float) * 2);
   if (2 * max_mn * max_mn > 0 && a == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * max_mn * max_mn * inca; i += inca) {
     a[i] = 0.0;
@@ -2566,8 +2518,7 @@ void do_test_chemm_x(int m, int n,
   }
   b = (float *) blas_malloc(2 * m * n * sizeof(float) * 2);
   if (2 * m * n > 0 && b == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m * n * incb; i += incb) {
     b[i] = 0.0;
@@ -2575,8 +2526,7 @@ void do_test_chemm_x(int m, int n,
   }
   a_vec = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * inca; i += inca) {
     a_vec[i] = 0.0;
@@ -2584,8 +2534,7 @@ void do_test_chemm_x(int m, int n,
   }
   b_vec = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && b_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incb; i += incb) {
     b_vec[i] = 0.0;
@@ -2594,18 +2543,15 @@ void do_test_chemm_x(int m, int n,
 
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && tail_r_true == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && head_r_true == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
   if (2 * m * n > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   test_count = 0;
@@ -3045,13 +2991,11 @@ void do_test_zhemm_x(int m, int n,
   /* allocate memory for arrays */
   c = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && c == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   c_gen = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && c_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m * n * incc; i += incc) {
     c[i] = 0.0;
@@ -3061,8 +3005,7 @@ void do_test_zhemm_x(int m, int n,
   }
   a = (double *) blas_malloc(2 * max_mn * max_mn * sizeof(double) * 2);
   if (2 * max_mn * max_mn > 0 && a == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * max_mn * max_mn * inca; i += inca) {
     a[i] = 0.0;
@@ -3070,8 +3013,7 @@ void do_test_zhemm_x(int m, int n,
   }
   b = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && b == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m * n * incb; i += incb) {
     b[i] = 0.0;
@@ -3079,8 +3021,7 @@ void do_test_zhemm_x(int m, int n,
   }
   a_vec = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * inca; i += inca) {
     a_vec[i] = 0.0;
@@ -3088,8 +3029,7 @@ void do_test_zhemm_x(int m, int n,
   }
   b_vec = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && b_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incb; i += incb) {
     b_vec[i] = 0.0;
@@ -3098,18 +3038,15 @@ void do_test_zhemm_x(int m, int n,
 
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && tail_r_true == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && head_r_true == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
   if (2 * m * n > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   test_count = 0;
@@ -3550,13 +3487,11 @@ void do_test_zhemm_z_c_x(int m, int n,
   /* allocate memory for arrays */
   c = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && c == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   c_gen = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && c_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m * n * incc; i += incc) {
     c[i] = 0.0;
@@ -3566,8 +3501,7 @@ void do_test_zhemm_z_c_x(int m, int n,
   }
   a = (double *) blas_malloc(2 * max_mn * max_mn * sizeof(double) * 2);
   if (2 * max_mn * max_mn > 0 && a == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * max_mn * max_mn * inca; i += inca) {
     a[i] = 0.0;
@@ -3575,8 +3509,7 @@ void do_test_zhemm_z_c_x(int m, int n,
   }
   b = (float *) blas_malloc(2 * m * n * sizeof(float) * 2);
   if (2 * m * n > 0 && b == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m * n * incb; i += incb) {
     b[i] = 0.0;
@@ -3584,8 +3517,7 @@ void do_test_zhemm_z_c_x(int m, int n,
   }
   a_vec = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * inca; i += inca) {
     a_vec[i] = 0.0;
@@ -3593,8 +3525,7 @@ void do_test_zhemm_z_c_x(int m, int n,
   }
   b_vec = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && b_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incb; i += incb) {
     b_vec[i] = 0.0;
@@ -3603,18 +3534,15 @@ void do_test_zhemm_z_c_x(int m, int n,
 
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && tail_r_true == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && head_r_true == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
   if (2 * m * n > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   test_count = 0;
@@ -4055,13 +3983,11 @@ void do_test_zhemm_c_z_x(int m, int n,
   /* allocate memory for arrays */
   c = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && c == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   c_gen = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && c_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m * n * incc; i += incc) {
     c[i] = 0.0;
@@ -4071,8 +3997,7 @@ void do_test_zhemm_c_z_x(int m, int n,
   }
   a = (float *) blas_malloc(2 * max_mn * max_mn * sizeof(float) * 2);
   if (2 * max_mn * max_mn > 0 && a == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * max_mn * max_mn * inca; i += inca) {
     a[i] = 0.0;
@@ -4080,8 +4005,7 @@ void do_test_zhemm_c_z_x(int m, int n,
   }
   b = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && b == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m * n * incb; i += incb) {
     b[i] = 0.0;
@@ -4089,8 +4013,7 @@ void do_test_zhemm_c_z_x(int m, int n,
   }
   a_vec = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * inca; i += inca) {
     a_vec[i] = 0.0;
@@ -4098,8 +4021,7 @@ void do_test_zhemm_c_z_x(int m, int n,
   }
   b_vec = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && b_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incb; i += incb) {
     b_vec[i] = 0.0;
@@ -4108,18 +4030,15 @@ void do_test_zhemm_c_z_x(int m, int n,
 
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && tail_r_true == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && head_r_true == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
   if (2 * m * n > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   test_count = 0;
@@ -4560,13 +4479,11 @@ void do_test_zhemm_c_c_x(int m, int n,
   /* allocate memory for arrays */
   c = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && c == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   c_gen = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && c_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m * n * incc; i += incc) {
     c[i] = 0.0;
@@ -4576,8 +4493,7 @@ void do_test_zhemm_c_c_x(int m, int n,
   }
   a = (float *) blas_malloc(2 * max_mn * max_mn * sizeof(float) * 2);
   if (2 * max_mn * max_mn > 0 && a == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * max_mn * max_mn * inca; i += inca) {
     a[i] = 0.0;
@@ -4585,8 +4501,7 @@ void do_test_zhemm_c_c_x(int m, int n,
   }
   b = (float *) blas_malloc(2 * m * n * sizeof(float) * 2);
   if (2 * m * n > 0 && b == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m * n * incb; i += incb) {
     b[i] = 0.0;
@@ -4594,8 +4509,7 @@ void do_test_zhemm_c_c_x(int m, int n,
   }
   a_vec = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * inca; i += inca) {
     a_vec[i] = 0.0;
@@ -4603,8 +4517,7 @@ void do_test_zhemm_c_c_x(int m, int n,
   }
   b_vec = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && b_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incb; i += incb) {
     b_vec[i] = 0.0;
@@ -4613,18 +4526,15 @@ void do_test_zhemm_c_c_x(int m, int n,
 
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && tail_r_true == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && head_r_true == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
   if (2 * m * n > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   test_count = 0;
@@ -5065,13 +4975,11 @@ void do_test_chemm_c_s_x(int m, int n,
   /* allocate memory for arrays */
   c = (float *) blas_malloc(2 * m * n * sizeof(float) * 2);
   if (2 * m * n > 0 && c == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   c_gen = (float *) blas_malloc(2 * m * n * sizeof(float) * 2);
   if (2 * m * n > 0 && c_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m * n * incc; i += incc) {
     c[i] = 0.0;
@@ -5081,8 +4989,7 @@ void do_test_chemm_c_s_x(int m, int n,
   }
   a = (float *) blas_malloc(2 * max_mn * max_mn * sizeof(float) * 2);
   if (2 * max_mn * max_mn > 0 && a == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * max_mn * max_mn * inca; i += inca) {
     a[i] = 0.0;
@@ -5090,16 +4997,14 @@ void do_test_chemm_c_s_x(int m, int n,
   }
   b = (float *) blas_malloc(2 * m * n * sizeof(float));
   if (2 * m * n > 0 && b == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m * n * incb; i += incb) {
     b[i] = 0.0;
   }
   a_vec = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * inca; i += inca) {
     a_vec[i] = 0.0;
@@ -5107,8 +5012,7 @@ void do_test_chemm_c_s_x(int m, int n,
   }
   b_vec = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && b_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incb; i += incb) {
     b_vec[i] = 0.0;
@@ -5116,18 +5020,15 @@ void do_test_chemm_c_s_x(int m, int n,
 
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && tail_r_true == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && head_r_true == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
   if (2 * m * n > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   test_count = 0;
@@ -5568,13 +5469,11 @@ void do_test_zhemm_z_d_x(int m, int n,
   /* allocate memory for arrays */
   c = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && c == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   c_gen = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && c_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m * n * incc; i += incc) {
     c[i] = 0.0;
@@ -5584,8 +5483,7 @@ void do_test_zhemm_z_d_x(int m, int n,
   }
   a = (double *) blas_malloc(2 * max_mn * max_mn * sizeof(double) * 2);
   if (2 * max_mn * max_mn > 0 && a == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * max_mn * max_mn * inca; i += inca) {
     a[i] = 0.0;
@@ -5593,16 +5491,14 @@ void do_test_zhemm_z_d_x(int m, int n,
   }
   b = (double *) blas_malloc(2 * m * n * sizeof(double));
   if (2 * m * n > 0 && b == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m * n * incb; i += incb) {
     b[i] = 0.0;
   }
   a_vec = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * inca; i += inca) {
     a_vec[i] = 0.0;
@@ -5610,8 +5506,7 @@ void do_test_zhemm_z_d_x(int m, int n,
   }
   b_vec = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && b_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incb; i += incb) {
     b_vec[i] = 0.0;
@@ -5619,18 +5514,15 @@ void do_test_zhemm_z_d_x(int m, int n,
 
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && tail_r_true == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && head_r_true == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
   if (2 * m * n > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   test_count = 0;

@@ -83,16 +83,14 @@ void BLAS_strsv_testgen(int norm, enum blas_order_type order,
 
   temp = (float *) blas_malloc(n * sizeof(float));
   if (n > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   xtemp2 = NULL;
   if (prec != blas_prec_extra) {
     xtemp2 = (float *) blas_malloc(n * sizeof(float));
     if (n > 0 && xtemp2 == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
   }
 
@@ -348,16 +346,14 @@ void BLAS_dtrsv_testgen(int norm, enum blas_order_type order,
 
   temp = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   xtemp2 = NULL;
   if (prec != blas_prec_extra) {
     xtemp2 = (double *) blas_malloc(n * sizeof(double));
     if (n > 0 && xtemp2 == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
   }
 
@@ -642,16 +638,14 @@ void BLAS_dtrsv_s_testgen(int norm, enum blas_order_type order,
 
   temp = (float *) blas_malloc(n * sizeof(float));
   if (n > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   xtemp2 = NULL;
   if (prec != blas_prec_extra) {
     xtemp2 = (double *) blas_malloc(n * sizeof(double));
     if (n > 0 && xtemp2 == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
   }
 
@@ -938,23 +932,19 @@ void BLAS_ctrsv_testgen(int norm, enum blas_order_type order,
 
   T_r = (float *) blas_malloc(4 * n * n * sizeof(float));
   if (4 * n * n > 0 && T_r == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   x_r = (float *) blas_malloc(n * sizeof(float));
   if (n > 0 && x_r == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   r_true_l_r = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && r_true_l_r == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   r_true_t_r = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && r_true_t_r == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   if (alpha_flag == 1) {
@@ -1117,23 +1107,19 @@ void BLAS_ztrsv_c_testgen(int norm, enum blas_order_type order,
 
   T_r = (float *) blas_malloc(4 * n * n * sizeof(float));
   if (4 * n * n > 0 && T_r == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   x_r = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && x_r == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   r_true_l_r = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && r_true_l_r == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   r_true_t_r = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && r_true_t_r == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   if (alpha_flag == 1) {
@@ -1295,23 +1281,19 @@ void BLAS_ztrsv_testgen(int norm, enum blas_order_type order,
 
   T_r = (double *) blas_malloc(4 * n * n * sizeof(double));
   if (4 * n * n > 0 && T_r == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   x_r = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && x_r == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   r_true_l_r = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && r_true_l_r == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   r_true_t_r = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && r_true_t_r == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   if (alpha_flag == 1) {
@@ -1473,18 +1455,15 @@ void BLAS_ctrsv_s_testgen(int norm, enum blas_order_type order,
 
   x_r = (float *) blas_malloc(n * sizeof(float));
   if (n > 0 && x_r == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   r_true_l_r = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && r_true_l_r == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   r_true_t_r = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && r_true_t_r == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   if (alpha_flag == 1) {
@@ -1585,18 +1564,15 @@ void BLAS_ztrsv_d_testgen(int norm, enum blas_order_type order,
 
   x_r = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && x_r == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   r_true_l_r = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && r_true_l_r == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   r_true_t_r = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && r_true_t_r == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   if (alpha_flag == 1) {

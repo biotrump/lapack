@@ -201,8 +201,7 @@ void BLAS_chemm_testgen(int norm, enum blas_order_type order,
   incb *= 2;
   a_vec = (float *) blas_malloc(m_i * sizeof(float) * 2);
   if (m_i > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < m_i * inca; i += inca) {
     a_vec[i] = 0.0;
@@ -210,8 +209,7 @@ void BLAS_chemm_testgen(int norm, enum blas_order_type order,
   }
   b_vec = (float *) blas_malloc(m_i * sizeof(float) * 2);
   if (m_i > 0 && b_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < m_i * incb; i += incb) {
     b_vec[i] = 0.0;
@@ -221,54 +219,45 @@ void BLAS_chemm_testgen(int norm, enum blas_order_type order,
   if (randomize == 0) {
     a1 = (float *) blas_malloc(m_i * m_i * sizeof(float));
     if (m_i * m_i > 0 && a1 == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
     a2 = (float *) blas_malloc(m_i * m_i * sizeof(float));
     if (m_i * m_i > 0 && a2 == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
     for (i = 0; i < m_i * m_i; ++i) {
       a1[i] = a2[i] = 0.0;
     }
     c1 = (float *) blas_malloc(m_i * n_i * sizeof(float));
     if (m_i * n_i > 0 && c1 == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
     c2 = (float *) blas_malloc(m_i * n_i * sizeof(float));
     if (m_i * n_i > 0 && c2 == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
     b0 = (float *) blas_malloc(m_i * n_i * sizeof(float));
     if (m_i * n_i > 0 && b0 == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
     for (i = 0; i < m_i * n_i; ++i) {
       c1[i] = c2[i] = b0[i] = 0.0;
     }
     r1_true_l = (double *) blas_malloc(m_i * n_i * sizeof(double));
     if (m_i * n_i > 0 && r1_true_l == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     };
     r1_true_t = (double *) blas_malloc(m_i * n_i * sizeof(double));
     if (m_i * n_i > 0 && r1_true_t == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     };
     r2_true_l = (double *) blas_malloc(m_i * n_i * sizeof(double));
     if (m_i * n_i > 0 && r2_true_l == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     };
     r2_true_t = (double *) blas_malloc(m_i * n_i * sizeof(double));
     if (m_i * n_i > 0 && r2_true_t == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     };
 
     /* First generate the real portion of matrix A, and matrix B.
@@ -767,8 +756,7 @@ void BLAS_zhemm_testgen(int norm, enum blas_order_type order,
   incb *= 2;
   a_vec = (double *) blas_malloc(m_i * sizeof(double) * 2);
   if (m_i > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < m_i * inca; i += inca) {
     a_vec[i] = 0.0;
@@ -776,8 +764,7 @@ void BLAS_zhemm_testgen(int norm, enum blas_order_type order,
   }
   b_vec = (double *) blas_malloc(m_i * sizeof(double) * 2);
   if (m_i > 0 && b_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < m_i * incb; i += incb) {
     b_vec[i] = 0.0;
@@ -787,54 +774,45 @@ void BLAS_zhemm_testgen(int norm, enum blas_order_type order,
   if (randomize == 0) {
     a1 = (double *) blas_malloc(m_i * m_i * sizeof(double));
     if (m_i * m_i > 0 && a1 == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
     a2 = (double *) blas_malloc(m_i * m_i * sizeof(double));
     if (m_i * m_i > 0 && a2 == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
     for (i = 0; i < m_i * m_i; ++i) {
       a1[i] = a2[i] = 0.0;
     }
     c1 = (double *) blas_malloc(m_i * n_i * sizeof(double));
     if (m_i * n_i > 0 && c1 == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
     c2 = (double *) blas_malloc(m_i * n_i * sizeof(double));
     if (m_i * n_i > 0 && c2 == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
     b0 = (double *) blas_malloc(m_i * n_i * sizeof(double));
     if (m_i * n_i > 0 && b0 == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
     for (i = 0; i < m_i * n_i; ++i) {
       c1[i] = c2[i] = b0[i] = 0.0;
     }
     r1_true_l = (double *) blas_malloc(m_i * n_i * sizeof(double));
     if (m_i * n_i > 0 && r1_true_l == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     };
     r1_true_t = (double *) blas_malloc(m_i * n_i * sizeof(double));
     if (m_i * n_i > 0 && r1_true_t == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     };
     r2_true_l = (double *) blas_malloc(m_i * n_i * sizeof(double));
     if (m_i * n_i > 0 && r2_true_l == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     };
     r2_true_t = (double *) blas_malloc(m_i * n_i * sizeof(double));
     if (m_i * n_i > 0 && r2_true_t == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     };
 
     /* First generate the real portion of matrix A, and matrix B.
@@ -1333,8 +1311,7 @@ void BLAS_zhemm_c_z_testgen(int norm, enum blas_order_type order,
   incb *= 2;
   a_vec = (float *) blas_malloc(m_i * sizeof(float) * 2);
   if (m_i > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < m_i * inca; i += inca) {
     a_vec[i] = 0.0;
@@ -1342,8 +1319,7 @@ void BLAS_zhemm_c_z_testgen(int norm, enum blas_order_type order,
   }
   b_vec = (double *) blas_malloc(m_i * sizeof(double) * 2);
   if (m_i > 0 && b_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < m_i * incb; i += incb) {
     b_vec[i] = 0.0;
@@ -1353,54 +1329,45 @@ void BLAS_zhemm_c_z_testgen(int norm, enum blas_order_type order,
   if (randomize == 0) {
     a1 = (float *) blas_malloc(m_i * m_i * sizeof(float));
     if (m_i * m_i > 0 && a1 == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
     a2 = (float *) blas_malloc(m_i * m_i * sizeof(float));
     if (m_i * m_i > 0 && a2 == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
     for (i = 0; i < m_i * m_i; ++i) {
       a1[i] = a2[i] = 0.0;
     }
     c1 = (double *) blas_malloc(m_i * n_i * sizeof(double));
     if (m_i * n_i > 0 && c1 == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
     c2 = (double *) blas_malloc(m_i * n_i * sizeof(double));
     if (m_i * n_i > 0 && c2 == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
     b0 = (double *) blas_malloc(m_i * n_i * sizeof(double));
     if (m_i * n_i > 0 && b0 == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
     for (i = 0; i < m_i * n_i; ++i) {
       c1[i] = c2[i] = b0[i] = 0.0;
     }
     r1_true_l = (double *) blas_malloc(m_i * n_i * sizeof(double));
     if (m_i * n_i > 0 && r1_true_l == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     };
     r1_true_t = (double *) blas_malloc(m_i * n_i * sizeof(double));
     if (m_i * n_i > 0 && r1_true_t == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     };
     r2_true_l = (double *) blas_malloc(m_i * n_i * sizeof(double));
     if (m_i * n_i > 0 && r2_true_l == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     };
     r2_true_t = (double *) blas_malloc(m_i * n_i * sizeof(double));
     if (m_i * n_i > 0 && r2_true_t == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     };
 
     /* First generate the real portion of matrix A, and matrix B.
@@ -1899,8 +1866,7 @@ void BLAS_zhemm_z_c_testgen(int norm, enum blas_order_type order,
   incb *= 2;
   a_vec = (double *) blas_malloc(m_i * sizeof(double) * 2);
   if (m_i > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < m_i * inca; i += inca) {
     a_vec[i] = 0.0;
@@ -1908,8 +1874,7 @@ void BLAS_zhemm_z_c_testgen(int norm, enum blas_order_type order,
   }
   b_vec = (float *) blas_malloc(m_i * sizeof(float) * 2);
   if (m_i > 0 && b_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < m_i * incb; i += incb) {
     b_vec[i] = 0.0;
@@ -1919,54 +1884,45 @@ void BLAS_zhemm_z_c_testgen(int norm, enum blas_order_type order,
   if (randomize == 0) {
     a1 = (double *) blas_malloc(m_i * m_i * sizeof(double));
     if (m_i * m_i > 0 && a1 == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
     a2 = (double *) blas_malloc(m_i * m_i * sizeof(double));
     if (m_i * m_i > 0 && a2 == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
     for (i = 0; i < m_i * m_i; ++i) {
       a1[i] = a2[i] = 0.0;
     }
     c1 = (double *) blas_malloc(m_i * n_i * sizeof(double));
     if (m_i * n_i > 0 && c1 == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
     c2 = (double *) blas_malloc(m_i * n_i * sizeof(double));
     if (m_i * n_i > 0 && c2 == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
     b0 = (float *) blas_malloc(m_i * n_i * sizeof(float));
     if (m_i * n_i > 0 && b0 == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
     for (i = 0; i < m_i * n_i; ++i) {
       c1[i] = c2[i] = b0[i] = 0.0;
     }
     r1_true_l = (double *) blas_malloc(m_i * n_i * sizeof(double));
     if (m_i * n_i > 0 && r1_true_l == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     };
     r1_true_t = (double *) blas_malloc(m_i * n_i * sizeof(double));
     if (m_i * n_i > 0 && r1_true_t == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     };
     r2_true_l = (double *) blas_malloc(m_i * n_i * sizeof(double));
     if (m_i * n_i > 0 && r2_true_l == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     };
     r2_true_t = (double *) blas_malloc(m_i * n_i * sizeof(double));
     if (m_i * n_i > 0 && r2_true_t == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     };
 
     /* First generate the real portion of matrix A, and matrix B.
@@ -2465,8 +2421,7 @@ void BLAS_zhemm_c_c_testgen(int norm, enum blas_order_type order,
   incb *= 2;
   a_vec = (float *) blas_malloc(m_i * sizeof(float) * 2);
   if (m_i > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < m_i * inca; i += inca) {
     a_vec[i] = 0.0;
@@ -2474,8 +2429,7 @@ void BLAS_zhemm_c_c_testgen(int norm, enum blas_order_type order,
   }
   b_vec = (float *) blas_malloc(m_i * sizeof(float) * 2);
   if (m_i > 0 && b_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < m_i * incb; i += incb) {
     b_vec[i] = 0.0;
@@ -2485,54 +2439,45 @@ void BLAS_zhemm_c_c_testgen(int norm, enum blas_order_type order,
   if (randomize == 0) {
     a1 = (float *) blas_malloc(m_i * m_i * sizeof(float));
     if (m_i * m_i > 0 && a1 == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
     a2 = (float *) blas_malloc(m_i * m_i * sizeof(float));
     if (m_i * m_i > 0 && a2 == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
     for (i = 0; i < m_i * m_i; ++i) {
       a1[i] = a2[i] = 0.0;
     }
     c1 = (double *) blas_malloc(m_i * n_i * sizeof(double));
     if (m_i * n_i > 0 && c1 == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
     c2 = (double *) blas_malloc(m_i * n_i * sizeof(double));
     if (m_i * n_i > 0 && c2 == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
     b0 = (float *) blas_malloc(m_i * n_i * sizeof(float));
     if (m_i * n_i > 0 && b0 == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
     for (i = 0; i < m_i * n_i; ++i) {
       c1[i] = c2[i] = b0[i] = 0.0;
     }
     r1_true_l = (double *) blas_malloc(m_i * n_i * sizeof(double));
     if (m_i * n_i > 0 && r1_true_l == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     };
     r1_true_t = (double *) blas_malloc(m_i * n_i * sizeof(double));
     if (m_i * n_i > 0 && r1_true_t == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     };
     r2_true_l = (double *) blas_malloc(m_i * n_i * sizeof(double));
     if (m_i * n_i > 0 && r2_true_l == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     };
     r2_true_t = (double *) blas_malloc(m_i * n_i * sizeof(double));
     if (m_i * n_i > 0 && r2_true_t == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     };
 
     /* First generate the real portion of matrix A, and matrix B.
@@ -3032,8 +2977,7 @@ void BLAS_zhemm_z_d_testgen(int norm, enum blas_order_type order,
 
   a_vec = (double *) blas_malloc(m_i * sizeof(double) * 2);
   if (m_i > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < m_i * inca; i += inca) {
     a_vec[i] = 0.0;
@@ -3041,8 +2985,7 @@ void BLAS_zhemm_z_d_testgen(int norm, enum blas_order_type order,
   }
   b_vec = (double *) blas_malloc(m_i * sizeof(double));
   if (m_i > 0 && b_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < m_i * incb; i += incb) {
     b_vec[i] = 0.0;
@@ -3051,54 +2994,45 @@ void BLAS_zhemm_z_d_testgen(int norm, enum blas_order_type order,
   if (randomize == 0) {
     a1 = (double *) blas_malloc(m_i * m_i * sizeof(double));
     if (m_i * m_i > 0 && a1 == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
     a2 = (double *) blas_malloc(m_i * m_i * sizeof(double));
     if (m_i * m_i > 0 && a2 == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
     for (i = 0; i < m_i * m_i; ++i) {
       a1[i] = a2[i] = 0.0;
     }
     c1 = (double *) blas_malloc(m_i * n_i * sizeof(double));
     if (m_i * n_i > 0 && c1 == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
     c2 = (double *) blas_malloc(m_i * n_i * sizeof(double));
     if (m_i * n_i > 0 && c2 == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
     b0 = (double *) blas_malloc(m_i * n_i * sizeof(double));
     if (m_i * n_i > 0 && b0 == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
     for (i = 0; i < m_i * n_i; ++i) {
       c1[i] = c2[i] = b0[i] = 0.0;
     }
     r1_true_l = (double *) blas_malloc(m_i * n_i * sizeof(double));
     if (m_i * n_i > 0 && r1_true_l == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     };
     r1_true_t = (double *) blas_malloc(m_i * n_i * sizeof(double));
     if (m_i * n_i > 0 && r1_true_t == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     };
     r2_true_l = (double *) blas_malloc(m_i * n_i * sizeof(double));
     if (m_i * n_i > 0 && r2_true_l == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     };
     r2_true_t = (double *) blas_malloc(m_i * n_i * sizeof(double));
     if (m_i * n_i > 0 && r2_true_t == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     };
 
     /* First generate the real portion of matrix A, and matrix B.
@@ -3300,8 +3234,7 @@ void BLAS_zhemm_z_d_testgen(int norm, enum blas_order_type order,
     double *bb_vec;
     bb_vec = (double *) blas_malloc(m_i * sizeof(double) * 2);
     if (m_i > 0 && bb_vec == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
 
     if (alpha_flag == 0) {
@@ -3548,8 +3481,7 @@ void BLAS_chemm_c_s_testgen(int norm, enum blas_order_type order,
 
   a_vec = (float *) blas_malloc(m_i * sizeof(float) * 2);
   if (m_i > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < m_i * inca; i += inca) {
     a_vec[i] = 0.0;
@@ -3557,8 +3489,7 @@ void BLAS_chemm_c_s_testgen(int norm, enum blas_order_type order,
   }
   b_vec = (float *) blas_malloc(m_i * sizeof(float));
   if (m_i > 0 && b_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < m_i * incb; i += incb) {
     b_vec[i] = 0.0;
@@ -3567,54 +3498,45 @@ void BLAS_chemm_c_s_testgen(int norm, enum blas_order_type order,
   if (randomize == 0) {
     a1 = (float *) blas_malloc(m_i * m_i * sizeof(float));
     if (m_i * m_i > 0 && a1 == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
     a2 = (float *) blas_malloc(m_i * m_i * sizeof(float));
     if (m_i * m_i > 0 && a2 == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
     for (i = 0; i < m_i * m_i; ++i) {
       a1[i] = a2[i] = 0.0;
     }
     c1 = (float *) blas_malloc(m_i * n_i * sizeof(float));
     if (m_i * n_i > 0 && c1 == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
     c2 = (float *) blas_malloc(m_i * n_i * sizeof(float));
     if (m_i * n_i > 0 && c2 == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
     b0 = (float *) blas_malloc(m_i * n_i * sizeof(float));
     if (m_i * n_i > 0 && b0 == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
     for (i = 0; i < m_i * n_i; ++i) {
       c1[i] = c2[i] = b0[i] = 0.0;
     }
     r1_true_l = (double *) blas_malloc(m_i * n_i * sizeof(double));
     if (m_i * n_i > 0 && r1_true_l == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     };
     r1_true_t = (double *) blas_malloc(m_i * n_i * sizeof(double));
     if (m_i * n_i > 0 && r1_true_t == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     };
     r2_true_l = (double *) blas_malloc(m_i * n_i * sizeof(double));
     if (m_i * n_i > 0 && r2_true_l == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     };
     r2_true_t = (double *) blas_malloc(m_i * n_i * sizeof(double));
     if (m_i * n_i > 0 && r2_true_t == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     };
 
     /* First generate the real portion of matrix A, and matrix B.
@@ -3816,8 +3738,7 @@ void BLAS_chemm_c_s_testgen(int norm, enum blas_order_type order,
     float *bb_vec;
     bb_vec = (float *) blas_malloc(m_i * sizeof(float) * 2);
     if (m_i > 0 && bb_vec == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
 
     if (alpha_flag == 0) {
@@ -3927,16 +3848,14 @@ void BLAS_sskew_testgen(int norm, enum blas_order_type order,
 
   a_vec = (float *) blas_malloc(m_i * sizeof(float));
   if (m_i > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < m_i * inca; i += inca) {
     a_vec[i] = 0.0;
   }
   b_vec = (float *) blas_malloc(m_i * sizeof(float));
   if (m_i > 0 && b_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < m_i * incb; i += incb) {
     b_vec[i] = 0.0;
@@ -4030,16 +3949,14 @@ void BLAS_dskew_testgen(int norm, enum blas_order_type order,
 
   a_vec = (double *) blas_malloc(m_i * sizeof(double));
   if (m_i > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < m_i * inca; i += inca) {
     a_vec[i] = 0.0;
   }
   b_vec = (double *) blas_malloc(m_i * sizeof(double));
   if (m_i > 0 && b_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < m_i * incb; i += incb) {
     b_vec[i] = 0.0;
@@ -4133,16 +4050,14 @@ void BLAS_dskew_d_s_testgen(int norm, enum blas_order_type order,
 
   a_vec = (double *) blas_malloc(m_i * sizeof(double));
   if (m_i > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < m_i * inca; i += inca) {
     a_vec[i] = 0.0;
   }
   b_vec = (float *) blas_malloc(m_i * sizeof(float));
   if (m_i > 0 && b_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < m_i * incb; i += incb) {
     b_vec[i] = 0.0;
@@ -4236,16 +4151,14 @@ void BLAS_dskew_s_d_testgen(int norm, enum blas_order_type order,
 
   a_vec = (float *) blas_malloc(m_i * sizeof(float));
   if (m_i > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < m_i * inca; i += inca) {
     a_vec[i] = 0.0;
   }
   b_vec = (double *) blas_malloc(m_i * sizeof(double));
   if (m_i > 0 && b_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < m_i * incb; i += incb) {
     b_vec[i] = 0.0;
@@ -4339,16 +4252,14 @@ void BLAS_dskew_s_s_testgen(int norm, enum blas_order_type order,
 
   a_vec = (float *) blas_malloc(m_i * sizeof(float));
   if (m_i > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < m_i * inca; i += inca) {
     a_vec[i] = 0.0;
   }
   b_vec = (float *) blas_malloc(m_i * sizeof(float));
   if (m_i > 0 && b_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < m_i * incb; i += incb) {
     b_vec[i] = 0.0;

@@ -618,8 +618,7 @@ void sprint_sbmv_matrix(float *a, int n, int k, int lda,
   float *x;
   x = (float *) blas_malloc(n * sizeof(float));
   if (n > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   for (row = 0; row < n; row++) {
@@ -638,8 +637,7 @@ void dprint_sbmv_matrix(double *a, int n, int k, int lda,
   double *x;
   x = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   for (row = 0; row < n; row++) {
@@ -658,8 +656,7 @@ void cprint_sbmv_matrix(void *a, int n, int k, int lda,
   float *x;
   x = (float *) blas_malloc(n * sizeof(float) * 2);
   if (n > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   for (row = 0; row < n; row++) {
@@ -678,8 +675,7 @@ void zprint_sbmv_matrix(void *a, int n, int k, int lda,
   double *x;
   x = (double *) blas_malloc(n * sizeof(double) * 2);
   if (n > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   for (row = 0; row < n; row++) {

@@ -155,32 +155,28 @@ double do_test_stpmv_x(int n,
   /* get space for calculation */
   x = (float *) blas_malloc(3 * n * 2 * sizeof(float));
   if (3 * n * 2 > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * n * incx; i += incx) {
     x[i] = 0.0;
   }
   x_gen = (float *) blas_malloc(3 * n * 2 * sizeof(float));
   if (3 * n * 2 > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * n * inc_index; i++) {
     x_gen[i] = 0.0;
   }
   tp = (float *) blas_malloc(2 * n * n * n * inctp * sizeof(float));
   if (2 * n * n * n * inctp > 0 && tp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * n * n * inctp; i += inctp) {
     tp[i] = 0.0;
   }
   temp = (float *) blas_malloc(3 * n * 2 * sizeof(float));
   if (3 * n * 2 > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * 2 * inc_index; i += inc_index) {
     temp[i] = 0.0;
@@ -188,14 +184,12 @@ double do_test_stpmv_x(int n,
   head_r_true = (double *) blas_malloc(n * sizeof(double));
   tail_r_true = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   ratios = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
 
@@ -727,32 +721,28 @@ double do_test_dtpmv_x(int n,
   /* get space for calculation */
   x = (double *) blas_malloc(3 * n * 2 * sizeof(double));
   if (3 * n * 2 > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * n * incx; i += incx) {
     x[i] = 0.0;
   }
   x_gen = (double *) blas_malloc(3 * n * 2 * sizeof(double));
   if (3 * n * 2 > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * n * inc_index; i++) {
     x_gen[i] = 0.0;
   }
   tp = (double *) blas_malloc(2 * n * n * n * inctp * sizeof(double));
   if (2 * n * n * n * inctp > 0 && tp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * n * n * inctp; i += inctp) {
     tp[i] = 0.0;
   }
   temp = (double *) blas_malloc(3 * n * 2 * sizeof(double));
   if (3 * n * 2 > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * 2 * inc_index; i += inc_index) {
     temp[i] = 0.0;
@@ -760,14 +750,12 @@ double do_test_dtpmv_x(int n,
   head_r_true = (double *) blas_malloc(n * sizeof(double));
   tail_r_true = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   ratios = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
 
@@ -1299,32 +1287,28 @@ double do_test_dtpmv_s(int n,
   /* get space for calculation */
   x = (double *) blas_malloc(3 * n * 2 * sizeof(double));
   if (3 * n * 2 > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * n * incx; i += incx) {
     x[i] = 0.0;
   }
   x_gen = (double *) blas_malloc(3 * n * 2 * sizeof(double));
   if (3 * n * 2 > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * n * inc_index; i++) {
     x_gen[i] = 0.0;
   }
   tp = (float *) blas_malloc(2 * n * n * n * inctp * sizeof(float));
   if (2 * n * n * n * inctp > 0 && tp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * n * n * inctp; i += inctp) {
     tp[i] = 0.0;
   }
   temp = (float *) blas_malloc(3 * n * 2 * sizeof(float));
   if (3 * n * 2 > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * 2 * inc_index; i += inc_index) {
     temp[i] = 0.0;
@@ -1332,14 +1316,12 @@ double do_test_dtpmv_s(int n,
   head_r_true = (double *) blas_malloc(n * sizeof(double));
   tail_r_true = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   ratios = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
 
@@ -1851,32 +1833,28 @@ double do_test_dtpmv_s_x(int n,
   /* get space for calculation */
   x = (double *) blas_malloc(3 * n * 2 * sizeof(double));
   if (3 * n * 2 > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * n * incx; i += incx) {
     x[i] = 0.0;
   }
   x_gen = (double *) blas_malloc(3 * n * 2 * sizeof(double));
   if (3 * n * 2 > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * n * inc_index; i++) {
     x_gen[i] = 0.0;
   }
   tp = (float *) blas_malloc(2 * n * n * n * inctp * sizeof(float));
   if (2 * n * n * n * inctp > 0 && tp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * n * n * inctp; i += inctp) {
     tp[i] = 0.0;
   }
   temp = (float *) blas_malloc(3 * n * 2 * sizeof(float));
   if (3 * n * 2 > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * 2 * inc_index; i += inc_index) {
     temp[i] = 0.0;
@@ -1884,14 +1862,12 @@ double do_test_dtpmv_s_x(int n,
   head_r_true = (double *) blas_malloc(n * sizeof(double));
   tail_r_true = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   ratios = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
 
@@ -2426,8 +2402,7 @@ double do_test_ctpmv_s(int n,
   /* get space for calculation */
   x = (float *) blas_malloc(3 * n * 2 * sizeof(float) * 2);
   if (3 * n * 2 > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * n * incx; i += incx) {
     x[i] = 0.0;
@@ -2435,8 +2410,7 @@ double do_test_ctpmv_s(int n,
   }
   x_gen = (float *) blas_malloc(3 * n * 2 * sizeof(float) * 2);
   if (3 * n * 2 > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * n * inc_index; i++) {
     x_gen[i] = 0.0;
@@ -2444,16 +2418,14 @@ double do_test_ctpmv_s(int n,
   }
   tp = (float *) blas_malloc(2 * n * n * n * inctp * sizeof(float));
   if (2 * n * n * n * inctp > 0 && tp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * n * n * inctp; i += inctp) {
     tp[i] = 0.0;
   }
   temp = (float *) blas_malloc(3 * n * 2 * sizeof(float));
   if (3 * n * 2 > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * 2 * inc_index; i += inc_index) {
     temp[i] = 0.0;
@@ -2461,14 +2433,12 @@ double do_test_ctpmv_s(int n,
   head_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   if (n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   ratios = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
 
@@ -2986,8 +2956,7 @@ double do_test_ctpmv_s_x(int n,
   /* get space for calculation */
   x = (float *) blas_malloc(3 * n * 2 * sizeof(float) * 2);
   if (3 * n * 2 > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * n * incx; i += incx) {
     x[i] = 0.0;
@@ -2995,8 +2964,7 @@ double do_test_ctpmv_s_x(int n,
   }
   x_gen = (float *) blas_malloc(3 * n * 2 * sizeof(float) * 2);
   if (3 * n * 2 > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * n * inc_index; i++) {
     x_gen[i] = 0.0;
@@ -3004,16 +2972,14 @@ double do_test_ctpmv_s_x(int n,
   }
   tp = (float *) blas_malloc(2 * n * n * n * inctp * sizeof(float));
   if (2 * n * n * n * inctp > 0 && tp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * n * n * inctp; i += inctp) {
     tp[i] = 0.0;
   }
   temp = (float *) blas_malloc(3 * n * 2 * sizeof(float));
   if (3 * n * 2 > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * 2 * inc_index; i += inc_index) {
     temp[i] = 0.0;
@@ -3021,14 +2987,12 @@ double do_test_ctpmv_s_x(int n,
   head_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   if (n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   ratios = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
 
@@ -3568,8 +3532,7 @@ double do_test_ztpmv_d(int n,
   /* get space for calculation */
   x = (double *) blas_malloc(3 * n * 2 * sizeof(double) * 2);
   if (3 * n * 2 > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * n * incx; i += incx) {
     x[i] = 0.0;
@@ -3577,8 +3540,7 @@ double do_test_ztpmv_d(int n,
   }
   x_gen = (double *) blas_malloc(3 * n * 2 * sizeof(double) * 2);
   if (3 * n * 2 > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * n * inc_index; i++) {
     x_gen[i] = 0.0;
@@ -3586,16 +3548,14 @@ double do_test_ztpmv_d(int n,
   }
   tp = (double *) blas_malloc(2 * n * n * n * inctp * sizeof(double));
   if (2 * n * n * n * inctp > 0 && tp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * n * n * inctp; i += inctp) {
     tp[i] = 0.0;
   }
   temp = (double *) blas_malloc(3 * n * 2 * sizeof(double));
   if (3 * n * 2 > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * 2 * inc_index; i += inc_index) {
     temp[i] = 0.0;
@@ -3603,14 +3563,12 @@ double do_test_ztpmv_d(int n,
   head_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   if (n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   ratios = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
 
@@ -4128,8 +4086,7 @@ double do_test_ztpmv_d_x(int n,
   /* get space for calculation */
   x = (double *) blas_malloc(3 * n * 2 * sizeof(double) * 2);
   if (3 * n * 2 > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * n * incx; i += incx) {
     x[i] = 0.0;
@@ -4137,8 +4094,7 @@ double do_test_ztpmv_d_x(int n,
   }
   x_gen = (double *) blas_malloc(3 * n * 2 * sizeof(double) * 2);
   if (3 * n * 2 > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * n * inc_index; i++) {
     x_gen[i] = 0.0;
@@ -4146,16 +4102,14 @@ double do_test_ztpmv_d_x(int n,
   }
   tp = (double *) blas_malloc(2 * n * n * n * inctp * sizeof(double));
   if (2 * n * n * n * inctp > 0 && tp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * n * n * inctp; i += inctp) {
     tp[i] = 0.0;
   }
   temp = (double *) blas_malloc(3 * n * 2 * sizeof(double));
   if (3 * n * 2 > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * 2 * inc_index; i += inc_index) {
     temp[i] = 0.0;
@@ -4163,14 +4117,12 @@ double do_test_ztpmv_d_x(int n,
   head_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   if (n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   ratios = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
 
@@ -4710,8 +4662,7 @@ double do_test_ctpmv_x(int n,
   /* get space for calculation */
   x = (float *) blas_malloc(3 * n * 2 * sizeof(float) * 2);
   if (3 * n * 2 > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * n * incx; i += incx) {
     x[i] = 0.0;
@@ -4719,8 +4670,7 @@ double do_test_ctpmv_x(int n,
   }
   x_gen = (float *) blas_malloc(3 * n * 2 * sizeof(float) * 2);
   if (3 * n * 2 > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * n * inc_index; i++) {
     x_gen[i] = 0.0;
@@ -4728,8 +4678,7 @@ double do_test_ctpmv_x(int n,
   }
   tp = (float *) blas_malloc(2 * n * n * n * inctp * sizeof(float) * 2);
   if (2 * n * n * n * inctp > 0 && tp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * n * n * inctp; i += inctp) {
     tp[i] = 0.0;
@@ -4737,8 +4686,7 @@ double do_test_ctpmv_x(int n,
   }
   temp = (float *) blas_malloc(3 * n * 2 * sizeof(float) * 2);
   if (3 * n * 2 > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * 2 * inc_index; i += inc_index) {
     temp[i] = 0.0;
@@ -4747,14 +4695,12 @@ double do_test_ctpmv_x(int n,
   head_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   if (n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   ratios = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
 
@@ -5293,8 +5239,7 @@ double do_test_ztpmv_c(int n,
   /* get space for calculation */
   x = (double *) blas_malloc(3 * n * 2 * sizeof(double) * 2);
   if (3 * n * 2 > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * n * incx; i += incx) {
     x[i] = 0.0;
@@ -5302,8 +5247,7 @@ double do_test_ztpmv_c(int n,
   }
   x_gen = (double *) blas_malloc(3 * n * 2 * sizeof(double) * 2);
   if (3 * n * 2 > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * n * inc_index; i++) {
     x_gen[i] = 0.0;
@@ -5311,8 +5255,7 @@ double do_test_ztpmv_c(int n,
   }
   tp = (float *) blas_malloc(2 * n * n * n * inctp * sizeof(float) * 2);
   if (2 * n * n * n * inctp > 0 && tp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * n * n * inctp; i += inctp) {
     tp[i] = 0.0;
@@ -5320,8 +5263,7 @@ double do_test_ztpmv_c(int n,
   }
   temp = (float *) blas_malloc(3 * n * 2 * sizeof(float) * 2);
   if (3 * n * 2 > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * 2 * inc_index; i += inc_index) {
     temp[i] = 0.0;
@@ -5330,14 +5272,12 @@ double do_test_ztpmv_c(int n,
   head_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   if (n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   ratios = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
 
@@ -5856,8 +5796,7 @@ double do_test_ztpmv_c_x(int n,
   /* get space for calculation */
   x = (double *) blas_malloc(3 * n * 2 * sizeof(double) * 2);
   if (3 * n * 2 > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * n * incx; i += incx) {
     x[i] = 0.0;
@@ -5865,8 +5804,7 @@ double do_test_ztpmv_c_x(int n,
   }
   x_gen = (double *) blas_malloc(3 * n * 2 * sizeof(double) * 2);
   if (3 * n * 2 > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * n * inc_index; i++) {
     x_gen[i] = 0.0;
@@ -5874,8 +5812,7 @@ double do_test_ztpmv_c_x(int n,
   }
   tp = (float *) blas_malloc(2 * n * n * n * inctp * sizeof(float) * 2);
   if (2 * n * n * n * inctp > 0 && tp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * n * n * inctp; i += inctp) {
     tp[i] = 0.0;
@@ -5883,8 +5820,7 @@ double do_test_ztpmv_c_x(int n,
   }
   temp = (float *) blas_malloc(3 * n * 2 * sizeof(float) * 2);
   if (3 * n * 2 > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * 2 * inc_index; i += inc_index) {
     temp[i] = 0.0;
@@ -5893,14 +5829,12 @@ double do_test_ztpmv_c_x(int n,
   head_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   if (n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   ratios = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
 
@@ -6441,8 +6375,7 @@ double do_test_ztpmv_x(int n,
   /* get space for calculation */
   x = (double *) blas_malloc(3 * n * 2 * sizeof(double) * 2);
   if (3 * n * 2 > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * n * incx; i += incx) {
     x[i] = 0.0;
@@ -6450,8 +6383,7 @@ double do_test_ztpmv_x(int n,
   }
   x_gen = (double *) blas_malloc(3 * n * 2 * sizeof(double) * 2);
   if (3 * n * 2 > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * n * inc_index; i++) {
     x_gen[i] = 0.0;
@@ -6459,8 +6391,7 @@ double do_test_ztpmv_x(int n,
   }
   tp = (double *) blas_malloc(2 * n * n * n * inctp * sizeof(double) * 2);
   if (2 * n * n * n * inctp > 0 && tp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * n * n * inctp; i += inctp) {
     tp[i] = 0.0;
@@ -6468,8 +6399,7 @@ double do_test_ztpmv_x(int n,
   }
   temp = (double *) blas_malloc(3 * n * 2 * sizeof(double) * 2);
   if (3 * n * 2 > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n * 2 * inc_index; i += inc_index) {
     temp[i] = 0.0;
@@ -6478,14 +6408,12 @@ double do_test_ztpmv_x(int n,
   head_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   if (n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   ratios = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
 

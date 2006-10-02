@@ -104,8 +104,7 @@ void BLAS_sgbmv_testgen(int norm, enum blas_order_type order,
 
   temp = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incAB; i += incAB) {
     temp[i] = 0.0;
@@ -242,8 +241,7 @@ void BLAS_dgbmv_testgen(int norm, enum blas_order_type order,
 
   temp = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incAB; i += incAB) {
     temp[i] = 0.0;
@@ -380,8 +378,7 @@ void BLAS_dgbmv_d_s_testgen(int norm, enum blas_order_type order,
 
   temp = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incAB; i += incAB) {
     temp[i] = 0.0;
@@ -518,8 +515,7 @@ void BLAS_dgbmv_s_d_testgen(int norm, enum blas_order_type order,
 
   temp = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incAB; i += incAB) {
     temp[i] = 0.0;
@@ -656,8 +652,7 @@ void BLAS_dgbmv_s_s_testgen(int norm, enum blas_order_type order,
 
   temp = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incAB; i += incAB) {
     temp[i] = 0.0;
@@ -794,8 +789,7 @@ void BLAS_cgbmv_testgen(int norm, enum blas_order_type order,
 
   temp = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incAB; i += incAB) {
     temp[i] = 0.0;
@@ -938,8 +932,7 @@ void BLAS_cgbmv_s_s_testgen(int norm, enum blas_order_type order,
 
   temp = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incAB; i += incAB) {
     temp[i] = 0.0;
@@ -1077,8 +1070,7 @@ void BLAS_cgbmv_c_s_testgen(int norm, enum blas_order_type order,
 
   temp = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incAB; i += incAB) {
     temp[i] = 0.0;
@@ -1221,8 +1213,7 @@ void BLAS_cgbmv_s_c_testgen(int norm, enum blas_order_type order,
 
   temp = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incAB; i += incAB) {
     temp[i] = 0.0;
@@ -1360,8 +1351,7 @@ void BLAS_zgbmv_testgen(int norm, enum blas_order_type order,
 
   temp = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incAB; i += incAB) {
     temp[i] = 0.0;
@@ -1504,8 +1494,7 @@ void BLAS_zgbmv_d_d_testgen(int norm, enum blas_order_type order,
 
   temp = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incAB; i += incAB) {
     temp[i] = 0.0;
@@ -1643,8 +1632,7 @@ void BLAS_zgbmv_z_d_testgen(int norm, enum blas_order_type order,
 
   temp = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incAB; i += incAB) {
     temp[i] = 0.0;
@@ -1787,8 +1775,7 @@ void BLAS_zgbmv_d_z_testgen(int norm, enum blas_order_type order,
 
   temp = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incAB; i += incAB) {
     temp[i] = 0.0;
@@ -1927,8 +1914,7 @@ void BLAS_zgbmv_c_c_testgen(int norm, enum blas_order_type order,
 
   temp = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incAB; i += incAB) {
     temp[i] = 0.0;
@@ -2071,8 +2057,7 @@ void BLAS_zgbmv_z_c_testgen(int norm, enum blas_order_type order,
 
   temp = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incAB; i += incAB) {
     temp[i] = 0.0;
@@ -2215,8 +2200,7 @@ void BLAS_zgbmv_c_z_testgen(int norm, enum blas_order_type order,
 
   temp = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incAB; i += incAB) {
     temp[i] = 0.0;

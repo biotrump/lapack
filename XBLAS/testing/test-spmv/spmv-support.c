@@ -570,8 +570,7 @@ void sspmv_pack_matrix(enum blas_order_type order, enum blas_uplo_type uplo,
 
   a_row = (float *) blas_malloc(n * sizeof(float));
   if (n > 0 && a_row == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   };
   for (row = 0; row < n; row++) {
     ssymv_copy_row(order, uplo, n, a_full, lda, a_row, row);
@@ -592,8 +591,7 @@ void dspmv_pack_matrix(enum blas_order_type order, enum blas_uplo_type uplo,
 
   a_row = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && a_row == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   };
   for (row = 0; row < n; row++) {
     dsymv_copy_row(order, uplo, n, a_full, lda, a_row, row);
@@ -614,8 +612,7 @@ void cspmv_pack_matrix(enum blas_order_type order, enum blas_uplo_type uplo,
 
   a_row = (float *) blas_malloc(n * sizeof(float) * 2);
   if (n > 0 && a_row == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   };
   for (row = 0; row < n; row++) {
     csymv_copy_row(order, uplo, n, a_full, lda, a_row, row);
@@ -636,8 +633,7 @@ void zspmv_pack_matrix(enum blas_order_type order, enum blas_uplo_type uplo,
 
   a_row = (double *) blas_malloc(n * sizeof(double) * 2);
   if (n > 0 && a_row == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   };
   for (row = 0; row < n; row++) {
     zsymv_copy_row(order, uplo, n, a_full, lda, a_row, row);
@@ -656,8 +652,7 @@ void sprint_spmv_matrix(float *a, int n,
     float *x;
     x = (float *) blas_malloc(n * sizeof(float));
     if (n > 0 && x == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
 
     for (row = 0; row < n; row++) {
@@ -678,8 +673,7 @@ void dprint_spmv_matrix(double *a, int n,
     double *x;
     x = (double *) blas_malloc(n * sizeof(double));
     if (n > 0 && x == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
 
     for (row = 0; row < n; row++) {
@@ -700,8 +694,7 @@ void cprint_spmv_matrix(void *a, int n,
     float *x;
     x = (float *) blas_malloc(n * sizeof(float) * 2);
     if (n > 0 && x == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
 
     for (row = 0; row < n; row++) {
@@ -722,8 +715,7 @@ void zprint_spmv_matrix(void *a, int n,
     double *x;
     x = (double *) blas_malloc(n * sizeof(double) * 2);
     if (n > 0 && x == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
 
     for (row = 0; row < n; row++) {

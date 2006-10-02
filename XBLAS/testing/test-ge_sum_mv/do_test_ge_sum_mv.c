@@ -160,8 +160,7 @@ void do_test_dge_sum_mv_s_d
   /* allocate memory for arrays */
   y = (double *) blas_malloc(4 * m_i * sizeof(double));
   if (4 * m_i > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * m_i * incy; i += incy) {
     y[i] = 0.0;
@@ -169,40 +168,35 @@ void do_test_dge_sum_mv_s_d
 
   a = (float *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(float));
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a[i] = 0.0;
   }
   a_use = (float *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(float));
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a_use[i] = 0.0;
   }
   B = (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float));
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B[i] = 0.0;
   }
   B_use = (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float));
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B_use[i] = 0.0;
   }
   x = (double *) blas_malloc(4 * n_i * sizeof(double));
   if (4 * n_i > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * n_i * incx; i += incx) {
     x[i] = 0.0;
@@ -212,16 +206,14 @@ void do_test_dge_sum_mv_s_d
 
   a_vec = (float *) blas_malloc(2 * n_i * sizeof(float));
   if (2 * n_i > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * inca_veci; i += inca_veci) {
     a_vec[i] = 0.0;
   }
   x_vec = (double *) blas_malloc(2 * n_i * sizeof(double));
   if (2 * n_i > 0 && x_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * incx; i += incx) {
     x_vec[i] = 0.0;
@@ -230,13 +222,11 @@ void do_test_dge_sum_mv_s_d
   head_r_true = (double *) blas_malloc(m_i * sizeof(double));
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double));
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(m_i * sizeof(double));
   if (m_i > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   test_count = 0;
@@ -635,8 +625,7 @@ void do_test_dge_sum_mv_d_s
   /* allocate memory for arrays */
   y = (double *) blas_malloc(4 * m_i * sizeof(double));
   if (4 * m_i > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * m_i * incy; i += incy) {
     y[i] = 0.0;
@@ -644,40 +633,35 @@ void do_test_dge_sum_mv_d_s
 
   a = (double *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(double));
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a[i] = 0.0;
   }
   a_use = (double *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(double));
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a_use[i] = 0.0;
   }
   B = (double *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(double));
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B[i] = 0.0;
   }
   B_use = (double *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(double));
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B_use[i] = 0.0;
   }
   x = (float *) blas_malloc(4 * n_i * sizeof(float));
   if (4 * n_i > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * n_i * incx; i += incx) {
     x[i] = 0.0;
@@ -687,16 +671,14 @@ void do_test_dge_sum_mv_d_s
 
   a_vec = (double *) blas_malloc(2 * n_i * sizeof(double));
   if (2 * n_i > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * inca_veci; i += inca_veci) {
     a_vec[i] = 0.0;
   }
   x_vec = (float *) blas_malloc(2 * n_i * sizeof(float));
   if (2 * n_i > 0 && x_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * incx; i += incx) {
     x_vec[i] = 0.0;
@@ -705,13 +687,11 @@ void do_test_dge_sum_mv_d_s
   head_r_true = (double *) blas_malloc(m_i * sizeof(double));
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double));
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(m_i * sizeof(double));
   if (m_i > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   test_count = 0;
@@ -1110,8 +1090,7 @@ void do_test_dge_sum_mv_s_s
   /* allocate memory for arrays */
   y = (double *) blas_malloc(4 * m_i * sizeof(double));
   if (4 * m_i > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * m_i * incy; i += incy) {
     y[i] = 0.0;
@@ -1119,40 +1098,35 @@ void do_test_dge_sum_mv_s_s
 
   a = (float *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(float));
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a[i] = 0.0;
   }
   a_use = (float *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(float));
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a_use[i] = 0.0;
   }
   B = (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float));
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B[i] = 0.0;
   }
   B_use = (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float));
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B_use[i] = 0.0;
   }
   x = (float *) blas_malloc(4 * n_i * sizeof(float));
   if (4 * n_i > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * n_i * incx; i += incx) {
     x[i] = 0.0;
@@ -1162,16 +1136,14 @@ void do_test_dge_sum_mv_s_s
 
   a_vec = (float *) blas_malloc(2 * n_i * sizeof(float));
   if (2 * n_i > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * inca_veci; i += inca_veci) {
     a_vec[i] = 0.0;
   }
   x_vec = (float *) blas_malloc(2 * n_i * sizeof(float));
   if (2 * n_i > 0 && x_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * incx; i += incx) {
     x_vec[i] = 0.0;
@@ -1180,13 +1152,11 @@ void do_test_dge_sum_mv_s_s
   head_r_true = (double *) blas_malloc(m_i * sizeof(double));
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double));
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(m_i * sizeof(double));
   if (m_i > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   test_count = 0;
@@ -1587,8 +1557,7 @@ void do_test_zge_sum_mv_z_c
   /* allocate memory for arrays */
   y = (double *) blas_malloc(4 * m_i * sizeof(double) * 2);
   if (4 * m_i > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * m_i * incy; i += incy) {
     y[i] = 0.0;
@@ -1597,8 +1566,7 @@ void do_test_zge_sum_mv_z_c
 
   a = (double *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(double) * 2);
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a[i] = 0.0;
@@ -1607,8 +1575,7 @@ void do_test_zge_sum_mv_z_c
   a_use =
     (double *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(double) * 2);
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a_use[i] = 0.0;
@@ -1616,8 +1583,7 @@ void do_test_zge_sum_mv_z_c
   }
   B = (double *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(double) * 2);
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B[i] = 0.0;
@@ -1626,8 +1592,7 @@ void do_test_zge_sum_mv_z_c
   B_use =
     (double *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(double) * 2);
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B_use[i] = 0.0;
@@ -1635,8 +1600,7 @@ void do_test_zge_sum_mv_z_c
   }
   x = (float *) blas_malloc(4 * n_i * sizeof(float) * 2);
   if (4 * n_i > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * n_i * incx; i += incx) {
     x[i] = 0.0;
@@ -1647,8 +1611,7 @@ void do_test_zge_sum_mv_z_c
   inca_veci *= 2;
   a_vec = (double *) blas_malloc(2 * n_i * sizeof(double) * 2);
   if (2 * n_i > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * inca_veci; i += inca_veci) {
     a_vec[i] = 0.0;
@@ -1656,8 +1619,7 @@ void do_test_zge_sum_mv_z_c
   }
   x_vec = (float *) blas_malloc(2 * n_i * sizeof(float) * 2);
   if (2 * n_i > 0 && x_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * incx; i += incx) {
     x_vec[i] = 0.0;
@@ -1667,13 +1629,11 @@ void do_test_zge_sum_mv_z_c
   head_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(m_i * sizeof(double));
   if (m_i > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   test_count = 0;
@@ -2081,8 +2041,7 @@ void do_test_zge_sum_mv_c_z
   /* allocate memory for arrays */
   y = (double *) blas_malloc(4 * m_i * sizeof(double) * 2);
   if (4 * m_i > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * m_i * incy; i += incy) {
     y[i] = 0.0;
@@ -2091,8 +2050,7 @@ void do_test_zge_sum_mv_c_z
 
   a = (float *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(float) * 2);
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a[i] = 0.0;
@@ -2101,8 +2059,7 @@ void do_test_zge_sum_mv_c_z
   a_use =
     (float *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(float) * 2);
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a_use[i] = 0.0;
@@ -2110,8 +2067,7 @@ void do_test_zge_sum_mv_c_z
   }
   B = (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float) * 2);
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B[i] = 0.0;
@@ -2120,8 +2076,7 @@ void do_test_zge_sum_mv_c_z
   B_use =
     (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float) * 2);
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B_use[i] = 0.0;
@@ -2129,8 +2084,7 @@ void do_test_zge_sum_mv_c_z
   }
   x = (double *) blas_malloc(4 * n_i * sizeof(double) * 2);
   if (4 * n_i > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * n_i * incx; i += incx) {
     x[i] = 0.0;
@@ -2141,8 +2095,7 @@ void do_test_zge_sum_mv_c_z
   inca_veci *= 2;
   a_vec = (float *) blas_malloc(2 * n_i * sizeof(float) * 2);
   if (2 * n_i > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * inca_veci; i += inca_veci) {
     a_vec[i] = 0.0;
@@ -2150,8 +2103,7 @@ void do_test_zge_sum_mv_c_z
   }
   x_vec = (double *) blas_malloc(2 * n_i * sizeof(double) * 2);
   if (2 * n_i > 0 && x_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * incx; i += incx) {
     x_vec[i] = 0.0;
@@ -2161,13 +2113,11 @@ void do_test_zge_sum_mv_c_z
   head_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(m_i * sizeof(double));
   if (m_i > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   test_count = 0;
@@ -2575,8 +2525,7 @@ void do_test_zge_sum_mv_c_c
   /* allocate memory for arrays */
   y = (double *) blas_malloc(4 * m_i * sizeof(double) * 2);
   if (4 * m_i > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * m_i * incy; i += incy) {
     y[i] = 0.0;
@@ -2585,8 +2534,7 @@ void do_test_zge_sum_mv_c_c
 
   a = (float *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(float) * 2);
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a[i] = 0.0;
@@ -2595,8 +2543,7 @@ void do_test_zge_sum_mv_c_c
   a_use =
     (float *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(float) * 2);
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a_use[i] = 0.0;
@@ -2604,8 +2551,7 @@ void do_test_zge_sum_mv_c_c
   }
   B = (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float) * 2);
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B[i] = 0.0;
@@ -2614,8 +2560,7 @@ void do_test_zge_sum_mv_c_c
   B_use =
     (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float) * 2);
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B_use[i] = 0.0;
@@ -2623,8 +2568,7 @@ void do_test_zge_sum_mv_c_c
   }
   x = (float *) blas_malloc(4 * n_i * sizeof(float) * 2);
   if (4 * n_i > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * n_i * incx; i += incx) {
     x[i] = 0.0;
@@ -2635,8 +2579,7 @@ void do_test_zge_sum_mv_c_c
   inca_veci *= 2;
   a_vec = (float *) blas_malloc(2 * n_i * sizeof(float) * 2);
   if (2 * n_i > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * inca_veci; i += inca_veci) {
     a_vec[i] = 0.0;
@@ -2644,8 +2587,7 @@ void do_test_zge_sum_mv_c_c
   }
   x_vec = (float *) blas_malloc(2 * n_i * sizeof(float) * 2);
   if (2 * n_i > 0 && x_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * incx; i += incx) {
     x_vec[i] = 0.0;
@@ -2655,13 +2597,11 @@ void do_test_zge_sum_mv_c_c
   head_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(m_i * sizeof(double));
   if (m_i > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   test_count = 0;
@@ -3069,8 +3009,7 @@ void do_test_cge_sum_mv_s_c
   /* allocate memory for arrays */
   y = (float *) blas_malloc(4 * m_i * sizeof(float) * 2);
   if (4 * m_i > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * m_i * incy; i += incy) {
     y[i] = 0.0;
@@ -3079,40 +3018,35 @@ void do_test_cge_sum_mv_s_c
 
   a = (float *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(float));
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a[i] = 0.0;
   }
   a_use = (float *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(float));
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a_use[i] = 0.0;
   }
   B = (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float));
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B[i] = 0.0;
   }
   B_use = (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float));
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B_use[i] = 0.0;
   }
   x = (float *) blas_malloc(4 * n_i * sizeof(float) * 2);
   if (4 * n_i > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * n_i * incx; i += incx) {
     x[i] = 0.0;
@@ -3123,16 +3057,14 @@ void do_test_cge_sum_mv_s_c
 
   a_vec = (float *) blas_malloc(2 * n_i * sizeof(float));
   if (2 * n_i > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * inca_veci; i += inca_veci) {
     a_vec[i] = 0.0;
   }
   x_vec = (float *) blas_malloc(2 * n_i * sizeof(float) * 2);
   if (2 * n_i > 0 && x_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * incx; i += incx) {
     x_vec[i] = 0.0;
@@ -3142,13 +3074,11 @@ void do_test_cge_sum_mv_s_c
   head_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(m_i * sizeof(double));
   if (m_i > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   test_count = 0;
@@ -3556,8 +3486,7 @@ void do_test_cge_sum_mv_c_s
   /* allocate memory for arrays */
   y = (float *) blas_malloc(4 * m_i * sizeof(float) * 2);
   if (4 * m_i > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * m_i * incy; i += incy) {
     y[i] = 0.0;
@@ -3566,8 +3495,7 @@ void do_test_cge_sum_mv_c_s
 
   a = (float *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(float) * 2);
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a[i] = 0.0;
@@ -3576,8 +3504,7 @@ void do_test_cge_sum_mv_c_s
   a_use =
     (float *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(float) * 2);
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a_use[i] = 0.0;
@@ -3585,8 +3512,7 @@ void do_test_cge_sum_mv_c_s
   }
   B = (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float) * 2);
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B[i] = 0.0;
@@ -3595,8 +3521,7 @@ void do_test_cge_sum_mv_c_s
   B_use =
     (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float) * 2);
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B_use[i] = 0.0;
@@ -3604,8 +3529,7 @@ void do_test_cge_sum_mv_c_s
   }
   x = (float *) blas_malloc(4 * n_i * sizeof(float));
   if (4 * n_i > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * n_i * incx; i += incx) {
     x[i] = 0.0;
@@ -3615,8 +3539,7 @@ void do_test_cge_sum_mv_c_s
   inca_veci *= 2;
   a_vec = (float *) blas_malloc(2 * n_i * sizeof(float) * 2);
   if (2 * n_i > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * inca_veci; i += inca_veci) {
     a_vec[i] = 0.0;
@@ -3624,8 +3547,7 @@ void do_test_cge_sum_mv_c_s
   }
   x_vec = (float *) blas_malloc(2 * n_i * sizeof(float));
   if (2 * n_i > 0 && x_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * incx; i += incx) {
     x_vec[i] = 0.0;
@@ -3634,13 +3556,11 @@ void do_test_cge_sum_mv_c_s
   head_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(m_i * sizeof(double));
   if (m_i > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   test_count = 0;
@@ -4048,8 +3968,7 @@ void do_test_cge_sum_mv_s_s
   /* allocate memory for arrays */
   y = (float *) blas_malloc(4 * m_i * sizeof(float) * 2);
   if (4 * m_i > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * m_i * incy; i += incy) {
     y[i] = 0.0;
@@ -4058,40 +3977,35 @@ void do_test_cge_sum_mv_s_s
 
   a = (float *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(float));
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a[i] = 0.0;
   }
   a_use = (float *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(float));
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a_use[i] = 0.0;
   }
   B = (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float));
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B[i] = 0.0;
   }
   B_use = (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float));
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B_use[i] = 0.0;
   }
   x = (float *) blas_malloc(4 * n_i * sizeof(float));
   if (4 * n_i > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * n_i * incx; i += incx) {
     x[i] = 0.0;
@@ -4101,16 +4015,14 @@ void do_test_cge_sum_mv_s_s
 
   a_vec = (float *) blas_malloc(2 * n_i * sizeof(float));
   if (2 * n_i > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * inca_veci; i += inca_veci) {
     a_vec[i] = 0.0;
   }
   x_vec = (float *) blas_malloc(2 * n_i * sizeof(float));
   if (2 * n_i > 0 && x_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * incx; i += incx) {
     x_vec[i] = 0.0;
@@ -4119,13 +4031,11 @@ void do_test_cge_sum_mv_s_s
   head_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(m_i * sizeof(double));
   if (m_i > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   test_count = 0;
@@ -4533,8 +4443,7 @@ void do_test_zge_sum_mv_d_z
   /* allocate memory for arrays */
   y = (double *) blas_malloc(4 * m_i * sizeof(double) * 2);
   if (4 * m_i > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * m_i * incy; i += incy) {
     y[i] = 0.0;
@@ -4543,40 +4452,35 @@ void do_test_zge_sum_mv_d_z
 
   a = (double *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(double));
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a[i] = 0.0;
   }
   a_use = (double *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(double));
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a_use[i] = 0.0;
   }
   B = (double *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(double));
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B[i] = 0.0;
   }
   B_use = (double *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(double));
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B_use[i] = 0.0;
   }
   x = (double *) blas_malloc(4 * n_i * sizeof(double) * 2);
   if (4 * n_i > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * n_i * incx; i += incx) {
     x[i] = 0.0;
@@ -4587,16 +4491,14 @@ void do_test_zge_sum_mv_d_z
 
   a_vec = (double *) blas_malloc(2 * n_i * sizeof(double));
   if (2 * n_i > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * inca_veci; i += inca_veci) {
     a_vec[i] = 0.0;
   }
   x_vec = (double *) blas_malloc(2 * n_i * sizeof(double) * 2);
   if (2 * n_i > 0 && x_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * incx; i += incx) {
     x_vec[i] = 0.0;
@@ -4606,13 +4508,11 @@ void do_test_zge_sum_mv_d_z
   head_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(m_i * sizeof(double));
   if (m_i > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   test_count = 0;
@@ -5020,8 +4920,7 @@ void do_test_zge_sum_mv_z_d
   /* allocate memory for arrays */
   y = (double *) blas_malloc(4 * m_i * sizeof(double) * 2);
   if (4 * m_i > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * m_i * incy; i += incy) {
     y[i] = 0.0;
@@ -5030,8 +4929,7 @@ void do_test_zge_sum_mv_z_d
 
   a = (double *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(double) * 2);
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a[i] = 0.0;
@@ -5040,8 +4938,7 @@ void do_test_zge_sum_mv_z_d
   a_use =
     (double *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(double) * 2);
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a_use[i] = 0.0;
@@ -5049,8 +4946,7 @@ void do_test_zge_sum_mv_z_d
   }
   B = (double *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(double) * 2);
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B[i] = 0.0;
@@ -5059,8 +4955,7 @@ void do_test_zge_sum_mv_z_d
   B_use =
     (double *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(double) * 2);
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B_use[i] = 0.0;
@@ -5068,8 +4963,7 @@ void do_test_zge_sum_mv_z_d
   }
   x = (double *) blas_malloc(4 * n_i * sizeof(double));
   if (4 * n_i > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * n_i * incx; i += incx) {
     x[i] = 0.0;
@@ -5079,8 +4973,7 @@ void do_test_zge_sum_mv_z_d
   inca_veci *= 2;
   a_vec = (double *) blas_malloc(2 * n_i * sizeof(double) * 2);
   if (2 * n_i > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * inca_veci; i += inca_veci) {
     a_vec[i] = 0.0;
@@ -5088,8 +4981,7 @@ void do_test_zge_sum_mv_z_d
   }
   x_vec = (double *) blas_malloc(2 * n_i * sizeof(double));
   if (2 * n_i > 0 && x_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * incx; i += incx) {
     x_vec[i] = 0.0;
@@ -5098,13 +4990,11 @@ void do_test_zge_sum_mv_z_d
   head_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(m_i * sizeof(double));
   if (m_i > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   test_count = 0;
@@ -5512,8 +5402,7 @@ void do_test_zge_sum_mv_d_d
   /* allocate memory for arrays */
   y = (double *) blas_malloc(4 * m_i * sizeof(double) * 2);
   if (4 * m_i > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * m_i * incy; i += incy) {
     y[i] = 0.0;
@@ -5522,40 +5411,35 @@ void do_test_zge_sum_mv_d_d
 
   a = (double *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(double));
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a[i] = 0.0;
   }
   a_use = (double *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(double));
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a_use[i] = 0.0;
   }
   B = (double *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(double));
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B[i] = 0.0;
   }
   B_use = (double *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(double));
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B_use[i] = 0.0;
   }
   x = (double *) blas_malloc(4 * n_i * sizeof(double));
   if (4 * n_i > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * n_i * incx; i += incx) {
     x[i] = 0.0;
@@ -5565,16 +5449,14 @@ void do_test_zge_sum_mv_d_d
 
   a_vec = (double *) blas_malloc(2 * n_i * sizeof(double));
   if (2 * n_i > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * inca_veci; i += inca_veci) {
     a_vec[i] = 0.0;
   }
   x_vec = (double *) blas_malloc(2 * n_i * sizeof(double));
   if (2 * n_i > 0 && x_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * incx; i += incx) {
     x_vec[i] = 0.0;
@@ -5583,13 +5465,11 @@ void do_test_zge_sum_mv_d_d
   head_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(m_i * sizeof(double));
   if (m_i > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   test_count = 0;
@@ -5998,8 +5878,7 @@ void do_test_sge_sum_mv_x
   /* allocate memory for arrays */
   y = (float *) blas_malloc(4 * m_i * sizeof(float));
   if (4 * m_i > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * m_i * incy; i += incy) {
     y[i] = 0.0;
@@ -6007,40 +5886,35 @@ void do_test_sge_sum_mv_x
 
   a = (float *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(float));
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a[i] = 0.0;
   }
   a_use = (float *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(float));
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a_use[i] = 0.0;
   }
   B = (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float));
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B[i] = 0.0;
   }
   B_use = (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float));
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B_use[i] = 0.0;
   }
   x = (float *) blas_malloc(4 * n_i * sizeof(float));
   if (4 * n_i > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * n_i * incx; i += incx) {
     x[i] = 0.0;
@@ -6050,16 +5924,14 @@ void do_test_sge_sum_mv_x
 
   a_vec = (float *) blas_malloc(2 * n_i * sizeof(float));
   if (2 * n_i > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * inca_veci; i += inca_veci) {
     a_vec[i] = 0.0;
   }
   x_vec = (float *) blas_malloc(2 * n_i * sizeof(float));
   if (2 * n_i > 0 && x_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * incx; i += incx) {
     x_vec[i] = 0.0;
@@ -6068,13 +5940,11 @@ void do_test_sge_sum_mv_x
   head_r_true = (double *) blas_malloc(m_i * sizeof(double));
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double));
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(m_i * sizeof(double));
   if (m_i > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   test_count = 0;
@@ -6493,8 +6363,7 @@ void do_test_dge_sum_mv_x
   /* allocate memory for arrays */
   y = (double *) blas_malloc(4 * m_i * sizeof(double));
   if (4 * m_i > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * m_i * incy; i += incy) {
     y[i] = 0.0;
@@ -6502,40 +6371,35 @@ void do_test_dge_sum_mv_x
 
   a = (double *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(double));
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a[i] = 0.0;
   }
   a_use = (double *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(double));
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a_use[i] = 0.0;
   }
   B = (double *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(double));
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B[i] = 0.0;
   }
   B_use = (double *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(double));
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B_use[i] = 0.0;
   }
   x = (double *) blas_malloc(4 * n_i * sizeof(double));
   if (4 * n_i > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * n_i * incx; i += incx) {
     x[i] = 0.0;
@@ -6545,16 +6409,14 @@ void do_test_dge_sum_mv_x
 
   a_vec = (double *) blas_malloc(2 * n_i * sizeof(double));
   if (2 * n_i > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * inca_veci; i += inca_veci) {
     a_vec[i] = 0.0;
   }
   x_vec = (double *) blas_malloc(2 * n_i * sizeof(double));
   if (2 * n_i > 0 && x_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * incx; i += incx) {
     x_vec[i] = 0.0;
@@ -6563,13 +6425,11 @@ void do_test_dge_sum_mv_x
   head_r_true = (double *) blas_malloc(m_i * sizeof(double));
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double));
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(m_i * sizeof(double));
   if (m_i > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   test_count = 0;
@@ -6988,8 +6848,7 @@ void do_test_dge_sum_mv_s_d_x
   /* allocate memory for arrays */
   y = (double *) blas_malloc(4 * m_i * sizeof(double));
   if (4 * m_i > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * m_i * incy; i += incy) {
     y[i] = 0.0;
@@ -6997,40 +6856,35 @@ void do_test_dge_sum_mv_s_d_x
 
   a = (float *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(float));
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a[i] = 0.0;
   }
   a_use = (float *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(float));
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a_use[i] = 0.0;
   }
   B = (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float));
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B[i] = 0.0;
   }
   B_use = (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float));
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B_use[i] = 0.0;
   }
   x = (double *) blas_malloc(4 * n_i * sizeof(double));
   if (4 * n_i > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * n_i * incx; i += incx) {
     x[i] = 0.0;
@@ -7040,16 +6894,14 @@ void do_test_dge_sum_mv_s_d_x
 
   a_vec = (float *) blas_malloc(2 * n_i * sizeof(float));
   if (2 * n_i > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * inca_veci; i += inca_veci) {
     a_vec[i] = 0.0;
   }
   x_vec = (double *) blas_malloc(2 * n_i * sizeof(double));
   if (2 * n_i > 0 && x_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * incx; i += incx) {
     x_vec[i] = 0.0;
@@ -7058,13 +6910,11 @@ void do_test_dge_sum_mv_s_d_x
   head_r_true = (double *) blas_malloc(m_i * sizeof(double));
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double));
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(m_i * sizeof(double));
   if (m_i > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   test_count = 0;
@@ -7486,8 +7336,7 @@ void do_test_dge_sum_mv_d_s_x
   /* allocate memory for arrays */
   y = (double *) blas_malloc(4 * m_i * sizeof(double));
   if (4 * m_i > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * m_i * incy; i += incy) {
     y[i] = 0.0;
@@ -7495,40 +7344,35 @@ void do_test_dge_sum_mv_d_s_x
 
   a = (double *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(double));
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a[i] = 0.0;
   }
   a_use = (double *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(double));
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a_use[i] = 0.0;
   }
   B = (double *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(double));
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B[i] = 0.0;
   }
   B_use = (double *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(double));
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B_use[i] = 0.0;
   }
   x = (float *) blas_malloc(4 * n_i * sizeof(float));
   if (4 * n_i > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * n_i * incx; i += incx) {
     x[i] = 0.0;
@@ -7538,16 +7382,14 @@ void do_test_dge_sum_mv_d_s_x
 
   a_vec = (double *) blas_malloc(2 * n_i * sizeof(double));
   if (2 * n_i > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * inca_veci; i += inca_veci) {
     a_vec[i] = 0.0;
   }
   x_vec = (float *) blas_malloc(2 * n_i * sizeof(float));
   if (2 * n_i > 0 && x_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * incx; i += incx) {
     x_vec[i] = 0.0;
@@ -7556,13 +7398,11 @@ void do_test_dge_sum_mv_d_s_x
   head_r_true = (double *) blas_malloc(m_i * sizeof(double));
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double));
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(m_i * sizeof(double));
   if (m_i > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   test_count = 0;
@@ -7984,8 +7824,7 @@ void do_test_dge_sum_mv_s_s_x
   /* allocate memory for arrays */
   y = (double *) blas_malloc(4 * m_i * sizeof(double));
   if (4 * m_i > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * m_i * incy; i += incy) {
     y[i] = 0.0;
@@ -7993,40 +7832,35 @@ void do_test_dge_sum_mv_s_s_x
 
   a = (float *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(float));
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a[i] = 0.0;
   }
   a_use = (float *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(float));
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a_use[i] = 0.0;
   }
   B = (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float));
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B[i] = 0.0;
   }
   B_use = (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float));
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B_use[i] = 0.0;
   }
   x = (float *) blas_malloc(4 * n_i * sizeof(float));
   if (4 * n_i > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * n_i * incx; i += incx) {
     x[i] = 0.0;
@@ -8036,16 +7870,14 @@ void do_test_dge_sum_mv_s_s_x
 
   a_vec = (float *) blas_malloc(2 * n_i * sizeof(float));
   if (2 * n_i > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * inca_veci; i += inca_veci) {
     a_vec[i] = 0.0;
   }
   x_vec = (float *) blas_malloc(2 * n_i * sizeof(float));
   if (2 * n_i > 0 && x_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * incx; i += incx) {
     x_vec[i] = 0.0;
@@ -8054,13 +7886,11 @@ void do_test_dge_sum_mv_s_s_x
   head_r_true = (double *) blas_malloc(m_i * sizeof(double));
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double));
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(m_i * sizeof(double));
   if (m_i > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   test_count = 0;
@@ -8484,8 +8314,7 @@ void do_test_cge_sum_mv_x
   /* allocate memory for arrays */
   y = (float *) blas_malloc(4 * m_i * sizeof(float) * 2);
   if (4 * m_i > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * m_i * incy; i += incy) {
     y[i] = 0.0;
@@ -8494,8 +8323,7 @@ void do_test_cge_sum_mv_x
 
   a = (float *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(float) * 2);
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a[i] = 0.0;
@@ -8504,8 +8332,7 @@ void do_test_cge_sum_mv_x
   a_use =
     (float *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(float) * 2);
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a_use[i] = 0.0;
@@ -8513,8 +8340,7 @@ void do_test_cge_sum_mv_x
   }
   B = (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float) * 2);
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B[i] = 0.0;
@@ -8523,8 +8349,7 @@ void do_test_cge_sum_mv_x
   B_use =
     (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float) * 2);
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B_use[i] = 0.0;
@@ -8532,8 +8357,7 @@ void do_test_cge_sum_mv_x
   }
   x = (float *) blas_malloc(4 * n_i * sizeof(float) * 2);
   if (4 * n_i > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * n_i * incx; i += incx) {
     x[i] = 0.0;
@@ -8544,8 +8368,7 @@ void do_test_cge_sum_mv_x
   inca_veci *= 2;
   a_vec = (float *) blas_malloc(2 * n_i * sizeof(float) * 2);
   if (2 * n_i > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * inca_veci; i += inca_veci) {
     a_vec[i] = 0.0;
@@ -8553,8 +8376,7 @@ void do_test_cge_sum_mv_x
   }
   x_vec = (float *) blas_malloc(2 * n_i * sizeof(float) * 2);
   if (2 * n_i > 0 && x_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * incx; i += incx) {
     x_vec[i] = 0.0;
@@ -8564,13 +8386,11 @@ void do_test_cge_sum_mv_x
   head_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(m_i * sizeof(double));
   if (m_i > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   test_count = 0;
@@ -8998,8 +8818,7 @@ void do_test_zge_sum_mv_x
   /* allocate memory for arrays */
   y = (double *) blas_malloc(4 * m_i * sizeof(double) * 2);
   if (4 * m_i > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * m_i * incy; i += incy) {
     y[i] = 0.0;
@@ -9008,8 +8827,7 @@ void do_test_zge_sum_mv_x
 
   a = (double *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(double) * 2);
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a[i] = 0.0;
@@ -9018,8 +8836,7 @@ void do_test_zge_sum_mv_x
   a_use =
     (double *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(double) * 2);
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a_use[i] = 0.0;
@@ -9027,8 +8844,7 @@ void do_test_zge_sum_mv_x
   }
   B = (double *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(double) * 2);
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B[i] = 0.0;
@@ -9037,8 +8853,7 @@ void do_test_zge_sum_mv_x
   B_use =
     (double *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(double) * 2);
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B_use[i] = 0.0;
@@ -9046,8 +8861,7 @@ void do_test_zge_sum_mv_x
   }
   x = (double *) blas_malloc(4 * n_i * sizeof(double) * 2);
   if (4 * n_i > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * n_i * incx; i += incx) {
     x[i] = 0.0;
@@ -9058,8 +8872,7 @@ void do_test_zge_sum_mv_x
   inca_veci *= 2;
   a_vec = (double *) blas_malloc(2 * n_i * sizeof(double) * 2);
   if (2 * n_i > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * inca_veci; i += inca_veci) {
     a_vec[i] = 0.0;
@@ -9067,8 +8880,7 @@ void do_test_zge_sum_mv_x
   }
   x_vec = (double *) blas_malloc(2 * n_i * sizeof(double) * 2);
   if (2 * n_i > 0 && x_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * incx; i += incx) {
     x_vec[i] = 0.0;
@@ -9078,13 +8890,11 @@ void do_test_zge_sum_mv_x
   head_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(m_i * sizeof(double));
   if (m_i > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   test_count = 0;
@@ -9512,8 +9322,7 @@ void do_test_zge_sum_mv_z_c_x
   /* allocate memory for arrays */
   y = (double *) blas_malloc(4 * m_i * sizeof(double) * 2);
   if (4 * m_i > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * m_i * incy; i += incy) {
     y[i] = 0.0;
@@ -9522,8 +9331,7 @@ void do_test_zge_sum_mv_z_c_x
 
   a = (double *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(double) * 2);
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a[i] = 0.0;
@@ -9532,8 +9340,7 @@ void do_test_zge_sum_mv_z_c_x
   a_use =
     (double *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(double) * 2);
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a_use[i] = 0.0;
@@ -9541,8 +9348,7 @@ void do_test_zge_sum_mv_z_c_x
   }
   B = (double *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(double) * 2);
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B[i] = 0.0;
@@ -9551,8 +9357,7 @@ void do_test_zge_sum_mv_z_c_x
   B_use =
     (double *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(double) * 2);
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B_use[i] = 0.0;
@@ -9560,8 +9365,7 @@ void do_test_zge_sum_mv_z_c_x
   }
   x = (float *) blas_malloc(4 * n_i * sizeof(float) * 2);
   if (4 * n_i > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * n_i * incx; i += incx) {
     x[i] = 0.0;
@@ -9572,8 +9376,7 @@ void do_test_zge_sum_mv_z_c_x
   inca_veci *= 2;
   a_vec = (double *) blas_malloc(2 * n_i * sizeof(double) * 2);
   if (2 * n_i > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * inca_veci; i += inca_veci) {
     a_vec[i] = 0.0;
@@ -9581,8 +9384,7 @@ void do_test_zge_sum_mv_z_c_x
   }
   x_vec = (float *) blas_malloc(2 * n_i * sizeof(float) * 2);
   if (2 * n_i > 0 && x_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * incx; i += incx) {
     x_vec[i] = 0.0;
@@ -9592,13 +9394,11 @@ void do_test_zge_sum_mv_z_c_x
   head_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(m_i * sizeof(double));
   if (m_i > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   test_count = 0;
@@ -10029,8 +9829,7 @@ void do_test_zge_sum_mv_c_z_x
   /* allocate memory for arrays */
   y = (double *) blas_malloc(4 * m_i * sizeof(double) * 2);
   if (4 * m_i > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * m_i * incy; i += incy) {
     y[i] = 0.0;
@@ -10039,8 +9838,7 @@ void do_test_zge_sum_mv_c_z_x
 
   a = (float *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(float) * 2);
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a[i] = 0.0;
@@ -10049,8 +9847,7 @@ void do_test_zge_sum_mv_c_z_x
   a_use =
     (float *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(float) * 2);
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a_use[i] = 0.0;
@@ -10058,8 +9855,7 @@ void do_test_zge_sum_mv_c_z_x
   }
   B = (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float) * 2);
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B[i] = 0.0;
@@ -10068,8 +9864,7 @@ void do_test_zge_sum_mv_c_z_x
   B_use =
     (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float) * 2);
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B_use[i] = 0.0;
@@ -10077,8 +9872,7 @@ void do_test_zge_sum_mv_c_z_x
   }
   x = (double *) blas_malloc(4 * n_i * sizeof(double) * 2);
   if (4 * n_i > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * n_i * incx; i += incx) {
     x[i] = 0.0;
@@ -10089,8 +9883,7 @@ void do_test_zge_sum_mv_c_z_x
   inca_veci *= 2;
   a_vec = (float *) blas_malloc(2 * n_i * sizeof(float) * 2);
   if (2 * n_i > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * inca_veci; i += inca_veci) {
     a_vec[i] = 0.0;
@@ -10098,8 +9891,7 @@ void do_test_zge_sum_mv_c_z_x
   }
   x_vec = (double *) blas_malloc(2 * n_i * sizeof(double) * 2);
   if (2 * n_i > 0 && x_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * incx; i += incx) {
     x_vec[i] = 0.0;
@@ -10109,13 +9901,11 @@ void do_test_zge_sum_mv_c_z_x
   head_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(m_i * sizeof(double));
   if (m_i > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   test_count = 0;
@@ -10546,8 +10336,7 @@ void do_test_zge_sum_mv_c_c_x
   /* allocate memory for arrays */
   y = (double *) blas_malloc(4 * m_i * sizeof(double) * 2);
   if (4 * m_i > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * m_i * incy; i += incy) {
     y[i] = 0.0;
@@ -10556,8 +10345,7 @@ void do_test_zge_sum_mv_c_c_x
 
   a = (float *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(float) * 2);
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a[i] = 0.0;
@@ -10566,8 +10354,7 @@ void do_test_zge_sum_mv_c_c_x
   a_use =
     (float *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(float) * 2);
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a_use[i] = 0.0;
@@ -10575,8 +10362,7 @@ void do_test_zge_sum_mv_c_c_x
   }
   B = (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float) * 2);
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B[i] = 0.0;
@@ -10585,8 +10371,7 @@ void do_test_zge_sum_mv_c_c_x
   B_use =
     (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float) * 2);
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B_use[i] = 0.0;
@@ -10594,8 +10379,7 @@ void do_test_zge_sum_mv_c_c_x
   }
   x = (float *) blas_malloc(4 * n_i * sizeof(float) * 2);
   if (4 * n_i > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * n_i * incx; i += incx) {
     x[i] = 0.0;
@@ -10606,8 +10390,7 @@ void do_test_zge_sum_mv_c_c_x
   inca_veci *= 2;
   a_vec = (float *) blas_malloc(2 * n_i * sizeof(float) * 2);
   if (2 * n_i > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * inca_veci; i += inca_veci) {
     a_vec[i] = 0.0;
@@ -10615,8 +10398,7 @@ void do_test_zge_sum_mv_c_c_x
   }
   x_vec = (float *) blas_malloc(2 * n_i * sizeof(float) * 2);
   if (2 * n_i > 0 && x_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * incx; i += incx) {
     x_vec[i] = 0.0;
@@ -10626,13 +10408,11 @@ void do_test_zge_sum_mv_c_c_x
   head_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(m_i * sizeof(double));
   if (m_i > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   test_count = 0;
@@ -11063,8 +10843,7 @@ void do_test_cge_sum_mv_s_c_x
   /* allocate memory for arrays */
   y = (float *) blas_malloc(4 * m_i * sizeof(float) * 2);
   if (4 * m_i > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * m_i * incy; i += incy) {
     y[i] = 0.0;
@@ -11073,40 +10852,35 @@ void do_test_cge_sum_mv_s_c_x
 
   a = (float *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(float));
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a[i] = 0.0;
   }
   a_use = (float *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(float));
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a_use[i] = 0.0;
   }
   B = (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float));
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B[i] = 0.0;
   }
   B_use = (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float));
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B_use[i] = 0.0;
   }
   x = (float *) blas_malloc(4 * n_i * sizeof(float) * 2);
   if (4 * n_i > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * n_i * incx; i += incx) {
     x[i] = 0.0;
@@ -11117,16 +10891,14 @@ void do_test_cge_sum_mv_s_c_x
 
   a_vec = (float *) blas_malloc(2 * n_i * sizeof(float));
   if (2 * n_i > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * inca_veci; i += inca_veci) {
     a_vec[i] = 0.0;
   }
   x_vec = (float *) blas_malloc(2 * n_i * sizeof(float) * 2);
   if (2 * n_i > 0 && x_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * incx; i += incx) {
     x_vec[i] = 0.0;
@@ -11136,13 +10908,11 @@ void do_test_cge_sum_mv_s_c_x
   head_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(m_i * sizeof(double));
   if (m_i > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   test_count = 0;
@@ -11573,8 +11343,7 @@ void do_test_cge_sum_mv_c_s_x
   /* allocate memory for arrays */
   y = (float *) blas_malloc(4 * m_i * sizeof(float) * 2);
   if (4 * m_i > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * m_i * incy; i += incy) {
     y[i] = 0.0;
@@ -11583,8 +11352,7 @@ void do_test_cge_sum_mv_c_s_x
 
   a = (float *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(float) * 2);
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a[i] = 0.0;
@@ -11593,8 +11361,7 @@ void do_test_cge_sum_mv_c_s_x
   a_use =
     (float *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(float) * 2);
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a_use[i] = 0.0;
@@ -11602,8 +11369,7 @@ void do_test_cge_sum_mv_c_s_x
   }
   B = (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float) * 2);
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B[i] = 0.0;
@@ -11612,8 +11378,7 @@ void do_test_cge_sum_mv_c_s_x
   B_use =
     (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float) * 2);
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B_use[i] = 0.0;
@@ -11621,8 +11386,7 @@ void do_test_cge_sum_mv_c_s_x
   }
   x = (float *) blas_malloc(4 * n_i * sizeof(float));
   if (4 * n_i > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * n_i * incx; i += incx) {
     x[i] = 0.0;
@@ -11632,8 +11396,7 @@ void do_test_cge_sum_mv_c_s_x
   inca_veci *= 2;
   a_vec = (float *) blas_malloc(2 * n_i * sizeof(float) * 2);
   if (2 * n_i > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * inca_veci; i += inca_veci) {
     a_vec[i] = 0.0;
@@ -11641,8 +11404,7 @@ void do_test_cge_sum_mv_c_s_x
   }
   x_vec = (float *) blas_malloc(2 * n_i * sizeof(float));
   if (2 * n_i > 0 && x_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * incx; i += incx) {
     x_vec[i] = 0.0;
@@ -11651,13 +11413,11 @@ void do_test_cge_sum_mv_c_s_x
   head_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(m_i * sizeof(double));
   if (m_i > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   test_count = 0;
@@ -12088,8 +11848,7 @@ void do_test_cge_sum_mv_s_s_x
   /* allocate memory for arrays */
   y = (float *) blas_malloc(4 * m_i * sizeof(float) * 2);
   if (4 * m_i > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * m_i * incy; i += incy) {
     y[i] = 0.0;
@@ -12098,40 +11857,35 @@ void do_test_cge_sum_mv_s_s_x
 
   a = (float *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(float));
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a[i] = 0.0;
   }
   a_use = (float *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(float));
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a_use[i] = 0.0;
   }
   B = (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float));
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B[i] = 0.0;
   }
   B_use = (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float));
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B_use[i] = 0.0;
   }
   x = (float *) blas_malloc(4 * n_i * sizeof(float));
   if (4 * n_i > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * n_i * incx; i += incx) {
     x[i] = 0.0;
@@ -12141,16 +11895,14 @@ void do_test_cge_sum_mv_s_s_x
 
   a_vec = (float *) blas_malloc(2 * n_i * sizeof(float));
   if (2 * n_i > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * inca_veci; i += inca_veci) {
     a_vec[i] = 0.0;
   }
   x_vec = (float *) blas_malloc(2 * n_i * sizeof(float));
   if (2 * n_i > 0 && x_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * incx; i += incx) {
     x_vec[i] = 0.0;
@@ -12159,13 +11911,11 @@ void do_test_cge_sum_mv_s_s_x
   head_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(m_i * sizeof(double));
   if (m_i > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   test_count = 0;
@@ -12596,8 +12346,7 @@ void do_test_zge_sum_mv_d_z_x
   /* allocate memory for arrays */
   y = (double *) blas_malloc(4 * m_i * sizeof(double) * 2);
   if (4 * m_i > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * m_i * incy; i += incy) {
     y[i] = 0.0;
@@ -12606,40 +12355,35 @@ void do_test_zge_sum_mv_d_z_x
 
   a = (double *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(double));
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a[i] = 0.0;
   }
   a_use = (double *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(double));
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a_use[i] = 0.0;
   }
   B = (double *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(double));
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B[i] = 0.0;
   }
   B_use = (double *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(double));
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B_use[i] = 0.0;
   }
   x = (double *) blas_malloc(4 * n_i * sizeof(double) * 2);
   if (4 * n_i > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * n_i * incx; i += incx) {
     x[i] = 0.0;
@@ -12650,16 +12394,14 @@ void do_test_zge_sum_mv_d_z_x
 
   a_vec = (double *) blas_malloc(2 * n_i * sizeof(double));
   if (2 * n_i > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * inca_veci; i += inca_veci) {
     a_vec[i] = 0.0;
   }
   x_vec = (double *) blas_malloc(2 * n_i * sizeof(double) * 2);
   if (2 * n_i > 0 && x_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * incx; i += incx) {
     x_vec[i] = 0.0;
@@ -12669,13 +12411,11 @@ void do_test_zge_sum_mv_d_z_x
   head_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(m_i * sizeof(double));
   if (m_i > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   test_count = 0;
@@ -13106,8 +12846,7 @@ void do_test_zge_sum_mv_z_d_x
   /* allocate memory for arrays */
   y = (double *) blas_malloc(4 * m_i * sizeof(double) * 2);
   if (4 * m_i > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * m_i * incy; i += incy) {
     y[i] = 0.0;
@@ -13116,8 +12855,7 @@ void do_test_zge_sum_mv_z_d_x
 
   a = (double *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(double) * 2);
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a[i] = 0.0;
@@ -13126,8 +12864,7 @@ void do_test_zge_sum_mv_z_d_x
   a_use =
     (double *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(double) * 2);
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a_use[i] = 0.0;
@@ -13135,8 +12872,7 @@ void do_test_zge_sum_mv_z_d_x
   }
   B = (double *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(double) * 2);
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B[i] = 0.0;
@@ -13145,8 +12881,7 @@ void do_test_zge_sum_mv_z_d_x
   B_use =
     (double *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(double) * 2);
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B_use[i] = 0.0;
@@ -13154,8 +12889,7 @@ void do_test_zge_sum_mv_z_d_x
   }
   x = (double *) blas_malloc(4 * n_i * sizeof(double));
   if (4 * n_i > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * n_i * incx; i += incx) {
     x[i] = 0.0;
@@ -13165,8 +12899,7 @@ void do_test_zge_sum_mv_z_d_x
   inca_veci *= 2;
   a_vec = (double *) blas_malloc(2 * n_i * sizeof(double) * 2);
   if (2 * n_i > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * inca_veci; i += inca_veci) {
     a_vec[i] = 0.0;
@@ -13174,8 +12907,7 @@ void do_test_zge_sum_mv_z_d_x
   }
   x_vec = (double *) blas_malloc(2 * n_i * sizeof(double));
   if (2 * n_i > 0 && x_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * incx; i += incx) {
     x_vec[i] = 0.0;
@@ -13184,13 +12916,11 @@ void do_test_zge_sum_mv_z_d_x
   head_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(m_i * sizeof(double));
   if (m_i > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   test_count = 0;
@@ -13621,8 +13351,7 @@ void do_test_zge_sum_mv_d_d_x
   /* allocate memory for arrays */
   y = (double *) blas_malloc(4 * m_i * sizeof(double) * 2);
   if (4 * m_i > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * m_i * incy; i += incy) {
     y[i] = 0.0;
@@ -13631,40 +13360,35 @@ void do_test_zge_sum_mv_d_d_x
 
   a = (double *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(double));
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a[i] = 0.0;
   }
   a_use = (double *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(double));
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
     a_use[i] = 0.0;
   }
   B = (double *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(double));
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B[i] = 0.0;
   }
   B_use = (double *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(double));
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 2 * m_i * n_i; i += 1) {
     B_use[i] = 0.0;
   }
   x = (double *) blas_malloc(4 * n_i * sizeof(double));
   if (4 * n_i > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < 3 * n_i * incx; i += incx) {
     x[i] = 0.0;
@@ -13674,16 +13398,14 @@ void do_test_zge_sum_mv_d_d_x
 
   a_vec = (double *) blas_malloc(2 * n_i * sizeof(double));
   if (2 * n_i > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * inca_veci; i += inca_veci) {
     a_vec[i] = 0.0;
   }
   x_vec = (double *) blas_malloc(2 * n_i * sizeof(double));
   if (2 * n_i > 0 && x_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < n_i * incx; i += incx) {
     x_vec[i] = 0.0;
@@ -13692,13 +13414,11 @@ void do_test_zge_sum_mv_d_d_x
   head_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(m_i * sizeof(double));
   if (m_i > 0 && ratios == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   test_count = 0;

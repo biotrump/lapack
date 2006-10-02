@@ -58,16 +58,14 @@ void BLAS_sgemm_testgen(int norm, enum blas_order_type order,
 
   a_vec = (float *) blas_malloc(k * sizeof(float));
   if (k > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < k * inca; i += inca) {
     a_vec[i] = 0.0;
   }
   b_vec = (float *) blas_malloc(k * sizeof(float));
   if (k > 0 && b_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < k * incb; i += incb) {
     b_vec[i] = 0.0;
@@ -257,16 +255,14 @@ void BLAS_dgemm_testgen(int norm, enum blas_order_type order,
 
   a_vec = (double *) blas_malloc(k * sizeof(double));
   if (k > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < k * inca; i += inca) {
     a_vec[i] = 0.0;
   }
   b_vec = (double *) blas_malloc(k * sizeof(double));
   if (k > 0 && b_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < k * incb; i += incb) {
     b_vec[i] = 0.0;
@@ -456,16 +452,14 @@ void BLAS_dgemm_d_s_testgen(int norm, enum blas_order_type order,
 
   a_vec = (double *) blas_malloc(k * sizeof(double));
   if (k > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < k * inca; i += inca) {
     a_vec[i] = 0.0;
   }
   b_vec = (float *) blas_malloc(k * sizeof(float));
   if (k > 0 && b_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < k * incb; i += incb) {
     b_vec[i] = 0.0;
@@ -655,16 +649,14 @@ void BLAS_dgemm_s_d_testgen(int norm, enum blas_order_type order,
 
   a_vec = (float *) blas_malloc(k * sizeof(float));
   if (k > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < k * inca; i += inca) {
     a_vec[i] = 0.0;
   }
   b_vec = (double *) blas_malloc(k * sizeof(double));
   if (k > 0 && b_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < k * incb; i += incb) {
     b_vec[i] = 0.0;
@@ -854,16 +846,14 @@ void BLAS_dgemm_s_s_testgen(int norm, enum blas_order_type order,
 
   a_vec = (float *) blas_malloc(k * sizeof(float));
   if (k > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < k * inca; i += inca) {
     a_vec[i] = 0.0;
   }
   b_vec = (float *) blas_malloc(k * sizeof(float));
   if (k > 0 && b_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < k * incb; i += incb) {
     b_vec[i] = 0.0;
@@ -1054,8 +1044,7 @@ void BLAS_cgemm_testgen(int norm, enum blas_order_type order,
 
   a_vec = (float *) blas_malloc(k * sizeof(float) * 2);
   if (k > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < k * inca; i += inca) {
     a_vec[i] = 0.0;
@@ -1063,8 +1052,7 @@ void BLAS_cgemm_testgen(int norm, enum blas_order_type order,
   }
   b_vec = (float *) blas_malloc(k * sizeof(float) * 2);
   if (k > 0 && b_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < k * incb; i += incb) {
     b_vec[i] = 0.0;
@@ -1278,8 +1266,7 @@ void BLAS_zgemm_testgen(int norm, enum blas_order_type order,
 
   a_vec = (double *) blas_malloc(k * sizeof(double) * 2);
   if (k > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < k * inca; i += inca) {
     a_vec[i] = 0.0;
@@ -1287,8 +1274,7 @@ void BLAS_zgemm_testgen(int norm, enum blas_order_type order,
   }
   b_vec = (double *) blas_malloc(k * sizeof(double) * 2);
   if (k > 0 && b_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < k * incb; i += incb) {
     b_vec[i] = 0.0;
@@ -1502,8 +1488,7 @@ void BLAS_zgemm_z_c_testgen(int norm, enum blas_order_type order,
 
   a_vec = (double *) blas_malloc(k * sizeof(double) * 2);
   if (k > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < k * inca; i += inca) {
     a_vec[i] = 0.0;
@@ -1511,8 +1496,7 @@ void BLAS_zgemm_z_c_testgen(int norm, enum blas_order_type order,
   }
   b_vec = (float *) blas_malloc(k * sizeof(float) * 2);
   if (k > 0 && b_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < k * incb; i += incb) {
     b_vec[i] = 0.0;
@@ -1726,8 +1710,7 @@ void BLAS_zgemm_c_z_testgen(int norm, enum blas_order_type order,
 
   a_vec = (float *) blas_malloc(k * sizeof(float) * 2);
   if (k > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < k * inca; i += inca) {
     a_vec[i] = 0.0;
@@ -1735,8 +1718,7 @@ void BLAS_zgemm_c_z_testgen(int norm, enum blas_order_type order,
   }
   b_vec = (double *) blas_malloc(k * sizeof(double) * 2);
   if (k > 0 && b_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < k * incb; i += incb) {
     b_vec[i] = 0.0;
@@ -1950,8 +1932,7 @@ void BLAS_zgemm_c_c_testgen(int norm, enum blas_order_type order,
 
   a_vec = (float *) blas_malloc(k * sizeof(float) * 2);
   if (k > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < k * inca; i += inca) {
     a_vec[i] = 0.0;
@@ -1959,8 +1940,7 @@ void BLAS_zgemm_c_c_testgen(int norm, enum blas_order_type order,
   }
   b_vec = (float *) blas_malloc(k * sizeof(float) * 2);
   if (k > 0 && b_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < k * incb; i += incb) {
     b_vec[i] = 0.0;
@@ -2174,8 +2154,7 @@ void BLAS_cgemm_c_s_testgen(int norm, enum blas_order_type order,
 
   a_vec = (float *) blas_malloc(k * sizeof(float) * 2);
   if (k > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < k * inca; i += inca) {
     a_vec[i] = 0.0;
@@ -2183,8 +2162,7 @@ void BLAS_cgemm_c_s_testgen(int norm, enum blas_order_type order,
   }
   b_vec = (float *) blas_malloc(k * sizeof(float));
   if (k > 0 && b_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < k * incb; i += incb) {
     b_vec[i] = 0.0;
@@ -2267,8 +2245,7 @@ void BLAS_cgemm_c_s_testgen(int norm, enum blas_order_type order,
 
     bb_vec = (float *) blas_malloc(k * sizeof(float) * 2);
     if (k > 0 && bb_vec == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
 
 
@@ -2406,16 +2383,14 @@ void BLAS_cgemm_s_c_testgen(int norm, enum blas_order_type order,
 
   a_vec = (float *) blas_malloc(k * sizeof(float));
   if (k > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < k * inca; i += inca) {
     a_vec[i] = 0.0;
   }
   b_vec = (float *) blas_malloc(k * sizeof(float) * 2);
   if (k > 0 && b_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < k * incb; i += incb) {
     b_vec[i] = 0.0;
@@ -2498,8 +2473,7 @@ void BLAS_cgemm_s_c_testgen(int norm, enum blas_order_type order,
 
     aa_vec = (float *) blas_malloc(k * sizeof(float) * 2);
     if (k > 0 && aa_vec == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
 
 
@@ -2638,16 +2612,14 @@ void BLAS_cgemm_s_s_testgen(int norm, enum blas_order_type order,
 
   a_vec = (float *) blas_malloc(k * sizeof(float));
   if (k > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < k * inca; i += inca) {
     a_vec[i] = 0.0;
   }
   b_vec = (float *) blas_malloc(k * sizeof(float));
   if (k > 0 && b_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < k * incb; i += incb) {
     b_vec[i] = 0.0;
@@ -2729,13 +2701,11 @@ void BLAS_cgemm_s_s_testgen(int norm, enum blas_order_type order,
 
     aa_vec = (float *) blas_malloc(k * sizeof(float) * 2);
     if (k > 0 && aa_vec == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
     bb_vec = (float *) blas_malloc(k * sizeof(float) * 2);
     if (k > 0 && bb_vec == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
 
 
@@ -2877,8 +2847,7 @@ void BLAS_zgemm_z_d_testgen(int norm, enum blas_order_type order,
 
   a_vec = (double *) blas_malloc(k * sizeof(double) * 2);
   if (k > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < k * inca; i += inca) {
     a_vec[i] = 0.0;
@@ -2886,8 +2855,7 @@ void BLAS_zgemm_z_d_testgen(int norm, enum blas_order_type order,
   }
   b_vec = (double *) blas_malloc(k * sizeof(double));
   if (k > 0 && b_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < k * incb; i += incb) {
     b_vec[i] = 0.0;
@@ -2970,8 +2938,7 @@ void BLAS_zgemm_z_d_testgen(int norm, enum blas_order_type order,
 
     bb_vec = (double *) blas_malloc(k * sizeof(double) * 2);
     if (k > 0 && bb_vec == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
 
 
@@ -3109,16 +3076,14 @@ void BLAS_zgemm_d_z_testgen(int norm, enum blas_order_type order,
 
   a_vec = (double *) blas_malloc(k * sizeof(double));
   if (k > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < k * inca; i += inca) {
     a_vec[i] = 0.0;
   }
   b_vec = (double *) blas_malloc(k * sizeof(double) * 2);
   if (k > 0 && b_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < k * incb; i += incb) {
     b_vec[i] = 0.0;
@@ -3201,8 +3166,7 @@ void BLAS_zgemm_d_z_testgen(int norm, enum blas_order_type order,
 
     aa_vec = (double *) blas_malloc(k * sizeof(double) * 2);
     if (k > 0 && aa_vec == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
 
 
@@ -3341,16 +3305,14 @@ void BLAS_zgemm_d_d_testgen(int norm, enum blas_order_type order,
 
   a_vec = (double *) blas_malloc(k * sizeof(double));
   if (k > 0 && a_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < k * inca; i += inca) {
     a_vec[i] = 0.0;
   }
   b_vec = (double *) blas_malloc(k * sizeof(double));
   if (k > 0 && b_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < k * incb; i += incb) {
     b_vec[i] = 0.0;
@@ -3432,13 +3394,11 @@ void BLAS_zgemm_d_d_testgen(int norm, enum blas_order_type order,
 
     aa_vec = (double *) blas_malloc(k * sizeof(double) * 2);
     if (k > 0 && aa_vec == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
     bb_vec = (double *) blas_malloc(k * sizeof(double) * 2);
     if (k > 0 && bb_vec == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
 
 

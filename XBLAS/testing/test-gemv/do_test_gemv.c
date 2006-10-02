@@ -181,40 +181,35 @@ double do_test_dgemv_s_s(int m, int n,
   /* get space for calculation */
   x = (float *) blas_malloc(max_mn * 2 * incx_gen * sizeof(float));
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
     x[i] = 0.0;
   }
   y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double));
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
     y[i] = 0.0;
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
     x_gen[i] = 0.0;
   }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && y_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
     y_gen[i] = 0.0;
   }
   temp = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incA; i += incA) {
     temp[i] = 0.0;
@@ -222,8 +217,7 @@ double do_test_dgemv_s_s(int m, int n,
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double));
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) malloc(max_mn * sizeof(double));
   if (ratios == NULL) {
@@ -233,8 +227,7 @@ double do_test_dgemv_s_s(int m, int n,
 
   A = (float *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(float));
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && A == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   /* The debug iteration:
@@ -818,40 +811,35 @@ double do_test_dgemv_s_d(int m, int n,
   /* get space for calculation */
   x = (double *) blas_malloc(max_mn * 2 * incx_gen * sizeof(double));
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
     x[i] = 0.0;
   }
   y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double));
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
     y[i] = 0.0;
   }
   x_gen = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
     x_gen[i] = 0.0;
   }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && y_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
     y_gen[i] = 0.0;
   }
   temp = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incA; i += incA) {
     temp[i] = 0.0;
@@ -859,8 +847,7 @@ double do_test_dgemv_s_d(int m, int n,
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double));
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) malloc(max_mn * sizeof(double));
   if (ratios == NULL) {
@@ -870,8 +857,7 @@ double do_test_dgemv_s_d(int m, int n,
 
   A = (float *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(float));
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && A == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   /* The debug iteration:
@@ -1455,40 +1441,35 @@ double do_test_dgemv_d_s(int m, int n,
   /* get space for calculation */
   x = (float *) blas_malloc(max_mn * 2 * incx_gen * sizeof(float));
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
     x[i] = 0.0;
   }
   y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double));
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
     y[i] = 0.0;
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
     x_gen[i] = 0.0;
   }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && y_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
     y_gen[i] = 0.0;
   }
   temp = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incA; i += incA) {
     temp[i] = 0.0;
@@ -1496,8 +1477,7 @@ double do_test_dgemv_d_s(int m, int n,
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double));
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) malloc(max_mn * sizeof(double));
   if (ratios == NULL) {
@@ -1508,8 +1488,7 @@ double do_test_dgemv_d_s(int m, int n,
   A =
     (double *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(double));
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && A == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   /* The debug iteration:
@@ -2094,8 +2073,7 @@ double do_test_zgemv_c_c(int m, int n,
   /* get space for calculation */
   x = (float *) blas_malloc(max_mn * 2 * incx_gen * sizeof(float) * 2);
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
     x[i] = 0.0;
@@ -2103,8 +2081,7 @@ double do_test_zgemv_c_c(int m, int n,
   }
   y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double) * 2);
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
     y[i] = 0.0;
@@ -2112,8 +2089,7 @@ double do_test_zgemv_c_c(int m, int n,
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
     x_gen[i] = 0.0;
@@ -2121,8 +2097,7 @@ double do_test_zgemv_c_c(int m, int n,
   }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && y_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
     y_gen[i] = 0.0;
@@ -2130,8 +2105,7 @@ double do_test_zgemv_c_c(int m, int n,
   }
   temp = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incA; i += incA) {
     temp[i] = 0.0;
@@ -2140,8 +2114,7 @@ double do_test_zgemv_c_c(int m, int n,
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) malloc(max_mn * sizeof(double));
   if (ratios == NULL) {
@@ -2153,8 +2126,7 @@ double do_test_zgemv_c_c(int m, int n,
     (float *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(float) *
 			  2);
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && A == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   /* The debug iteration:
@@ -2749,8 +2721,7 @@ double do_test_zgemv_c_z(int m, int n,
   /* get space for calculation */
   x = (double *) blas_malloc(max_mn * 2 * incx_gen * sizeof(double) * 2);
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
     x[i] = 0.0;
@@ -2758,8 +2729,7 @@ double do_test_zgemv_c_z(int m, int n,
   }
   y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double) * 2);
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
     y[i] = 0.0;
@@ -2767,8 +2737,7 @@ double do_test_zgemv_c_z(int m, int n,
   }
   x_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
     x_gen[i] = 0.0;
@@ -2776,8 +2745,7 @@ double do_test_zgemv_c_z(int m, int n,
   }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && y_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
     y_gen[i] = 0.0;
@@ -2785,8 +2753,7 @@ double do_test_zgemv_c_z(int m, int n,
   }
   temp = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incA; i += incA) {
     temp[i] = 0.0;
@@ -2795,8 +2762,7 @@ double do_test_zgemv_c_z(int m, int n,
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) malloc(max_mn * sizeof(double));
   if (ratios == NULL) {
@@ -2808,8 +2774,7 @@ double do_test_zgemv_c_z(int m, int n,
     (float *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(float) *
 			  2);
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && A == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   /* The debug iteration:
@@ -3404,8 +3369,7 @@ double do_test_zgemv_z_c(int m, int n,
   /* get space for calculation */
   x = (float *) blas_malloc(max_mn * 2 * incx_gen * sizeof(float) * 2);
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
     x[i] = 0.0;
@@ -3413,8 +3377,7 @@ double do_test_zgemv_z_c(int m, int n,
   }
   y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double) * 2);
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
     y[i] = 0.0;
@@ -3422,8 +3385,7 @@ double do_test_zgemv_z_c(int m, int n,
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
     x_gen[i] = 0.0;
@@ -3431,8 +3393,7 @@ double do_test_zgemv_z_c(int m, int n,
   }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && y_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
     y_gen[i] = 0.0;
@@ -3440,8 +3401,7 @@ double do_test_zgemv_z_c(int m, int n,
   }
   temp = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incA; i += incA) {
     temp[i] = 0.0;
@@ -3450,8 +3410,7 @@ double do_test_zgemv_z_c(int m, int n,
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) malloc(max_mn * sizeof(double));
   if (ratios == NULL) {
@@ -3463,8 +3422,7 @@ double do_test_zgemv_z_c(int m, int n,
     (double *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(double) *
 			   2);
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && A == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   /* The debug iteration:
@@ -4059,16 +4017,14 @@ double do_test_cgemv_s_s(int m, int n,
   /* get space for calculation */
   x = (float *) blas_malloc(max_mn * 2 * incx_gen * sizeof(float));
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
     x[i] = 0.0;
   }
   y = (float *) blas_malloc(max_mn * 2 * incy_gen * sizeof(float) * 2);
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
     y[i] = 0.0;
@@ -4076,16 +4032,14 @@ double do_test_cgemv_s_s(int m, int n,
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
     x_gen[i] = 0.0;
   }
   y_gen = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && y_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
     y_gen[i] = 0.0;
@@ -4093,8 +4047,7 @@ double do_test_cgemv_s_s(int m, int n,
   }
   temp = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incA; i += incA) {
     temp[i] = 0.0;
@@ -4102,8 +4055,7 @@ double do_test_cgemv_s_s(int m, int n,
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) malloc(max_mn * sizeof(double));
   if (ratios == NULL) {
@@ -4113,8 +4065,7 @@ double do_test_cgemv_s_s(int m, int n,
 
   A = (float *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(float));
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && A == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   /* The debug iteration:
@@ -4707,8 +4658,7 @@ double do_test_cgemv_s_c(int m, int n,
   /* get space for calculation */
   x = (float *) blas_malloc(max_mn * 2 * incx_gen * sizeof(float) * 2);
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
     x[i] = 0.0;
@@ -4716,8 +4666,7 @@ double do_test_cgemv_s_c(int m, int n,
   }
   y = (float *) blas_malloc(max_mn * 2 * incy_gen * sizeof(float) * 2);
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
     y[i] = 0.0;
@@ -4725,8 +4674,7 @@ double do_test_cgemv_s_c(int m, int n,
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
     x_gen[i] = 0.0;
@@ -4734,8 +4682,7 @@ double do_test_cgemv_s_c(int m, int n,
   }
   y_gen = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && y_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
     y_gen[i] = 0.0;
@@ -4743,8 +4690,7 @@ double do_test_cgemv_s_c(int m, int n,
   }
   temp = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incA; i += incA) {
     temp[i] = 0.0;
@@ -4752,8 +4698,7 @@ double do_test_cgemv_s_c(int m, int n,
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) malloc(max_mn * sizeof(double));
   if (ratios == NULL) {
@@ -4763,8 +4708,7 @@ double do_test_cgemv_s_c(int m, int n,
 
   A = (float *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(float));
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && A == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   /* The debug iteration:
@@ -5359,16 +5303,14 @@ double do_test_cgemv_c_s(int m, int n,
   /* get space for calculation */
   x = (float *) blas_malloc(max_mn * 2 * incx_gen * sizeof(float));
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
     x[i] = 0.0;
   }
   y = (float *) blas_malloc(max_mn * 2 * incy_gen * sizeof(float) * 2);
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
     y[i] = 0.0;
@@ -5376,16 +5318,14 @@ double do_test_cgemv_c_s(int m, int n,
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
     x_gen[i] = 0.0;
   }
   y_gen = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && y_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
     y_gen[i] = 0.0;
@@ -5393,8 +5333,7 @@ double do_test_cgemv_c_s(int m, int n,
   }
   temp = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incA; i += incA) {
     temp[i] = 0.0;
@@ -5403,8 +5342,7 @@ double do_test_cgemv_c_s(int m, int n,
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) malloc(max_mn * sizeof(double));
   if (ratios == NULL) {
@@ -5416,8 +5354,7 @@ double do_test_cgemv_c_s(int m, int n,
     (float *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(float) *
 			  2);
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && A == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   /* The debug iteration:
@@ -6010,16 +5947,14 @@ double do_test_zgemv_d_d(int m, int n,
   /* get space for calculation */
   x = (double *) blas_malloc(max_mn * 2 * incx_gen * sizeof(double));
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
     x[i] = 0.0;
   }
   y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double) * 2);
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
     y[i] = 0.0;
@@ -6027,16 +5962,14 @@ double do_test_zgemv_d_d(int m, int n,
   }
   x_gen = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
     x_gen[i] = 0.0;
   }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && y_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
     y_gen[i] = 0.0;
@@ -6044,8 +5977,7 @@ double do_test_zgemv_d_d(int m, int n,
   }
   temp = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incA; i += incA) {
     temp[i] = 0.0;
@@ -6053,8 +5985,7 @@ double do_test_zgemv_d_d(int m, int n,
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) malloc(max_mn * sizeof(double));
   if (ratios == NULL) {
@@ -6065,8 +5996,7 @@ double do_test_zgemv_d_d(int m, int n,
   A =
     (double *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(double));
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && A == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   /* The debug iteration:
@@ -6659,16 +6589,14 @@ double do_test_zgemv_z_d(int m, int n,
   /* get space for calculation */
   x = (double *) blas_malloc(max_mn * 2 * incx_gen * sizeof(double));
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
     x[i] = 0.0;
   }
   y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double) * 2);
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
     y[i] = 0.0;
@@ -6676,16 +6604,14 @@ double do_test_zgemv_z_d(int m, int n,
   }
   x_gen = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
     x_gen[i] = 0.0;
   }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && y_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
     y_gen[i] = 0.0;
@@ -6693,8 +6619,7 @@ double do_test_zgemv_z_d(int m, int n,
   }
   temp = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incA; i += incA) {
     temp[i] = 0.0;
@@ -6703,8 +6628,7 @@ double do_test_zgemv_z_d(int m, int n,
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) malloc(max_mn * sizeof(double));
   if (ratios == NULL) {
@@ -6716,8 +6640,7 @@ double do_test_zgemv_z_d(int m, int n,
     (double *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(double) *
 			   2);
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && A == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   /* The debug iteration:
@@ -7310,8 +7233,7 @@ double do_test_zgemv_d_z(int m, int n,
   /* get space for calculation */
   x = (double *) blas_malloc(max_mn * 2 * incx_gen * sizeof(double) * 2);
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
     x[i] = 0.0;
@@ -7319,8 +7241,7 @@ double do_test_zgemv_d_z(int m, int n,
   }
   y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double) * 2);
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
     y[i] = 0.0;
@@ -7328,8 +7249,7 @@ double do_test_zgemv_d_z(int m, int n,
   }
   x_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
     x_gen[i] = 0.0;
@@ -7337,8 +7257,7 @@ double do_test_zgemv_d_z(int m, int n,
   }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && y_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
     y_gen[i] = 0.0;
@@ -7346,8 +7265,7 @@ double do_test_zgemv_d_z(int m, int n,
   }
   temp = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incA; i += incA) {
     temp[i] = 0.0;
@@ -7355,8 +7273,7 @@ double do_test_zgemv_d_z(int m, int n,
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) malloc(max_mn * sizeof(double));
   if (ratios == NULL) {
@@ -7367,8 +7284,7 @@ double do_test_zgemv_d_z(int m, int n,
   A =
     (double *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(double));
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && A == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   /* The debug iteration:
@@ -7961,40 +7877,35 @@ double do_test_sgemv_x(int m, int n,
   /* get space for calculation */
   x = (float *) blas_malloc(max_mn * 2 * incx_gen * sizeof(float));
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
     x[i] = 0.0;
   }
   y = (float *) blas_malloc(max_mn * 2 * incy_gen * sizeof(float));
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
     y[i] = 0.0;
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
     x_gen[i] = 0.0;
   }
   y_gen = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && y_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
     y_gen[i] = 0.0;
   }
   temp = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incA; i += incA) {
     temp[i] = 0.0;
@@ -8002,8 +7913,7 @@ double do_test_sgemv_x(int m, int n,
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double));
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) malloc(max_mn * sizeof(double));
   if (ratios == NULL) {
@@ -8013,8 +7923,7 @@ double do_test_sgemv_x(int m, int n,
 
   A = (float *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(float));
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && A == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   /* The debug iteration:
@@ -8617,40 +8526,35 @@ double do_test_dgemv_x(int m, int n,
   /* get space for calculation */
   x = (double *) blas_malloc(max_mn * 2 * incx_gen * sizeof(double));
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
     x[i] = 0.0;
   }
   y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double));
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
     y[i] = 0.0;
   }
   x_gen = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
     x_gen[i] = 0.0;
   }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && y_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
     y_gen[i] = 0.0;
   }
   temp = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incA; i += incA) {
     temp[i] = 0.0;
@@ -8658,8 +8562,7 @@ double do_test_dgemv_x(int m, int n,
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double));
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) malloc(max_mn * sizeof(double));
   if (ratios == NULL) {
@@ -8670,8 +8573,7 @@ double do_test_dgemv_x(int m, int n,
   A =
     (double *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(double));
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && A == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   /* The debug iteration:
@@ -9275,8 +9177,7 @@ double do_test_cgemv_x(int m, int n,
   /* get space for calculation */
   x = (float *) blas_malloc(max_mn * 2 * incx_gen * sizeof(float) * 2);
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
     x[i] = 0.0;
@@ -9284,8 +9185,7 @@ double do_test_cgemv_x(int m, int n,
   }
   y = (float *) blas_malloc(max_mn * 2 * incy_gen * sizeof(float) * 2);
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
     y[i] = 0.0;
@@ -9293,8 +9193,7 @@ double do_test_cgemv_x(int m, int n,
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
     x_gen[i] = 0.0;
@@ -9302,8 +9201,7 @@ double do_test_cgemv_x(int m, int n,
   }
   y_gen = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && y_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
     y_gen[i] = 0.0;
@@ -9311,8 +9209,7 @@ double do_test_cgemv_x(int m, int n,
   }
   temp = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incA; i += incA) {
     temp[i] = 0.0;
@@ -9321,8 +9218,7 @@ double do_test_cgemv_x(int m, int n,
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) malloc(max_mn * sizeof(double));
   if (ratios == NULL) {
@@ -9334,8 +9230,7 @@ double do_test_cgemv_x(int m, int n,
     (float *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(float) *
 			  2);
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && A == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   /* The debug iteration:
@@ -9949,8 +9844,7 @@ double do_test_zgemv_x(int m, int n,
   /* get space for calculation */
   x = (double *) blas_malloc(max_mn * 2 * incx_gen * sizeof(double) * 2);
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
     x[i] = 0.0;
@@ -9958,8 +9852,7 @@ double do_test_zgemv_x(int m, int n,
   }
   y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double) * 2);
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
     y[i] = 0.0;
@@ -9967,8 +9860,7 @@ double do_test_zgemv_x(int m, int n,
   }
   x_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
     x_gen[i] = 0.0;
@@ -9976,8 +9868,7 @@ double do_test_zgemv_x(int m, int n,
   }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && y_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
     y_gen[i] = 0.0;
@@ -9985,8 +9876,7 @@ double do_test_zgemv_x(int m, int n,
   }
   temp = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incA; i += incA) {
     temp[i] = 0.0;
@@ -9995,8 +9885,7 @@ double do_test_zgemv_x(int m, int n,
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) malloc(max_mn * sizeof(double));
   if (ratios == NULL) {
@@ -10008,8 +9897,7 @@ double do_test_zgemv_x(int m, int n,
     (double *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(double) *
 			   2);
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && A == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   /* The debug iteration:
@@ -10624,40 +10512,35 @@ double do_test_dgemv_s_s_x(int m, int n,
   /* get space for calculation */
   x = (float *) blas_malloc(max_mn * 2 * incx_gen * sizeof(float));
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
     x[i] = 0.0;
   }
   y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double));
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
     y[i] = 0.0;
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
     x_gen[i] = 0.0;
   }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && y_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
     y_gen[i] = 0.0;
   }
   temp = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incA; i += incA) {
     temp[i] = 0.0;
@@ -10665,8 +10548,7 @@ double do_test_dgemv_s_s_x(int m, int n,
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double));
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) malloc(max_mn * sizeof(double));
   if (ratios == NULL) {
@@ -10676,8 +10558,7 @@ double do_test_dgemv_s_s_x(int m, int n,
 
   A = (float *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(float));
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && A == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   /* The debug iteration:
@@ -11281,40 +11162,35 @@ double do_test_dgemv_s_d_x(int m, int n,
   /* get space for calculation */
   x = (double *) blas_malloc(max_mn * 2 * incx_gen * sizeof(double));
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
     x[i] = 0.0;
   }
   y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double));
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
     y[i] = 0.0;
   }
   x_gen = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
     x_gen[i] = 0.0;
   }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && y_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
     y_gen[i] = 0.0;
   }
   temp = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incA; i += incA) {
     temp[i] = 0.0;
@@ -11322,8 +11198,7 @@ double do_test_dgemv_s_d_x(int m, int n,
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double));
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) malloc(max_mn * sizeof(double));
   if (ratios == NULL) {
@@ -11333,8 +11208,7 @@ double do_test_dgemv_s_d_x(int m, int n,
 
   A = (float *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(float));
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && A == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   /* The debug iteration:
@@ -11938,40 +11812,35 @@ double do_test_dgemv_d_s_x(int m, int n,
   /* get space for calculation */
   x = (float *) blas_malloc(max_mn * 2 * incx_gen * sizeof(float));
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
     x[i] = 0.0;
   }
   y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double));
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
     y[i] = 0.0;
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
     x_gen[i] = 0.0;
   }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && y_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
     y_gen[i] = 0.0;
   }
   temp = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incA; i += incA) {
     temp[i] = 0.0;
@@ -11979,8 +11848,7 @@ double do_test_dgemv_d_s_x(int m, int n,
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double));
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) malloc(max_mn * sizeof(double));
   if (ratios == NULL) {
@@ -11991,8 +11859,7 @@ double do_test_dgemv_d_s_x(int m, int n,
   A =
     (double *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(double));
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && A == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   /* The debug iteration:
@@ -12597,8 +12464,7 @@ double do_test_zgemv_c_c_x(int m, int n,
   /* get space for calculation */
   x = (float *) blas_malloc(max_mn * 2 * incx_gen * sizeof(float) * 2);
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
     x[i] = 0.0;
@@ -12606,8 +12472,7 @@ double do_test_zgemv_c_c_x(int m, int n,
   }
   y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double) * 2);
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
     y[i] = 0.0;
@@ -12615,8 +12480,7 @@ double do_test_zgemv_c_c_x(int m, int n,
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
     x_gen[i] = 0.0;
@@ -12624,8 +12488,7 @@ double do_test_zgemv_c_c_x(int m, int n,
   }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && y_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
     y_gen[i] = 0.0;
@@ -12633,8 +12496,7 @@ double do_test_zgemv_c_c_x(int m, int n,
   }
   temp = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incA; i += incA) {
     temp[i] = 0.0;
@@ -12643,8 +12505,7 @@ double do_test_zgemv_c_c_x(int m, int n,
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) malloc(max_mn * sizeof(double));
   if (ratios == NULL) {
@@ -12656,8 +12517,7 @@ double do_test_zgemv_c_c_x(int m, int n,
     (float *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(float) *
 			  2);
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && A == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   /* The debug iteration:
@@ -13272,8 +13132,7 @@ double do_test_zgemv_c_z_x(int m, int n,
   /* get space for calculation */
   x = (double *) blas_malloc(max_mn * 2 * incx_gen * sizeof(double) * 2);
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
     x[i] = 0.0;
@@ -13281,8 +13140,7 @@ double do_test_zgemv_c_z_x(int m, int n,
   }
   y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double) * 2);
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
     y[i] = 0.0;
@@ -13290,8 +13148,7 @@ double do_test_zgemv_c_z_x(int m, int n,
   }
   x_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
     x_gen[i] = 0.0;
@@ -13299,8 +13156,7 @@ double do_test_zgemv_c_z_x(int m, int n,
   }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && y_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
     y_gen[i] = 0.0;
@@ -13308,8 +13164,7 @@ double do_test_zgemv_c_z_x(int m, int n,
   }
   temp = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incA; i += incA) {
     temp[i] = 0.0;
@@ -13318,8 +13173,7 @@ double do_test_zgemv_c_z_x(int m, int n,
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) malloc(max_mn * sizeof(double));
   if (ratios == NULL) {
@@ -13331,8 +13185,7 @@ double do_test_zgemv_c_z_x(int m, int n,
     (float *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(float) *
 			  2);
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && A == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   /* The debug iteration:
@@ -13947,8 +13800,7 @@ double do_test_zgemv_z_c_x(int m, int n,
   /* get space for calculation */
   x = (float *) blas_malloc(max_mn * 2 * incx_gen * sizeof(float) * 2);
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
     x[i] = 0.0;
@@ -13956,8 +13808,7 @@ double do_test_zgemv_z_c_x(int m, int n,
   }
   y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double) * 2);
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
     y[i] = 0.0;
@@ -13965,8 +13816,7 @@ double do_test_zgemv_z_c_x(int m, int n,
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
     x_gen[i] = 0.0;
@@ -13974,8 +13824,7 @@ double do_test_zgemv_z_c_x(int m, int n,
   }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && y_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
     y_gen[i] = 0.0;
@@ -13983,8 +13832,7 @@ double do_test_zgemv_z_c_x(int m, int n,
   }
   temp = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incA; i += incA) {
     temp[i] = 0.0;
@@ -13993,8 +13841,7 @@ double do_test_zgemv_z_c_x(int m, int n,
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) malloc(max_mn * sizeof(double));
   if (ratios == NULL) {
@@ -14006,8 +13853,7 @@ double do_test_zgemv_z_c_x(int m, int n,
     (double *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(double) *
 			   2);
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && A == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   /* The debug iteration:
@@ -14622,16 +14468,14 @@ double do_test_cgemv_s_s_x(int m, int n,
   /* get space for calculation */
   x = (float *) blas_malloc(max_mn * 2 * incx_gen * sizeof(float));
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
     x[i] = 0.0;
   }
   y = (float *) blas_malloc(max_mn * 2 * incy_gen * sizeof(float) * 2);
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
     y[i] = 0.0;
@@ -14639,16 +14483,14 @@ double do_test_cgemv_s_s_x(int m, int n,
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
     x_gen[i] = 0.0;
   }
   y_gen = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && y_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
     y_gen[i] = 0.0;
@@ -14656,8 +14498,7 @@ double do_test_cgemv_s_s_x(int m, int n,
   }
   temp = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incA; i += incA) {
     temp[i] = 0.0;
@@ -14665,8 +14506,7 @@ double do_test_cgemv_s_s_x(int m, int n,
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) malloc(max_mn * sizeof(double));
   if (ratios == NULL) {
@@ -14676,8 +14516,7 @@ double do_test_cgemv_s_s_x(int m, int n,
 
   A = (float *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(float));
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && A == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   /* The debug iteration:
@@ -15290,8 +15129,7 @@ double do_test_cgemv_s_c_x(int m, int n,
   /* get space for calculation */
   x = (float *) blas_malloc(max_mn * 2 * incx_gen * sizeof(float) * 2);
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
     x[i] = 0.0;
@@ -15299,8 +15137,7 @@ double do_test_cgemv_s_c_x(int m, int n,
   }
   y = (float *) blas_malloc(max_mn * 2 * incy_gen * sizeof(float) * 2);
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
     y[i] = 0.0;
@@ -15308,8 +15145,7 @@ double do_test_cgemv_s_c_x(int m, int n,
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
     x_gen[i] = 0.0;
@@ -15317,8 +15153,7 @@ double do_test_cgemv_s_c_x(int m, int n,
   }
   y_gen = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && y_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
     y_gen[i] = 0.0;
@@ -15326,8 +15161,7 @@ double do_test_cgemv_s_c_x(int m, int n,
   }
   temp = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incA; i += incA) {
     temp[i] = 0.0;
@@ -15335,8 +15169,7 @@ double do_test_cgemv_s_c_x(int m, int n,
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) malloc(max_mn * sizeof(double));
   if (ratios == NULL) {
@@ -15346,8 +15179,7 @@ double do_test_cgemv_s_c_x(int m, int n,
 
   A = (float *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(float));
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && A == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   /* The debug iteration:
@@ -15962,16 +15794,14 @@ double do_test_cgemv_c_s_x(int m, int n,
   /* get space for calculation */
   x = (float *) blas_malloc(max_mn * 2 * incx_gen * sizeof(float));
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
     x[i] = 0.0;
   }
   y = (float *) blas_malloc(max_mn * 2 * incy_gen * sizeof(float) * 2);
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
     y[i] = 0.0;
@@ -15979,16 +15809,14 @@ double do_test_cgemv_c_s_x(int m, int n,
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
     x_gen[i] = 0.0;
   }
   y_gen = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && y_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
     y_gen[i] = 0.0;
@@ -15996,8 +15824,7 @@ double do_test_cgemv_c_s_x(int m, int n,
   }
   temp = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incA; i += incA) {
     temp[i] = 0.0;
@@ -16006,8 +15833,7 @@ double do_test_cgemv_c_s_x(int m, int n,
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) malloc(max_mn * sizeof(double));
   if (ratios == NULL) {
@@ -16019,8 +15845,7 @@ double do_test_cgemv_c_s_x(int m, int n,
     (float *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(float) *
 			  2);
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && A == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   /* The debug iteration:
@@ -16633,16 +16458,14 @@ double do_test_zgemv_d_d_x(int m, int n,
   /* get space for calculation */
   x = (double *) blas_malloc(max_mn * 2 * incx_gen * sizeof(double));
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
     x[i] = 0.0;
   }
   y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double) * 2);
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
     y[i] = 0.0;
@@ -16650,16 +16473,14 @@ double do_test_zgemv_d_d_x(int m, int n,
   }
   x_gen = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
     x_gen[i] = 0.0;
   }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && y_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
     y_gen[i] = 0.0;
@@ -16667,8 +16488,7 @@ double do_test_zgemv_d_d_x(int m, int n,
   }
   temp = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incA; i += incA) {
     temp[i] = 0.0;
@@ -16676,8 +16496,7 @@ double do_test_zgemv_d_d_x(int m, int n,
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) malloc(max_mn * sizeof(double));
   if (ratios == NULL) {
@@ -16688,8 +16507,7 @@ double do_test_zgemv_d_d_x(int m, int n,
   A =
     (double *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(double));
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && A == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   /* The debug iteration:
@@ -17302,8 +17120,7 @@ double do_test_zgemv_d_z_x(int m, int n,
   /* get space for calculation */
   x = (double *) blas_malloc(max_mn * 2 * incx_gen * sizeof(double) * 2);
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
     x[i] = 0.0;
@@ -17311,8 +17128,7 @@ double do_test_zgemv_d_z_x(int m, int n,
   }
   y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double) * 2);
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
     y[i] = 0.0;
@@ -17320,8 +17136,7 @@ double do_test_zgemv_d_z_x(int m, int n,
   }
   x_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
     x_gen[i] = 0.0;
@@ -17329,8 +17144,7 @@ double do_test_zgemv_d_z_x(int m, int n,
   }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && y_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
     y_gen[i] = 0.0;
@@ -17338,8 +17152,7 @@ double do_test_zgemv_d_z_x(int m, int n,
   }
   temp = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incA; i += incA) {
     temp[i] = 0.0;
@@ -17347,8 +17160,7 @@ double do_test_zgemv_d_z_x(int m, int n,
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) malloc(max_mn * sizeof(double));
   if (ratios == NULL) {
@@ -17359,8 +17171,7 @@ double do_test_zgemv_d_z_x(int m, int n,
   A =
     (double *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(double));
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && A == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   /* The debug iteration:
@@ -17975,16 +17786,14 @@ double do_test_zgemv_z_d_x(int m, int n,
   /* get space for calculation */
   x = (double *) blas_malloc(max_mn * 2 * incx_gen * sizeof(double));
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
     x[i] = 0.0;
   }
   y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double) * 2);
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
     y[i] = 0.0;
@@ -17992,16 +17801,14 @@ double do_test_zgemv_z_d_x(int m, int n,
   }
   x_gen = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && x_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
     x_gen[i] = 0.0;
   }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && y_gen == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
     y_gen[i] = 0.0;
@@ -18009,8 +17816,7 @@ double do_test_zgemv_z_d_x(int m, int n,
   }
   temp = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && temp == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   for (i = 0; i < max_mn * incA; i += incA) {
     temp[i] = 0.0;
@@ -18019,8 +17825,7 @@ double do_test_zgemv_z_d_x(int m, int n,
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) malloc(max_mn * sizeof(double));
   if (ratios == NULL) {
@@ -18032,8 +17837,7 @@ double do_test_zgemv_z_d_x(int m, int n,
     (double *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(double) *
 			   2);
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && A == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   /* The debug iteration:

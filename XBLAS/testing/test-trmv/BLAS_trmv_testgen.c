@@ -94,13 +94,11 @@ void BLAS_strmv_testgen(int norm, enum blas_order_type order,
 
   t_vec = (float *) blas_malloc(n * sizeof(float));
   if (n > 0 && t_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   };
   x_vec = (float *) blas_malloc(n * sizeof(float));
   if (n > 0 && x_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   };
 
   if (trans == blas_no_trans) {
@@ -307,13 +305,11 @@ void BLAS_dtrmv_testgen(int norm, enum blas_order_type order,
 
   t_vec = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && t_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   };
   x_vec = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && x_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   };
 
   if (trans == blas_no_trans) {
@@ -521,13 +517,11 @@ void BLAS_dtrmv_s_testgen(int norm, enum blas_order_type order,
 
   t_vec = (float *) blas_malloc(n * sizeof(float));
   if (n > 0 && t_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   };
   x_vec = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && x_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   };
 
   if (trans == blas_no_trans) {
@@ -734,13 +728,11 @@ void BLAS_ctrmv_testgen(int norm, enum blas_order_type order,
 
   t_vec = (float *) blas_malloc(n * sizeof(float) * 2);
   if (n > 0 && t_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   };
   x_vec = (float *) blas_malloc(n * sizeof(float) * 2);
   if (n > 0 && x_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   };
 
   if (trans == blas_no_trans) {
@@ -967,13 +959,11 @@ void BLAS_ztrmv_c_testgen(int norm, enum blas_order_type order,
 
   t_vec = (float *) blas_malloc(n * sizeof(float) * 2);
   if (n > 0 && t_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   };
   x_vec = (double *) blas_malloc(n * sizeof(double) * 2);
   if (n > 0 && x_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   };
 
   if (trans == blas_no_trans) {
@@ -1199,13 +1189,11 @@ void BLAS_ztrmv_testgen(int norm, enum blas_order_type order,
 
   t_vec = (double *) blas_malloc(n * sizeof(double) * 2);
   if (n > 0 && t_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   };
   x_vec = (double *) blas_malloc(n * sizeof(double) * 2);
   if (n > 0 && x_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   };
 
   if (trans == blas_no_trans) {
@@ -1432,13 +1420,11 @@ void BLAS_ctrmv_s_testgen(int norm, enum blas_order_type order,
 
   t_vec = (float *) blas_malloc(n * sizeof(float));
   if (n > 0 && t_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   };
   x_vec = (float *) blas_malloc(n * sizeof(float) * 2);
   if (n > 0 && x_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   };
 
   if (trans == blas_no_trans) {
@@ -1653,13 +1639,11 @@ void BLAS_ztrmv_d_testgen(int norm, enum blas_order_type order,
 
   t_vec = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && t_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   };
   x_vec = (double *) blas_malloc(n * sizeof(double) * 2);
   if (n > 0 && x_vec == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   };
 
   if (trans == blas_no_trans) {

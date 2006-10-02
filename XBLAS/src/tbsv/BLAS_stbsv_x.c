@@ -291,8 +291,7 @@ void BLAS_stbsv_x(enum blas_order_type order, enum blas_uplo_type uplo,
 
 	  x_internal = (double *) blas_malloc(k * sizeof(double));
 	  if (k > 0 && x_internal == NULL) {
-	    printf("malloc failed\n");
-	    exit(-1);
+	    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
 	  }
 
 
@@ -431,8 +430,7 @@ void BLAS_stbsv_x(enum blas_order_type order, enum blas_uplo_type uplo,
 	  head_x_internal = (double *) blas_malloc(k * sizeof(double));
 	  tail_x_internal = (double *) blas_malloc(k * sizeof(double));
 	  if (k > 0 && (head_x_internal == NULL || tail_x_internal == NULL)) {
-	    printf("malloc failed\n");
-	    exit(-1);
+	    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
 	  }
 
 

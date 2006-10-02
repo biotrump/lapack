@@ -83,8 +83,7 @@ extern void BLAS_sdot2_testgen(int n, int n_fix2, int n_mix, int norm,
 
   head_x_i = (float *) blas_malloc(3 * n * sizeof(float));
   if (3 * n > 0 && head_x_i == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   tail_x_i = head_x_i + inc * n;
   y_i = tail_x_i + inc * n;
@@ -197,8 +196,7 @@ extern void BLAS_ddot2_testgen(int n, int n_fix2, int n_mix, int norm,
 
   head_x_i = (double *) blas_malloc(3 * n * sizeof(double));
   if (3 * n > 0 && head_x_i == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   tail_x_i = head_x_i + inc * n;
   y_i = tail_x_i + inc * n;
@@ -311,8 +309,7 @@ extern void BLAS_ddot2_s_s_testgen(int n, int n_fix2, int n_mix, int norm,
 
   head_x_i = (float *) blas_malloc(3 * n * sizeof(float));
   if (3 * n > 0 && head_x_i == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   tail_x_i = head_x_i + inc * n;
   y_i = tail_x_i + inc * n;
@@ -425,8 +422,7 @@ extern void BLAS_ddot2_s_d_testgen(int n, int n_fix2, int n_mix, int norm,
 
   head_x_i = (float *) blas_malloc(3 * n * sizeof(float));
   if (3 * n > 0 && head_x_i == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   tail_x_i = head_x_i + inc * n;
   y_i = tail_x_i + inc * n;
@@ -539,8 +535,7 @@ extern void BLAS_ddot2_d_s_testgen(int n, int n_fix2, int n_mix, int norm,
 
   head_x_i = (float *) blas_malloc(3 * n * sizeof(float));
   if (3 * n > 0 && head_x_i == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   tail_x_i = head_x_i + inc * n;
   y_i = tail_x_i + inc * n;
@@ -654,8 +649,7 @@ extern void BLAS_cdot2_testgen(int n, int n_fix2, int n_mix, int norm,
   inc *= 2;
   head_x_i = (float *) blas_malloc(3 * n * sizeof(float) * 2);
   if (3 * n > 0 && head_x_i == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   tail_x_i = head_x_i + inc * n;
   y_i = tail_x_i + inc * n;
@@ -780,8 +774,7 @@ extern void BLAS_zdot2_testgen(int n, int n_fix2, int n_mix, int norm,
   inc *= 2;
   head_x_i = (double *) blas_malloc(3 * n * sizeof(double) * 2);
   if (3 * n > 0 && head_x_i == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   tail_x_i = head_x_i + inc * n;
   y_i = tail_x_i + inc * n;
@@ -907,8 +900,7 @@ extern void BLAS_zdot2_c_c_testgen(int n, int n_fix2, int n_mix, int norm,
   inc *= 2;
   head_x_i = (float *) blas_malloc(3 * n * sizeof(float) * 2);
   if (3 * n > 0 && head_x_i == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   tail_x_i = head_x_i + inc * n;
   y_i = tail_x_i + inc * n;
@@ -1034,8 +1026,7 @@ extern void BLAS_zdot2_c_z_testgen(int n, int n_fix2, int n_mix, int norm,
   inc *= 2;
   head_x_i = (float *) blas_malloc(3 * n * sizeof(float) * 2);
   if (3 * n > 0 && head_x_i == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   tail_x_i = head_x_i + inc * n;
   y_i = tail_x_i + inc * n;
@@ -1161,8 +1152,7 @@ extern void BLAS_zdot2_z_c_testgen(int n, int n_fix2, int n_mix, int norm,
   inc *= 2;
   head_x_i = (float *) blas_malloc(3 * n * sizeof(float) * 2);
   if (3 * n > 0 && head_x_i == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   tail_x_i = head_x_i + inc * n;
   y_i = tail_x_i + inc * n;
@@ -1289,8 +1279,7 @@ extern void BLAS_cdot2_s_s_testgen(int n, int n_fix2, int n_mix, int norm,
   beta_i_i = ((float *) beta)[1];
   head_x_i = (float *) blas_malloc(3 * n * sizeof(float));
   if (3 * n > 0 && head_x_i == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   tail_x_i = head_x_i + n;
   y_i = tail_x_i + n;
@@ -1477,8 +1466,7 @@ extern void BLAS_cdot2_s_c_testgen(int n, int n_fix2, int n_mix, int norm,
   beta_i_i = ((float *) beta)[1];
   head_x_i = (float *) blas_malloc(3 * n * sizeof(float));
   if (3 * n > 0 && head_x_i == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   tail_x_i = head_x_i + n;
   y_i = tail_x_i + n;
@@ -1674,8 +1662,7 @@ extern void BLAS_cdot2_c_s_testgen(int n, int n_fix2, int n_mix, int norm,
   beta_i_i = ((float *) beta)[1];
   head_x_i = (float *) blas_malloc(3 * n * sizeof(float));
   if (3 * n > 0 && head_x_i == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   tail_x_i = head_x_i + n;
   y_i = tail_x_i + n;
@@ -1877,8 +1864,7 @@ extern void BLAS_zdot2_d_d_testgen(int n, int n_fix2, int n_mix, int norm,
   beta_i_i = ((double *) beta)[1];
   head_x_i = (double *) blas_malloc(3 * n * sizeof(double));
   if (3 * n > 0 && head_x_i == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   tail_x_i = head_x_i + n;
   y_i = tail_x_i + n;
@@ -2067,8 +2053,7 @@ extern void BLAS_zdot2_z_d_testgen(int n, int n_fix2, int n_mix, int norm,
   beta_i_i = ((double *) beta)[1];
   head_x_i = (double *) blas_malloc(3 * n * sizeof(double));
   if (3 * n > 0 && head_x_i == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   tail_x_i = head_x_i + n;
   y_i = tail_x_i + n;
@@ -2272,8 +2257,7 @@ extern void BLAS_zdot2_d_z_testgen(int n, int n_fix2, int n_mix, int norm,
   beta_i_i = ((double *) beta)[1];
   head_x_i = (double *) blas_malloc(3 * n * sizeof(double));
   if (3 * n > 0 && head_x_i == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   tail_x_i = head_x_i + n;
   y_i = tail_x_i + n;

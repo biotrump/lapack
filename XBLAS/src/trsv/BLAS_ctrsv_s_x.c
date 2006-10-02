@@ -315,8 +315,7 @@ void BLAS_ctrsv_s_x(enum blas_order_type order, enum blas_uplo_type uplo,
       /* allocate space for intx */
       intx = (double *) blas_malloc(n * sizeof(double) * 2);
       if (n > 0 && intx == NULL) {
-	printf("malloc failed\n");
-	exit(-1);
+	BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
       }
 
       /* since intx is for internal usage, set it to 1 and then adjust
@@ -584,8 +583,7 @@ void BLAS_ctrsv_s_x(enum blas_order_type order, enum blas_uplo_type uplo,
 	  head_intx = (double *) blas_malloc(n * sizeof(double) * 2);
 	  tail_intx = (double *) blas_malloc(n * sizeof(double) * 2);
 	  if (n > 0 && (head_intx == NULL || tail_intx == NULL)) {
-	    printf("malloc failed\n");
-	    exit(-1);
+	    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
 	  }
 
 	  /* since intx is for internal usage, set it to 1 and then adjust

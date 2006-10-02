@@ -1174,8 +1174,7 @@ void BLAS_ztbsv_x(enum blas_order_type order, enum blas_uplo_type uplo,
 	  head_x_internal = (double *) blas_malloc(k * sizeof(double) * 2);
 	  tail_x_internal = (double *) blas_malloc(k * sizeof(double) * 2);
 	  if (k > 0 && (head_x_internal == NULL || tail_x_internal == NULL)) {
-	    printf("malloc failed\n");
-	    exit(-1);
+	    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
 	  }
 
 

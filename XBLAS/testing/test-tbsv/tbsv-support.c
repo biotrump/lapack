@@ -759,8 +759,7 @@ void sprint_tbsv_matrix(float *T,
   float *T_row;
   T_row = (float *) blas_malloc(n * sizeof(float));
   if (n > 0 && T_row == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   for (i = 0; i < n; i++) {
@@ -811,8 +810,7 @@ void dprint_tbsv_matrix(double *T,
   double *T_row;
   T_row = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && T_row == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   for (i = 0; i < n; i++) {
@@ -863,8 +861,7 @@ void cprint_tbsv_matrix(void *T,
   float *T_row;
   T_row = (float *) blas_malloc(n * sizeof(float) * 2);
   if (n > 0 && T_row == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   for (i = 0; i < n; i++) {
@@ -915,8 +912,7 @@ void zprint_tbsv_matrix(void *T,
   double *T_row;
   T_row = (double *) blas_malloc(n * sizeof(double) * 2);
   if (n > 0 && T_row == NULL) {
-    printf("malloc failed\n");
-    exit(-1);
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   for (i = 0; i < n; i++) {

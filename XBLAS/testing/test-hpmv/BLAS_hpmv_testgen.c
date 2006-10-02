@@ -113,8 +113,7 @@ void BLAS_chpmv_testgen(int norm, enum blas_order_type order,
     float *a_full;
     a_full = (float *) blas_malloc(n * n * sizeof(float) * 2);
     if (n * n > 0 && a_full == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
 
     BLAS_chemv_testgen(norm, order, uplo,
@@ -222,8 +221,7 @@ void BLAS_zhpmv_testgen(int norm, enum blas_order_type order,
     double *a_full;
     a_full = (double *) blas_malloc(n * n * sizeof(double) * 2);
     if (n * n > 0 && a_full == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
 
     BLAS_zhemv_testgen(norm, order, uplo,
@@ -331,8 +329,7 @@ void BLAS_zhpmv_c_z_testgen(int norm, enum blas_order_type order,
     float *a_full;
     a_full = (float *) blas_malloc(n * n * sizeof(float) * 2);
     if (n * n > 0 && a_full == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
 
     BLAS_zhemv_c_z_testgen(norm, order, uplo,
@@ -440,8 +437,7 @@ void BLAS_zhpmv_z_c_testgen(int norm, enum blas_order_type order,
     double *a_full;
     a_full = (double *) blas_malloc(n * n * sizeof(double) * 2);
     if (n * n > 0 && a_full == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
 
     BLAS_zhemv_z_c_testgen(norm, order, uplo,
@@ -549,8 +545,7 @@ void BLAS_zhpmv_c_c_testgen(int norm, enum blas_order_type order,
     float *a_full;
     a_full = (float *) blas_malloc(n * n * sizeof(float) * 2);
     if (n * n > 0 && a_full == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
 
     BLAS_zhemv_c_c_testgen(norm, order, uplo,
@@ -658,8 +653,7 @@ void BLAS_zhpmv_z_d_testgen(int norm, enum blas_order_type order,
     double *a_full;
     a_full = (double *) blas_malloc(n * n * sizeof(double) * 2);
     if (n * n > 0 && a_full == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
 
     BLAS_zhemv_z_d_testgen(norm, order, uplo,
@@ -767,8 +761,7 @@ void BLAS_chpmv_c_s_testgen(int norm, enum blas_order_type order,
     float *a_full;
     a_full = (float *) blas_malloc(n * n * sizeof(float) * 2);
     if (n * n > 0 && a_full == NULL) {
-      printf("malloc failed\n");
-      exit(-1);
+      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     }
 
     BLAS_chemv_c_s_testgen(norm, order, uplo,
