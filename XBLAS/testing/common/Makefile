@@ -1,4 +1,4 @@
-include ../../make.inc
+include ../../../make.inc
 
 SRCS = dummy_main.c
 OBJS = $(SRCS:.c=.o)
