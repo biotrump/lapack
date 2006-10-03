@@ -38,15 +38,15 @@ include ../make.inc
 #
 #######################################################################
  
-ALLAUX = ilaenv.o ieeeck.o lsame.o lsamen.o xerbla.o xerbla_array.o \
-	ilaver.o iparmq.o ila_len_trim.o
+ALLAUX = ilaenv.o ieeeck.o lsamen.o xerbla.o xerbla_array.o iparmq.o	\
+	ila_len_trim.o ../INSTALL/ilaver.o ../INSTALL/lsame.o
 
 SCLAUX = \
    sbdsdc.o \
    sbdsqr.o sdisna.o slabad.o slacpy.o sladiv.o slae2.o  slaebz.o \
    slaed0.o slaed1.o slaed2.o slaed3.o slaed4.o slaed5.o slaed6.o \
    slaed7.o slaed8.o slaed9.o slaeda.o slaev2.o slagtf.o \
-   slagts.o slamch.o slamrg.o slanst.o \
+   slagts.o slamrg.o slanst.o \
    slapy2.o slapy3.o slarnv.o \
    slarrb.o slarre.o slarrf.o \
    slartg.o slaruv.o slas2.o  slascl.o \
@@ -54,14 +54,15 @@ SCLAUX = \
    slasd7.o slasd8.o slasda.o slasdq.o slasdt.o \
    slaset.o slasq1.o slasq2.o slasq3.o slazq3.o slasq4.o slazq4.o slasq5.o slasq6.o \
    slasr.o  slasrt.o slassq.o slasv2.o spttrf.o sstebz.o sstedc.o \
-   ssteqr.o ssterf.o second.o
+   ssteqr.o ssterf.o \
+   ../INSTALL/slamch.o ../INSTALL/second.o
 
 DZLAUX = \
    dbdsdc.o \
    dbdsqr.o ddisna.o dlabad.o dlacpy.o dladiv.o dlae2.o  dlaebz.o \
    dlaed0.o dlaed1.o dlaed2.o dlaed3.o dlaed4.o dlaed5.o dlaed6.o \
    dlaed7.o dlaed8.o dlaed9.o dlaeda.o dlaev2.o dlagtf.o \
-   dlagts.o dlamch.o dlamrg.o dlanst.o \
+   dlagts.o dlamrg.o dlanst.o \
    dlapy2.o dlapy3.o dlarnv.o \
    dlarrb.o dlarre.o dlarrf.o \
    dlartg.o dlaruv.o dlas2.o  dlascl.o \
@@ -69,7 +70,8 @@ DZLAUX = \
    dlasd7.o dlasd8.o dlasda.o dlasdq.o dlasdt.o \
    dlaset.o dlasq1.o dlasq2.o dlasq3.o dlazq3.o dlasq4.o dlazq4.o dlasq5.o dlasq6.o \
    dlasr.o  dlasrt.o dlassq.o dlasv2.o dpttrf.o dstebz.o dstedc.o \
-   dsteqr.o dsterf.o dsecnd.o
+   dsteqr.o dsterf.o \
+   ../INSTALL/dlamch.o ../INSTALL/dsecnd.o
 
 SLASRC = \
    sgbbrd.o sgbcon.o sgbequ.o sgbrfs.o sgbsv.o  \
@@ -324,11 +326,6 @@ FRC:
 
 clean:
 	rm -f *.o
-
-slamch.o: slamch.f
-	$(FORTRAN) $(NOOPT) -c $<
-dlamch.o: dlamch.f
-	$(FORTRAN) $(NOOPT) -c $<
 
 .f.o: 
 	$(FORTRAN) $(OPTS) -c $<
