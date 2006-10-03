@@ -32,7 +32,8 @@ LOADOPTS =
 CC       = pgcc
 CFLAGS   = -O4 
 LINKER   = $(CC)
-LINKOPTS = 
+LDFLAGS  = 
+EXTRA_LIBS = -lm
 #
 #  The archiver and the flag(s) to use when building archive (library)
 #  If you system has no ranlib, set RANLIB = echo.
