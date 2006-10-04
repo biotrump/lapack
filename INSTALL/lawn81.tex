@@ -14,24 +14,24 @@
 \begin{center}
   {\Large LAPACK Working Note 81\\
   Quick Installation Guide for LAPACK on Unix Systems\footnote{This work was
- supported by NSF Grant No. ASC-8715728.}}
+ supported by NSF Grant No. ASC-8715728  and NSF Grant No. 0444486}}
 \end{center}
 \begin{center}
 %  Edward Anderson\footnote{Current address:  Cray Research Inc.,
 %                           655F Lone Oak Drive, Eagan, MN  55121},
-  Susan Blackford and Jack Dongarra\\
+  Authors and Jack Dongarra\\
   Department of Computer Science \\
   University of Tennessee \\
   Knoxville, Tennessee  37996-1301 \\
 \end{center}
 \begin{center}
-  REVISED:  VERSION 3.0, June 30, 1999
+  REVISED:  VERSION 3.1, October 2006
 \end{center}
 
 \begin{center}
 Abstract
 \end{center}
-This working note describes how to install, test, and time version 3.0
+This working note describes how to install, test, and time version 3.1
 of LAPACK, a linear algebra package for high-performance
 computers, on a Unix System.  Non-Unix installation instructions and
 further details of the testing and timing suites are only contained in
@@ -116,9 +116,11 @@ update,
 June 30, 1992, was version 1.0a; the second update, October 31, 1992,
 was version 1.0b; the third update, March 31, 1993, was version 1.1;
 version 2.0 on September 30, 1994, coincided with the release of the
-Second Edition of the LAPACK Users' Guide; and finally, version 3.0 was
-released on June 30, 1999, and coincided with the Third Edition of
-the LAPACK Users' Guide.
+Second Edition of the LAPACK Users' Guide; 
+version 3.0 on June 30, 1999 coincided with the release of the Third Edition of
+the LAPACK Users' Guide; and finally version 3.1 was
+released on October, 2006.
+
 All LAPACK routines reflect the current version number with the date
 on the routine indicating when it was last modified.
 For more information on revisions in the latest release, please refer
@@ -175,7 +177,7 @@ that is contained in the \texttt{LAPACK} directory.  Input and instructional
 files are also located at various levels.
 \begin{figure}
 \vspace{11pt}
-\centerline{\includegraphics[width=6.5in,height=3in]{org2}}
+\centerline{\includegraphics[width=6.5in,height=3in]{org2.ps}}
 \caption{Unix organization of LAPACK}
 \vspace{11pt}
 \end{figure}
@@ -318,7 +320,7 @@ involves the following steps:
 \begin{enumerate}
 \item Gunzip and tar the file.
 
-\item Edit the file \texttt{LAPACK/make.inc}.
+\item Copy and edit the file \texttt{LAPACK/make.inc.example to LAPACK/make.inc}.
  
 \item Edit the file \texttt{LAPACK/Makefile} and type \texttt{make}.
 
@@ -391,13 +393,21 @@ requires approximately 34 Mbytes of disk space.
 The total space requirements including the object files and executables
 is approximately 100 Mbytes for all four data types.
 
-\subsection{Edit the file \texttt{LAPACK/make.inc}}
+\subsection{Copy and edit the file \texttt{LAPACK/make.inc.example to LAPACK/make.inc}}
 
 Before the libraries can be built, or the testing and timing programs
 run, you must define all machine-specific parameters for the
 architecture to which you are installing LAPACK.  All machine-specific
 parameters are contained in the file \texttt{LAPACK/make.inc}.
+An example of  \texttt{LAPACK/make.inc} for a LINUX machine with GNU compilers is given 
+in \texttt{LAPACK/make.inc.example}, copy that file to LAPACK/make.inc by entering the following command:
 
+\begin{list}{}
+\item{\texttt{cp LAPACK/make.inc.example LAPACK/make.inc}}
+\end{list}
+
+\noindent
+Now modify your \texttt{LAPACK/make.inc} by applying the following recommendations.
 The first line of this \texttt{make.inc} file is:
 \begin{quote}
 SHELL = /bin/sh
@@ -532,11 +542,11 @@ you do not need to install SLAMCH and SECOND.
 These six subroutines are provided in \texttt{LAPACK/INSTALL},
 along with six test programs.
 To compile the six test programs and run the tests, go to \texttt{LAPACK} and
-type \texttt{make install}.  The test programs are called
+type \texttt{make lapack\_install}.  The test programs are called
 \texttt{testlsame, testslamch, testdlamch, testsecond, testdsecnd} and
 \texttt{testieee}.
 If you do not wish to run all tests, you will need to modify the 
-\texttt{install} definition in the \texttt{LAPACK/Makefile} to only include the
+\texttt{lapack\_install} definition in the \texttt{LAPACK/Makefile} to only include the
 tests you wish to run.  Otherwise, all tests will be performed.
 The expected results of each test program are described below.
 
@@ -845,9 +855,9 @@ input files, please refer to LAPACK Working Note 41~\cite{WN41}.
 % see Section~\ref{moretesting}. 
 
 If you do not wish to run each of the tests individually, you can
-go to \texttt{LAPACK}, edit the definition \texttt{testing} in the file
+go to \texttt{LAPACK}, edit the definition \texttt{lapack\_testing} in the file
 \texttt{Makefile} to specify the data types desired, and type \texttt{make
-testing}.  This will
+lapack\_testing}.  This will
 compile and run the tests as described in sections~\ref{testlin} 
 and ~\ref{testeig}.
 
@@ -958,11 +968,11 @@ The values of N in the large data sets are about five times larger
 than those in the small data set,
 and the large data sets use additional values for parameters such as the
 block size NB and the leading array dimension LDA.
-Small data sets are indicated by lower case names, such as
-\texttt{stime.in}, and large data sets are indicated by upper case names,
-such as \texttt{STIME.in}.
-Except as noted, the leading `s' (or `S') in the input file name must be
-replaced by `d', `c', or `z' (`D', `C', or `Z') for the other data types.
+Small data sets finished with the \_small in their name , such as
+\texttt{stime\_small.in}, and large data sets finished with \_large in their name,
+such as \texttt{stime\_large.in}.
+Except as noted, the leading `s' in the input file name must be
+replaced by `d', `c', or `z' for the other data types.
 
 We encourage you to obtain timing results with the large data sets,
 as this allows us to compare different machines.
@@ -992,9 +1002,9 @@ input files, please refer to LAPACK Working Note 41~\cite{WN41}.
 % see Section~\ref{moretiming}.
 
 If you do not wish to run each of the timings individually, you can
-go to \texttt{LAPACK}, edit the definition \texttt{timing} in the file
+go to \texttt{LAPACK}, edit the definition \texttt{lapack\_timing} in the file
 \texttt{Makefile} to specify the data types desired, and type \texttt{make
-timing}.  This will compile
+lapack\_timing}.  This will compile
 and run the timings for the linear equation routines and the eigensystem
 routines (see Sections~\ref{timelin} and ~\ref{timeeig}). 
 
@@ -1023,9 +1033,9 @@ and the input files are in \texttt{LAPACK/TIMING}.
 Three input files are provided in each data type for timing the
 linear equation routines, one for square matrices, one for band
 matrices, and one for rectangular matrices.  The small data sets for the REAL version
-are \texttt{stime.in}, \texttt{sband.in}, and \texttt{stime2.in}, respectively,
+are \texttt{stime\_small.in}, \texttt{sband\_small.in}, and \texttt{stime2\_small.in}, respectively,
 and the large data sets are
-\texttt{STIME.in}, \texttt{SBAND.in}, and \texttt{STIME2.in}.
+\texttt{stime\_large.in}, \texttt{sband\_large.in}, and \texttt{stime2\_large.in}.
 
 The timing program for the least squares routines uses special instrumented
 versions of the LAPACK routines to time individual sections of the code.
@@ -1070,15 +1080,15 @@ Run the programs for each data type you are using.
 For the REAL version, the commands for the small data sets are
 
 \begin{list}{}{}
-\item{} \texttt{xlintims < stime.in > stime.out }
-\item{} \texttt{xlintims < sband.in > sband.out }
-\item{} \texttt{xlintims < stime2.in > stime2.out }
+\item{} \texttt{xlintims < stime\_small.in > stime\_small.out }
+\item{} \texttt{xlintims < sband\_small.in > sband\_small.out }
+\item{} \texttt{xlintims < stime2\_small.in > stime2\_small.out }
 \end{list}
 or the commands for the large data sets are
 \begin{list}{}{}
-\item{} \texttt{xlintims < STIME.in > STIME.out }
-\item{} \texttt{xlintims < SBAND.in > SBAND.out }
-\item{} \texttt{xlintims < STIME2.in > STIME2.out }
+\item{} \texttt{xlintims < stime\_large.in > stime\_large.out }
+\item{} \texttt{xlintims < sband\_large.in > sband\_large.out }
+\item{} \texttt{xlintims < stime2\_large.in > stime2\_large.out }
 \end{list}
 
 \noindent
@@ -1094,17 +1104,17 @@ These input files time the BLAS using the matrix shapes encountered
 in the LAPACK routines, and we will use the results to analyze the
 performance of the LAPACK routines. 
 For the REAL version, the small data files are
-\texttt{sblasa.in}, \texttt{sblasb.in}, and \texttt{sblasc.in}
+\texttt{sblasa\_small.in}, \texttt{sblasb\_small.in}, and \texttt{sblasc\_small.in}
 and the large data files are
-\texttt{SBLASA.in}, \texttt{SBLASB.in}, and \texttt{SBLASC.in}.
+\texttt{sblasa\_large.in}, \texttt{sblasb\_large.in}, and \texttt{sblasc\_large.in}.
 There are three sets of inputs because there are three
 parameters in the Level 3 BLAS, M, N, and K, and
 in most applications one of these parameters is small (on the order
 of the blocksize) while the other two are large (on the order of the
 matrix size).  
-In \texttt{sblasa.in}, M and N are large but K is
-small, while in \texttt{sblasb.in} the small parameter is M, and
-in \texttt{sblasc.in} the small parameter is N.  
+In \texttt{sblasa\_small.in}, M and N are large but K is
+small, while in \texttt{sblasb\_small.in} the small parameter is M, and
+in \texttt{sblasc\_small.in} the small parameter is N.  
 The Level 2 BLAS are timed only in the first data set, where K
 is also used as the bandwidth for the banded routines.
 
@@ -1130,15 +1140,15 @@ Run the programs for each data type you are using.
 For the REAL version, the commands for the small data sets are
 
 \begin{list}{}{}
-\item{} \texttt{xlintims < sblasa.in > sblasa.out }
-\item{} \texttt{xlintims < sblasb.in > sblasb.out }
-\item{} \texttt{xlintims < sblasc.in > sblasc.out }
+\item{} \texttt{xlintims < sblasa\_small.in > sblasa\_small.out }
+\item{} \texttt{xlintims < sblasb\_small.in > sblasb\_small.out }
+\item{} \texttt{xlintims < sblasc\_small.in > sblasc\_small.out }
 \end{list}
 or the commands for the large data sets are
 \begin{list}{}{}
-\item{} \texttt{xlintims < SBLASA.in > SBLASA.out }
-\item{} \texttt{xlintims < SBLASB.in > SBLASB.out }
-\item{} \texttt{xlintims < SBLASC.in > SBLASC.out }
+\item{} \texttt{xlintims < sblasa\_large.in > sblasa\_large.out }
+\item{} \texttt{xlintims < sblasb\_large.in > sblasb\_large.out }
+\item{} \texttt{xlintims < sblasc\_large.in > sblasc\_large.out }
 \end{list}
 
 \noindent
@@ -1155,10 +1165,10 @@ one for the generalized nonsymmetric eigenvalue problem,
 one for the nonsymmetric eigenvalue problem, 
 one for the symmetric and generalized symmetric eigenvalue problem,
 and one for the singular value decomposition.
-For the REAL version, the small data sets are called \texttt{sgeptim.in},
-\texttt{sneptim.in}, \texttt{sseptim.in}, and \texttt{ssvdtim.in}, respectively.
-and the large data sets are called \texttt{SGEPTIM.in}, \texttt{SNEPTIM.in},
-\texttt{SSEPTIM.in}, and \texttt{SSVDTIM.in}.
+For the REAL version, the small data sets are called \texttt{sgeptim\_small.in},
+\texttt{sneptim\_small.in}, \texttt{sseptim\_small.in}, and \texttt{ssvdtim\_small.in}, respectively.
+and the large data sets are called \texttt{sgeptim\_large.in}, \texttt{sneptim\_large.in},
+\texttt{sseptim\_large.in}, and \texttt{ssvdtim\_large.in}.
 Each of the four input files reads a different set of parameters,
 and the format of the input is indicated by a 3-character code
 on the first line.
@@ -1210,17 +1220,17 @@ Run the programs for each data type you are using.
 For the REAL version, the commands for the small data sets are
 
 \begin{list}{}{}
-\item{} \texttt{xeigtims < sgeptim.in > sgeptim.out }
-\item{} \texttt{xeigtims < sneptim.in > sneptim.out }
-\item{} \texttt{xeigtims < sseptim.in > sseptim.out }
-\item{} \texttt{xeigtims < ssvdtim.in > ssvdtim.out }
+\item{} \texttt{xeigtims < sgeptim\_small.in > sgeptim\_small.out }
+\item{} \texttt{xeigtims < sneptim\_small.in > sneptim\_small.out }
+\item{} \texttt{xeigtims < sseptim\_small.in > sseptim\_small.out }
+\item{} \texttt{xeigtims < ssvdtim\_small.in > ssvdtim\_small.out }
 \end{list}
 or the commands for the large data sets are
 \begin{list}{}{}
-\item{} \texttt{xeigtims < SGEPTIM.in > SGEPTIM.out }
-\item{} \texttt{xeigtims < SNEPTIM.in > SNEPTIM.out }
-\item{} \texttt{xeigtims < SSEPTIM.in > SSEPTIM.out }
-\item{} \texttt{xeigtims < SSVDTIM.in > SSVDTIM.out }
+\item{} \texttt{xeigtims < sgeptim\_large.in > sgeptim\_large.out }
+\item{} \texttt{xeigtims < sneptim\_large.in > sneptim\_large.out }
+\item{} \texttt{xeigtims < sseptim\_large.in > sseptim\_large.out }
+\item{} \texttt{xeigtims < ssvdtim\_large.in > ssvdtim\_large.out }
 \end{list}
 
 \noindent
@@ -1253,7 +1263,7 @@ also include a copy of the output file in which the failure occurs.
 We would like to keep our \texttt{release\_notes} file as up-to-date as possible.
 Therefore, if you do not see an entry for your machine, please contact us
 with your testing results.
-
+ 
 Comments and suggestions are also welcome.
 
 We encourage you to make the LAPACK library available to your
@@ -1261,9 +1271,24 @@ users and provide us with feedback from their experiences.
 %This release of LAPACK is not guaranteed to be compatible
 %with any previous test release.
 
+\subsection{Get support}\label{getsupport}
+First, take a look at the complete installation manual in the LAPACK Working Note 41~\cite{WN41}. 
+if you still cannot solve your problem, you have 2 ways to go:
+\begin{itemize}
+\item
+either send a post in the LAPACK forum 
+\begin{quote}
+\url{http://icl.cs.utk.edu/lapack-forum}
+\end{quote}
+\item
+or send an email to the LAPACK mailing list: 
+\begin{list}{}{}
+\item \href{mailto:lapack@cs.utk.edu}{\texttt{lapack@cs.utk.edu}}.
+\end{list}
+\end{itemize}
 \section*{Acknowledgments}
 
-Ed Anderson contributed to previous versions of this report.
+Ed Anderson and Susan Blackford contributed to previous versions of this report.
 
 \appendix
 
