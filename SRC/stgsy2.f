@@ -848,7 +848,7 @@
 *
 *                 Build an 8-by-8 system Z' * x = RHS
 *
-                  CALL DLASET( 'F', LDZ, LDZ, ZERO, ZERO, Z, LDZ )
+                  CALL SLASET( 'F', LDZ, LDZ, ZERO, ZERO, Z, LDZ )
 *
                   Z( 1, 1 ) = A( IS, IS )
                   Z( 2, 1 ) = A( IS, ISP1 )
