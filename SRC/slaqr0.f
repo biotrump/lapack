@@ -2,8 +2,8 @@
      $                   ILOZ, IHIZ, Z, LDZ, WORK, LWORK, INFO )
 *
 *  -- LAPACK auxiliary routine (version 3.1) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.
-*     July 06, 2006
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     October 2006
 *
 *     .. Scalar Arguments ..
       INTEGER            IHI, IHIZ, ILO, ILOZ, INFO, LDH, LDZ, LWORK, N
@@ -19,7 +19,7 @@
 *
 *     SLAQR0 computes the eigenvalues of a Hessenberg matrix H
 *     and, optionally, the matrices T and Z from the Schur decomposition
-*     H = Z T Z**T, where T is an upper triangular matrix (the
+*     H = Z T Z**T, where T is an upper quasi-triangular matrix (the
 *     Schur form), and Z is the orthogonal matrix of Schur vectors.
 *
 *     Optionally Z may be postmultiplied into an input orthogonal
@@ -151,6 +151,11 @@
 *
 *                If INFO .GT. 0 and WANTZ is .FALSE., then Z is not
 *                accessed.
+*
+*     ================================================================
+*     Based on contributions by
+*        Karen Braman and Ralph Byers, Department of Mathematics,
+*        University of Kansas, USA
 *
 *     ================================================================
 *     References:

@@ -1,8 +1,8 @@
       SUBROUTINE DLAQR1( N, H, LDH, SR1, SI1, SR2, SI2, V )
 *
 *  -- LAPACK auxiliary routine (version 3.1) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.
-*     July 06, 2006
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     October 2006
 *
 *     .. Scalar Arguments ..
       DOUBLE PRECISION   SI1, SI2, SR1, SR2
@@ -47,7 +47,12 @@
 *              A scalar multiple of the first column of the
 *              matrix K in (*).
 *
-*       ================================================================
+*     ================================================================
+*     Based on contributions by
+*        Karen Braman and Ralph Byers, Department of Mathematics,
+*        University of Kansas, USA
+*
+*     ================================================================
 *
 *     .. Parameters ..
       DOUBLE PRECISION   ZERO

@@ -1,8 +1,8 @@
       INTEGER FUNCTION IPARMQ( ISPEC, NAME, OPTS, N, ILO, IHI, LWORK )
 *
 *  -- LAPACK auxiliary routine (version 3.1) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.
-*     July 06, 2006
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     October 2006
 *     
 *     .. Scalar Arguments ..
       INTEGER            IHI, ILO, ISPEC, LWORK, N
@@ -23,7 +23,7 @@
 *              return.
 *
 *              ISPEC=12: (INMIN)  Matrices of order nmin or less
-*                        are sent directly to LAHQR, the implicit
+*                        are sent directly to xLAHQR, the implicit
 *                        double shift QR algorithm.  NMIN must be
 *                        at least 11.
 *
@@ -41,34 +41,34 @@
 *                        then the next QR sweep is skipped and early
 *                        deflation is applied immediately to the
 *                        remaining active diagonal block.  Setting
-*                        IPARMQ(ISPEC=3) = 0 causes TTQRE to skip a
+*                        IPARMQ(ISPEC=14) = 0 causes TTQRE to skip a
 *                        multi-shift QR sweep whenever early deflation
 *                        finds a converged eigenvalue.  Setting
-*                        IPARMQ(ISPEC=3) greater than or equal to 100
+*                        IPARMQ(ISPEC=14) greater than or equal to 100
 *                        prevents TTQRE from skipping a multi-shift
 *                        QR sweep.
 *
 *              ISPEC=15: (NSHFTS) The number of simultaneous shifts in
 *                        a multi-shift QR iteration.
 *
-*              ISPEC=16: (IACC22) IPARMQ is set to an integer value
-*                        between 0 and 3 with the following meanings.
+*              ISPEC=16: (IACC22) IPARMQ is set to 0, 1 or 2 with the
+*                        following meanings.
 *                        0:  During the multi-shift QR sweep,
-*                            TTSWP does not accumulate reflections and
+*                            xLAQR5 does not accumulate reflections and
 *                            does not use matrix-matrix multiply to
 *                            update the far-from-diagonal matrix
 *                            entries.
 *                        1:  During the multi-shift QR sweep,
-*                            TTSWP accumulates reflections and uses
+*                            xLAQR5 and/or xLAQRaccumulates reflections and uses
 *                            matrix-matrix multiply to update the
 *                            far-from-diagonal matrix entries.
 *                        2:  During the multi-shift QR sweep.
-*                            TTSWP accumulates reflections and takes
+*                            xLAQR5 accumulates reflections and takes
 *                            advantage of 2-by-2 block structure during
 *                            matrix-matrix multiplies.
 *                        (If xTRMM is slower than xGEMM, then
-*                        IPARMQ(ISPEC=5)=1 may be more efficient than
-*                        IPARMQ(ISPEC=5)=2 despite the greater level of
+*                        IPARMQ(ISPEC=16)=1 may be more efficient than
+*                        IPARMQ(ISPEC=16)=2 despite the greater level of
 *                        arithmetic work implied by the latter choice.)
 *
 *       NAME    (input) character string
@@ -104,7 +104,7 @@
 *
 *       The best choices of most of the parameters depend
 *       in an ill-understood way on the relative execution
-*       rate of EARLY and TTSWP and on the nature of each
+*       rate of xLAQR3 and xLAQR5 and on the nature of each
 *       particular eigenvalue problem.  Experiment may be the
 *       only practical way to determine which choices are most
 *       effective.
@@ -113,13 +113,13 @@
 *       These defaults may be adjusted in order to attain better
 *       performance in any particular computational environment.
 *
-*       IPARMQ(ISPEC=12) The LAHQR vs TTQRE crossover point.
+*       IPARMQ(ISPEC=12) The xLAHQR vs xLAQR0 crossover point.
 *                        Default: 75. (Must be at least 11.)
 *
 *       IPARMQ(ISPEC=13) Recommended deflation window size.
 *                        This depends on ILO, IHI and NS, the
 *                        number of simultaneous shifts returned
-*                        by IPARMQ(ISPEC=4).  The default for
+*                        by IPARMQ(ISPEC=15).  The default for
 *                        (IHI-ILO+1).LE.500 is NS.  The default
 *                        for (IHI-ILO+1).GT.500 is 3*NS/2.
 *
@@ -143,15 +143,15 @@
 *
 *                    (+)  By default matrices of this order are
 *                         passed to the implicit double shift routine
-*                         LAHQR.  See IPARMQ(ISPEC=1) above.   These
+*                         xLAHQR.  See IPARMQ(ISPEC=12) above.   These
 *                         values of NS are used only in case of a rare
-*                         LAHQR failure.
+*                         xLAHQR failure.
 *
 *                    (**) The asterisks (**) indicate an ad-hoc
 *                         function increasing from 10 to 64.
 *
 *       IPARMQ(ISPEC=16) Select structured matrix multiply.
-*                        (See ISPEC=5 above for details.)
+*                        (See ISPEC=16 above for details.)
 *                        Default: 3.
 *
 *     ================================================================
@@ -198,7 +198,7 @@
 *
 *
 *        ===== Matrices of order smaller than NMIN get sent
-*        .     to LAHQR, the classic double shift algorithm.
+*        .     to xLAHQR, the classic double shift algorithm.
 *        .     This must be at least 11. ====
 *
          IPARMQ = NMIN

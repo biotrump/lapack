@@ -2,8 +2,8 @@
      $                   WORK, LWORK, INFO )
 *
 *  -- LAPACK driver routine (version 3.1) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.
-*     July 06, 2006
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     October 2006
 *
 *     .. Scalar Arguments ..
       INTEGER            IHI, ILO, INFO, LDH, LDZ, LWORK, N
@@ -192,6 +192,11 @@
 *
 *            ISPEC=5:  Select structured matrix multiply.
 *                      (See ILAENV for details.) Default: 3.
+*
+*     ================================================================
+*     Based on contributions by
+*        Karen Braman and Ralph Byers, Department of Mathematics,
+*        University of Kansas, USA
 *
 *     ================================================================
 *     References:

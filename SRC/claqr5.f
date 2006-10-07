@@ -3,8 +3,8 @@
      $                   WV, LDWV, NH, WH, LDWH )
 *
 *  -- LAPACK auxiliary routine (version 3.1) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.
-*     July 06, 2006
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     October 2006
 *
 *     .. Scalar Arguments ..
       INTEGER            IHIZ, ILOZ, KACC22, KBOT, KTOP, LDH, LDU, LDV,
@@ -121,15 +121,20 @@
 *             in the calling subroutine.  LDWV.GE.NV.
 *
 *
-*      ============================================================
-*      Reference:
+*     ================================================================
+*     Based on contributions by
+*        Karen Braman and Ralph Byers, Department of Mathematics,
+*        University of Kansas, USA
 *
-*      K. Braman, R. Byers and R. Mathias, The Multi-Shift QR
-*      Algorithm Part I: Maintaining Well Focused Shifts, and
-*      Level 3 Performance, SIAM Journal of Matrix Analysis,
-*      volume 23, pages 929--947, 2002.
+*     ============================================================
+*     Reference:
 *
-*      ============================================================
+*     K. Braman, R. Byers and R. Mathias, The Multi-Shift QR
+*     Algorithm Part I: Maintaining Well Focused Shifts, and
+*     Level 3 Performance, SIAM Journal of Matrix Analysis,
+*     volume 23, pages 929--947, 2002.
+*
+*     ============================================================
 *     .. Parameters ..
       COMPLEX            ZERO, ONE
       PARAMETER          ( ZERO = ( 0.0e0, 0.0e0 ),
@@ -304,7 +309,7 @@
                         VT( 3 ) = VT( 3 ) / SCL
                      END IF
 *
-*                    ==== The following is the traditional (and
+*                    ==== The following is the traditional and
 *                    .    conservative two-small-subdiagonals
 *                    .    test.  ====
 *                    .
@@ -518,9 +523,9 @@
 *              .    criterion and the Ahues & Tisseur (LAWN 122, 1997)
 *              .    criteria both be satisfied.  The latter improves
 *              .    accuracy in some examples. Falling back on an
-*              .    alternate convergence criterion when TST1 = 0 or
-*              .    TST2 = zero (as done here) is traditional but
-*              .    probably unnecessary. ====
+*              .    alternate convergence criterion when TST1 or TST2
+*              .    is zero (as done here) is traditional but probably
+*              .    unnecessary. ====
 *
                IF( H( K+1, K ).NE.ZERO ) THEN
                   TST1 = CABS1( H( K, K ) ) + CABS1( H( K+1, K+1 ) )

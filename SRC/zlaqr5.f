@@ -3,8 +3,8 @@
      $                   WV, LDWV, NH, WH, LDWH )
 *
 *  -- LAPACK auxiliary routine (version 3.1) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.
-*     July 06, 2006
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     October 2006
 *
 *     .. Scalar Arguments ..
       INTEGER            IHIZ, ILOZ, KACC22, KBOT, KTOP, LDH, LDU, LDV,
@@ -120,6 +120,10 @@
 *             LDWV is the leading dimension of WV as declared in the
 *             in the calling subroutine.  LDWV.GE.NV.
 *
+*     ================================================================
+*     Based on contributions by
+*        Karen Braman and Ralph Byers, Department of Mathematics,
+*        University of Kansas, USA
 *
 *      ============================================================
 *      Reference:
@@ -304,7 +308,7 @@
                         VT( 3 ) = VT( 3 ) / SCL
                      END IF
 *
-*                    ==== The following is the traditional (and
+*                    ==== The following is the traditional and
 *                    .    conservative two-small-subdiagonals
 *                    .    test.  ====
 *                    .
@@ -518,9 +522,9 @@
 *              .    criterion and the Ahues & Tisseur (LAWN 122, 1997)
 *              .    criteria both be satisfied.  The latter improves
 *              .    accuracy in some examples. Falling back on an
-*              .    alternate convergence criterion when TST1 = 0 or
-*              .    TST2 = zero (as done here) is traditional but
-*              .    probably unnecessary. ====
+*              .    alternate convergence criterion when TST1 or TST2
+*              .    is zero (as done here) is traditional but probably
+*              .    unnecessary. ====
 *
                IF( H( K+1, K ).NE.ZERO ) THEN
                   TST1 = CABS1( H( K, K ) ) + CABS1( H( K+1, K+1 ) )

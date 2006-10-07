@@ -3,8 +3,8 @@
      $                   LDT, NV, WV, LDWV, WORK, LWORK )
 *
 *  -- LAPACK auxiliary routine (version 3.1) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.
-*     July 06, 2006
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     October 2006
 *
 *     .. Scalar Arguments ..
       INTEGER            IHIZ, ILOZ, KBOT, KTOP, LDH, LDT, LDV, LDWV,
@@ -148,6 +148,11 @@
 *          in WORK(1).  No error message related to LWORK is issued
 *          by XERBLA.  Neither H nor Z are accessed.
 *
+*     ================================================================
+*     Based on contributions by
+*        Karen Braman and Ralph Byers, Department of Mathematics,
+*        University of Kansas, USA
+*
 *     ==================================================================
 *     .. Parameters ..
       DOUBLE PRECISION   ZERO, ONE
@@ -247,7 +252,8 @@
          SI( KWTOP ) = ZERO
          NS = 1
          ND = 0
-         IF( ABS( S ).LE.ULP*( ABS( H( KWTOP, KWTOP ) ) ) ) THEN
+         IF( ABS( S ).LE.MAX( SMLNUM, ULP*ABS( H( KWTOP, KWTOP ) ) ) )
+     $        THEN
             NS = 0
             ND = 1
             IF( KWTOP.GT.KTOP )

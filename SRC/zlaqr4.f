@@ -2,8 +2,8 @@
      $                   IHIZ, Z, LDZ, WORK, LWORK, INFO )
 *
 *  -- LAPACK auxiliary routine (version 3.1) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.
-*     July 06, 2006
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     October 2006
 *
 *     .. Scalar Arguments ..
       INTEGER            IHI, IHIZ, ILO, ILOZ, INFO, LDH, LDZ, LWORK, N
@@ -140,6 +140,11 @@
 *
 *                If INFO .GT. 0 and WANTZ is .FALSE., then Z is not
 *                accessed.
+*
+*     ================================================================
+*     Based on contributions by
+*        Karen Braman and Ralph Byers, Department of Mathematics,
+*        University of Kansas, USA
 *
 *     ================================================================
 *     References:
