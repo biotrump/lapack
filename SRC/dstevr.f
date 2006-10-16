@@ -25,7 +25,7 @@
 *  eigenvectors can be selected by specifying either a range of values
 *  or a range of indices for the desired eigenvalues.
 *
-*  Whenever possible, DSTEVR calls SSTEGR to compute the
+*  Whenever possible, DSTEVR calls DSTEGR to compute the
 *  eigenspectrum using Relatively Robust Representations.  DSTEGR
 *  computes eigenvalues by the dqds algorithm, while orthogonal
 *  eigenvectors are computed from various "good" L D L^T representations
@@ -51,9 +51,9 @@
 *  UC Berkeley, May 1997.
 *
 *
-*  Note 1 : DSTEVR calls SSTEGR when the full spectrum is requested
+*  Note 1 : DSTEVR calls DSTEGR when the full spectrum is requested
 *  on machines which conform to the ieee-754 floating point standard.
-*  DSTEVR calls SSTEBZ and SSTEIN on non-ieee machines and
+*  DSTEVR calls DSTEBZ and DSTEIN on non-ieee machines and
 *  when partial spectrum requests are made.
 *
 *  Normal execution of DSTEGR may create NaNs and infinities and
@@ -341,9 +341,26 @@
             VUU = VU*SIGMA
          END IF
       END IF
+
+*     Initialize indices into workspaces.  Note: These indices are used only
+*     if DSTERF or DSTEGR fail.
+
+*     IWORK(INDIBL:INDIBL+M-1) corresponds to IBLOCK in DSTEBZ and
+*     stores the block indices of each of the M<=N eigenvalues.
+      INDIBL = 1
+*     IWORK(INDISP:INDISP+NSPLIT-1) corresponds to ISPLIT in DSTEBZ and
+*     stores the starting and finishing indices of each block.
+      INDISP = INDIBL + N
+*     IWORK(INDIFL:INDIFL+N-1) stores the indices of eigenvectors
+*     that corresponding to eigenvectors that fail to converge in
+*     DSTEIN.  This information is discarded; if any fail, the driver
+*     returns INFO > 0.
+      INDIFL = INDISP + N
+*     INDIWO is the offset of the remaining integer workspace.
+      INDIWO = INDISP + N
 *
 *     If all eigenvalues are desired, then
-*     call DSTERF or SSTEGR.  If this fails for some eigenvalue, then
+*     call DSTERF or DSTEGR.  If this fails for some eigenvalue, then
 *     try DSTEBZ.
 *
 *
@@ -372,17 +389,14 @@
          INFO = 0
       END IF
 *
-*     Otherwise, call DSTEBZ and, if eigenvectors are desired, SSTEIN.
+*     Otherwise, call DSTEBZ and, if eigenvectors are desired, DSTEIN.
 *
       IF( WANTZ ) THEN
          ORDER = 'B'
       ELSE
          ORDER = 'E'
       END IF
-      INDIBL = 1
-      INDISP = INDIBL + N
-      INDIFL = INDISP + N
-      INDIWO = INDIFL + N
+
       CALL DSTEBZ( RANGE, ORDER, N, VLL, VUU, IL, IU, ABSTOL, D, E, M,
      $             NSPLIT, W, IWORK( INDIBL ), IWORK( INDISP ), WORK,
      $             IWORK( INDIWO ), INFO )

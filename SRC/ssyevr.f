@@ -207,6 +207,8 @@
 *     Osni Marques, LBNL/NERSC, USA
 *     Ken Stanley, Computer Science Division, University of
 *       California at Berkeley, USA
+*     Jason Riedy, Computer Science Division, University of
+*       California at Berkeley, USA
 *
 * =====================================================================
 *
@@ -371,17 +373,46 @@
             VUU = VU*SIGMA
          END IF
       END IF
+
+*     Initialize indices into workspaces.  Note: The IWORK indices are
+*     used only if SSTERF or SSTEGR fail.
+
+*     WORK(INDTAU:INDTAU+N-1) stores the scalar factors of the
+*     elementary reflectors used in SSYTRD.
+      INDTAU = 1
+*     WORK(INDD:INDD+N-1) stores the tridiagonal's diagonal entries.
+      INDD = INDTAU + N
+*     WORK(INDE:INDE+N-1) stores the off-diagonal entries of the
+*     tridiagonal matrix from SSYTRD.
+      INDE = INDD + N
+*     WORK(INDDD:INDDD+N-1) is a copy of the diagonal entries over
+*     -written by SSTEGR (the SSTERF path copies the diagonal to W).
+      INDDD = INDE + N
+*     WORK(INDEE:INDEE+N-1) is a copy of the off-diagonal entries over
+*     -written while computing the eigenvalues in SSTERF and SSTEGR.
+      INDEE = INDDD + N
+*     INDWK is the starting offset of the left-over workspace, and
+*     LLWORK is the remaining workspace size.
+      INDWK = INDEE + N
+      LLWORK = LWORK - INDWK + 1
+
+*     IWORK(INDIBL:INDIBL+M-1) corresponds to IBLOCK in SSTEBZ and
+*     stores the block indices of each of the M<=N eigenvalues.
+      INDIBL = 1
+*     IWORK(INDISP:INDISP+NSPLIT-1) corresponds to ISPLIT in SSTEBZ and
+*     stores the starting and finishing indices of each block.
+      INDISP = INDIBL + N
+*     IWORK(INDIFL:INDIFL+N-1) stores the indices of eigenvectors
+*     that corresponding to eigenvectors that fail to converge in
+*     SSTEIN.  This information is discarded; if any fail, the driver
+*     returns INFO > 0.
+      INDIFL = INDISP + N
+*     INDIWO is the offset of the remaining integer workspace.
+      INDIWO = INDISP + N
+
 *
 *     Call SSYTRD to reduce symmetric matrix to tridiagonal form.
 *
-      INDTAU = 1
-      INDE = INDTAU + N
-      INDD = INDE + N
-      INDEE = INDD + N
-      INDDD = INDEE + N
-      INDIFL = INDDD + N
-      INDWK = INDIFL + N
-      LLWORK = LWORK - INDWK + 1
       CALL SSYTRD( UPLO, N, A, LDA, WORK( INDD ), WORK( INDE ),
      $             WORK( INDTAU ), WORK( INDWK ), LLWORK, IINFO )
 *
@@ -423,6 +454,8 @@
 *
 *
          IF( INFO.EQ.0 ) THEN
+*           Everything worked.  Skip SSTEBZ/SSTEIN.  IWORK(:) are
+*           undefined.
             M = N
             GO TO 30
          END IF
@@ -437,10 +470,7 @@
       ELSE
          ORDER = 'E'
       END IF
-      INDIFL = 1
-      INDIBL = INDIFL + N
-      INDISP = INDIBL + N
-      INDIWO = INDISP + N
+
       CALL SSTEBZ( RANGE, ORDER, N, VLL, VUU, IL, IU, ABSTLL,
      $             WORK( INDD ), WORK( INDE ), M, NSPLIT, W,
      $             IWORK( INDIBL ), IWORK( INDISP ), WORK( INDWK ),
@@ -463,6 +493,7 @@
 *
 *     If matrix was scaled, then rescale eigenvalues appropriately.
 *
+*  Jump here if SSTEGR/SSTEIN succeeded.
    30 CONTINUE
       IF( ISCALE.EQ.1 ) THEN
          IF( INFO.EQ.0 ) THEN
@@ -474,7 +505,9 @@
       END IF
 *
 *     If eigenvalues are not in order, then sort them, along with
-*     eigenvectors.
+*     eigenvectors.  Note: We do not sort the IFAIL portion of IWORK.
+*     It may not be initialized (if SSTEGR/SSTEIN succeeded), and we do
+*     not return this detailed information to the user.
 *
       IF( WANTZ ) THEN
          DO 50 J = 1, M - 1
@@ -488,11 +521,8 @@
    40       CONTINUE
 *
             IF( I.NE.0 ) THEN
-               ITMP1 = IWORK( INDIBL+I-1 )
                W( I ) = W( J )
-               IWORK( INDIBL+I-1 ) = IWORK( INDIBL+J-1 )
                W( J ) = TMP1
-               IWORK( INDIBL+J-1 ) = ITMP1
                CALL SSWAP( N, Z( 1, I ), 1, Z( 1, J ), 1 )
             END IF
    50    CONTINUE

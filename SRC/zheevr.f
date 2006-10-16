@@ -223,6 +223,8 @@
 *     Osni Marques, LBNL/NERSC, USA
 *     Ken Stanley, Computer Science Division, University of
 *       California at Berkeley, USA
+*     Jason Riedy, Computer Science Division, University of
+*       California at Berkeley, USA
 *
 * =====================================================================
 *
@@ -237,8 +239,8 @@
       INTEGER            I, IEEEOK, IINFO, IMAX, INDIBL, INDIFL, INDISP,
      $                   INDIWO, INDRD, INDRDD, INDRE, INDREE, INDRWK,
      $                   INDTAU, INDWK, INDWKN, ISCALE, ITMP1, J, JJ,
-     $                   LIWMIN, LLWORK, LLWRKN, LRWMIN, LWKOPT, LWMIN,
-     $                   NB, NSPLIT
+     $                   LIWMIN, LLWORK, LLRWORK, LLWRKN, LRWMIN,
+     $                   LWKOPT, LWMIN, NB, NSPLIT
       DOUBLE PRECISION   ABSTLL, ANRM, BIGNUM, EPS, RMAX, RMIN, SAFMIN,
      $                   SIGMA, SMLNUM, TMP1, VLL, VUU
 *     ..
@@ -394,18 +396,52 @@
             VUU = VU*SIGMA
          END IF
       END IF
+
+*     Initialize indices into workspaces.  Note: The IWORK indices are
+*     used only if DSTERF or ZSTEGR fail.
+
+*     WORK(INDTAU:INDTAU+N-1) stores the complex scalar factors of the
+*     elementary reflectors used in ZHETRD.
+      INDTAU = 1
+*     INDWK is the starting offset of the remaining complex workspace,
+*     and LLWORK is the remaining complex workspace size.
+      INDWK = INDTAU + N
+      LLWORK = LWORK - INDWK + 1
+
+*     RWORK(INDRD:INDRD+N-1) stores the real tridiagonal's diagonal
+*     entries.
+      INDRD = 1
+*     RWORK(INDRE:INDRE+N-1) stores the off-diagonal entries of the
+*     tridiagonal matrix from ZHETRD.
+      INDRE = INDRD + N
+*     RWORK(INDRDD:INDRDD+N-1) is a copy of the diagonal entries over
+*     -written by ZSTEGR (the DSTERF path copies the diagonal to W).
+      INDRDD = INDRE + N
+*     RWORK(INDREE:INDREE+N-1) is a copy of the off-diagonal entries over
+*     -written while computing the eigenvalues in DSTERF and ZSTEGR.
+      INDREE = INDRDD + N
+*     INDRWK is the starting offset of the left-over real workspace, and
+*     LLRWORK is the remaining workspace size.
+      INDRWK = INDREE + N
+      LLRWORK = LRWORK - INDRWK + 1
+
+*     IWORK(INDIBL:INDIBL+M-1) corresponds to IBLOCK in DSTEBZ and
+*     stores the block indices of each of the M<=N eigenvalues.
+      INDIBL = 1
+*     IWORK(INDISP:INDISP+NSPLIT-1) corresponds to ISPLIT in DSTEBZ and
+*     stores the starting and finishing indices of each block.
+      INDISP = INDIBL + N
+*     IWORK(INDIFL:INDIFL+N-1) stores the indices of eigenvectors
+*     that corresponding to eigenvectors that fail to converge in
+*     DSTEIN.  This information is discarded; if any fail, the driver
+*     returns INFO > 0.
+      INDIFL = INDISP + N
+*     INDIWO is the offset of the remaining integer workspace.
+      INDIWO = INDISP + N
+
 *
 *     Call ZHETRD to reduce Hermitian matrix to tridiagonal form.
 *
-      INDTAU = 1
-      INDWK = INDTAU + N
-*
-      INDRE = 1
-      INDRD = INDRE + N
-      INDREE = INDRD + N
-      INDRDD = INDREE + N
-      INDRWK = INDRDD + N
-      LLWORK = LWORK - INDWK + 1
       CALL ZHETRD( UPLO, N, A, LDA, RWORK( INDRD ), RWORK( INDRE ),
      $             WORK( INDTAU ), WORK( INDWK ), LLWORK, IINFO )
 *
@@ -430,7 +466,7 @@
             CALL ZSTEGR( JOBZ, 'A', N, RWORK( INDRDD ),
      $                   RWORK( INDREE ), VL, VU, IL, IU, ABSTOL, M, W,
      $                   Z, LDZ, ISUPPZ,
-     $                   RWORK( INDRWK ), LRWORK-INDRWK+1,
+     $                   RWORK( INDRWK ), LLRWORK,
      $                   IWORK, LIWORK, INFO )
 *
 *           Apply unitary matrix used in reduction to tridiagonal
@@ -461,10 +497,7 @@
       ELSE
          ORDER = 'E'
       END IF
-      INDIFL = 1
-      INDIBL = INDIFL + N
-      INDISP = INDIBL + N
-      INDIWO = INDISP + N
+
       CALL DSTEBZ( RANGE, ORDER, N, VLL, VUU, IL, IU, ABSTLL,
      $             RWORK( INDRD ), RWORK( INDRE ), M, NSPLIT, W,
      $             IWORK( INDIBL ), IWORK( INDISP ), RWORK( INDRWK ),

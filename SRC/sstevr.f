@@ -199,6 +199,8 @@
 *     Osni Marques, LBNL/NERSC, USA
 *     Ken Stanley, Computer Science Division, University of
 *       California at Berkeley, USA
+*     Jason Riedy, Computer Science Division, University of
+*       California at Berkeley, USA
 *
 *  =====================================================================
 *
@@ -341,6 +343,23 @@
             VUU = VU*SIGMA
          END IF
       END IF
+
+*     Initialize indices into workspaces.  Note: These indices are used only
+*     if SSTERF or SSTEGR fail.
+
+*     IWORK(INDIBL:INDIBL+M-1) corresponds to IBLOCK in SSTEBZ and
+*     stores the block indices of each of the M<=N eigenvalues.
+      INDIBL = 1
+*     IWORK(INDISP:INDISP+NSPLIT-1) corresponds to ISPLIT in SSTEBZ and
+*     stores the starting and finishing indices of each block.
+      INDISP = INDIBL + N
+*     IWORK(INDIFL:INDIFL+N-1) stores the indices of eigenvectors
+*     that corresponding to eigenvectors that fail to converge in
+*     SSTEIN.  This information is discarded; if any fail, the driver
+*     returns INFO > 0.
+      INDIFL = INDISP + N
+*     INDIWO is the offset of the remaining integer workspace.
+      INDIWO = INDISP + N
 *
 *     If all eigenvalues are desired, then
 *     call SSTERF or SSTEGR.  If this fails for some eigenvalue, then
@@ -379,10 +398,7 @@
       ELSE
          ORDER = 'E'
       END IF
-      INDIBL = 1
-      INDISP = INDIBL + N
-      INDIFL = INDISP + N
-      INDIWO = INDIFL + N
+
       CALL SSTEBZ( RANGE, ORDER, N, VLL, VUU, IL, IU, ABSTOL, D, E, M,
      $             NSPLIT, W, IWORK( INDIBL ), IWORK( INDISP ), WORK,
      $             IWORK( INDIWO ), INFO )
@@ -420,11 +436,8 @@
    20       CONTINUE
 *
             IF( I.NE.0 ) THEN
-               ITMP1 = IWORK( I )
                W( I ) = W( J )
-               IWORK( I ) = IWORK( J )
                W( J ) = TMP1
-               IWORK( J ) = ITMP1
                CALL SSWAP( N, Z( 1, I ), 1, Z( 1, J ), 1 )
             END IF
    30    CONTINUE
