@@ -1902,11 +1902,8 @@
      $                   IWORK, INFO )
             IF( INFO.NE.0 )
      $         WRITE( NOUT, FMT = 9980 )'CGEEV', INFO
-            IF( INFO.NE.0 )
-     $         RETURN
          END IF
          WRITE( NOUT, FMT = 9973 )
-*         RETURN
          GO TO 10
 *
       ELSE IF( LSAMEN( 3, C3, 'CES' ) ) THEN
