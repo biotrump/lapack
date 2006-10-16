@@ -288,8 +288,8 @@
       END IF
 *
       IF( INFO.EQ.0 ) THEN
-         NB = ILAENV( 1, 'ZHETRD', UPLO, N, -1, -1, -1 )
-         NB = MAX( NB, ILAENV( 1, 'ZUNMTR', UPLO, N, -1, -1, -1 ) )
+         NB = ILAENV( 1, 'DSYTRD', UPLO, N, -1, -1, -1 )
+         NB = MAX( NB, ILAENV( 1, 'DORMTR', UPLO, N, -1, -1, -1 ) )
          LWKOPT = MAX( ( NB+1 )*N, LWMIN )
          WORK( 1 ) = LWKOPT
          IWORK( 1 ) = LIWMIN
