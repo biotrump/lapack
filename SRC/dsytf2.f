@@ -81,8 +81,7 @@
 *    Replace l.211 and l.383
 *         IF( MAX( ABSAKK, COLMAX ).EQ.ZERO ) THEN
 *    by
-*         IF( (MAX( ABSAKK, COLMAX ).EQ.ZERO) .OR. 
-*     $       (ABSAKK .NE. ABSAKK) ) THEN
+*         IF( (MAX( ABSAKK, COLMAX ).EQ.ZERO) .OR. DISNAN(ABSAKK) ) THEN
 *
 *  01-01-96 - Based on modifications by
 *    J. Lewis, Boeing Computer Services Company
@@ -139,9 +138,9 @@
      $                   ROWMAX, T, WK, WKM1, WKP1
 *     ..
 *     .. External Functions ..
-      LOGICAL            LSAME
+      LOGICAL            LSAME, DISNAN
       INTEGER            IDAMAX
-      EXTERNAL           LSAME, IDAMAX
+      EXTERNAL           LSAME, IDAMAX, DISNAN
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           DSCAL, DSWAP, DSYR, XERBLA
@@ -202,10 +201,9 @@
             COLMAX = ZERO
          END IF
 *
-         IF( (MAX( ABSAKK, COLMAX ).EQ.ZERO) .OR. 
-     $       (ABSAKK .NE. ABSAKK) ) THEN
+         IF( (MAX( ABSAKK, COLMAX ).EQ.ZERO) .OR. DISNAN(ABSAKK) ) THEN
 *
-*           Column K is zero: set INFO and continue
+*           Column K is zero or contains a NaN: set INFO and continue
 *
             IF( INFO.EQ.0 )
      $         INFO = K
@@ -371,10 +369,9 @@
             COLMAX = ZERO
          END IF
 *
-         IF( (MAX( ABSAKK, COLMAX ).EQ.ZERO) .OR. 
-     $       (ABSAKK .NE. ABSAKK) ) THEN
+         IF( (MAX( ABSAKK, COLMAX ).EQ.ZERO) .OR. DISNAN(ABSAKK) ) THEN
 *
-*           Column K is zero: set INFO and continue
+*           Column K is zero or contains a NaN: set INFO and continue
 *
             IF( INFO.EQ.0 )
      $         INFO = K

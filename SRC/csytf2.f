@@ -130,9 +130,9 @@
       COMPLEX            D11, D12, D21, D22, R1, T, WK, WKM1, WKP1, Z
 *     ..
 *     .. External Functions ..
-      LOGICAL            LSAME
+      LOGICAL            LSAME, CISNAN
       INTEGER            ICAMAX
-      EXTERNAL           LSAME, ICAMAX
+      EXTERNAL           LSAME, ICAMAX, CISNAN
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           CSCAL, CSWAP, CSYR, XERBLA
@@ -199,9 +199,9 @@
             COLMAX = ZERO
          END IF
 *
-         IF( MAX( ABSAKK, COLMAX ).EQ.ZERO ) THEN
+         IF( MAX( ABSAKK, COLMAX ).EQ.ZERO .OR. CISNAN(ABSAKK) ) THEN
 *
-*           Column K is zero: set INFO and continue
+*           Column K is zero or NaN: set INFO and continue
 *
             IF( INFO.EQ.0 )
      $         INFO = K
@@ -367,9 +367,9 @@
             COLMAX = ZERO
          END IF
 *
-         IF( MAX( ABSAKK, COLMAX ).EQ.ZERO ) THEN
+         IF( MAX( ABSAKK, COLMAX ).EQ.ZERO .OR. CISNAN(ABSAKK) ) THEN
 *
-*           Column K is zero: set INFO and continue
+*           Column K is zero or NaN: set INFO and continue
 *
             IF( INFO.EQ.0 )
      $         INFO = K
