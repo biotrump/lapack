@@ -2,10 +2,9 @@
      $                   LDVT, DSIGMA, U2, LDU2, VT2, LDVT2, IDXP, IDX,
      $                   IDXC, IDXQ, COLTYP, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.0) --
-*     Univ. of Tennessee, Oak Ridge National Lab, Argonne National Lab,
-*     Courant Institute, NAG Ltd., and Rice University
-*     October 31, 1999
+*  -- LAPACK auxiliary routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     October 2006
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, K, LDU, LDU2, LDVT, LDVT2, NL, NR, SQRE

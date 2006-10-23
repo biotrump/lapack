@@ -3,10 +3,9 @@
      $                   BP, WORK, NWORK, RWORK, LRWORK, IWORK, LIWORK,
      $                   RESULT, INFO )
 *
-*  -- LAPACK test routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     September 30, 1994
+*  -- LAPACK test routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     October 2006
 *
 **********************************************************************
 *

@@ -1,10 +1,9 @@
       SUBROUTINE ZTIMSP( LINE, NN, NVAL, NNS, NSVAL, LA, TIMMIN, A, B,
      $                   WORK, IWORK, RESLTS, LDR1, LDR2, LDR3, NOUT )
 *
-*  -- LAPACK timing routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     March 31, 1993
+*  -- LAPACK timing routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     October 2006
 *
 *     .. Scalar Arguments ..
       CHARACTER*80       LINE

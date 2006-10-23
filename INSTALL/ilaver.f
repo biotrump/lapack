@@ -1,9 +1,8 @@
       SUBROUTINE ILAVER ( VERS_MAJOR, VERS_MINOR, VERS_PATCH )
 *     
-*  -- LAPACK routine (version 3) --
-*     Univ. of Tennessee, Oak Ridge National Lab, Argonne National Lab,
-*     Courant Institute, NAG Ltd., and Rice University
-*     March 17, 2005
+*  -- LAPACK routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     October 2006
 *     ..
 *
 *  Purpose

@@ -2,10 +2,9 @@
      $                   PNAMES, NPARMS, NP1, NP2, NP3, NP4, OPS, LDO1,
      $                   LDO2, TIMES, LDT1, LDT2, RWORK, LLWORK, NOUT )
 *
-*  -- LAPACK timing routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     February 29, 1992
+*  -- LAPACK timing routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     October 2006
 *
 *     .. Scalar Arguments ..
       CHARACTER*( * )    SUBNAM

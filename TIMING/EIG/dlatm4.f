@@ -1,10 +1,9 @@
       SUBROUTINE DLATM4( ITYPE, N, NZ1, NZ2, ISIGN, AMAGN, RCOND,
      $                   TRIANG, IDIST, ISEED, A, LDA )
 *
-*  -- LAPACK auxiliary test routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     September 30, 1994
+*  -- LAPACK auxiliary test routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     October 2006
 *
 *     .. Scalar Arguments ..
       INTEGER            IDIST, ISIGN, ITYPE, LDA, N, NZ1, NZ2

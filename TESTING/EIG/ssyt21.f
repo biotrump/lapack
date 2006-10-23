@@ -1,10 +1,9 @@
       SUBROUTINE SSYT21( ITYPE, UPLO, N, KBAND, A, LDA, D, E, U, LDU, V,
      $                   LDV, TAU, WORK, RESULT )
 *
-*  -- LAPACK test routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     September 30, 1994
+*  -- LAPACK test routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     October 2006
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO

@@ -2,10 +2,9 @@
      $                   LDAVAL, TIMMIN, A, COPYA, TAU, WORK, RWORK,
      $                   IWORK, RESLTS, LDR1, LDR2, NOUT )
 *
-*  -- LAPACK timing routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     December 22, 1999
+*  -- LAPACK timing routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     October 2006
 *
 *     Rewritten for timing qp3 code.
 *

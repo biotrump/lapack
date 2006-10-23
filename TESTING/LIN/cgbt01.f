@@ -1,10 +1,9 @@
       SUBROUTINE CGBT01( M, N, KL, KU, A, LDA, AFAC, LDAFAC, IPIV, WORK,
      $                   RESID )
 *
-*  -- LAPACK test routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     February 29, 1992
+*  -- LAPACK test routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     October 2006
 *
 *     .. Scalar Arguments ..
       INTEGER            KL, KU, LDA, LDAFAC, M, N

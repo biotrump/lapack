@@ -2,8 +2,8 @@
      $                  LDVR, WORK, LWORK, INFO )
 *
 *  -- LAPACK driver routine (version 3.1) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.
-*     July 5, 2006
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     October 2006
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBVL, JOBVR

@@ -2,10 +2,9 @@
      $                   M, W, Z, LDZ, ISUPPZ, WORK, LWORK, IWORK,
      $                   LIWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     June 30, 1999
+*  -- LAPACK computational routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     October 2006
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBZ, RANGE

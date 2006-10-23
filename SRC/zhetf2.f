@@ -1,8 +1,8 @@
       SUBROUTINE ZHETF2( UPLO, N, A, LDA, IPIV, INFO )
 *
 *  -- LAPACK routine (version 3.1) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     September 29, 2006
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     October 2006
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO

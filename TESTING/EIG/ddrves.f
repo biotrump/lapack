@@ -2,10 +2,9 @@
      $                   NOUNIT, A, LDA, H, HT, WR, WI, WRT, WIT, VS,
      $                   LDVS, RESULT, WORK, NWORK, IWORK, BWORK, INFO )
 *
-*  -- LAPACK test routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     September 30, 1994
+*  -- LAPACK test routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     October 2006
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDVS, NOUNIT, NSIZES, NTYPES, NWORK

@@ -1,9 +1,8 @@
       INTEGER FUNCTION ILA_LEN_TRIM(SUBNAM)
 C
-C  -- LAPACK auxiliary routine (version 3.0) --
-C     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-C     Courant Institute, Argonne National Lab, and Rice University
-C     28 August, 2006
+C  -- LAPACK auxiliary routine (version 3.1) --
+C     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+C     October 2006
 C
 C     .. Scalar Arguments ..
       CHARACTER*(*) SUBNAM

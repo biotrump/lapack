@@ -1,9 +1,8 @@
       SUBROUTINE DTIMMG( IFLAG, M, N, A, LDA, KL, KU )
 *
-*  -- LAPACK timing routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     September 30, 1994
+*  -- LAPACK timing routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     October 2006
 *
 *     .. Scalar Arguments ..
       INTEGER            IFLAG, KL, KU, LDA, M, N

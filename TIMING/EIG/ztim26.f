@@ -4,10 +4,9 @@
      $                   IWORK, LLWORK, TIMES, LDT1, LDT2, LDT3, OPCNTS,
      $                   LDO1, LDO2, LDO3, INFO )
 *
-*  -- LAPACK timing routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     June 30, 1999
+*  -- LAPACK timing routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     October 2006
 *
 *     .. Scalar Arguments ..
       CHARACTER*80       LINE

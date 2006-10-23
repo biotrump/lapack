@@ -1,10 +1,9 @@
       SUBROUTINE STRT05( UPLO, TRANS, DIAG, N, NRHS, A, LDA, B, LDB, X,
      $                   LDX, XACT, LDXACT, FERR, BERR, RESLTS )
 *
-*  -- LAPACK test routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     February 29, 1992
+*  -- LAPACK test routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     October 2006
 *
 *     .. Scalar Arguments ..
       CHARACTER          DIAG, TRANS, UPLO

@@ -3,10 +3,9 @@
      $                   B, COPYB, S, COPYS, OPCTBL, TIMTBL, FLPTBL,
      $                   WORK, IWORK, NOUT )
 *
-*  -- LAPACK timing routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     December 22, 1999
+*  -- LAPACK timing routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     October 2006
 *
 *     .. Scalar Arguments ..
       CHARACTER*80       LINE

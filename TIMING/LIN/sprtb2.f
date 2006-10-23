@@ -1,10 +1,9 @@
       SUBROUTINE SPRTB2( LAB1, LAB2, LAB3, NN, NVAL, NLDA, RESLTS, LDR1,
      $                   LDR2, NOUT )
 *
-*  -- LAPACK timing routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     March 31, 1993 
+*  -- LAPACK timing routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     October 2006
 *
 *     .. Scalar Arguments ..
       CHARACTER*( * )    LAB1, LAB2, LAB3

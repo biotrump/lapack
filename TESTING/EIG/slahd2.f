@@ -1,9 +1,8 @@
       SUBROUTINE SLAHD2( IOUNIT, PATH )
 *
 *  -- LAPACK auxiliary test routine (version 2.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     September 30, 1994
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     October 2006
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH

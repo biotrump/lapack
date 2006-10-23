@@ -1,7 +1,7 @@
       SUBROUTINE XERBLA_ARRAY(SRNAME_ARRAY, SRNAME_LEN, INFO)
 !
-!  -- LAPACK auxiliary routine (version 3.0) --
-!     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
+!  -- LAPACK auxiliary routine (version 3.1) --
+!     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
 !     September 19, 2006
 !
       IMPLICIT NONE
