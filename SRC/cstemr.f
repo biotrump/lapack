@@ -461,6 +461,10 @@
       IINDWK = 3*N + 1
 *
 *     Scale matrix to allowable range, if necessary.
+*     The allowable range is related to the PIVMIN parameter; see the
+*     comments in SLARRD.  The preference for scaling small values
+*     up is heuristic; we expect users' matrices not to be close to the
+*     RMAX threshold.
 *
       SCALE = ONE
       TNRM = SLANST( 'M', N, D, E )
