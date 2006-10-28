@@ -65,7 +65,8 @@ DZLAUX = \
    dlaed7.o dlaed8.o dlaed9.o dlaeda.o dlaev2.o dlagtf.o \
    dlagts.o dlamrg.o dlanst.o \
    dlapy2.o dlapy3.o dlarnv.o \
-   dlarrb.o dlarre.o dlarrf.o \
+   dlarra.o dlarrb.o dlarrc.o dlarrd.o dlarre.o dlarrf.o dlarrj.o \
+   dlarrk.o dlarrr.o dlaneg.o \
    dlartg.o dlaruv.o dlas2.o  dlascl.o \
    dlasd0.o dlasd1.o dlasd2.o dlasd3.o dlasd4.o dlasd5.o dlasd6.o \
    dlasd7.o dlasd8.o dlasda.o dlasdq.o dlasdt.o \
@@ -225,7 +226,7 @@ DLASRC = \
    dtgsja.o dtgsna.o dtgsy2.o dtgsyl.o dtpcon.o dtprfs.o dtptri.o \
    dtptrs.o \
    dtrcon.o dtrevc.o dtrexc.o dtrrfs.o dtrsen.o dtrsna.o dtrsyl.o \
-   dtrti2.o dtrtri.o dtrtrs.o dtzrqf.o dtzrzf.o
+   dtrti2.o dtrtri.o dtrtrs.o dtzrqf.o dtzrzf.o dstemr.o
 
 ZLASRC = \
    zbdsqr.o zgbbrd.o zgbcon.o zgbequ.o zgbrfs.o zgbsv.o  zgbsvx.o \
