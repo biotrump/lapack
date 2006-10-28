@@ -3,6 +3,7 @@
      $                   WA1, WA2, WA3, WR, U, LDU, V, VP, TAU, Z, WORK,
      $                   LWORK, RWORK, LRWORK, IWORK, LIWORK, RESULT,
      $                   INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK test routine (version 3.1) --
 *     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
@@ -72,9 +73,9 @@
 *     from CHETRD/CUNGTR or CHPTRD/CUPGTR ('V' option). It may
 *     also just compute eigenvalues ('N' option).
 *
-*     CSTEGR factors S as Z D1 Z* , where Z is the unitary
+*     CSTEMR factors S as Z D1 Z* , where Z is the unitary
 *     matrix of eigenvectors and D1 is a diagonal matrix with
-*     the eigenvalues on the diagonal ('I' option).  CSTEGR
+*     the eigenvalues on the diagonal ('I' option).  CSTEMR
 *     uses the Relatively Robust Representation whenever possible.
 *
 *  When CCHKST is called, a number of matrix "sizes" ("n's") and a
@@ -144,51 +145,51 @@
 *  (26)    | D1 - D2 | / ( |D1| ulp )           CSTEDC('V') and
 *                                               CSTEDC('N')
 *
-*  Test 27 is disabled at the moment because CSTEGR does not
+*  Test 27 is disabled at the moment because CSTEMR does not
 *  guarantee high relatvie accuracy.
 *
 *  (27)    max | D6(i) - WR(i) | / ( |D6(i)| omega ) ,
 *           i
 *          omega = 2 (2n-1) ULP (1 + 8 gamma**2) / (1 - gamma)**4
-*                                               CSTEGR('V', 'A')
+*                                               CSTEMR('V', 'A')
 *
 *  (28)    max | D6(i) - WR(i) | / ( |D6(i)| omega ) ,
 *           i
 *          omega = 2 (2n-1) ULP (1 + 8 gamma**2) / (1 - gamma)**4
-*                                               CSTEGR('V', 'I')
+*                                               CSTEMR('V', 'I')
 *
-*  Tests 29 through 34 are disable at present because @9pre)STEGR
+*  Tests 29 through 34 are disable at present because CSTEMR
 *  does not handle partial specturm requests.
 *
-*  (29)    | S - Z D Z* | / ( |S| n ulp )    CSTEGR('V', 'I')
+*  (29)    | S - Z D Z* | / ( |S| n ulp )    CSTEMR('V', 'I')
 *
-*  (30)    | I - ZZ* | / ( n ulp )           CSTEGR('V', 'I')
+*  (30)    | I - ZZ* | / ( n ulp )           CSTEMR('V', 'I')
 *
 *  (31)    ( max { min | WA2(i)-WA3(j) | } +
 *             i     j
 *            max { min | WA3(i)-WA2(j) | } ) / ( |D3| ulp )
 *             i     j
-*          CSTEGR('N', 'I') vs. CSTEGR('V', 'I')
+*          CSTEMR('N', 'I') vs. CSTEMR('V', 'I')
 *
-*  (32)    | S - Z D Z* | / ( |S| n ulp )    CSTEGR('V', 'V')
+*  (32)    | S - Z D Z* | / ( |S| n ulp )    CSTEMR('V', 'V')
 *
-*  (33)    | I - ZZ* | / ( n ulp )           CSTEGR('V', 'V')
+*  (33)    | I - ZZ* | / ( n ulp )           CSTEMR('V', 'V')
 *
 *  (34)    ( max { min | WA2(i)-WA3(j) | } +
 *             i     j
 *            max { min | WA3(i)-WA2(j) | } ) / ( |D3| ulp )
 *             i     j
-*          CSTEGR('N', 'V') vs. CSTEGR('V', 'V')
+*          CSTEMR('N', 'V') vs. CSTEMR('V', 'V')
 *
-*  (35)    | S - Z D Z* | / ( |S| n ulp )    CSTEGR('V', 'A')
+*  (35)    | S - Z D Z* | / ( |S| n ulp )    CSTEMR('V', 'A')
 *
-*  (36)    | I - ZZ* | / ( n ulp )           CSTEGR('V', 'A')
+*  (36)    | I - ZZ* | / ( n ulp )           CSTEMR('V', 'A')
 *
 *  (37)    ( max { min | WA2(i)-WA3(j) | } +
 *             i     j
 *            max { min | WA3(i)-WA2(j) | } ) / ( |D3| ulp )
 *             i     j
-*          CSTEGR('N', 'A') vs. CSTEGR('V', 'A')
+*          CSTEMR('N', 'A') vs. CSTEMR('V', 'A')
 *
 *  The "sizes" are specified by an array NN(1:NSIZES); the value of
 *  each element NN(j) specifies one size.
@@ -444,7 +445,7 @@
       PARAMETER          ( CREL = .FALSE. )
 *     ..
 *     .. Local Scalars ..
-      LOGICAL            BADNN
+      LOGICAL            BADNN, TRYRAC
       INTEGER            I, IINFO, IL, IMODE, INDE, INDRWK, ITEMP,
      $                   ITYPE, IU, J, JC, JR, JSIZE, JTYPE, LGN,
      $                   LIWEDC, LOG2UI, LRWEDC, LWEDC, M, M2, M3,
@@ -467,7 +468,7 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           CCOPY, CHET21, CHETRD, CHPT21, CHPTRD, CLACPY,
-     $                   CLASET, CLATMR, CLATMS, CPTEQR, CSTEDC, CSTEGR,
+     $                   CLASET, CLATMR, CLATMS, CPTEQR, CSTEDC, CSTEMR,
      $                   CSTEIN, CSTEQR, CSTT21, CSTT22, CUNGTR, CUPGTR,
      $                   SCOPY, SLABAD, SLASUM, SSTEBZ, SSTECH, SSTERF,
      $                   XERBLA
@@ -496,6 +497,7 @@
 *     Important constants
 *
       BADNN = .FALSE.
+      TRYRAC = .TRUE.
       NMAX = 1
       DO 10 J = 1, NSIZES
          NMAX = MAX( NMAX, NN( J ) )
@@ -1374,12 +1376,12 @@
 *
             RESULT( 26 ) = TEMP2 / MAX( UNFL, ULP*MAX( TEMP1, TEMP2 ) )
 *
-*           Only test CSTEGR if IEEE compliant
+*           Only test CSTEMR if IEEE compliant
 *
-            IF( ILAENV( 10, 'CSTEGR', 'VA', 1, 0, 0, 0 ).EQ.1 .AND.
-     $          ILAENV( 11, 'CSTEGR', 'VA', 1, 0, 0, 0 ).EQ.1 ) THEN
+            IF( ILAENV( 10, 'CSTEMR', 'VA', 1, 0, 0, 0 ).EQ.1 .AND.
+     $          ILAENV( 11, 'CSTEMR', 'VA', 1, 0, 0, 0 ).EQ.1 ) THEN
 *
-*           Call CSTEGR, do test 27 (relative eigenvalue accuracy)
+*           Call CSTEMR, do test 27 (relative eigenvalue accuracy)
 *
 *              If S is positive definite and diagonally dominant,
 *              ask for all eigenvalues with high relative accuracy.
@@ -1391,12 +1393,12 @@
                IF( JTYPE.EQ.21 .AND. CREL ) THEN
                   NTEST = 27
                   ABSTOL = UNFL + UNFL
-                  CALL CSTEGR( 'V', 'A', N, SD, SE, VL, VU, IL, IU,
-     $                         ABSTOL, M, WR, Z, LDU, IWORK( 1 ), RWORK,
-     $                         LRWORK, IWORK( 2*N+1 ), LWORK-2*N,
+                  CALL CSTEMR( 'V', 'A', N, SD, SE, VL, VU, IL, IU,
+     $                         M, WR, Z, LDU, N, IWORK( 1 ), TRYRAC,
+     $                         RWORK, LRWORK, IWORK( 2*N+1 ), LWORK-2*N,
      $                         IINFO )
                   IF( IINFO.NE.0 ) THEN
-                     WRITE( NOUNIT, FMT = 9999 )'CSTEGR(V,A,rel)',
+                     WRITE( NOUNIT, FMT = 9999 )'CSTEMR(V,A,rel)',
      $                  IINFO, N, JTYPE, IOLDSD
                      INFO = ABS( IINFO )
                      IF( IINFO.LT.0 ) THEN
@@ -1431,13 +1433,13 @@
                   IF( CRANGE ) THEN
                      NTEST = 28
                      ABSTOL = UNFL + UNFL
-                     CALL CSTEGR( 'V', 'I', N, SD, SE, VL, VU, IL, IU,
-     $                            ABSTOL, M, WR, Z, LDU, IWORK( 1 ),
+                     CALL CSTEMR( 'V', 'I', N, SD, SE, VL, VU, IL, IU,
+     $                            M, WR, Z, LDU, N, IWORK( 1 ), TRYRAC,
      $                            RWORK, LRWORK, IWORK( 2*N+1 ),
      $                            LWORK-2*N, IINFO )
 *
                      IF( IINFO.NE.0 ) THEN
-                        WRITE( NOUNIT, FMT = 9999 )'CSTEGR(V,I,rel)',
+                        WRITE( NOUNIT, FMT = 9999 )'CSTEMR(V,I,rel)',
      $                     IINFO, N, JTYPE, IOLDSD
                         INFO = ABS( IINFO )
                         IF( IINFO.LT.0 ) THEN
@@ -1469,7 +1471,7 @@
                   RESULT( 28 ) = ZERO
                END IF
 *
-*           Call CSTEGR(V,I) to compute D1 and Z, do tests.
+*           Call CSTEMR(V,I) to compute D1 and Z, do tests.
 *
 *           Compute D1 and Z
 *
@@ -1487,12 +1489,12 @@
                      IU = IL
                      IL = ITEMP
                   END IF
-                  CALL CSTEGR( 'V', 'I', N, D5, RWORK, VL, VU, IL, IU,
-     $                         ABSTOL, M, D1, Z, LDU, IWORK( 1 ),
+                  CALL CSTEMR( 'V', 'I', N, D5, RWORK, VL, VU, IL, IU,
+     $                         M, D1, Z, LDU, N, IWORK( 1 ), TRYRAC,
      $                         RWORK( N+1 ), LRWORK-N, IWORK( 2*N+1 ),
      $                         LIWORK-2*N, IINFO )
                   IF( IINFO.NE.0 ) THEN
-                     WRITE( NOUNIT, FMT = 9999 )'CSTEGR(V,I)', IINFO,
+                     WRITE( NOUNIT, FMT = 9999 )'CSTEMR(V,I)', IINFO,
      $                  N, JTYPE, IOLDSD
                      INFO = ABS( IINFO )
                      IF( IINFO.LT.0 ) THEN
@@ -1506,7 +1508,7 @@
 *           Do Tests 29 and 30
 *
 *
-*           Call CSTEGR to compute D2, do tests.
+*           Call CSTEMR to compute D2, do tests.
 *
 *           Compute D2
 *
@@ -1515,12 +1517,12 @@
      $               CALL SCOPY( N-1, SE, 1, RWORK, 1 )
 *
                   NTEST = 31
-                  CALL CSTEGR( 'N', 'I', N, D5, RWORK, VL, VU, IL, IU,
-     $                         ABSTOL, M, D2, Z, LDU, IWORK( 1 ),
+                  CALL CSTEMR( 'N', 'I', N, D5, RWORK, VL, VU, IL, IU,
+     $                         M, D2, Z, LDU, N, IWORK( 1 ), TRYRAC,
      $                         RWORK( N+1 ), LRWORK-N, IWORK( 2*N+1 ),
      $                         LIWORK-2*N, IINFO )
                   IF( IINFO.NE.0 ) THEN
-                     WRITE( NOUNIT, FMT = 9999 )'CSTEGR(N,I)', IINFO,
+                     WRITE( NOUNIT, FMT = 9999 )'CSTEMR(N,I)', IINFO,
      $                  N, JTYPE, IOLDSD
                      INFO = ABS( IINFO )
                      IF( IINFO.LT.0 ) THEN
@@ -1546,7 +1548,7 @@
      $                           ULP*MAX( TEMP1, TEMP2 ) )
 *
 *
-*           Call CSTEGR(V,V) to compute D1 and Z, do tests.
+*           Call CSTEMR(V,V) to compute D1 and Z, do tests.
 *
 *           Compute D1 and Z
 *
@@ -1579,12 +1581,12 @@
                      VU = ONE
                   END IF
 *
-                  CALL CSTEGR( 'V', 'V', N, D5, RWORK, VL, VU, IL, IU,
-     $                         ABSTOL, M, D1, Z, LDU, IWORK( 1 ),
+                  CALL CSTEMR( 'V', 'V', N, D5, RWORK, VL, VU, IL, IU,
+     $                         M, D1, Z, LDU, N, IWORK( 1 ), TRYRAC,
      $                         RWORK( N+1 ), LRWORK-N, IWORK( 2*N+1 ),
      $                         LIWORK-2*N, IINFO )
                   IF( IINFO.NE.0 ) THEN
-                     WRITE( NOUNIT, FMT = 9999 )'CSTEGR(V,V)', IINFO,
+                     WRITE( NOUNIT, FMT = 9999 )'CSTEMR(V,V)', IINFO,
      $                  N, JTYPE, IOLDSD
                      INFO = ABS( IINFO )
                      IF( IINFO.LT.0 ) THEN
@@ -1600,7 +1602,7 @@
                   CALL CSTT22( N, M, 0, SD, SE, D1, DUMMA, Z, LDU, WORK,
      $                         M, RWORK, RESULT( 32 ) )
 *
-*           Call CSTEGR to compute D2, do tests.
+*           Call CSTEMR to compute D2, do tests.
 *
 *           Compute D2
 *
@@ -1609,12 +1611,12 @@
      $               CALL SCOPY( N-1, SE, 1, RWORK, 1 )
 *
                   NTEST = 34
-                  CALL CSTEGR( 'N', 'V', N, D5, RWORK, VL, VU, IL, IU,
-     $                         ABSTOL, M, D2, Z, LDU, IWORK( 1 ),
+                  CALL CSTEMR( 'N', 'V', N, D5, RWORK, VL, VU, IL, IU,
+     $                         M, D2, Z, LDU, N, IWORK( 1 ), TRYRAC,
      $                         RWORK( N+1 ), LRWORK-N, IWORK( 2*N+1 ),
      $                         LIWORK-2*N, IINFO )
                   IF( IINFO.NE.0 ) THEN
-                     WRITE( NOUNIT, FMT = 9999 )'CSTEGR(N,V)', IINFO,
+                     WRITE( NOUNIT, FMT = 9999 )'CSTEMR(N,V)', IINFO,
      $                  N, JTYPE, IOLDSD
                      INFO = ABS( IINFO )
                      IF( IINFO.LT.0 ) THEN
@@ -1648,7 +1650,7 @@
                END IF
 *
 *
-*           Call CSTEGR(V,A) to compute D1 and Z, do tests.
+*           Call CSTEMR(V,A) to compute D1 and Z, do tests.
 *
 *           Compute D1 and Z
 *
@@ -1658,12 +1660,12 @@
 *
                NTEST = 35
 *
-               CALL CSTEGR( 'V', 'A', N, D5, RWORK, VL, VU, IL, IU,
-     $                      ABSTOL, M, D1, Z, LDU, IWORK( 1 ),
+               CALL CSTEMR( 'V', 'A', N, D5, RWORK, VL, VU, IL, IU,
+     $                      M, D1, Z, LDU, N, IWORK( 1 ), TRYRAC,
      $                      RWORK( N+1 ), LRWORK-N, IWORK( 2*N+1 ),
      $                      LIWORK-2*N, IINFO )
                IF( IINFO.NE.0 ) THEN
-                  WRITE( NOUNIT, FMT = 9999 )'CSTEGR(V,A)', IINFO, N,
+                  WRITE( NOUNIT, FMT = 9999 )'CSTEMR(V,A)', IINFO, N,
      $               JTYPE, IOLDSD
                   INFO = ABS( IINFO )
                   IF( IINFO.LT.0 ) THEN
@@ -1679,7 +1681,7 @@
                CALL CSTT22( N, M, 0, SD, SE, D1, DUMMA, Z, LDU, WORK, M,
      $                      RWORK, RESULT( 35 ) )
 *
-*           Call CSTEGR to compute D2, do tests.
+*           Call CSTEMR to compute D2, do tests.
 *
 *           Compute D2
 *
@@ -1688,12 +1690,12 @@
      $            CALL SCOPY( N-1, SE, 1, RWORK, 1 )
 *
                NTEST = 37
-               CALL CSTEGR( 'N', 'A', N, D5, RWORK, VL, VU, IL, IU,
-     $                      ABSTOL, M, D2, Z, LDU, IWORK( 1 ),
+               CALL CSTEMR( 'N', 'A', N, D5, RWORK, VL, VU, IL, IU,
+     $                      M, D2, Z, LDU, N, IWORK( 1 ), TRYRAC,
      $                      RWORK( N+1 ), LRWORK-N, IWORK( 2*N+1 ),
      $                      LIWORK-2*N, IINFO )
                IF( IINFO.NE.0 ) THEN
-                  WRITE( NOUNIT, FMT = 9999 )'CSTEGR(N,A)', IINFO, N,
+                  WRITE( NOUNIT, FMT = 9999 )'CSTEMR(N,A)', IINFO, N,
      $               JTYPE, IOLDSD
                   INFO = ABS( IINFO )
                   IF( IINFO.LT.0 ) THEN

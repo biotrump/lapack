@@ -2,6 +2,7 @@
      $                   NOUNIT, A, LDA, AP, SD, SE, D1, D2, D3, D4, D5,
      $                   WA1, WA2, WA3, WR, U, LDU, V, VP, TAU, Z, WORK,
      $                   LWORK, IWORK, LIWORK, RESULT, INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK test routine (version 3.1) --
 *     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
@@ -71,9 +72,9 @@
 *     from DSYTRD/DORGTR or DSPTRD/DOPGTR ('V' option). It may
 *     also just compute eigenvalues ('N' option).
 *
-*     DSTEGR factors S as Z D1 Z' , where Z is the orthogonal
+*     DSTEMR factors S as Z D1 Z' , where Z is the orthogonal
 *     matrix of eigenvectors and D1 is a diagonal matrix with
-*     the eigenvalues on the diagonal ('I' option).  DSTEGR
+*     the eigenvalues on the diagonal ('I' option).  DSTEMR
 *     uses the Relatively Robust Representation whenever possible.
 *
 *  When DCHKST is called, a number of matrix "sizes" ("n's") and a
@@ -143,51 +144,51 @@
 *  (26)    | D1 - D2 | / ( |D1| ulp )           DSTEDC('V') and
 *                                               DSTEDC('N')
 *
-*  Test 27 is disabled at the moment because DSTEGR does not
+*  Test 27 is disabled at the moment because DSTEMR does not
 *  guarantee high relatvie accuracy.
 *
 *  (27)    max | D6(i) - WR(i) | / ( |D6(i)| omega ) ,
 *           i
 *          omega = 2 (2n-1) ULP (1 + 8 gamma**2) / (1 - gamma)**4
-*                                               DSTEGR('V', 'A')
+*                                               DSTEMR('V', 'A')
 *
 *  (28)    max | D6(i) - WR(i) | / ( |D6(i)| omega ) ,
 *           i
 *          omega = 2 (2n-1) ULP (1 + 8 gamma**2) / (1 - gamma)**4
-*                                               DSTEGR('V', 'I')
+*                                               DSTEMR('V', 'I')
 *
-*  Tests 29 through 34 are disable at present because @9pre)STEGR
+*  Tests 29 through 34 are disable at present because DSTEMR
 *  does not handle partial specturm requests.
 *
-*  (29)    | S - Z D Z' | / ( |S| n ulp )    DSTEGR('V', 'I')
+*  (29)    | S - Z D Z' | / ( |S| n ulp )    DSTEMR('V', 'I')
 *
-*  (30)    | I - ZZ' | / ( n ulp )           DSTEGR('V', 'I')
+*  (30)    | I - ZZ' | / ( n ulp )           DSTEMR('V', 'I')
 *
 *  (31)    ( max { min | WA2(i)-WA3(j) | } +
 *             i     j
 *            max { min | WA3(i)-WA2(j) | } ) / ( |D3| ulp )
 *             i     j
-*          DSTEGR('N', 'I') vs. SSTEGR('V', 'I')
+*          DSTEMR('N', 'I') vs. SSTEMR('V', 'I')
 *
-*  (32)    | S - Z D Z' | / ( |S| n ulp )    DSTEGR('V', 'V')
+*  (32)    | S - Z D Z' | / ( |S| n ulp )    DSTEMR('V', 'V')
 *
-*  (33)    | I - ZZ' | / ( n ulp )           DSTEGR('V', 'V')
+*  (33)    | I - ZZ' | / ( n ulp )           DSTEMR('V', 'V')
 *
 *  (34)    ( max { min | WA2(i)-WA3(j) | } +
 *             i     j
 *            max { min | WA3(i)-WA2(j) | } ) / ( |D3| ulp )
 *             i     j
-*          DSTEGR('N', 'V') vs. SSTEGR('V', 'V')
+*          DSTEMR('N', 'V') vs. SSTEMR('V', 'V')
 *
-*  (35)    | S - Z D Z' | / ( |S| n ulp )    DSTEGR('V', 'A')
+*  (35)    | S - Z D Z' | / ( |S| n ulp )    DSTEMR('V', 'A')
 *
-*  (36)    | I - ZZ' | / ( n ulp )           DSTEGR('V', 'A')
+*  (36)    | I - ZZ' | / ( n ulp )           DSTEMR('V', 'A')
 *
 *  (37)    ( max { min | WA2(i)-WA3(j) | } +
 *             i     j
 *            max { min | WA3(i)-WA2(j) | } ) / ( |D3| ulp )
 *             i     j
-*          DSTEGR('N', 'A') vs. SSTEGR('V', 'A')
+*          DSTEMR('N', 'A') vs. SSTEMR('V', 'A')
 *
 *  The "sizes" are specified by an array NN(1:NSIZES); the value of
 *  each element NN(j) specifies one size.
@@ -437,7 +438,7 @@
       PARAMETER          ( SREL = .FALSE. )
 *     ..
 *     .. Local Scalars ..
-      LOGICAL            BADNN
+      LOGICAL            BADNN, TRYRAC
       INTEGER            I, IINFO, IL, IMODE, ITEMP, ITYPE, IU, J, JC,
      $                   JR, JSIZE, JTYPE, LGN, LIWEDC, LOG2UI, LWEDC,
      $                   M, M2, M3, MTYPES, N, NAP, NBLOCK, NERRS,
@@ -460,7 +461,7 @@
 *     .. External Subroutines ..
       EXTERNAL           DCOPY, DLABAD, DLACPY, DLASET, DLASUM, DLATMR,
      $                   DLATMS, DOPGTR, DORGTR, DPTEQR, DSPT21, DSPTRD,
-     $                   DSTEBZ, DSTECH, DSTEDC, DSTEGR, DSTEIN, DSTEQR,
+     $                   DSTEBZ, DSTECH, DSTEDC, DSTEMR, DSTEIN, DSTEQR,
      $                   DSTERF, DSTT21, DSTT22, DSYT21, DSYTRD, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
@@ -487,6 +488,7 @@
 *     Important constants
 *
       BADNN = .FALSE.
+      TRYRAC = .TRUE.
       NMAX = 1
       DO 10 J = 1, NSIZES
          NMAX = MAX( NMAX, NN( J ) )
@@ -1364,12 +1366,12 @@
 *
             RESULT( 26 ) = TEMP2 / MAX( UNFL, ULP*MAX( TEMP1, TEMP2 ) )
 *
-*           Only test DSTEGR if IEEE compliant
+*           Only test DSTEMR if IEEE compliant
 *
-            IF( ILAENV( 10, 'DSTEGR', 'VA', 1, 0, 0, 0 ).EQ.1 .AND.
-     $          ILAENV( 11, 'DSTEGR', 'VA', 1, 0, 0, 0 ).EQ.1 ) THEN
+            IF( ILAENV( 10, 'DSTEMR', 'VA', 1, 0, 0, 0 ).EQ.1 .AND.
+     $          ILAENV( 11, 'DSTEMR', 'VA', 1, 0, 0, 0 ).EQ.1 ) THEN
 *
-*           Call DSTEGR, do test 27 (relative eigenvalue accuracy)
+*           Call DSTEMR, do test 27 (relative eigenvalue accuracy)
 *
 *              If S is positive definite and diagonally dominant,
 *              ask for all eigenvalues with high relative accuracy.
@@ -1381,11 +1383,12 @@
                IF( JTYPE.EQ.21 .AND. SREL ) THEN
                   NTEST = 27
                   ABSTOL = UNFL + UNFL
-                  CALL DSTEGR( 'V', 'A', N, SD, SE, VL, VU, IL, IU,
-     $                         ABSTOL, M, WR, Z, LDU, IWORK( 1 ), WORK,
-     $                         LWORK, IWORK( 2*N+1 ), LWORK-2*N, IINFO )
+                  CALL DSTEMR( 'V', 'A', N, SD, SE, VL, VU, IL, IU,
+     $                         M, WR, Z, LDU, N, IWORK( 1 ), TRYRAC,
+     $                         WORK, LWORK, IWORK( 2*N+1 ), LWORK-2*N,
+     $                         IINFO )
                   IF( IINFO.NE.0 ) THEN
-                     WRITE( NOUNIT, FMT = 9999 )'DSTEGR(V,A,rel)',
+                     WRITE( NOUNIT, FMT = 9999 )'DSTEMR(V,A,rel)',
      $                  IINFO, N, JTYPE, IOLDSD
                      INFO = ABS( IINFO )
                      IF( IINFO.LT.0 ) THEN
@@ -1420,13 +1423,13 @@
                   IF( SRANGE ) THEN
                      NTEST = 28
                      ABSTOL = UNFL + UNFL
-                     CALL DSTEGR( 'V', 'I', N, SD, SE, VL, VU, IL, IU,
-     $                            ABSTOL, M, WR, Z, LDU, IWORK( 1 ),
+                     CALL DSTEMR( 'V', 'I', N, SD, SE, VL, VU, IL, IU,
+     $                            M, WR, Z, LDU, N, IWORK( 1 ), TRYRAC,
      $                            WORK, LWORK, IWORK( 2*N+1 ),
      $                            LWORK-2*N, IINFO )
 *
                      IF( IINFO.NE.0 ) THEN
-                        WRITE( NOUNIT, FMT = 9999 )'DSTEGR(V,I,rel)',
+                        WRITE( NOUNIT, FMT = 9999 )'DSTEMR(V,I,rel)',
      $                     IINFO, N, JTYPE, IOLDSD
                         INFO = ABS( IINFO )
                         IF( IINFO.LT.0 ) THEN
@@ -1458,7 +1461,7 @@
                   RESULT( 28 ) = ZERO
                END IF
 *
-*           Call DSTEGR(V,I) to compute D1 and Z, do tests.
+*           Call DSTEMR(V,I) to compute D1 and Z, do tests.
 *
 *           Compute D1 and Z
 *
@@ -1476,12 +1479,12 @@
                      IU = IL
                      IL = ITEMP
                   END IF
-                  CALL DSTEGR( 'V', 'I', N, D5, WORK, VL, VU, IL, IU,
-     $                         ABSTOL, M, D1, Z, LDU, IWORK( 1 ),
+                  CALL DSTEMR( 'V', 'I', N, D5, WORK, VL, VU, IL, IU,
+     $                         M, D1, Z, LDU, N, IWORK( 1 ), TRYRAC,
      $                         WORK( N+1 ), LWORK-N, IWORK( 2*N+1 ),
      $                         LIWORK-2*N, IINFO )
                   IF( IINFO.NE.0 ) THEN
-                     WRITE( NOUNIT, FMT = 9999 )'DSTEGR(V,I)', IINFO,
+                     WRITE( NOUNIT, FMT = 9999 )'DSTEMR(V,I)', IINFO,
      $                  N, JTYPE, IOLDSD
                      INFO = ABS( IINFO )
                      IF( IINFO.LT.0 ) THEN
@@ -1497,7 +1500,7 @@
                   CALL DSTT22( N, M, 0, SD, SE, D1, DUMMA, Z, LDU, WORK,
      $                         M, RESULT( 29 ) )
 *
-*           Call DSTEGR to compute D2, do tests.
+*           Call DSTEMR to compute D2, do tests.
 *
 *           Compute D2
 *
@@ -1506,12 +1509,12 @@
      $               CALL DCOPY( N-1, SE, 1, WORK, 1 )
 *
                   NTEST = 31
-                  CALL DSTEGR( 'N', 'I', N, D5, WORK, VL, VU, IL, IU,
-     $                         ABSTOL, M, D2, Z, LDU, IWORK( 1 ),
+                  CALL DSTEMR( 'N', 'I', N, D5, WORK, VL, VU, IL, IU,
+     $                         M, D2, Z, LDU, N, IWORK( 1 ), TRYRAC,
      $                         WORK( N+1 ), LWORK-N, IWORK( 2*N+1 ),
      $                         LIWORK-2*N, IINFO )
                   IF( IINFO.NE.0 ) THEN
-                     WRITE( NOUNIT, FMT = 9999 )'DSTEGR(N,I)', IINFO,
+                     WRITE( NOUNIT, FMT = 9999 )'DSTEMR(N,I)', IINFO,
      $                  N, JTYPE, IOLDSD
                      INFO = ABS( IINFO )
                      IF( IINFO.LT.0 ) THEN
@@ -1537,7 +1540,7 @@
      $                           ULP*MAX( TEMP1, TEMP2 ) )
 *
 *
-*           Call DSTEGR(V,V) to compute D1 and Z, do tests.
+*           Call DSTEMR(V,V) to compute D1 and Z, do tests.
 *
 *           Compute D1 and Z
 *
@@ -1570,12 +1573,12 @@
                      VU = ONE
                   END IF
 *
-                  CALL DSTEGR( 'V', 'V', N, D5, WORK, VL, VU, IL, IU,
-     $                         ABSTOL, M, D1, Z, LDU, IWORK( 1 ),
+                  CALL DSTEMR( 'V', 'V', N, D5, WORK, VL, VU, IL, IU,
+     $                         M, D1, Z, LDU, N, IWORK( 1 ), TRYRAC,
      $                         WORK( N+1 ), LWORK-N, IWORK( 2*N+1 ),
      $                         LIWORK-2*N, IINFO )
                   IF( IINFO.NE.0 ) THEN
-                     WRITE( NOUNIT, FMT = 9999 )'DSTEGR(V,V)', IINFO,
+                     WRITE( NOUNIT, FMT = 9999 )'DSTEMR(V,V)', IINFO,
      $                  N, JTYPE, IOLDSD
                      INFO = ABS( IINFO )
                      IF( IINFO.LT.0 ) THEN
@@ -1591,7 +1594,7 @@
                   CALL DSTT22( N, M, 0, SD, SE, D1, DUMMA, Z, LDU, WORK,
      $                         M, RESULT( 32 ) )
 *
-*           Call DSTEGR to compute D2, do tests.
+*           Call DSTEMR to compute D2, do tests.
 *
 *           Compute D2
 *
@@ -1600,12 +1603,12 @@
      $               CALL DCOPY( N-1, SE, 1, WORK, 1 )
 *
                   NTEST = 34
-                  CALL DSTEGR( 'N', 'V', N, D5, WORK, VL, VU, IL, IU,
-     $                         ABSTOL, M, D2, Z, LDU, IWORK( 1 ),
+                  CALL DSTEMR( 'N', 'V', N, D5, WORK, VL, VU, IL, IU,
+     $                         M, D2, Z, LDU, N, IWORK( 1 ), TRYRAC,
      $                         WORK( N+1 ), LWORK-N, IWORK( 2*N+1 ),
      $                         LIWORK-2*N, IINFO )
                   IF( IINFO.NE.0 ) THEN
-                     WRITE( NOUNIT, FMT = 9999 )'DSTEGR(N,V)', IINFO,
+                     WRITE( NOUNIT, FMT = 9999 )'DSTEMR(N,V)', IINFO,
      $                  N, JTYPE, IOLDSD
                      INFO = ABS( IINFO )
                      IF( IINFO.LT.0 ) THEN
@@ -1639,7 +1642,7 @@
                END IF
 *
 *
-*           Call DSTEGR(V,A) to compute D1 and Z, do tests.
+*           Call DSTEMR(V,A) to compute D1 and Z, do tests.
 *
 *           Compute D1 and Z
 *
@@ -1649,12 +1652,12 @@
 *
                NTEST = 35
 *
-               CALL DSTEGR( 'V', 'A', N, D5, WORK, VL, VU, IL, IU,
-     $                      ABSTOL, M, D1, Z, LDU, IWORK( 1 ),
+               CALL DSTEMR( 'V', 'A', N, D5, WORK, VL, VU, IL, IU,
+     $                      M, D1, Z, LDU, N, IWORK( 1 ), TRYRAC,
      $                      WORK( N+1 ), LWORK-N, IWORK( 2*N+1 ),
      $                      LIWORK-2*N, IINFO )
                IF( IINFO.NE.0 ) THEN
-                  WRITE( NOUNIT, FMT = 9999 )'DSTEGR(V,A)', IINFO, N,
+                  WRITE( NOUNIT, FMT = 9999 )'DSTEMR(V,A)', IINFO, N,
      $               JTYPE, IOLDSD
                   INFO = ABS( IINFO )
                   IF( IINFO.LT.0 ) THEN
@@ -1670,7 +1673,7 @@
                CALL DSTT22( N, M, 0, SD, SE, D1, DUMMA, Z, LDU, WORK, M,
      $                      RESULT( 35 ) )
 *
-*           Call DSTEGR to compute D2, do tests.
+*           Call DSTEMR to compute D2, do tests.
 *
 *           Compute D2
 *
@@ -1679,12 +1682,12 @@
      $            CALL DCOPY( N-1, SE, 1, WORK, 1 )
 *
                NTEST = 37
-               CALL DSTEGR( 'N', 'A', N, D5, WORK, VL, VU, IL, IU,
-     $                      ABSTOL, M, D2, Z, LDU, IWORK( 1 ),
+               CALL DSTEMR( 'N', 'A', N, D5, WORK, VL, VU, IL, IU,
+     $                      M, D2, Z, LDU, N, IWORK( 1 ), TRYRAC,
      $                      WORK( N+1 ), LWORK-N, IWORK( 2*N+1 ),
      $                      LIWORK-2*N, IINFO )
                IF( IINFO.NE.0 ) THEN
-                  WRITE( NOUNIT, FMT = 9999 )'DSTEGR(N,A)', IINFO, N,
+                  WRITE( NOUNIT, FMT = 9999 )'DSTEMR(N,A)', IINFO, N,
      $               JTYPE, IOLDSD
                   INFO = ABS( IINFO )
                   IF( IINFO.LT.0 ) THEN
