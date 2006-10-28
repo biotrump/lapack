@@ -48,7 +48,8 @@ SCLAUX = \
    slaed7.o slaed8.o slaed9.o slaeda.o slaev2.o slagtf.o \
    slagts.o slamrg.o slanst.o \
    slapy2.o slapy3.o slarnv.o \
-   slarrb.o slarre.o slarrf.o \
+   slarra.o slarrb.o slarrc.o slarrd.o slarre.o slarrf.o slarrj.o \
+   slarrk.o slarrr.o slaneg.o \
    slartg.o slaruv.o slas2.o  slascl.o \
    slasd0.o slasd1.o slasd2.o slasd3.o slasd4.o slasd5.o slasd6.o \
    slasd7.o slasd8.o slasda.o slasdq.o slasdt.o \
@@ -120,7 +121,7 @@ SLASRC = \
    stgsja.o stgsna.o stgsy2.o stgsyl.o stpcon.o stprfs.o stptri.o \
    stptrs.o \
    strcon.o strevc.o strexc.o strrfs.o strsen.o strsna.o strsyl.o \
-   strti2.o strtri.o strtrs.o stzrqf.o stzrzf.o
+   strti2.o strtri.o strtrs.o stzrqf.o stzrzf.o sstemr.o
 
 CLASRC = \
    cbdsqr.o cgbbrd.o cgbcon.o cgbequ.o cgbrfs.o cgbsv.o  cgbsvx.o \

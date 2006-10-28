@@ -1,30 +1,29 @@
-      SUBROUTINE SLARRB( N, D, LLD, IFIRST, ILAST, RTOL1,
-     $                   RTOL2, OFFSET, W, WGAP, WERR, WORK, IWORK,
-     $                   PIVMIN, SPDIAM, TWIST, INFO )
+      SUBROUTINE SLARRJ( N, D, E2, IFIRST, ILAST,
+     $                   RTOL, OFFSET, W, WERR, WORK, IWORK,
+     $                   PIVMIN, SPDIAM, INFO )
 *
 *  -- LAPACK auxiliary routine (version 3.1) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.
 *     October 7, 2006
 *
 *     .. Scalar Arguments ..
-      INTEGER            IFIRST, ILAST, INFO, N, OFFSET, TWIST
-      REAL               PIVMIN, RTOL1, RTOL2, SPDIAM
+      INTEGER            IFIRST, ILAST, INFO, N, OFFSET
+      REAL               PIVMIN, RTOL, SPDIAM
 *     ..
 *     .. Array Arguments ..
       INTEGER            IWORK( * )
-      REAL               D( * ), LLD( * ), W( * ),
-     $                   WERR( * ), WGAP( * ), WORK( * )
+      REAL               D( * ), E2( * ), W( * ),
+     $                   WERR( * ), WORK( * )
 *     ..
 *
 *  Purpose
 *  =======
 *
-*  Given the relatively robust representation(RRR) L D L^T, SLARRB
-*  does "limited" bisection to refine the eigenvalues of L D L^T,
+*  Given the initial eigenvalue approximations of T, SLARRJ
+*  does  bisection to refine the eigenvalues of T,
 *  W( IFIRST-OFFSET ) thru' W( ILAST-OFFSET ), to more accuracy. Initial
 *  guesses for these eigenvalues are input in W, the corresponding estimate
-*  of the error in these guesses and their gaps are input in WERR
-*  and WGAP, respectively. During bisection, intervals
+*  of the error in these guesses in WERR. During bisection, intervals
 *  [left, right] are maintained by storing their mid-points and
 *  semi-widths in the arrays W and WERR respectively.
 *
@@ -35,10 +34,10 @@
 *          The order of the matrix.
 *
 *  D       (input) REAL             array, dimension (N)
-*          The N diagonal elements of the diagonal matrix D.
+*          The N diagonal elements of T.
 *
-*  LLD     (input) REAL             array, dimension (N-1)
-*          The (N-1) elements L(i)*L(i)*D(i).
+*  E2      (input) REAL             array, dimension (N-1)
+*          The Squares of the (N-1) subdiagonal elements of T.
 *
 *  IFIRST  (input) INTEGER
 *          The index of the first eigenvalue to be computed.
@@ -46,29 +45,19 @@
 *  ILAST   (input) INTEGER
 *          The index of the last eigenvalue to be computed.
 *
-*  RTOL1   (input) REAL            
-*  RTOL2   (input) REAL            
+*  RTOL   (input) REAL            
 *          Tolerance for the convergence of the bisection intervals.
 *          An interval [LEFT,RIGHT] has converged if
-*          RIGHT-LEFT.LT.MAX( RTOL1*GAP, RTOL2*MAX(|LEFT|,|RIGHT|) )
-*          where GAP is the (estimated) distance to the nearest
-*          eigenvalue.
+*          RIGHT-LEFT.LT.RTOL*MAX(|LEFT|,|RIGHT|).
 *
 *  OFFSET  (input) INTEGER
-*          Offset for the arrays W, WGAP and WERR, i.e., the IFIRST-OFFSET
+*          Offset for the arrays W and WERR, i.e., the IFIRST-OFFSET
 *          thru' ILAST-OFFSET elements of these arrays are to be used.
 *
 *  W       (input/output) REAL             array, dimension (N)
 *          On input, W( IFIRST-OFFSET ) thru' W( ILAST-OFFSET ) are
 *          estimates of the eigenvalues of L D L^T indexed IFIRST thru' ILAST.
 *          On output, these estimates are refined.
-*
-*  WGAP    (input/output) REAL             array, dimension (N-1)
-*          On input, the (estimated) gaps between consecutive
-*          eigenvalues of L D L^T, i.e., WGAP(I-OFFSET) is the gap between
-*          eigenvalues I and I+1. Note that if IFIRST.EQ.ILAST
-*          then WGAP(IFIRST-OFFSET) must be set to ZERO.
-*          On output, these gaps are refined.
 *
 *  WERR    (input/output) REAL             array, dimension (N)
 *          On input, WERR( IFIRST-OFFSET ) thru' WERR( ILAST-OFFSET ) are
@@ -82,17 +71,10 @@
 *          Workspace.
 *
 *  PIVMIN  (input) DOUBLE PRECISION
-*          The minimum pivot in the Sturm sequence.
+*          The minimum pivot in the Sturm sequence for T.
 *
 *  SPDIAM  (input) DOUBLE PRECISION
-*          The spectral diameter of the matrix.
-*
-*  TWIST   (input) INTEGER
-*          The twist index for the twisted factorization that is used
-*          for the negcount.
-*          TWIST = N: Compute negcount from L D L^T - LAMBDA I = L+ D+ L+^T
-*          TWIST = 1: Compute negcount from L D L^T - LAMBDA I = U- D- U-^T
-*          TWIST = R: Compute negcount from L D L^T - LAMBDA I = N(r) D(r) N(r)
+*          The spectral diameter of T.
 *
 *  INFO    (output) INTEGER
 *          Error flag.
@@ -110,20 +92,15 @@
 *  =====================================================================
 *
 *     .. Parameters ..
-      REAL               ZERO, TWO, HALF
-      PARAMETER        ( ZERO = 0.0E0, TWO = 2.0E0,
+      REAL               ZERO, ONE, TWO, HALF
+      PARAMETER        ( ZERO = 0.0E0, ONE = 1.0E0, TWO = 2.0E0,
      $                   HALF = 0.5E0 )
       INTEGER   MAXITR
 *     ..
 *     .. Local Scalars ..
-      INTEGER            I, I1, II, IP, ITER, K, NEGCNT, NEXT, NINT,
-     $                   OLNINT, PREV, R
-      REAL               BACK, CVRGD, GAP, LEFT, LGAP, MID, MNWDTH,
-     $                   RGAP, RIGHT, TMP, WIDTH
-*     ..
-*     .. External Functions ..
-      INTEGER            SLANEG
-      EXTERNAL           SLANEG
+      INTEGER            CNT, I, I1, I2, II, ITER, J, K, NEXT, NINT,
+     $                   OLNINT, P, PREV, SAVI1
+      REAL               DPLUS, FAC, LEFT, MID, RIGHT, S, TMP, WIDTH
 *
 *     ..
 *     .. Intrinsic Functions ..
@@ -135,10 +112,6 @@
 *
       MAXITR = INT( ( LOG( SPDIAM+PIVMIN )-LOG( PIVMIN ) ) /
      $           LOG( TWO ) ) + 2
-      MNWDTH = TWO * PIVMIN
-*
-      R = TWIST
-      IF((R.LT.1).OR.(R.GT.N)) R = N
 *
 *     Initialize unconverged intervals in [ WORK(2*I-1), WORK(2*I) ].
 *     The Sturm Count, Count( WORK(2*I-1) ) is arranged to be I-1, while
@@ -147,71 +120,82 @@
 *     interval, and is -1 or 0 for a converged interval. Thus a linked
 *     list of unconverged intervals is set up.
 *
+
       I1 = IFIRST
+      I2 = ILAST
 *     The number of unconverged intervals
       NINT = 0
 *     The last unconverged interval found
       PREV = 0
-
-      RGAP = WGAP( I1-OFFSET )
-      DO 75 I = I1, ILAST
+      DO 75 I = I1, I2
          K = 2*I
          II = I - OFFSET
          LEFT = W( II ) - WERR( II )
+         MID = W(II)
          RIGHT = W( II ) + WERR( II )
-         LGAP = RGAP
-         RGAP = WGAP( II )
-         GAP = MIN( LGAP, RGAP )
-
-*        Make sure that [LEFT,RIGHT] contains the desired eigenvalue
-*        Compute negcount from dstqds facto L+D+L+^T = L D L^T - LEFT
-*
-*        Do while( NEGCNT(LEFT).GT.I-1 )
-*
-         BACK = WERR( II )
- 20      CONTINUE
-         NEGCNT = SLANEG( N, D, LLD, LEFT, PIVMIN, R )
-         IF( NEGCNT.GT.I-1 ) THEN
-            LEFT = LEFT - BACK
-            BACK = TWO*BACK
-            GO TO 20
-         END IF
-*
-*        Do while( NEGCNT(RIGHT).LT.I )
-*        Compute negcount from dstqds facto L+D+L+^T = L D L^T - RIGHT
-*
-         BACK = WERR( II )
- 50      CONTINUE
-
-         NEGCNT = SLANEG( N, D, LLD, RIGHT, PIVMIN, R )
-          IF( NEGCNT.LT.I ) THEN
-             RIGHT = RIGHT + BACK
-             BACK = TWO*BACK
-             GO TO 50
-          END IF
-         WIDTH = HALF*ABS( LEFT - RIGHT )
+         WIDTH = RIGHT - MID
          TMP = MAX( ABS( LEFT ), ABS( RIGHT ) )
-         CVRGD = MAX(RTOL1*GAP,RTOL2*TMP)
-         IF( WIDTH.LE.CVRGD .OR. WIDTH.LE.MNWDTH ) THEN
+
+*        The following test prevents the test of converged intervals
+         IF( WIDTH.LT.RTOL*TMP ) THEN
 *           This interval has already converged and does not need refinement.
 *           (Note that the gaps might change through refining the
 *            eigenvalues, however, they can only get bigger.)
 *           Remove it from the list.
             IWORK( K-1 ) = -1
 *           Make sure that I1 always points to the first unconverged interval
-            IF((I.EQ.I1).AND.(I.LT.ILAST)) I1 = I + 1
-            IF((PREV.GE.I1).AND.(I.LE.ILAST)) IWORK( 2*PREV-1 ) = I + 1
+            IF((I.EQ.I1).AND.(I.LT.I2)) I1 = I + 1
+            IF((PREV.GE.I1).AND.(I.LE.I2)) IWORK( 2*PREV-1 ) = I + 1
          ELSE
 *           unconverged interval found
             PREV = I
+*           Make sure that [LEFT,RIGHT] contains the desired eigenvalue
+*
+*           Do while( CNT(LEFT).GT.I-1 )
+*
+            FAC = ONE
+ 20         CONTINUE
+            CNT = 0
+            S = LEFT
+            DPLUS = D( 1 ) - S
+            IF( DPLUS.LT.ZERO ) CNT = CNT + 1
+            DO 30 J = 2, N
+               DPLUS = D( J ) - S - E2( J-1 )/DPLUS
+               IF( DPLUS.LT.ZERO ) CNT = CNT + 1
+ 30         CONTINUE
+            IF( CNT.GT.I-1 ) THEN
+               LEFT = LEFT - WERR( II )*FAC
+               FAC = TWO*FAC
+               GO TO 20
+            END IF
+*
+*           Do while( CNT(RIGHT).LT.I )
+*
+            FAC = ONE
+ 50         CONTINUE
+            CNT = 0
+            S = RIGHT
+            DPLUS = D( 1 ) - S
+            IF( DPLUS.LT.ZERO ) CNT = CNT + 1
+            DO 60 J = 2, N
+               DPLUS = D( J ) - S - E2( J-1 )/DPLUS
+               IF( DPLUS.LT.ZERO ) CNT = CNT + 1
+ 60         CONTINUE
+            IF( CNT.LT.I ) THEN
+               RIGHT = RIGHT + WERR( II )*FAC
+               FAC = TWO*FAC
+               GO TO 50
+            END IF
             NINT = NINT + 1
             IWORK( K-1 ) = I + 1
-            IWORK( K ) = NEGCNT
+            IWORK( K ) = CNT
          END IF
          WORK( K-1 ) = LEFT
          WORK( K ) = RIGHT
  75   CONTINUE
 
+
+      SAVI1 = I1
 *
 *     Do while( NINT.GT.0 ), i.e. there are still unconverged intervals
 *     and while (ITER.LT.MAXITR)
@@ -222,13 +206,9 @@
       I = I1
       OLNINT = NINT
 
-      DO 100 IP = 1, OLNINT
+      DO 100 P = 1, OLNINT
          K = 2*I
          II = I - OFFSET
-         RGAP = WGAP( II )
-         LGAP = RGAP
-         IF(II.GT.1) LGAP = WGAP( II-1 )
-         GAP = MIN( LGAP, RGAP )
          NEXT = IWORK( K-1 )
          LEFT = WORK( K-1 )
          RIGHT = WORK( K )
@@ -237,9 +217,9 @@
 *        semiwidth of interval
          WIDTH = RIGHT - MID
          TMP = MAX( ABS( LEFT ), ABS( RIGHT ) )
-         CVRGD = MAX(RTOL1*GAP,RTOL2*TMP)
-         IF( ( WIDTH.LE.CVRGD ) .OR. ( WIDTH.LE.MNWDTH ).OR.
-     $       ( ITER.EQ.MAXITR ) )THEN
+
+         IF( ( WIDTH.LT.RTOL*TMP ) .OR.
+     $      (ITER.EQ.MAXITR) )THEN
 *           reduce number of unconverged intervals
             NINT = NINT - 1
 *           Mark interval as converged.
@@ -257,13 +237,21 @@
 *
 *        Perform one bisection step
 *
-         NEGCNT = SLANEG( N, D, LLD, MID, PIVMIN, R )
-         IF( NEGCNT.LE.I-1 ) THEN
+         CNT = 0
+         S = MID
+         DPLUS = D( 1 ) - S
+         IF( DPLUS.LT.ZERO ) CNT = CNT + 1
+         DO 90 J = 2, N
+            DPLUS = D( J ) - S - E2( J-1 )/DPLUS
+            IF( DPLUS.LT.ZERO ) CNT = CNT + 1
+ 90      CONTINUE
+         IF( CNT.LE.I-1 ) THEN
             WORK( K-1 ) = MID
          ELSE
             WORK( K ) = MID
          END IF
          I = NEXT
+
  100  CONTINUE
       ITER = ITER + 1
 *     do another loop if there are still unconverged intervals
@@ -273,7 +261,7 @@
 *
 *
 *     At this point, all the intervals have converged
-      DO 110 I = IFIRST, ILAST
+      DO 110 I = SAVI1, ILAST
          K = 2*I
          II = I - OFFSET
 *        All intervals marked by '0' have been refined.
@@ -283,15 +271,9 @@
          END IF
  110  CONTINUE
 *
-      DO 111 I = IFIRST+1, ILAST
-         K = 2*I
-         II = I - OFFSET
-         WGAP( II-1 ) = MAX( ZERO,
-     $                     W(II) - WERR (II) - W( II-1 ) - WERR( II-1 ))
- 111  CONTINUE
 
       RETURN
 *
-*     End of SLARRB
+*     End of SLARRJ
 *
       END
