@@ -176,7 +176,7 @@ CLASRC = \
    cungbr.o cunghr.o cungl2.o cunglq.o cungql.o cungqr.o cungr2.o \
    cungrq.o cungtr.o cunm2l.o cunm2r.o cunmbr.o cunmhr.o cunml2.o \
    cunmlq.o cunmql.o cunmqr.o cunmr2.o cunmr3.o cunmrq.o cunmrz.o \
-   cunmtr.o cupgtr.o cupmtr.o icmax1.o scsum1.o cisnan.o
+   cunmtr.o cupgtr.o cupmtr.o icmax1.o scsum1.o cisnan.o cstemr.o
 
 DLASRC = \
    dgbbrd.o dgbcon.o dgbequ.o dgbrfs.o dgbsv.o  \
