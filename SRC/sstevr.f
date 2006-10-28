@@ -24,8 +24,8 @@
 *  eigenvectors can be selected by specifying either a range of values
 *  or a range of indices for the desired eigenvalues.
 *
-*  Whenever possible, SSTEVR calls SSTEGR to compute the
-*  eigenspectrum using Relatively Robust Representations.  SSTEGR
+*  Whenever possible, SSTEVR calls SSTEMR to compute the
+*  eigenspectrum using Relatively Robust Representations.  SSTEMR
 *  computes eigenvalues by the dqds algorithm, while orthogonal
 *  eigenvectors are computed from various "good" L D L^T representations
 *  (also known as Relatively Robust Representations). Gram-Schmidt
@@ -50,12 +50,12 @@
 *  UC Berkeley, May 1997.
 *
 *
-*  Note 1 : SSTEVR calls SSTEGR when the full spectrum is requested
+*  Note 1 : SSTEVR calls SSTEMR when the full spectrum is requested
 *  on machines which conform to the ieee-754 floating point standard.
 *  SSTEVR calls SSTEBZ and SSTEIN on non-ieee machines and
 *  when partial spectrum requests are made.
 *
-*  Normal execution of SSTEGR may create NaNs and infinities and
+*  Normal execution of SSTEMR may create NaNs and infinities and
 *  hence may abort due to a floating point exception in environments
 *  which do not handle NaNs and infinities in the ieee standard default
 *  manner.
@@ -208,7 +208,8 @@
       PARAMETER          ( ZERO = 0.0E+0, ONE = 1.0E+0 )
 *     ..
 *     .. Local Scalars ..
-      LOGICAL            ALLEIG, INDEIG, TEST, LQUERY, VALEIG, WANTZ
+      LOGICAL            ALLEIG, INDEIG, TEST, LQUERY, VALEIG, WANTZ,
+     $                   TRYRAC
       CHARACTER          ORDER
       INTEGER            I, IEEEOK, IMAX, INDIBL, INDIFL, INDISP,
      $                   INDIWO, ISCALE, ITMP1, J, JJ, LIWMIN, LWMIN,
@@ -223,7 +224,7 @@
       EXTERNAL           LSAME, ILAENV, SLAMCH, SLANST
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SCOPY, SSCAL, SSTEBZ, SSTEGR, SSTEIN, SSTERF,
+      EXTERNAL           SCOPY, SSCAL, SSTEBZ, SSTEMR, SSTEIN, SSTERF,
      $                   SSWAP, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
@@ -344,7 +345,7 @@
       END IF
 
 *     Initialize indices into workspaces.  Note: These indices are used only
-*     if SSTERF or SSTEGR fail.
+*     if SSTERF or SSTEMR fail.
 
 *     IWORK(INDIBL:INDIBL+M-1) corresponds to IBLOCK in SSTEBZ and
 *     stores the block indices of each of the M<=N eigenvalues.
@@ -361,7 +362,7 @@
       INDIWO = INDISP + N
 *
 *     If all eigenvalues are desired, then
-*     call SSTERF or SSTEGR.  If this fails for some eigenvalue, then
+*     call SSTERF or SSTEMR.  If this fails for some eigenvalue, then
 *     try SSTEBZ.
 *
 *
@@ -378,8 +379,13 @@
             CALL SSTERF( N, W, WORK, INFO )
          ELSE
             CALL SCOPY( N, D, 1, WORK( N+1 ), 1 )
-            CALL SSTEGR( JOBZ, 'A', N, WORK( N+1 ), WORK, VL, VU, IL,
-     $                   IU, ABSTOL, M, W, Z, LDZ, ISUPPZ,
+            IF (ABSTOL .LE. TWO*N*EPS) THEN
+               TRYRAC = .TRUE.
+            ELSE
+               TRYRAC = .FALSE.
+            END IF
+            CALL SSTEMR( JOBZ, 'A', N, WORK( N+1 ), WORK, VL, VU, IL,
+     $                   IU, M, W, Z, LDZ, N, ISUPPZ, TRYRAC,
      $                   WORK( 2*N+1 ), LWORK-2*N, IWORK, LIWORK, INFO )
 *
          END IF

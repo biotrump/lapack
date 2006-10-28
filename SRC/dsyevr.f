@@ -25,38 +25,54 @@
 *  indices for the desired eigenvalues.
 *
 *  DSYEVR first reduces the matrix A to tridiagonal form T with a call
-*  to DSYTRD.  Then, whenever possible, DSYEVR calls DSTEGR to compute
-*  the eigenspectrum using Relatively Robust Representations.  DSTEGR
+*  to DSYTRD.  Then, whenever possible, DSYEVR calls DSTEMR to compute
+*  the eigenspectrum using Relatively Robust Representations.  DSTEMR
 *  computes eigenvalues by the dqds algorithm, while orthogonal
 *  eigenvectors are computed from various "good" L D L^T representations
 *  (also known as Relatively Robust Representations). Gram-Schmidt
 *  orthogonalization is avoided as far as possible. More specifically,
-*  the various steps of the algorithm are as follows. For the i-th
-*  unreduced block of T,
-*     (a) Compute T - sigma_i = L_i D_i L_i^T, such that L_i D_i L_i^T
-*          is a relatively robust representation,
-*     (b) Compute the eigenvalues, lambda_j, of L_i D_i L_i^T to high
-*         relative accuracy by the dqds algorithm,
-*     (c) If there is a cluster of close eigenvalues, "choose" sigma_i
-*         close to the cluster, and go to step (a),
-*     (d) Given the approximate eigenvalue lambda_j of L_i D_i L_i^T,
-*         compute the corresponding eigenvector by forming a
-*         rank-revealing twisted factorization.
+*  the various steps of the algorithm are as follows.
+*
+*  For each unreduced block (submatrix) of T,
+*     (a) Compute T - sigma I  = L D L^T, so that L and D
+*         define all the wanted eigenvalues to high relative accuracy.
+*         This means that small relative changes in the entries of D and L
+*         cause only small relative changes in the eigenvalues and
+*         eigenvectors. The standard (unfactored) representation of the
+*         tridiagonal matrix T does not have this property in general.
+*     (b) Compute the eigenvalues to suitable accuracy.
+*         If the eigenvectors are desired, the algorithm attains full
+*         accuracy of the computed eigenvalues only right before
+*         the corresponding vectors have to be computed, see steps c) and d).
+*     (c) For each cluster of close eigenvalues, select a new
+*         shift close to the cluster, find a new factorization, and refine
+*         the shifted eigenvalues to suitable accuracy.
+*     (d) For each eigenvalue with a large enough relative separation compute
+*         the corresponding eigenvector by forming a rank revealing twisted
+*         factorization. Go back to (c) for any clusters that remain.
+*
 *  The desired accuracy of the output can be specified by the input
 *  parameter ABSTOL.
 *
-*  For more details, see "A new O(n^2) algorithm for the symmetric
-*  tridiagonal eigenvalue/eigenvector problem", by Inderjit Dhillon,
-*  Computer Science Division Technical Report No. UCB//CSD-97-971,
-*  UC Berkeley, May 1997.
+*  For more details, see DSTEMR's documentation and:
+*  - Inderjit S. Dhillon and Beresford N. Parlett: "Multiple representations
+*    to compute orthogonal eigenvectors of symmetric tridiagonal matrices,"
+*    Linear Algebra and its Applications, 387(1), pp. 1-28, August 2004.
+*  - Inderjit Dhillon and Beresford Parlett: "Orthogonal Eigenvectors and
+*    Relative Gaps," SIAM Journal on Matrix Analysis and Applications, Vol. 25,
+*    2004.  Also LAPACK Working Note 154.
+*  - Inderjit Dhillon: "A new O(n^2) algorithm for the symmetric
+*    tridiagonal eigenvalue/eigenvector problem",
+*    Computer Science Division Technical Report No. UCB/CSD-97-971,
+*    UC Berkeley, May 1997.
 *
 *
-*  Note 1 : DSYEVR calls DSTEGR when the full spectrum is requested
+*  Note 1 : DSYEVR calls DSTEMR when the full spectrum is requested
 *  on machines which conform to the ieee-754 floating point standard.
 *  DSYEVR calls DSTEBZ and SSTEIN on non-ieee machines and
 *  when partial spectrum requests are made.
 *
-*  Normal execution of DSTEGR may create NaNs and infinities and
+*  Normal execution of DSTEMR may create NaNs and infinities and
 *  hence may abort due to a floating point exception in environments
 *  which do not handle NaNs and infinities in the ieee standard default
 *  manner.
@@ -131,7 +147,7 @@
 *          eigenvalues are computed to high relative accuracy when
 *          possible in future releases.  The current code does not
 *          make any guarantees about high relative accuracy, but
-*          furutre releases will. See J. Barlow and J. Demmel,
+*          future releases will. See J. Barlow and J. Demmel,
 *          "Computing Accurate Eigensystems of Scaled Diagonally
 *          Dominant Matrices", LAPACK Working Note #7, for a discussion
 *          of which matrices define their eigenvalues to high relative
@@ -154,6 +170,7 @@
 *          Note: the user must ensure that at least max(1,M) columns are
 *          supplied in the array Z; if RANGE = 'V', the exact value of M
 *          is not known in advance and an upper bound must be used.
+*          Supplying N columns is always safe.
 *
 *  LDZ     (input) INTEGER
 *          The leading dimension of the array Z.  LDZ >= 1, and if
@@ -210,11 +227,12 @@
 * =====================================================================
 *
 *     .. Parameters ..
-      DOUBLE PRECISION   ZERO, ONE
-      PARAMETER          ( ZERO = 0.0D+0, ONE = 1.0D+0 )
+      DOUBLE PRECISION   ZERO, ONE, TWO
+      PARAMETER          ( ZERO = 0.0D+0, ONE = 1.0D+0, TWO = 0.0D+0 )
 *     ..
 *     .. Local Scalars ..
-      LOGICAL            ALLEIG, INDEIG, LOWER, LQUERY, VALEIG, WANTZ
+      LOGICAL            ALLEIG, INDEIG, LOWER, LQUERY, VALEIG, WANTZ,
+     $                   TRYRAC
       CHARACTER          ORDER
       INTEGER            I, IEEEOK, IINFO, IMAX, INDD, INDDD, INDE,
      $                   INDEE, INDIBL, INDIFL, INDISP, INDIWO, INDTAU,
@@ -230,7 +248,7 @@
       EXTERNAL           LSAME, ILAENV, DLAMCH, DLANSY
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DCOPY, DORMTR, DSCAL, DSTEBZ, DSTEGR, DSTEIN,
+      EXTERNAL           DCOPY, DORMTR, DSCAL, DSTEBZ, DSTEMR, DSTEIN,
      $                   DSTERF, DSWAP, DSYTRD, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
@@ -367,7 +385,7 @@
       END IF
 
 *     Initialize indices into workspaces.  Note: The IWORK indices are
-*     used only if DSTERF or DSTEGR fail.
+*     used only if DSTERF or DSTEMR fail.
 
 *     WORK(INDTAU:INDTAU+N-1) stores the scalar factors of the
 *     elementary reflectors used in DSYTRD.
@@ -378,10 +396,10 @@
 *     tridiagonal matrix from DSYTRD.
       INDE = INDD + N
 *     WORK(INDDD:INDDD+N-1) is a copy of the diagonal entries over
-*     -written by DSTEGR (the DSTERF path copies the diagonal to W).
+*     -written by DSTEMR (the DSTERF path copies the diagonal to W).
       INDDD = INDE + N
 *     WORK(INDEE:INDEE+N-1) is a copy of the off-diagonal entries over
-*     -written while computing the eigenvalues in DSTERF and DSTEGR.
+*     -written while computing the eigenvalues in DSTERF and DSTEMR.
       INDEE = INDDD + N
 *     INDWK is the starting offset of the left-over workspace, and
 *     LLWORK is the remaining workspace size.
@@ -409,7 +427,7 @@
      $             WORK( INDTAU ), WORK( INDWK ), LLWORK, IINFO )
 *
 *     If all eigenvalues are desired
-*     then call DSTERF or DSTEGR and DORMTR.
+*     then call DSTERF or DSTEMR and DORMTR.
 *
       IF( ( ALLEIG .OR. ( INDEIG .AND. IL.EQ.1 .AND. IU.EQ.N ) ) .AND.
      $    IEEEOK.EQ.1 ) THEN
@@ -421,9 +439,15 @@
             CALL DCOPY( N-1, WORK( INDE ), 1, WORK( INDEE ), 1 )
             CALL DCOPY( N, WORK( INDD ), 1, WORK( INDDD ), 1 )
 *
-            CALL DSTEGR( JOBZ, 'A', N, WORK( INDDD ), WORK( INDEE ),
-     $                   VL, VU, IL, IU, ABSTOL, M, W, Z, LDZ, ISUPPZ,
-     $                   WORK( INDWK ), LWORK, IWORK, LIWORK, INFO )
+            IF (ABSTOL .LE. TWO*N*EPS) THEN
+               TRYRAC = .TRUE.
+            ELSE
+               TRYRAC = .FALSE.
+            END IF
+            CALL DSTEMR( JOBZ, 'A', N, WORK( INDDD ), WORK( INDEE ),
+     $                   VL, VU, IL, IU, M, W, Z, LDZ, N, ISUPPZ,
+     $                   TRYRAC, WORK( INDWK ), LWORK, IWORK, LIWORK,
+     $                   INFO )
 *
 *
 *
@@ -450,7 +474,7 @@
       END IF
 *
 *     Otherwise, call DSTEBZ and, if eigenvectors are desired, DSTEIN.
-*     Also call DSTEBZ and DSTEIN if DSTEGR fails.
+*     Also call DSTEBZ and DSTEIN if DSTEMR fails.
 *
       IF( WANTZ ) THEN
          ORDER = 'B'
@@ -480,7 +504,7 @@
 *
 *     If matrix was scaled, then rescale eigenvalues appropriately.
 *
-*  Jump here if DSTEGR/DSTEIN succeeded.
+*  Jump here if DSTEMR/DSTEIN succeeded.
    30 CONTINUE
       IF( ISCALE.EQ.1 ) THEN
          IF( INFO.EQ.0 ) THEN
@@ -493,7 +517,7 @@
 *
 *     If eigenvalues are not in order, then sort them, along with
 *     eigenvectors.  Note: We do not sort the IFAIL portion of IWORK.
-*     It may not be initialized (if DSTEGR/DSTEIN succeeded), and we do
+*     It may not be initialized (if DSTEMR/DSTEIN succeeded), and we do
 *     not return this detailed information to the user.
 *
       IF( WANTZ ) THEN

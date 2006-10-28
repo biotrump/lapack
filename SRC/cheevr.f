@@ -27,38 +27,54 @@
 *  indices for the desired eigenvalues.
 *
 *  CHEEVR first reduces the matrix A to tridiagonal form T with a call
-*  to CHETRD.  Then, whenever possible, CHEEVR calls CSTEGR to compute
-*  the eigenspectrum using Relatively Robust Representations.  CSTEGR
+*  to CHETRD.  Then, whenever possible, CHEEVR calls CSTEMR to compute
+*  the eigenspectrum using Relatively Robust Representations.  CSTEMR
 *  computes eigenvalues by the dqds algorithm, while orthogonal
 *  eigenvectors are computed from various "good" L D L^T representations
 *  (also known as Relatively Robust Representations). Gram-Schmidt
 *  orthogonalization is avoided as far as possible. More specifically,
-*  the various steps of the algorithm are as follows. For the i-th
-*  unreduced block of T,
-*     (a) Compute T - sigma_i = L_i D_i L_i^T, such that L_i D_i L_i^T
-*          is a relatively robust representation,
-*     (b) Compute the eigenvalues, lambda_j, of L_i D_i L_i^T to high
-*         relative accuracy by the dqds algorithm,
-*     (c) If there is a cluster of close eigenvalues, "choose" sigma_i
-*         close to the cluster, and go to step (a),
-*     (d) Given the approximate eigenvalue lambda_j of L_i D_i L_i^T,
-*         compute the corresponding eigenvector by forming a
-*         rank-revealing twisted factorization.
+*  the various steps of the algorithm are as follows.
+*
+*  For each unreduced block (submatrix) of T,
+*     (a) Compute T - sigma I  = L D L^T, so that L and D
+*         define all the wanted eigenvalues to high relative accuracy.
+*         This means that small relative changes in the entries of D and L
+*         cause only small relative changes in the eigenvalues and
+*         eigenvectors. The standard (unfactored) representation of the
+*         tridiagonal matrix T does not have this property in general.
+*     (b) Compute the eigenvalues to suitable accuracy.
+*         If the eigenvectors are desired, the algorithm attains full
+*         accuracy of the computed eigenvalues only right before
+*         the corresponding vectors have to be computed, see steps c) and d).
+*     (c) For each cluster of close eigenvalues, select a new
+*         shift close to the cluster, find a new factorization, and refine
+*         the shifted eigenvalues to suitable accuracy.
+*     (d) For each eigenvalue with a large enough relative separation compute
+*         the corresponding eigenvector by forming a rank revealing twisted
+*         factorization. Go back to (c) for any clusters that remain.
+*
 *  The desired accuracy of the output can be specified by the input
 *  parameter ABSTOL.
 *
-*  For more details, see "A new O(n^2) algorithm for the symmetric
-*  tridiagonal eigenvalue/eigenvector problem", by Inderjit Dhillon,
-*  Computer Science Division Technical Report No. UCB//CSD-97-971,
-*  UC Berkeley, May 1997.
+*  For more details, see DSTEMR's documentation and:
+*  - Inderjit S. Dhillon and Beresford N. Parlett: "Multiple representations
+*    to compute orthogonal eigenvectors of symmetric tridiagonal matrices,"
+*    Linear Algebra and its Applications, 387(1), pp. 1-28, August 2004.
+*  - Inderjit Dhillon and Beresford Parlett: "Orthogonal Eigenvectors and
+*    Relative Gaps," SIAM Journal on Matrix Analysis and Applications, Vol. 25,
+*    2004.  Also LAPACK Working Note 154.
+*  - Inderjit Dhillon: "A new O(n^2) algorithm for the symmetric
+*    tridiagonal eigenvalue/eigenvector problem",
+*    Computer Science Division Technical Report No. UCB/CSD-97-971,
+*    UC Berkeley, May 1997.
 *
 *
-*  Note 1 : CHEEVR calls CSTEGR when the full spectrum is requested
+*  Note 1 : CHEEVR calls CSTEMR when the full spectrum is requested
 *  on machines which conform to the ieee-754 floating point standard.
 *  CHEEVR calls SSTEBZ and CSTEIN on non-ieee machines and
 *  when partial spectrum requests are made.
 *
-*  Normal execution of CSTEGR may create NaNs and infinities and
+*  Normal execution of CSTEMR may create NaNs and infinities and
 *  hence may abort due to a floating point exception in environments
 *  which do not handle NaNs and infinities in the ieee standard default
 *  manner.
@@ -228,12 +244,12 @@
 * =====================================================================
 *
 *     .. Parameters ..
-      REAL               ZERO, ONE
-      PARAMETER          ( ZERO = 0.0E+0, ONE = 1.0E+0 )
+      REAL               ZERO, ONE, TWO
+      PARAMETER          ( ZERO = 0.0E+0, ONE = 1.0E+0, TWO = 1.0E+0 )
 *     ..
 *     .. Local Scalars ..
       LOGICAL            ALLEIG, INDEIG, LOWER, LQUERY, TEST, VALEIG,
-     $                   WANTZ
+     $                   WANTZ, TRYRAC
       CHARACTER          ORDER
       INTEGER            I, IEEEOK, IINFO, IMAX, INDIBL, INDIFL, INDISP,
      $                   INDIWO, INDRD, INDRDD, INDRE, INDREE, INDRWK,
@@ -250,7 +266,7 @@
       EXTERNAL           LSAME, ILAENV, CLANSY, SLAMCH
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CHETRD, CSSCAL, CSTEGR, CSTEIN, CSWAP, CUNMTR,
+      EXTERNAL           CHETRD, CSSCAL, CSTEMR, CSTEIN, CSWAP, CUNMTR,
      $                   SCOPY, SSCAL, SSTEBZ, SSTERF, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
@@ -397,7 +413,7 @@
       END IF
 
 *     Initialize indices into workspaces.  Note: The IWORK indices are
-*     used only if SSTERF or CSTEGR fail.
+*     used only if SSTERF or CSTEMR fail.
 
 *     WORK(INDTAU:INDTAU+N-1) stores the complex scalar factors of the
 *     elementary reflectors used in CHETRD.
@@ -414,10 +430,10 @@
 *     tridiagonal matrix from CHETRD.
       INDRE = INDRD + N
 *     RWORK(INDRDD:INDRDD+N-1) is a copy of the diagonal entries over
-*     -written by CSTEGR (the SSTERF path copies the diagonal to W).
+*     -written by CSTEMR (the SSTERF path copies the diagonal to W).
       INDRDD = INDRE + N
 *     RWORK(INDREE:INDREE+N-1) is a copy of the off-diagonal entries over
-*     -written while computing the eigenvalues in SSTERF and CSTEGR.
+*     -written while computing the eigenvalues in SSTERF and CSTEMR.
       INDREE = INDRDD + N
 *     INDRWK is the starting offset of the left-over real workspace, and
 *     LLRWORK is the remaining workspace size.
@@ -445,7 +461,7 @@
      $             WORK( INDTAU ), WORK( INDWK ), LLWORK, IINFO )
 *
 *     If all eigenvalues are desired
-*     then call SSTERF or CSTEGR and CUNMTR.
+*     then call SSTERF or CSTEMR and CUNMTR.
 *
       TEST = .FALSE.
       IF( INDEIG ) THEN
@@ -462,9 +478,14 @@
             CALL SCOPY( N-1, RWORK( INDRE ), 1, RWORK( INDREE ), 1 )
             CALL SCOPY( N, RWORK( INDRD ), 1, RWORK( INDRDD ), 1 )
 *
-            CALL CSTEGR( JOBZ, 'A', N, RWORK( INDRDD ),
-     $                   RWORK( INDREE ), VL, VU, IL, IU, ABSTOL, M, W,
-     $                   Z, LDZ, ISUPPZ,
+            IF (ABSTOL .LE. TWO*N*EPS) THEN
+               TRYRAC = .TRUE.
+            ELSE
+               TRYRAC = .FALSE.
+            END IF
+            CALL CSTEMR( JOBZ, 'A', N, RWORK( INDRDD ),
+     $                   RWORK( INDREE ), VL, VU, IL, IU, M, W,
+     $                   Z, LDZ, N, ISUPPZ, TRYRAC,
      $                   RWORK( INDRWK ), LLRWORK,
      $                   IWORK, LIWORK, INFO )
 *
@@ -489,7 +510,7 @@
       END IF
 *
 *     Otherwise, call SSTEBZ and, if eigenvectors are desired, CSTEIN.
-*     Also call SSTEBZ and CSTEIN if CSTEGR fails.
+*     Also call SSTEBZ and CSTEIN if CSTEMR fails.
 *
       IF( WANTZ ) THEN
          ORDER = 'B'

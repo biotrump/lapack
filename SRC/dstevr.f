@@ -24,8 +24,8 @@
 *  eigenvectors can be selected by specifying either a range of values
 *  or a range of indices for the desired eigenvalues.
 *
-*  Whenever possible, DSTEVR calls DSTEGR to compute the
-*  eigenspectrum using Relatively Robust Representations.  DSTEGR
+*  Whenever possible, DSTEVR calls DSTEMR to compute the
+*  eigenspectrum using Relatively Robust Representations.  DSTEMR
 *  computes eigenvalues by the dqds algorithm, while orthogonal
 *  eigenvectors are computed from various "good" L D L^T representations
 *  (also known as Relatively Robust Representations). Gram-Schmidt
@@ -50,12 +50,12 @@
 *  UC Berkeley, May 1997.
 *
 *
-*  Note 1 : DSTEVR calls DSTEGR when the full spectrum is requested
+*  Note 1 : DSTEVR calls DSTEMR when the full spectrum is requested
 *  on machines which conform to the ieee-754 floating point standard.
 *  DSTEVR calls DSTEBZ and DSTEIN on non-ieee machines and
 *  when partial spectrum requests are made.
 *
-*  Normal execution of DSTEGR may create NaNs and infinities and
+*  Normal execution of DSTEMR may create NaNs and infinities and
 *  hence may abort due to a floating point exception in environments
 *  which do not handle NaNs and infinities in the ieee standard default
 *  manner.
@@ -202,11 +202,12 @@
 *  =====================================================================
 *
 *     .. Parameters ..
-      DOUBLE PRECISION   ZERO, ONE
-      PARAMETER          ( ZERO = 0.0D+0, ONE = 1.0D+0 )
+      DOUBLE PRECISION   ZERO, ONE, TWO
+      PARAMETER          ( ZERO = 0.0D+0, ONE = 1.0D+0, TWO = 2.0D+0 )
 *     ..
 *     .. Local Scalars ..
-      LOGICAL            ALLEIG, INDEIG, TEST, LQUERY, VALEIG, WANTZ
+      LOGICAL            ALLEIG, INDEIG, TEST, LQUERY, VALEIG, WANTZ,
+     $                   TRYRAC
       CHARACTER          ORDER
       INTEGER            I, IEEEOK, IMAX, INDIBL, INDIFL, INDISP,
      $                   INDIWO, ISCALE, ITMP1, J, JJ, LIWMIN, LWMIN,
@@ -221,7 +222,7 @@
       EXTERNAL           LSAME, ILAENV, DLAMCH, DLANST
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DCOPY, DSCAL, DSTEBZ, DSTEGR, DSTEIN, DSTERF,
+      EXTERNAL           DCOPY, DSCAL, DSTEBZ, DSTEMR, DSTEIN, DSTERF,
      $                   DSWAP, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
@@ -342,7 +343,7 @@
       END IF
 
 *     Initialize indices into workspaces.  Note: These indices are used only
-*     if DSTERF or DSTEGR fail.
+*     if DSTERF or DSTEMR fail.
 
 *     IWORK(INDIBL:INDIBL+M-1) corresponds to IBLOCK in DSTEBZ and
 *     stores the block indices of each of the M<=N eigenvalues.
@@ -359,7 +360,7 @@
       INDIWO = INDISP + N
 *
 *     If all eigenvalues are desired, then
-*     call DSTERF or DSTEGR.  If this fails for some eigenvalue, then
+*     call DSTERF or DSTEMR.  If this fails for some eigenvalue, then
 *     try DSTEBZ.
 *
 *
@@ -376,8 +377,13 @@
             CALL DSTERF( N, W, WORK, INFO )
          ELSE
             CALL DCOPY( N, D, 1, WORK( N+1 ), 1 )
-            CALL DSTEGR( JOBZ, 'A', N, WORK( N+1 ), WORK, VL, VU, IL,
-     $                   IU, ABSTOL, M, W, Z, LDZ, ISUPPZ,
+            IF (ABSTOL .LE. TWO*N*EPS) THEN
+               TRYRAC = .TRUE.
+            ELSE
+               TRYRAC = .FALSE.
+            END IF
+            CALL DSTEMR( JOBZ, 'A', N, WORK( N+1 ), WORK, VL, VU, IL,
+     $                   IU, M, W, Z, LDZ, N, ISUPPZ, TRYRAC,
      $                   WORK( 2*N+1 ), LWORK-2*N, IWORK, LIWORK, INFO )
 *
          END IF
