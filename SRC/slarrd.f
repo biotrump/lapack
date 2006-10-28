@@ -4,8 +4,8 @@
      $                    WORK, IWORK, INFO )
 *
 *  -- LAPACK auxiliary routine (version 3.1) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.
-*     October 7, 2006
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     October 2006
 *
 *     .. Scalar Arguments ..
       CHARACTER          ORDER, RANGE
@@ -209,14 +209,15 @@
       PARAMETER          ( ZERO = 0.0E0, ONE = 1.0E0,
      $                     TWO = 2.0E0, HALF = ONE/TWO,
      $                     FUDGE = TWO )
-
+      INTEGER   ALLRNG, VALRNG, INDRNG
+      PARAMETER ( ALLRNG = 1, VALRNG = 2, INDRNG = 3 )
 *     ..
 *     .. Local Scalars ..
       LOGICAL            NCNVRG, TOOFEW
       INTEGER            I, IB, IBEGIN, IDISCL, IDISCU, IE, IEND, IINFO,
-     $                   IM, IN, IOFF, IORDER, IOUT, IRANGE, ITMAX,
-     $                   ITMP1, ITMP2, IW, IWOFF, J, JBLK, JDISC, JE,
-     $                   JEE, NB, NWL, NWU
+     $                   IM, IN, IOFF, IOUT, IRANGE, ITMAX, ITMP1,
+     $                   ITMP2, IW, IWOFF, J, JBLK, JDISC, JE, JEE, NB,
+     $                   NWL, NWU
       REAL               ATOLI, EPS, GL, GU, RTOLI, SPDIAM, TMP1, TMP2,
      $                   TNORM, UFLOW, WKILL, WLU, WUL
 
@@ -243,41 +244,31 @@
 *     Decode RANGE
 *
       IF( LSAME( RANGE, 'A' ) ) THEN
-         IRANGE = 1
+         IRANGE = ALLRNG
       ELSE IF( LSAME( RANGE, 'V' ) ) THEN
-         IRANGE = 2
+         IRANGE = VALRNG
       ELSE IF( LSAME( RANGE, 'I' ) ) THEN
-         IRANGE = 3
+         IRANGE = INDRNG
       ELSE
          IRANGE = 0
-      END IF
-*
-*     Decode ORDER
-*
-      IF( LSAME( ORDER, 'B' ) ) THEN
-         IORDER = 2
-      ELSE IF( LSAME( ORDER, 'E' ) ) THEN
-         IORDER = 1
-      ELSE
-         IORDER = 0
       END IF
 *
 *     Check for Errors
 *
       IF( IRANGE.LE.0 ) THEN
          INFO = -1
-      ELSE IF( IORDER.LE.0 ) THEN
+      ELSE IF( .NOT.(LSAME(ORDER,'B').OR.LSAME(ORDER,'E')) ) THEN
          INFO = -2
       ELSE IF( N.LT.0 ) THEN
          INFO = -3
-      ELSE IF( IRANGE.EQ.2 ) THEN
+      ELSE IF( IRANGE.EQ.VALRNG ) THEN
          IF( VL.GE.VU )
      $      INFO = -5
-      ELSE IF( IRANGE.EQ.3 .AND. ( IL.LT.1 .OR. IL.GT.MAX( 1, N ) ) )
-     $          THEN
+      ELSE IF( IRANGE.EQ.INDRNG .AND.
+     $        ( IL.LT.1 .OR. IL.GT.MAX( 1, N ) ) ) THEN
          INFO = -6
-      ELSE IF( IRANGE.EQ.3 .AND. ( IU.LT.MIN( N, IL ) .OR. IU.GT.N ) )
-     $          THEN
+      ELSE IF( IRANGE.EQ.INDRNG .AND.
+     $        ( IU.LT.MIN( N, IL ) .OR. IU.GT.N ) ) THEN
          INFO = -7
       END IF
 *
@@ -295,7 +286,7 @@
       IF( N.EQ.0 ) RETURN
 
 *     Simplification:
-      IF( IRANGE.EQ.3 .AND. IL.EQ.1 .AND. IU.EQ.N ) IRANGE = 1
+      IF( IRANGE.EQ.INDRNG .AND. IL.EQ.1 .AND. IU.EQ.N ) IRANGE = 1
 
 *     Get machine constants
       EPS = SLAMCH( 'P' )
@@ -305,9 +296,9 @@
 *     Special Case when N=1
 *     Treat case of 1x1 matrix for quick return
       IF( N.EQ.1 ) THEN
-         IF( (IRANGE.EQ.1).OR.
-     $       ((IRANGE.EQ.2).AND.(D(1).GT.VL).AND.(D(1).LE.VU)).OR.
-     $       ((IRANGE.EQ.3).AND.(IL.EQ.1).AND.(IU.EQ.1)) ) THEN
+         IF( (IRANGE.EQ.ALLRNG).OR.
+     $       ((IRANGE.EQ.VALRNG).AND.(D(1).GT.VL).AND.(D(1).LE.VU)).OR.
+     $       ((IRANGE.EQ.INDRNG).AND.(IL.EQ.1).AND.(IU.EQ.1)) ) THEN
             M = 1
             W(1) = D(1)
 *           The computation error of the eigenvalue is zero
@@ -341,7 +332,7 @@
       RTOLI = RELTOL
       ATOLI = FUDGE*TWO*UFLOW + FUDGE*TWO*PIVMIN
 
-      IF( IRANGE.EQ.3 ) THEN
+      IF( IRANGE.EQ.INDRNG ) THEN
 
 *        RANGE='I': Compute an interval containing eigenvalues
 *        IL through IU. The initial interval [GL,GU] from the global
@@ -391,11 +382,11 @@
             RETURN
          END IF
 
-      ELSEIF( IRANGE.EQ.2 ) THEN
+      ELSEIF( IRANGE.EQ.VALRNG ) THEN
          WL = VL
          WU = VU
 
-      ELSEIF( IRANGE.EQ.1 ) THEN
+      ELSEIF( IRANGE.EQ.ALLRNG ) THEN
          WL = GL
          WU = GU
       ENDIF
@@ -423,8 +414,9 @@
      $         NWL = NWL + 1
             IF( WU.GE.D( IBEGIN )-PIVMIN )
      $         NWU = NWU + 1
-            IF( IRANGE.EQ.1 .OR. ( WL.LT.D( IBEGIN )-PIVMIN .AND. WU.GE.
-     $          D( IBEGIN )-PIVMIN ) ) THEN
+            IF( IRANGE.EQ.ALLRNG .OR.
+     $           ( WL.LT.D( IBEGIN )-PIVMIN
+     $             .AND. WU.GE. D( IBEGIN )-PIVMIN ) ) THEN
                M = M + 1
                W( M ) = D( IBEGIN )
                WERR(M) = ZERO
@@ -521,7 +513,7 @@
 
 *     If RANGE='I', then (WL,WU) contains eigenvalues NWL+1,...,NWU
 *     If NWL+1 < IL or NWU > IU, discard extra eigenvalues.
-      IF( IRANGE.EQ.3 ) THEN
+      IF( IRANGE.EQ.INDRNG ) THEN
          IDISCL = IL - 1 - NWL
          IDISCU = NWU - IU
 *
@@ -621,16 +613,16 @@
          END IF
       END IF
 *
-      IF(( IRANGE.EQ.1 .AND. M.NE.N ).OR.
-     $   ( IRANGE.EQ.3 .AND. M.NE.IU-IL+1 ) ) THEN
+      IF(( IRANGE.EQ.ALLRNG .AND. M.NE.N ).OR.
+     $   ( IRANGE.EQ.INDRNG .AND. M.NE.IU-IL+1 ) ) THEN
          TOOFEW = .TRUE.
       END IF
 
-*     If ORDER='B',(IBLOCK = 2), do nothing  the eigenvalues are already sorted
-*        by block.
-*     If ORDER='E',(IBLOCK = 1), sort the eigenvalues from smallest to largest
+*     If ORDER='B', do nothing the eigenvalues are already sorted by
+*        block.
+*     If ORDER='E', sort the eigenvalues from smallest to largest
 
-      IF( IORDER.EQ.1 .AND. NSPLIT.GT.1 ) THEN
+      IF( LSAME(ORDER,'E') .AND. NSPLIT.GT.1 ) THEN
          DO 150 JE = 1, M - 1
             IE = 0
             TMP1 = W( JE )

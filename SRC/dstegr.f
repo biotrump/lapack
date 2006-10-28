@@ -6,8 +6,8 @@
 *
 *
 *  -- LAPACK computational routine (version 3.1) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.
-*     October 7, 2006
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     October 2006
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBZ, RANGE

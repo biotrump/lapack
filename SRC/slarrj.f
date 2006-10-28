@@ -3,8 +3,8 @@
      $                   PIVMIN, SPDIAM, INFO )
 *
 *  -- LAPACK auxiliary routine (version 3.1) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.
-*     October 7, 2006
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     October 2006
 *
 *     .. Scalar Arguments ..
       INTEGER            IFIRST, ILAST, INFO, N, OFFSET
@@ -21,7 +21,7 @@
 *
 *  Given the initial eigenvalue approximations of T, SLARRJ
 *  does  bisection to refine the eigenvalues of T,
-*  W( IFIRST-OFFSET ) thru' W( ILAST-OFFSET ), to more accuracy. Initial
+*  W( IFIRST-OFFSET ) through W( ILAST-OFFSET ), to more accuracy. Initial
 *  guesses for these eigenvalues are input in W, the corresponding estimate
 *  of the error in these guesses in WERR. During bisection, intervals
 *  [left, right] are maintained by storing their mid-points and
@@ -52,15 +52,16 @@
 *
 *  OFFSET  (input) INTEGER
 *          Offset for the arrays W and WERR, i.e., the IFIRST-OFFSET
-*          thru' ILAST-OFFSET elements of these arrays are to be used.
+*          through ILAST-OFFSET elements of these arrays are to be used.
 *
 *  W       (input/output) REAL             array, dimension (N)
-*          On input, W( IFIRST-OFFSET ) thru' W( ILAST-OFFSET ) are
-*          estimates of the eigenvalues of L D L^T indexed IFIRST thru' ILAST.
+*          On input, W( IFIRST-OFFSET ) through W( ILAST-OFFSET ) are
+*          estimates of the eigenvalues of L D L^T indexed IFIRST through
+*          ILAST.
 *          On output, these estimates are refined.
 *
 *  WERR    (input/output) REAL             array, dimension (N)
-*          On input, WERR( IFIRST-OFFSET ) thru' WERR( ILAST-OFFSET ) are
+*          On input, WERR( IFIRST-OFFSET ) through WERR( ILAST-OFFSET ) are
 *          the errors in the estimates of the corresponding elements in W.
 *          On output, these errors are refined.
 *

@@ -1,9 +1,10 @@
       SUBROUTINE SLARRA( N, D, E, E2, SPLTOL, TNRM,
      $                    NSPLIT, ISPLIT, INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK auxiliary routine (version 3.1) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.
-*     October 7, 2006
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     October 2006
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, N, NSPLIT
@@ -83,7 +84,7 @@
 *     ..
 *     .. Local Scalars ..
       INTEGER            I
-      REAL               EABS, STOL, TMP1
+      REAL               EABS, TMP1
 
 *     ..
 *     .. Intrinsic Functions ..
@@ -109,10 +110,9 @@
  9       CONTINUE
       ELSE
 *        Criterion that guarantees relative accuracy
-         STOL = ABS(SPLTOL)
          DO 10 I = 1, N-1
             EABS = ABS( E(I) )
-            IF( EABS .LE. STOL * SQRT(ABS(D(I)))*SQRT(ABS(D(I+1))) )
+            IF( EABS .LE. SPLTOL * SQRT(ABS(D(I)))*SQRT(ABS(D(I+1))) )
      $      THEN
                E(I) = ZERO
                E2(I) = ZERO

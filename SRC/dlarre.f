@@ -4,8 +4,8 @@
      $                    WORK, IWORK, INFO )
 *
 *  -- LAPACK auxiliary routine (version 3.1) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.
-*     October 7, 2006
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     October 2006
 *
 *     .. Scalar Arguments ..
       CHARACTER          RANGE
@@ -29,7 +29,7 @@
 *  (b) the base representation, T_i - sigma_i I = L_i D_i L_i^T, and
 *  (c) eigenvalues of each L_i D_i L_i^T.
 *  The representations and eigenvalues found are then used by
-*  DSTEMR to compute the eigenvectors  T.
+*  DSTEMR to compute the eigenvectors of T.
 *  The accuracy varies depending on whether bisection is used to
 *  find a few eigenvalues or the dqds algorithm (subroutine DLASQ2) to
 *  conpute all and then discard any unwanted one.
@@ -186,8 +186,9 @@
      $                     PERT = 8.0D0,
      $                     HALF = ONE/TWO, FOURTH = ONE/FOUR, FAC= HALF,
      $                     MAXGROWTH = 64.0D0, FUDGE = 2.0D0 )
-      INTEGER            MAXTRY
-      PARAMETER          ( MAXTRY = 6 )
+      INTEGER            MAXTRY, ALLRNG, INDRNG, VALRNG
+      PARAMETER          ( MAXTRY = 6, ALLRNG = 1, INDRNG = 2,
+     $                     VALRNG = 3 )
 *     ..
 *     .. Local Scalars ..
       LOGICAL            FORCEB, NOREP, RNDPRT, USEDQD
@@ -229,11 +230,11 @@
 *     Decode RANGE
 *
       IF( LSAME( RANGE, 'A' ) ) THEN
-         IRANGE = 1
+         IRANGE = ALLRNG
       ELSE IF( LSAME( RANGE, 'V' ) ) THEN
-         IRANGE = 2
+         IRANGE = VALRNG
       ELSE IF( LSAME( RANGE, 'I' ) ) THEN
-         IRANGE = 3
+         IRANGE = INDRNG
       END IF
 
       M = 0
@@ -248,9 +249,9 @@
 
 *     Treat case of 1x1 matrix for quick return
       IF( N.EQ.1 ) THEN
-         IF( (IRANGE.EQ.1).OR.
-     $       ((IRANGE.EQ.2).AND.(D(1).GT.VL).AND.(D(1).LE.VU)).OR.
-     $       ((IRANGE.EQ.3).AND.(IL.EQ.1).AND.(IU.EQ.1)) ) THEN
+         IF( (IRANGE.EQ.ALLRNG).OR.
+     $       ((IRANGE.EQ.VALRNG).AND.(D(1).GT.VL).AND.(D(1).LE.VU)).OR.
+     $       ((IRANGE.EQ.INDRNG).AND.(IL.EQ.1).AND.(IU.EQ.1)) ) THEN
             M = 1
             W(1) = D(1)
 *           The computation error of the eigenvalue is zero
@@ -302,13 +303,13 @@
 *     Can force use of bisection instead of faster DQDS
       FORCEB = .FALSE.
 
-      IF( (IRANGE.EQ.1) .AND. (.NOT. FORCEB) ) THEN
+      IF( (IRANGE.EQ.ALLRNG) .AND. (.NOT. FORCEB) ) THEN
 *        Set interval [VL,VU] that contains all eigenvalues
          VL = GL
          VU = GU
       ELSE
 *        We call DLARRD to find crude approximations to the eigenvalues
-*        in the desired range. In case IRANGE = 3, we also obtain the
+*        in the desired range. In case IRANGE = INDRNG, we also obtain the
 *        interval (VL,VU] that contains all the wanted eigenvalues.
 *        An interval [LEFT,RIGHT] has converged if
 *        RIGHT-LEFT.LT.RTOL*MAX(ABS(LEFT),ABS(RIGHT))
@@ -341,9 +342,9 @@
 
 *        1 X 1 block
          IF( IN.EQ.1 ) THEN
-            IF( (IRANGE.EQ.1).OR.( (IRANGE.EQ.2).AND.
+            IF( (IRANGE.EQ.ALLRNG).OR.( (IRANGE.EQ.VALRNG).AND.
      $         ( D( IBEGIN ).GT.VL ).AND.( D( IBEGIN ).LE.VU ) )
-     $        .OR. ( (IRANGE.EQ.3).AND.(IBLOCK(WBEGIN).EQ.JBLK))
+     $        .OR. ( (IRANGE.EQ.INDRNG).AND.(IBLOCK(WBEGIN).EQ.JBLK))
      $        ) THEN
                M = M + 1
                W( M ) = D( IBEGIN )
@@ -375,7 +376,7 @@
  15      CONTINUE
          SPDIAM = GU - GL
 
-         IF(.NOT. ((IRANGE.EQ.1).AND.(.NOT.FORCEB)) ) THEN
+         IF(.NOT. ((IRANGE.EQ.ALLRNG).AND.(.NOT.FORCEB)) ) THEN
 *           Count the number of eigenvalues in the current block.
             MB = 0
             DO 20 I = WBEGIN,MM
@@ -413,7 +414,7 @@
                INDU = INDEXW( WEND )
             ENDIF
          ENDIF
-         IF(( (IRANGE.EQ.1) .AND. (.NOT. FORCEB) ).OR.USEDQD) THEN
+         IF(( (IRANGE.EQ.ALLRNG) .AND. (.NOT. FORCEB) ).OR.USEDQD) THEN
 *           Case of DQDS
 *           Find approximations to the extremal eigenvalues of the block
             CALL DLARRK( IN, 1, GL, GU, D(IBEGIN),
@@ -453,7 +454,7 @@
 *        the eigenvalue approximations at the end of DLARRE or bisection.
 *        dqds is chosen if all eigenvalues are desired or the number of
 *        eigenvalues to be computed is large compared to the blocksize.
-         IF( ( IRANGE.EQ.1 ) .AND. (.NOT.FORCEB) ) THEN
+         IF( ( IRANGE.EQ.ALLRNG ) .AND. (.NOT.FORCEB) ) THEN
 *           If all the eigenvalues have to be computed, we use dqd
             USEDQD = .TRUE.
 *           INDL is the local index of the first eigenvalue to compute
@@ -489,7 +490,7 @@
             SIGMA = GL
             SGNDEF = ONE
          ELSEIF( CNT1 - INDL .GE. INDU - CNT2 ) THEN
-            IF( ( IRANGE.EQ.1 ) .AND. (.NOT.FORCEB) ) THEN
+            IF( ( IRANGE.EQ.ALLRNG ) .AND. (.NOT.FORCEB) ) THEN
                SIGMA = MAX(ISLEFT,GL)
             ELSEIF( USEDQD ) THEN
 *              use Gerschgorin bound as shift to get pos def matrix
@@ -502,7 +503,7 @@
             ENDIF
             SGNDEF = ONE
          ELSE
-            IF( ( IRANGE.EQ.1 ) .AND. (.NOT.FORCEB) ) THEN
+            IF( ( IRANGE.EQ.ALLRNG ) .AND. (.NOT.FORCEB) ) THEN
                SIGMA = MIN(ISRGHT,GU)
             ELSEIF( USEDQD ) THEN
 *              use Gerschgorin bound as shift to get neg def matrix
@@ -572,9 +573,9 @@
  71            CONTINUE
             ENDIF
             IF(NOREP) THEN
-*              Note that in the case of IRANGE=1, we use the Gerschgorin
+*              Note that in the case of IRANGE=ALLRNG, we use the Gerschgorin
 *              shift which makes the matrix definite. So we should end up
-*              here really only in the case of IRANGE = 2,3
+*              here really only in the case of IRANGE = VALRNG or INDRNG.
                IF( IDUM.EQ.MAXTRY-1 ) THEN
                   IF( SGNDEF.EQ.ONE ) THEN
 *                    The fudged Gerschgorin shift should succeed
