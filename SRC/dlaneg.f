@@ -24,8 +24,16 @@
 *
 *  This routine is called from DLARRB.
 *
-*  Note : This routine requires IEEE-754 propagation of Infinities and
-*  NaNs as well as default handling of 0/0 => NaN.
+*  The current routine does not use the PIVMIN parameter but rather
+*  requires IEEE-754 propagation of Infinities and NaNs.  This
+*  routine also has no input range restrictions but does require
+*  default exception handling such that x/0 produces Inf when x is
+*  non-zero, and Inf/Inf produces NaN.  For more information, see:
+*
+*    Marques, Riedy, and Voemel, "Benefits of IEEE-754 Features in
+*    Modern Symmetric Tridiagonal Eigensolvers," SIAM Journal on
+*    Scientific Computing, v28, n5, 2006.  DOI 10.1137/050641624
+*    (Tech report version in LAWN 172 with the same title.)
 *
 *  Arguments
 *  =========
@@ -43,12 +51,21 @@
 *          Shift amount in T - sigma I = L D L^T.
 *
 *  PIVMIN  (input) DOUBLE PRECISION
-*          The minimum pivot in the Sturm sequence.  Used when zero
-*          pivots are encountered.
+*          The minimum pivot in the Sturm sequence.  May be used
+*          when zero pivots are encountered on non-IEEE-754
+*          architectures.
 *
 *  R       (input) INTEGER
 *          The twist index for the twisted factorization that is used
 *          for the negcount.
+*
+*  Further Details
+*  ===============
+*
+*  Based on contributions by
+*     Osni Marques, LBNL/NERSC, USA
+*     Christof Voemel, University of California, Berkeley, USA
+*     Jason Riedy, University of California, Berkeley, USA
 *
 *  =====================================================================
 *
@@ -58,7 +75,7 @@
 *     ..
 *     .. Local Scalars ..
       INTEGER            J, NEG1, NEG2, NEGCNT
-      DOUBLE PRECISION   DMINUS, DPLUS, GAMMA, P, S, T, TMP
+      DOUBLE PRECISION   DMINUS, DPLUS, GAMMA, P, T, TMP
       LOGICAL SAWNAN
 *     ..
 *     .. External Functions ..
@@ -70,27 +87,27 @@
 
 *     I) upper part: L D L^T - SIGMA I = L+ D+ L+^T
       NEG1 = 0
-      S = ZERO
+      T = -SIGMA
       DO 21 J = 1, R - 1
-         T = S - SIGMA
          DPLUS = D( J ) + T
-         S = T*LLD( J ) / DPLUS
          IF( DPLUS.LT.ZERO ) NEG1 = NEG1 + 1
+         TMP = T / DPLUS
+         T = TMP * LLD( J ) - SIGMA
  21   CONTINUE
       SAWNAN = DISNAN( S )
-*     Run a slower version of the above loop if a NaN is detected
+*     Run a slower version of the above loop if a NaN is detected.
+*     A NaN should occur only with a zero pivot after an infinite
+*     pivot.  In that case, substituting 1 for T/DPLUS is the
+*     correct limit.
       IF( SAWNAN ) THEN
          NEG1 = 0
-         S = ZERO
          T = -SIGMA
          DO 22 J = 1, R - 1
             DPLUS = D( J ) + T
-            IF(ABS(DPLUS).LT.PIVMIN) DPLUS = -PIVMIN
-            TMP = LLD( J ) / DPLUS
             IF( DPLUS.LT.ZERO ) NEG1 = NEG1 + 1
-            S = T*TMP
-            IF( TMP.EQ.ZERO ) S = LLD( J )
-            T = S - SIGMA
+            TMP = T / DPLUS
+            IF (DISNAN(TMP)) TMP = ONE
+            T = TMP * LLD(J) - SIGMA
  22      CONTINUE
       END IF
       NEGCNT = NEGCNT + NEG1
@@ -100,26 +117,28 @@
       P = D( N ) - SIGMA
       DO 23 J = N - 1, R, -1
          DMINUS = LLD( J ) + P
-         P = P*D( J )/DMINUS - SIGMA
          IF( DMINUS.LT.ZERO ) NEG2 = NEG2 + 1
+         TMP = P / DMINUS
+         P = TMP * D( J ) - SIGMA
  23   CONTINUE
       SAWNAN = DISNAN( P )
+*     As above, run a slower version that substitutes 1 for Inf/Inf.      
       IF( SAWNAN ) THEN
          NEG2 = 0
          P = D( N ) - SIGMA
          DO 24 J = N - 1, R, -1
             DMINUS = LLD( J ) + P
-            IF(ABS(DMINUS).LT.PIVMIN) DMINUS = -PIVMIN
-            TMP = D( J ) / DMINUS
             IF( DMINUS.LT.ZERO ) NEG2 = NEG2 + 1
-            P = P*TMP - SIGMA
-            IF( TMP.EQ.ZERO ) P = D( J ) - SIGMA
+            TMP = P / DMINUS
+            IF (DISNAN(TMP)) TMP = ONE
+            P = TMP * D(J) - SIGMA
  24      CONTINUE
       END IF
       NEGCNT = NEGCNT + NEG2
 *
 *     III) Twist index
-      GAMMA = S + P
+*       T was shifted by SIGMA initially.
+      GAMMA = (T + SIGMA) + P
       IF( GAMMA.LT.ZERO ) NEGCNT = NEGCNT+1
 
       DLANEG = NEGCNT
