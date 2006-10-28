@@ -2,6 +2,7 @@
      $                    RTOL1, RTOL2, SPLTOL, NSPLIT, ISPLIT, M,
      $                    W, WERR, WGAP, IBLOCK, INDEXW, GERS, PIVMIN,
      $                    WORK, IWORK, INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK auxiliary routine (version 3.1) --
 *     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
@@ -191,7 +192,7 @@
      $                     VALRNG = 3 )
 *     ..
 *     .. Local Scalars ..
-      LOGICAL            FORCEB, NOREP, RNDPRT, USEDQD
+      LOGICAL            FORCEB, NOREP, USEDQD
       INTEGER            CNT, CNT1, CNT2, I, IBEGIN, IDUM, IEND, IINFO,
      $                   IN, INDL, INDU, IRANGE, J, JBLK, MB, MM,
      $                   WBEGIN, WEND
@@ -224,8 +225,6 @@
 
       INFO = 0
 
-*     Dis-/Enable a small random perturbation of the root representation
-      RNDPRT = .TRUE.
 *
 *     Decode RANGE
 *
@@ -300,7 +299,8 @@
       CALL DLARRA( N, D, E, E2, SPLTOL, SPDIAM,
      $                    NSPLIT, ISPLIT, IINFO )
 
-*     Can force use of bisection instead of faster DQDS
+*     Can force use of bisection instead of faster DQDS.
+*     Option left in the code for future multisection work.
       FORCEB = .FALSE.
 
       IF( (IRANGE.EQ.ALLRNG) .AND. (.NOT. FORCEB) ) THEN
@@ -611,7 +611,7 @@
          CALL DCOPY( IN-1, WORK( IN+1 ), 1, E( IBEGIN ), 1 )
 
 
-         IF(RNDPRT .AND. MB.GT.1 ) THEN
+         IF(MB.GT.1 ) THEN
 *
 *           Perturb each entry of the base representation by a small
 *           (but random) relative amount to overcome difficulties with
