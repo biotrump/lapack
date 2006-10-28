@@ -1,6 +1,7 @@
       SUBROUTINE ZSTEMR( JOBZ, RANGE, N, D, E, VL, VU, IL, IU,
-     $                   M, W, Z, LDZ, NZC, ISUPPZ, WORK, LWORK, IWORK,
-     $                   LIWORK, INFO )
+     $                   M, W, Z, LDZ, NZC, ISUPPZ, TRYRAC, WORK, LWORK,
+     $                   IWORK, LIWORK, INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK computational routine (version 3.1) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.
@@ -8,6 +9,7 @@
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBZ, RANGE
+      LOGICAL            TRYRAC
       INTEGER            IL, INFO, IU, LDZ, NZC, LIWORK, LWORK, M, N
       DOUBLE PRECISION VL, VU
 *     ..
@@ -160,6 +162,19 @@
 *          ISUPPZ( 2*i ). This is relevant in the case when the matrix
 *          is split. ISUPPZ is only set if N>2.
 *
+*  TRYRAC  (input/output) LOGICAL
+*          If TRYRAC.EQ..TRUE., indicates that the code should check whether
+*          the tridiagonal matrix defines its eigenvalues to high relative
+*          accuracy.  If so, the code uses relative-accuracy preserving
+*          algorithms that might be (a bit) slower depending on the matrix.
+*          If the matrix does not define its eigenvalues to high relative
+*          accuracy, the code can uses possibly faster algorithms.
+*          If TRYRAC.EQ..FALSE., the code is not required to guarantee
+*          relatively accurate eigenvalues and can use the fastest possible
+*          techniques.
+*          On exit, a .TRUE. TRYRAC will be set to .FALSE. if the matrix
+*          does not define its eigenvalues to high relative accuracy.
+*
 *  WORK    (workspace/output) DOUBLE PRECISION array, dimension (LWORK)
 *          On exit, if INFO = 0, WORK(1) returns the optimal
 *          (and minimal) LWORK.
@@ -184,18 +199,7 @@
 *          returns this value as the first entry of the IWORK array, and
 *          no error message related to LIWORK is issued by XERBLA.
 *
-*  INFO    (input/output) INTEGER
-*          On entry, INFO
-*          <>0: indicates that the code should check whether
-*               the tridiagonal matrix defines its eigenvalues to high
-*               relative accuracy.
-*               If this is the case, the code uses relative-accuracy
-*               preserving algorithms that might be (a bit) slower depending
-*               on the matrix.
-*               If the eigenvalues are not defined to high relative accuracy,
-*               can use possibly faster algorithms.
-*          = 0: the code is not required to guarantee relatively accurate
-*               eigenvalues and can use the fastest possible techniques.
+*  INFO    (output) INTEGER
 *          On exit, INFO
 *          = 0:  successful exit
 *          < 0:  if INFO = -i, the i-th argument had an illegal value
@@ -225,8 +229,7 @@
      $                     MINRGP = 1.0D-3 )
 *     ..
 *     .. Local Scalars ..
-      LOGICAL            ALLEIG, INDEIG, LQUERY, TRYRAC, VALEIG, WANTZ,
-     $                   ZQUERY
+      LOGICAL            ALLEIG, INDEIG, LQUERY, VALEIG, WANTZ, ZQUERY
       INTEGER            I, IBEGIN, IEND, IFIRST, IIL, IINDBL, IINDW,
      $                   IINDWK, IINFO, IINSPL, IIU, ILAST, IN, INDD,
      $                   INDE2, INDERR, INDGP, INDGRS, INDWRK, ITMP,

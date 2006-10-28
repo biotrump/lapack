@@ -141,18 +141,7 @@
 *          returns this value as the first entry of the IWORK array, and
 *          no error message related to LIWORK is issued by XERBLA.
 *
-*  INFO    (input/output) INTEGER
-*          On entry, INFO
-*          <>0: indicates that the code should check whether
-*               the tridiagonal matrix defines its eigenvalues to high
-*               relative accuracy.
-*               If this is the case, the code uses relative-accuracy
-*               preserving algorithms that might be (a bit) slower depending
-*               on the matrix.
-*               If the eigenvalues are not defined to high relative accuracy,
-*               can use possibly faster algorithms.
-*          = 0: the code is not required to guarantee relatively accurate
-*               eigenvalues and can use the fastest possible techniques.
+*  INFO    (output) INTEGER
 *          On exit, INFO
 *          = 0:  successful exit
 *          < 0:  if INFO = -i, the i-th argument had an illegal value
@@ -172,15 +161,19 @@
 *
 *  =====================================================================
 *
+*     .. Local Scalars ..
+      LOGICAL TRYRAC
+*     ..
 *     .. External Subroutines ..
       EXTERNAL DSTEMR
 *     ..
-
+*     .. Executable Statements ..
       INFO = 0
+      TRYRAC = .FALSE.
 
       CALL DSTEMR( JOBZ, RANGE, N, D, E, VL, VU, IL, IU,
-     $                   M, W, Z, LDZ, N, ISUPPZ, WORK, LWORK, IWORK,
-     $                   LIWORK, INFO )
+     $                   M, W, Z, LDZ, N, ISUPPZ, TRYRAC, WORK, LWORK,
+     $                   IWORK, LIWORK, INFO )
 *
 *     End of DSTEGR
 *
