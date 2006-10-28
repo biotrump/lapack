@@ -284,7 +284,7 @@ ZLASRC = \
    zungrq.o zungtr.o zunm2l.o zunm2r.o zunmbr.o zunmhr.o zunml2.o \
    zunmlq.o zunmql.o zunmqr.o zunmr2.o zunmr3.o zunmrq.o zunmrz.o \
    zunmtr.o zupgtr.o \
-   zupmtr.o izmax1.o dzsum1.o zisnan.o
+   zupmtr.o izmax1.o dzsum1.o zisnan.o zstemr.o
 
 all: ../$(LAPACKLIB)
 
