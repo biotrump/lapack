@@ -85,6 +85,17 @@
 *     Scale the diagonal entries to one and check whether the sum of the
 *     off-diagonals is less than one
 *
+*     The sdd relative error bounds have a 1/(1- 2*x) factor in them,
+*     x = max(OFFDIG + OFFDIG2), so when x is close to 1/2, no relative
+*     accuracy is promised.  In the notation of the code fragment below,
+*     1/(1 - (OFFDIG + OFFDIG2)) is the condition number.
+*     We don't think it is worth going into "sdd mode" unless the relative
+*     condition number is reasonable, not 1/macheps.
+*     The threshold should be compatible with other thresholds used in the
+*     code. We set  OFFDIG + OFFDIG2 <= .999 =: RELCOND, it corresponds
+*     to losing at most 3 decimal digits: 1 / (1 - (OFFDIG + OFFDIG2)) <= 1000
+*     instead of the current OFFDIG + OFFDIG2 < 1
+*
       YESREL = .TRUE.
       OFFDIG = ZERO
       TMP = SQRT(ABS(D(1)))

@@ -330,6 +330,12 @@
 *     The relative tolerance.  An interval (a,b] lies within
 *     "relative tolerance" if  b-a < RELTOL*max(|a|,|b|),
       RTOLI = RELTOL
+*     Set the absolute tolerance for interval convergence to zero to force
+*     interval convergence based on relative size of the interval.
+*     This is dangerous because intervals might not converge when RELTOL is
+*     small. But at least a very small number should be selected so that for
+*     strongly graded matrices, the code can get relatively accurate
+*     eigenvalues.
       ATOLI = FUDGE*TWO*UFLOW + FUDGE*TWO*PIVMIN
 
       IF( IRANGE.EQ.INDRNG ) THEN
@@ -425,8 +431,55 @@
                IBLOCK( M ) = JBLK
                INDEXW( M ) = 1
             END IF
+
+*        Disabled 2x2 case because of a failure on the following matrix
+*        RANGE = 'I', IL = IU = 4
+*          Original Tridiagonal, d = [
+*           -0.150102010615740E+00
+*           -0.849897989384260E+00
+*           -0.128208148052635E-15
+*            0.128257718286320E-15
+*          ];
+*          e = [
+*           -0.357171383266986E+00
+*           -0.180411241501588E-15
+*           -0.175152352710251E-15
+*          ];
+*
+*         ELSE IF( IN.EQ.2 ) THEN
+**           2x2 block
+*            DISC = SQRT( (HALF*(D(IBEGIN)-D(IEND)))**2 + E(IBEGIN)**2 )
+*            TMP1 = HALF*(D(IBEGIN)+D(IEND))
+*            L1 = TMP1 - DISC
+*            IF( WL.GE. L1-PIVMIN )
+*     $         NWL = NWL + 1
+*            IF( WU.GE. L1-PIVMIN )
+*     $         NWU = NWU + 1
+*            IF( IRANGE.EQ.ALLRNG .OR. ( WL.LT.L1-PIVMIN .AND. WU.GE.
+*     $          L1-PIVMIN ) ) THEN
+*               M = M + 1
+*               W( M ) = L1
+**              The uncertainty of eigenvalues of a 2x2 matrix is very small
+*               WERR( M ) = EPS * ABS( W( M ) ) * TWO
+*               IBLOCK( M ) = JBLK
+*               INDEXW( M ) = 1
+*            ENDIF
+*            L2 = TMP1 + DISC
+*            IF( WL.GE. L2-PIVMIN )
+*     $         NWL = NWL + 1
+*            IF( WU.GE. L2-PIVMIN )
+*     $         NWU = NWU + 1
+*            IF( IRANGE.EQ.ALLRNG .OR. ( WL.LT.L2-PIVMIN .AND. WU.GE.
+*     $          L2-PIVMIN ) ) THEN
+*               M = M + 1
+*               W( M ) = L2
+**              The uncertainty of eigenvalues of a 2x2 matrix is very small
+*               WERR( M ) = EPS * ABS( W( M ) ) * TWO
+*               IBLOCK( M ) = JBLK
+*               INDEXW( M ) = 2
+*            ENDIF
          ELSE
-*           General Case - block of size IN > 2
+*           General Case - block of size IN >= 2
 *           Compute local Gerschgorin interval and use it as the initial
 *           interval for DLAEBZ
             GU = D( IBEGIN )

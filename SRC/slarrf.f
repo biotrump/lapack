@@ -130,6 +130,17 @@
       SHIFT = 0
       FORCER = .FALSE.
 
+
+*     Note that we cannot guarantee that for any of the shifts tried,
+*     the factorization has a small or even moderate element growth.
+*     There could be Ritz values at both ends of the cluster and despite
+*     backing off, there are examples where all factorizations tried
+*     (in IEEE mode, allowing zero pivots & infinities) have INFINITE
+*     element growth.
+*     For this reason, we should use PIVMIN in this subroutine so that at
+*     least the L D L^T factorization exists. It can be checked afterwards
+*     whether the element growth caused bad residuals/orthogonality.
+
 *     Decide whether the code should accept the best among all
 *     representations despite large element growth or signal INFO=1
       NOFAIL = .TRUE.

@@ -245,6 +245,10 @@
 
 *     Set parameters
       RTL = HNDRD*EPS
+*     If one were ever to ask for less initial precision in BSRTOL,
+*     one should keep in mind that for the subset case, the extremal
+*     eigenvalues must be at least as accurate as the current setting
+*     (eigenvalues in the middle need not as much accuracy)
       BSRTOL = SQRT(EPS)*(0.5E-3)
 
 *     Treat case of 1x1 matrix for quick return
@@ -524,6 +528,8 @@
 *        needs to be refined to obtain a factorization with not too much
 *        element growth.
          IF( USEDQD ) THEN
+*           The initial SIGMA was to the outer end of the spectrum
+*           the matrix is definite and we need not retreat.
             TAU = SPDIAM*EPS*N + TWO*PIVMIN
          ELSE
             IF(MB.GT.1) THEN

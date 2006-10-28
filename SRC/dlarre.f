@@ -524,6 +524,8 @@
 *        needs to be refined to obtain a factorization with not too much
 *        element growth.
          IF( USEDQD ) THEN
+*           The initial SIGMA was to the outer end of the spectrum
+*           the matrix is definite and we need not retreat.
             TAU = SPDIAM*EPS*N + TWO*PIVMIN
          ELSE
             IF(MB.GT.1) THEN

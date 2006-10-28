@@ -518,6 +518,13 @@ C                  OFFSET = P-OLDFST
 *
 *                    Compute left and right cluster gap.
 *
+*                    LGAP and RGAP are not computed from WORK because
+*                    the eigenvalue approximations may stem from RRRs
+*                    different shifts. However, W hold all eigenvalues
+*                    of the unshifted matrix. Still, the entries in WGAP
+*                    have to be computed from WORK since the entries
+*                    in W might be of the same order so that gaps are not
+*                    exhibited correctly for very close eigenvalues.
                      IF( NEWFST.EQ.1 ) THEN
                         LGAP = MAX( ZERO,
      $                       W(WBEGIN)-WERR(WBEGIN) - VL )
@@ -551,6 +558,11 @@ C                  OFFSET = P-OLDFST
      $                  (WBEGIN+NEWFST-1.GT.DOU)) THEN
 *                       if the cluster contains no desired eigenvalues
 *                       skip the computation of that branch of the rep. tree
+*
+*                       We could skip before the refinement of the extremal
+*                       eigenvalues of the child, but then the representation
+*                       tree could be different from the one when nothing is
+*                       skipped. For this reason we skip at this place.
                         IDONE = IDONE + NEWLST - NEWFST + 1
                         GOTO 139
                      ENDIF
@@ -583,6 +595,13 @@ C                    DLARRF needs LWORK = 2*N
 *                          Fudge errors
                            WERR( WBEGIN + K - 1 ) =
      $                          WERR( WBEGIN + K - 1 ) + FUDGE
+*                          Gaps are not fudged. Provided that WERR is small
+*                          when eigenvalues are close, a zero gap indicates
+*                          that a new representation is needed for resolving
+*                          the cluster. A fudge could lead to a wrong decision
+*                          of judging eigenvalues 'separated' which in
+*                          reality are not. This could have a negative impact
+*                          on the orthogonality of the computed eigenvectors.
  116                    CONTINUE
 
                         NCLUS = NCLUS + 1
@@ -618,18 +637,39 @@ C                    DLARRF needs LWORK = 2*N
                      LEFT = WORK( WINDEX ) - WERR( WINDEX )
                      RIGHT = WORK( WINDEX ) + WERR( WINDEX )
                      INDEIG = INDEXW( WINDEX )
+*                    Note that since we compute the eigenpairs for a child,
+*                    all eigenvalue approximations are w.r.t the same shift.
+*                    In this case, the entries in WORK should be used for
+*                    computing the gaps since they exhibit even very small
+*                    differences in the eigenvalues, as opposed to the
+*                    entries in W which might "look" the same.
+
                      IF( K .EQ. 1) THEN
+*                       In the case RANGE='I' and with not much initial
+*                       accuracy in LAMBDA and VL, the formula
+*                       LGAP = MAX( ZERO, (SIGMA - VL) + LAMBDA )
+*                       can lead to an overestimation of the left gap and
+*                       thus to inadequately early RQI 'convergence'.
+*                       Prevent this by forcing a small left gap.
                         LGAP = EPS*MAX(ABS(LEFT),ABS(RIGHT))
                      ELSE
                         LGAP = WGAP(WINDMN)
                      ENDIF
                      IF( K .EQ. IM) THEN
+*                       In the case RANGE='I' and with not much initial
+*                       accuracy in LAMBDA and VU, the formula
+*                       can lead to an overestimation of the right gap and
+*                       thus to inadequately early RQI 'convergence'.
+*                       Prevent this by forcing a small right gap.
                         RGAP = EPS*MAX(ABS(LEFT),ABS(RIGHT))
                      ELSE
                         RGAP = WGAP(WINDEX)
                      ENDIF
                      GAP = MIN( LGAP, RGAP )
                      IF(( K .EQ. 1).OR.(K .EQ. IM)) THEN
+*                       The eigenvector support can become wrong
+*                       because significant entries could be cut off due to a
+*                       large GAPTOL parameter in LAR1V. Prevent this.
                         GAPTOL = ZERO
                      ELSE
                         GAPTOL = GAP * EPS
@@ -694,6 +734,12 @@ C                    DLARRF needs LWORK = 2*N
                      ISUPMN = MIN(ISUPMN,ISUPPZ( 2*WINDEX-1 ))
                      ISUPMX = MAX(ISUPMX,ISUPPZ( 2*WINDEX ))
                      ITER = ITER + 1
+
+*                    sin alpha <= |resid|/gap
+*                    Note that both the residual and the gap are
+*                    proportional to the matrix, so ||T|| doesn't play
+*                    a role in the quotient
+
 *
 *                    Convergence test for Rayleigh-Quotient iteration
 *                    (omitted when Bisection has been used)
@@ -723,10 +769,19 @@ C                    DLARRF needs LWORK = 2*N
 *                             The current LAMBDA is on the left of the true
 *                             eigenvalue
                               LEFT = LAMBDA
+*                             We prefer to assume that the error estimate
+*                             is correct. We could make the interval not
+*                             as a bracket but to be modified if the RQCORR
+*                             chooses to. In this case, the RIGHT side should
+*                             be modified as follows:
+*                              RIGHT = MAX(RIGHT, LAMBDA + RQCORR)
                            ELSE
 *                             The current LAMBDA is on the right of the true
 *                             eigenvalue
                               RIGHT = LAMBDA
+*                             See comment about assuming the error estimate is
+*                             correct above.
+*                              LEFT = MIN(LEFT, LAMBDA + RQCORR)
                            ENDIF
                            WORK( WINDEX ) =
      $                       HALF * (RIGHT + LEFT)
@@ -761,6 +816,7 @@ C                    DLARRF needs LWORK = 2*N
                            STP2II = .TRUE.
                         ENDIF
                         IF (STP2II) THEN
+*                          improve error angle by second step
                            CALL DLAR1V( IN, 1, IN, LAMBDA,
      $                          D( IBEGIN ), L( IBEGIN ),
      $                          WORK(INDLD+IBEGIN-1),

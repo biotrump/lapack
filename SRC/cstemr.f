@@ -75,6 +75,14 @@
 *
 *  2. LAPACK routines can be used to reduce a complex Hermitean matrix to
 *  real symmetric tridiagonal form.
+*
+*  (Any complex Hermitean tridiagonal matrix has real values on its diagonal
+*  and potentially complex numbers on its off-diagonals. By applying a
+*  similarity transform with an appropriate diagonal matrix
+*  diag(1,e^{i \phy_1}, ... , e^{i \phy_{n-1}}), the complex Hermitean
+*  matrix can be transformed into a real symmetric matrix and complex
+*  arithmetic can be entirely avoided.)
+*
 *  While the eigenvectors of the real symmetric tridiagonal matrix are real,
 *  the eigenvectors of original complex Hermitean matrix have complex entries
 *  in general.
