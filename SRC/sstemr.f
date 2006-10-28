@@ -151,7 +151,7 @@
 *          indicating the nonzero elements in Z. The i-th computed eigenvector
 *          is nonzero only in elements ISUPPZ( 2*i-1 ) through
 *          ISUPPZ( 2*i ). This is relevant in the case when the matrix
-*          is split. ISUPPZ is only set if N>2.
+*          is split. ISUPPZ is only accessed when JOBZ is 'V' and N > 0.
 *
 *  TRYRAC  (input/output) LOGICAL
 *          If TRYRAC.EQ..TRUE., indicates that the code should check whether
@@ -348,7 +348,7 @@
          RETURN
       END IF
 *
-*     Quick return if possible
+*     Handle N = 0, 1, and 2 cases immediately
 *
       M = 0
       IF( N.EQ.0 )
@@ -364,8 +364,11 @@
                W( 1 ) = D( 1 )
             END IF
          END IF
-         IF( WANTZ.AND.(.NOT.ZQUERY) )
-     $      Z( 1, 1 ) = ONE
+         IF( WANTZ.AND.(.NOT.ZQUERY) ) THEN
+            Z( 1, 1 ) = ONE
+            ISUPPZ(1) = 1
+            ISUPPZ(2) = 1
+         END IF
          RETURN
       END IF
 *
@@ -384,6 +387,19 @@
             IF( WANTZ.AND.(.NOT.ZQUERY) ) THEN
                Z( 1, M ) = -SN
                Z( 2, M ) = CS
+*              Note: At most one of SN and CS can be zero.
+               IF (SN.NE.ZERO) THEN
+                  IF (CS.NE.ZERO) THEN
+                     ISUPPZ(2*M-1) = 1
+                     ISUPPZ(2*M-1) = 2
+                  ELSE
+                     ISUPPZ(2*M-1) = 1
+                     ISUPPZ(2*M-1) = 1
+                  END IF
+               ELSE
+                  ISUPPZ(2*M-1) = 2
+                  ISUPPZ(2*M) = 2
+               END IF
             ENDIF
          ENDIF
          IF( ALLEIG.OR.
@@ -395,10 +411,25 @@
             IF( WANTZ.AND.(.NOT.ZQUERY) ) THEN
                Z( 1, M ) = CS
                Z( 2, M ) = SN
+*              Note: At most one of SN and CS can be zero.
+               IF (SN.NE.ZERO) THEN
+                  IF (CS.NE.ZERO) THEN
+                     ISUPPZ(2*M-1) = 1
+                     ISUPPZ(2*M-1) = 2
+                  ELSE
+                     ISUPPZ(2*M-1) = 1
+                     ISUPPZ(2*M-1) = 1
+                  END IF
+               ELSE
+                  ISUPPZ(2*M-1) = 2
+                  ISUPPZ(2*M) = 2
+               END IF
             ENDIF
          ENDIF
          RETURN
       END IF
+
+*     Continue with general N
 
       INDGRS = 1
       INDERR = 2*N + 1

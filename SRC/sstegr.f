@@ -115,7 +115,7 @@
 *          indicating the nonzero elements in Z. The i-th computed eigenvector
 *          is nonzero only in elements ISUPPZ( 2*i-1 ) through
 *          ISUPPZ( 2*i ). This is relevant in the case when the matrix
-*          is split. ISUPPZ is only set if N>2.
+*          is split. ISUPPZ is only accessed when JOBZ is 'V' and N > 0.
 *
 *  WORK    (workspace/output) REAL array, dimension (LWORK)
 *          On exit, if INFO = 0, WORK(1) returns the optimal
