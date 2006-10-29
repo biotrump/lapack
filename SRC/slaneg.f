@@ -1,4 +1,5 @@
       FUNCTION SLANEG( N, D, LLD, SIGMA, PIVMIN, R )
+      IMPLICIT NONE
       INTEGER SLANEG
 *
 *  -- LAPACK auxiliary routine (version 3.1) --
@@ -70,8 +71,8 @@
 *  =====================================================================
 *
 *     .. Parameters ..
-      REAL               ZERO
-      PARAMETER        ( ZERO = 0.0E0 )
+      REAL               ZERO, ONE
+      PARAMETER        ( ZERO = 0.0E0, ONE = 1.0E0 )
 *     Some architectures propagate Infinities and NaNs very slowly, so
 *     the code computes counts in BLKLEN chunks.  Then a NaN can
 *     propagate at most BLKLEN columns before being detected.  This is
@@ -107,7 +108,7 @@
             TMP = T / DPLUS
             T = TMP * LLD( J ) - SIGMA
  21      CONTINUE
-         SAWNAN = SISNAN( S )
+         SAWNAN = SISNAN( T )
 *     Run a slower version of the above loop if a NaN is detected.
 *     A NaN should occur only with a zero pivot after an infinite
 *     pivot.  In that case, substituting 1 for T/DPLUS is the
