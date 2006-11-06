@@ -93,3 +93,7 @@ clean: ; \
         rm -f *.o
 
 .f.o: ; $(FORTRAN) -c $(OPTS) $<
+
+slaran.o: slaran.f ; $(FORTRAN) $(NOOPT) -c $<
+dlaran.o: dlaran.f ; $(FORTRAN) $(NOOPT) -c $<
+

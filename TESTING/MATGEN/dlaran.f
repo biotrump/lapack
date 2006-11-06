@@ -49,6 +49,7 @@
 *     ..
 *     .. Local Scalars ..
       INTEGER            IT1, IT2, IT3, IT4
+      DOUBLE PRECISION   RNDOUT
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          DBLE, MOD
@@ -80,10 +81,10 @@
 *
 *     convert 48-bit integer to a real number in the interval (0,1)
 *
-      DLARAN = R*( DBLE( IT1 )+R*( DBLE( IT2 )+R*( DBLE( IT3 )+R*
+      RNDOUT = R*( DBLE( IT1 )+R*( DBLE( IT2 )+R*( DBLE( IT3 )+R*
      $         ( DBLE( IT4 ) ) ) ) )
 *
-      IF (DLARAN.EQ.1.0D+0) THEN
+      IF (RNDOUT.EQ.1.0D+0) THEN
 *        If a real number has n bits of precision, and the first
 *        n bits of the 48-bit integer above happen to be all 1 (which
 *        will occur about once every 2**n calls), then DLARAN will
@@ -97,6 +98,7 @@
          GOTO 10
       END IF
 *
+      DLARAN = RNDOUT
       RETURN
 *
 *     End of DLARAN

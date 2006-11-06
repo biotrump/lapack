@@ -331,3 +331,7 @@ clean:
 
 .f.o: 
 	$(FORTRAN) $(OPTS) -c $<
+
+slaruv.o: slaruv.f ; $(FORTRAN) $(NOOPT) -c $<
+dlaruv.o: dlaruv.f ; $(FORTRAN) $(NOOPT) -c $<
+
