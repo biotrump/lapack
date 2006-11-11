@@ -78,10 +78,10 @@
 *  09-29-06 - patch from
 *    Bobby Cheng, MathWorks
 *
-*    Replace l.211 and l.383
+*    Replace l.210 and l.393
 *         IF( MAX( ABSAKK, COLMAX ).EQ.ZERO ) THEN
 *    by
-*         IF( (MAX( ABSAKK, COLMAX ).EQ.ZERO) .OR. ZISNAN(ABSAKK) ) THEN
+*         IF( (MAX( ABSAKK, COLMAX ).EQ.ZERO) .OR. DISNAN(ABSAKK) ) THEN
 *
 *  01-01-96 - Based on modifications by
 *    J. Lewis, Boeing Computer Services Company
@@ -137,10 +137,10 @@
       COMPLEX*16         D12, D21, T, WK, WKM1, WKP1, ZDUM
 *     ..
 *     .. External Functions ..
-      LOGICAL            LSAME, ZISNAN
+      LOGICAL            LSAME, DISNAN
       INTEGER            IZAMAX
       DOUBLE PRECISION   DLAPY2
-      EXTERNAL           LSAME, IZAMAX, DLAPY2, ZISNAN
+      EXTERNAL           LSAME, IZAMAX, DLAPY2, DISNAN
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           XERBLA, ZDSCAL, ZHER, ZSWAP
@@ -207,7 +207,7 @@
             COLMAX = ZERO
          END IF
 *
-         IF( (MAX( ABSAKK, COLMAX ).EQ.ZERO) .OR. ZISNAN(ABSAKK) ) THEN
+         IF( (MAX( ABSAKK, COLMAX ).EQ.ZERO) .OR. DISNAN(ABSAKK) ) THEN
 *
 *           Column K is zero or contains a NaN: set INFO and continue
 *
@@ -390,7 +390,7 @@
             COLMAX = ZERO
          END IF
 *
-         IF( (MAX( ABSAKK, COLMAX ).EQ.ZERO) .OR. ZISNAN(ABSAKK) ) THEN
+         IF( (MAX( ABSAKK, COLMAX ).EQ.ZERO) .OR. DISNAN(ABSAKK) ) THEN
 *
 *           Column K is zero or contains a NaN: set INFO and continue
 *
