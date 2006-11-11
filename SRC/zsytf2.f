@@ -75,6 +75,14 @@
 *  Further Details
 *  ===============
 *
+*  09-29-06 - patch from
+*    Bobby Cheng, MathWorks
+*
+*    Replace l.209 and l.377
+*         IF( MAX( ABSAKK, COLMAX ).EQ.ZERO ) THEN
+*    by
+*         IF( (MAX( ABSAKK, COLMAX ).EQ.ZERO) .OR. DISNAN(ABSAKK) ) THEN
+*
 *  1-96 - Based on modifications by J. Lewis, Boeing Computer Services
 *         Company
 *
@@ -129,9 +137,9 @@
       COMPLEX*16         D11, D12, D21, D22, R1, T, WK, WKM1, WKP1, Z
 *     ..
 *     .. External Functions ..
-      LOGICAL            LSAME, ZISNAN
+      LOGICAL            DISNAN, LSAME
       INTEGER            IZAMAX
-      EXTERNAL           LSAME, IZAMAX, ZISNAN
+      EXTERNAL           DISNAN, LSAME, IZAMAX
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           XERBLA, ZSCAL, ZSWAP, ZSYR
@@ -198,7 +206,7 @@
             COLMAX = ZERO
          END IF
 *
-         IF( MAX( ABSAKK, COLMAX ).EQ.ZERO .OR. ZISNAN(ABSAKK) ) THEN
+         IF( MAX( ABSAKK, COLMAX ).EQ.ZERO .OR. DISNAN(ABSAKK) ) THEN
 *
 *           Column K is zero or contains a NaN: set INFO and continue
 *
@@ -366,7 +374,7 @@
             COLMAX = ZERO
          END IF
 *
-         IF( MAX( ABSAKK, COLMAX ).EQ.ZERO .OR. ZISNAN(ABSAKK) ) THEN
+         IF( MAX( ABSAKK, COLMAX ).EQ.ZERO .OR. DISNAN(ABSAKK) ) THEN
 *
 *           Column K is zero or contains a NaN: set INFO and continue
 *

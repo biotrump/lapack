@@ -78,7 +78,7 @@
 *  09-29-06 - patch from
 *    Bobby Cheng, MathWorks
 *
-*    Replace l.211 and l.383
+*    Replace l.204 and l.372
 *         IF( MAX( ABSAKK, COLMAX ).EQ.ZERO ) THEN
 *    by
 *         IF( (MAX( ABSAKK, COLMAX ).EQ.ZERO) .OR. DISNAN(ABSAKK) ) THEN
