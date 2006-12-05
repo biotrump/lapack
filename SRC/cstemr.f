@@ -258,7 +258,7 @@
      $                   SLARRE, SLARRJ, SLARRR, SLASRT, SSCAL, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          MAX, MIN, REAL, SQRT
+      INTRINSIC          MAX, MIN, SQRT
 
 
 *     ..

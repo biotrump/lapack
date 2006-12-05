@@ -236,7 +236,7 @@
       CHARACTER          ORDER
       INTEGER            I, IEEEOK, IINFO, IMAX, INDD, INDDD, INDE,
      $                   INDEE, INDIBL, INDIFL, INDISP, INDIWO, INDTAU,
-     $                   INDWK, INDWKN, ISCALE, ITMP1, J, JJ, LIWMIN,
+     $                   INDWK, INDWKN, ISCALE, J, JJ, LIWMIN,
      $                   LLWORK, LLWRKN, LWKOPT, LWMIN, NB, NSPLIT
       DOUBLE PRECISION   ABSTLL, ANRM, BIGNUM, EPS, RMAX, RMIN, SAFMIN,
      $                   SIGMA, SMLNUM, TMP1, VLL, VUU

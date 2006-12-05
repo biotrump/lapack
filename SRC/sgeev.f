@@ -141,7 +141,7 @@
      $                   SNRM2
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          MAX, MIN, SQRT
+      INTRINSIC          MAX, SQRT
 *     ..
 *     .. Executable Statements ..
 *

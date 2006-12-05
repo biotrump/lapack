@@ -172,7 +172,7 @@
       EXTERNAL           CLANGE, SLAMCH, ILAENV
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          CMPLX, INT, LOG, MAX, MIN, REAL
+      INTRINSIC          INT, LOG, MAX, MIN, REAL
 *     ..
 *     .. Executable Statements ..
 *

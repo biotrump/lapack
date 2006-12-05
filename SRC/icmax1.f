@@ -42,7 +42,7 @@
       COMPLEX            ZDUM
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          ABS, REAL
+      INTRINSIC          ABS
 *     ..
 *     .. Statement Functions ..
       REAL               CABS1

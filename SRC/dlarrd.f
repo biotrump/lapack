@@ -235,7 +235,7 @@
       EXTERNAL           DLAEBZ
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          ABS, INT, LOG, MAX, MIN, SQRT
+      INTRINSIC          ABS, INT, LOG, MAX, MIN
 *     ..
 *     .. Executable Statements ..
 *

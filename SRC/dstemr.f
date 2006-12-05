@@ -241,7 +241,7 @@
      $                   DLARRR, DLARRV, DLASRT, DSCAL, DSWAP, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          DBLE, MAX, MIN, SQRT
+      INTRINSIC          MAX, MIN, SQRT
 
 
 *     ..

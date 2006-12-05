@@ -11,7 +11,7 @@
       CHARACTER          JOBZ, RANGE
       LOGICAL            TRYRAC
       INTEGER            IL, INFO, IU, LDZ, NZC, LIWORK, LWORK, M, N
-      REAL             VL, VU
+      REAL               VL, VU
 *     ..
 *     .. Array Arguments ..
       INTEGER            ISUPPZ( * ), IWORK( * )
@@ -241,9 +241,7 @@
      $                   SLARRR, SLARRV, SLASRT, SSCAL, SSWAP, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          MAX, MIN, REAL, SQRT
-
-
+      INTRINSIC          MAX, MIN, SQRT
 *     ..
 *     .. Executable Statements ..
 *

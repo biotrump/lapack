@@ -158,7 +158,7 @@
       LOGICAL            SCALEA, WANTSB, WANTSE, WANTSN, WANTST, WANTSV,
      $                   WANTVS
       INTEGER            HSWORK, I, IBAL, ICOND, IERR, IEVAL, IHI, ILO,
-     $                   ITAU, IWRK, K, LWRK, MAXWRK, MINWRK
+     $                   ITAU, IWRK, LWRK, MAXWRK, MINWRK
       DOUBLE PRECISION   ANRM, BIGNUM, CSCALE, EPS, SMLNUM
 *     ..
 *     .. Local Arrays ..
@@ -175,7 +175,7 @@
       EXTERNAL           LSAME, ILAENV, DLAMCH, ZLANGE
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          MAX, MIN, SQRT
+      INTRINSIC          MAX, SQRT
 *     ..
 *     .. Executable Statements ..
 *

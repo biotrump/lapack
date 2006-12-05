@@ -67,7 +67,7 @@
       EXTERNAL           SLAMCH
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          ABS, MAX, MIN
+      INTRINSIC          ABS
 *     ..
 *     .. Executable Statements ..
 *

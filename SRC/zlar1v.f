@@ -152,7 +152,7 @@
       EXTERNAL           DISNAN, DLAMCH
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          ABS, MAX, MIN, DBLE
+      INTRINSIC          ABS, DBLE
 *     ..
 *     .. Executable Statements ..
 *

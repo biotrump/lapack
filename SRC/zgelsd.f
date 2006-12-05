@@ -171,7 +171,7 @@
       EXTERNAL           ILAENV, DLAMCH, ZLANGE
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          DCMPLX, INT, LOG, MAX, MIN, DBLE
+      INTRINSIC          INT, LOG, MAX, MIN, DBLE
 *     ..
 *     .. Executable Statements ..
 *

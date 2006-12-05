@@ -74,7 +74,7 @@
       COMPLEX            S, T, TMP
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          ABS, MAX, MIN, SQRT
+      INTRINSIC          ABS, MAX, SQRT
 *     ..
 *     .. Executable Statements ..
 *

@@ -128,7 +128,7 @@
       EXTERNAL           LSAME, IDAMAX, ILAENV, DLAMCH, DZNRM2, ZLANGE
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          DBLE, DCMPLX, DCONJG, DIMAG, MAX, MIN, SQRT
+      INTRINSIC          DBLE, DCMPLX, DCONJG, DIMAG, MAX, SQRT
 *     ..
 *     .. Executable Statements ..
 *

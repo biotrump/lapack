@@ -105,7 +105,7 @@
 *
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          ABS, MAX, MIN
+      INTRINSIC          ABS, MAX
 *     ..
 *     .. Executable Statements ..
 *

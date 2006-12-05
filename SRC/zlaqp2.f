@@ -93,7 +93,7 @@
       EXTERNAL           ZLARF, ZLARFG, ZSWAP
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          ABS, DCONJG, DBLE, MAX, MIN, SQRT
+      INTRINSIC          ABS, DCONJG, MAX, MIN, SQRT
 *     ..
 *     .. External Functions ..
       INTEGER            IDAMAX

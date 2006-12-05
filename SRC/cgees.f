@@ -142,7 +142,7 @@
       EXTERNAL           LSAME, ILAENV, CLANGE, SLAMCH
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          MAX, MIN, SQRT
+      INTRINSIC          MAX, SQRT
 *     ..
 *     .. Executable Statements ..
 *

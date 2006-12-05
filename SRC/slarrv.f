@@ -203,7 +203,7 @@
      $                   SSCAL
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC ABS, REAL, MAX, MIN, SQRT
+      INTRINSIC ABS, REAL, MAX, MIN
 *     ..
 *     .. Executable Statements ..
 *     ..

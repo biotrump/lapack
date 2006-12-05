@@ -93,7 +93,7 @@
       EXTERNAL           CLARF, CLARFG, CSWAP
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          ABS, CONJG, MAX, MIN, REAL, SQRT
+      INTRINSIC          ABS, CONJG, MAX, MIN, SQRT
 *     ..
 *     .. External Functions ..
       INTEGER            ISAMAX

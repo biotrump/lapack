@@ -207,7 +207,7 @@
      $                   ZLASET
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC ABS, DBLE, MAX, MIN, SQRT
+      INTRINSIC ABS, DBLE, MAX, MIN
       INTRINSIC DCMPLX
 *     ..
 *     .. Executable Statements ..

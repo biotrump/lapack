@@ -193,7 +193,7 @@
       LOGICAL            CURSL, LASTSL, LQUERY, LST2SL, SCALEA, WANTSB,
      $                   WANTSE, WANTSN, WANTST, WANTSV, WANTVS
       INTEGER            HSWORK, I, I1, I2, IBAL, ICOND, IERR, IEVAL,
-     $                   IHI, ILO, INXT, IP, ITAU, IWRK, K, LWRK, LIWRK,
+     $                   IHI, ILO, INXT, IP, ITAU, IWRK, LWRK, LIWRK,
      $                   MAXWRK, MINWRK
       REAL               ANRM, BIGNUM, CSCALE, EPS, SMLNUM
 *     ..
@@ -211,7 +211,7 @@
       EXTERNAL           LSAME, ILAENV, SLAMCH, SLANGE
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          MAX, MIN, SQRT
+      INTRINSIC          MAX, SQRT
 *     ..
 *     .. Executable Statements ..
 *

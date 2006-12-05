@@ -212,8 +212,7 @@
      $                   TRYRAC
       CHARACTER          ORDER
       INTEGER            I, IEEEOK, IMAX, INDIBL, INDIFL, INDISP,
-     $                   INDIWO, ISCALE, ITMP1, J, JJ, LIWMIN, LWMIN,
-     $                   NSPLIT
+     $                   INDIWO, ISCALE, J, JJ, LIWMIN, LWMIN, NSPLIT
       REAL               BIGNUM, EPS, RMAX, RMIN, SAFMIN, SIGMA, SMLNUM,
      $                   TMP1, TNRM, VLL, VUU
 *     ..

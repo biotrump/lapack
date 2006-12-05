@@ -150,7 +150,7 @@
       EXTERNAL           SISNAN, SLAMCH
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          ABS, MAX, MIN, REAL
+      INTRINSIC          ABS
 *     ..
 *     .. Executable Statements ..
 *

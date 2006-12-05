@@ -42,7 +42,7 @@
       COMPLEX*16         ZDUM
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          ABS, DBLE
+      INTRINSIC          ABS
 *     ..
 *     .. Statement Functions ..
       DOUBLE PRECISION   CABS1
