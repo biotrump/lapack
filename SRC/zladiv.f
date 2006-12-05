@@ -1,4 +1,4 @@
-      DOUBLE COMPLEX   FUNCTION ZLADIV( X, Y )
+      COMPLEX*16     FUNCTION ZLADIV( X, Y )
 *
 *  -- LAPACK auxiliary routine (version 3.1) --
 *     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
