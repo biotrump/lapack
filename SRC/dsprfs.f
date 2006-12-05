@@ -3,7 +3,7 @@
 *
 *  -- LAPACK routine (version 3.1) --
 *     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
-*     October 2006
+*     November 2006
 *
 *     Modified to call DLACN2 in place of DLACON, 5 Feb 03, SJH.
 *

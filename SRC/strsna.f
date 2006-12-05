@@ -4,7 +4,7 @@
 *
 *  -- LAPACK routine (version 3.1) --
 *     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
-*     October 2006
+*     November 2006
 *
 *     Modified to call SLACN2 in place of SLACON, 7 Feb 03, SJH.
 *

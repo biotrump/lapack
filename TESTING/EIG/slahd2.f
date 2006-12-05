@@ -2,7 +2,7 @@
 *
 *  -- LAPACK auxiliary test routine (version 2.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
-*     October 2006
+*     November 2006
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH

@@ -2,7 +2,7 @@
 *
 *  -- LAPACK auxiliary routine (version 3.1) --
 *     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
-*     October 2006
+*     November 2006
 *
 *     .. Scalar Arguments ..
       DOUBLE PRECISION   CS1, RT1, RT2

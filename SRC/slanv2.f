@@ -2,7 +2,7 @@
 *
 *  -- LAPACK driver routine (version 3.1) --
 *     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
-*     October 2006
+*     November 2006
 *
 *     .. Scalar Arguments ..
       REAL               A, B, C, CS, D, RT1I, RT1R, RT2I, RT2R, SN

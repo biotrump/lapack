@@ -3,7 +3,7 @@
 *
 *  -- LAPACK driver routine (version 3.1) --
 *     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
-*     October 2006
+*     November 2006
 *     8-15-00:  Improve consistency of WS calculations (eca)
 *
 *     .. Scalar Arguments ..

@@ -10,6 +10,7 @@ VERSION 2.0  :  September 30, 1994
 VERSION 3.0  :  June 30, 1999
 VERSION 3.0 + update :  October 31, 1999
 VERSION 3.0 + update :  May 31, 2000
+VERSION 3.1  : November 2006
 
 LAPACK is a library of Fortran 77 subroutines for solving
 the most commonly occurring problems in numerical linear algebra.
@@ -20,20 +21,20 @@ Web and anonymous ftp.
 
    http://www.netlib.org/lapack/
 
-The distribution tar file contains the Fortran source for LAPACK, the
-testing programs, and the timing programs.  It also contains the Fortran77
+The distribution tar file contains the Fortran source for LAPACK and the
+testing programs.  It also contains the Fortran77
 reference implementation of the Basic Linear Algebra Subprograms
 (the Level 1, 2, and 3 BLAS) needed by LAPACK.  However this code is
 intended for use only if there is no other implementation of the BLAS
 already available on your machine; the efficiency of LAPACK depends
 very much on the efficiency of the BLAS.
 
-The complete package, including test code and timing programs in four
+The complete package, including test code in four
 different Fortran data types (real, complex, double precision, double
 complex), contains some 805,000 lines of Fortran source and comments.
 You will need approximately 33 Mbytes to read the complete tape.
-We recommend that you run the testing and timing programs.  The total
-space requirements for the testing and timing for all four data
+We recommend that you run the testing.  The total
+space requirements for the testing for all four data
 types, including the object files, is approximately 80 Mbytes.
 
 A README file containing the information in this letter is located
@@ -42,7 +43,7 @@ Installation Guide are in the LAPACK/INSTALL directory, in the files
 lawn81.tex, psfig.tex, lawn81.ps, and org2.ps.  Consult the Installation
 Guide for further details on installing the package and on what is contained
 in each subdirectory.  For complete information on the LAPACK Testing
-and Timing Suites please consult LAPACK Working Note 41 "Installation
+please consult LAPACK Working Note 41 "Installation
 Guide for LAPACK".
 
 It is highly recommended that you obtain a copy of the Third Edition of

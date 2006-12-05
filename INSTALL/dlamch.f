@@ -2,7 +2,7 @@
 *
 *  -- LAPACK auxiliary routine (version 3.1) --
 *     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
-*     October 2006
+*     November 2006
 *
 *     .. Scalar Arguments ..
       CHARACTER          CMACH
@@ -131,7 +131,7 @@
 *
 *  -- LAPACK auxiliary routine (version 3.1) --
 *     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
-*     October 2006
+*     November 2006
 *
 *     .. Scalar Arguments ..
       LOGICAL            IEEE1, RND
@@ -317,7 +317,7 @@
 *
 *  -- LAPACK auxiliary routine (version 3.1) --
 *     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
-*     October 2006
+*     November 2006
 *
 *     .. Scalar Arguments ..
       LOGICAL            RND
@@ -575,7 +575,7 @@
 *
 *  -- LAPACK auxiliary routine (version 3.1) --
 *     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
-*     October 2006
+*     November 2006
 *
 *     .. Scalar Arguments ..
       DOUBLE PRECISION   A, B
@@ -613,7 +613,7 @@
 *
 *  -- LAPACK auxiliary routine (version 3.1) --
 *     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
-*     October 2006
+*     November 2006
 *
 *     .. Scalar Arguments ..
       INTEGER            BASE, EMIN
@@ -696,7 +696,7 @@
 *
 *  -- LAPACK auxiliary routine (version 3.1) --
 *     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
-*     October 2006
+*     November 2006
 *
 *     .. Scalar Arguments ..
       LOGICAL            IEEE

@@ -5,7 +5,7 @@
 *
 *  -- LAPACK test routine (new routine for release 2.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
-*     October 2006
+*     November 2006
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDAB, LDC, LDP, LDQ, LWORK, NOUNIT,

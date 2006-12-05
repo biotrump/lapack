@@ -3,7 +3,7 @@
 *
 *  -- LAPACK auxiliary test routine (version 3.1) --
 *     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
-*     October 2006
+*     November 2006
 *
 *     .. Scalar Arguments ..
       INTEGER            IDIST, ISIGN, ITYPE, LDA, N, NZ1, NZ2

@@ -3,7 +3,7 @@
 *
 *  -- LAPACK auxiliary test routine (version 3.1) --
 *     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
-*     October 2006
+*     November 2006
 *
 *     .. Scalar Arguments ..
       LOGICAL            LLEFT, LRIGHT, LROWS
@@ -19,7 +19,7 @@
 *
 *     SLAROT applies a (Givens) rotation to two adjacent rows or
 *     columns, where one element of the first and/or last column/row
-*     October 2006
+*     November 2006
 *     for use on matrices stored in some format other than GE, so
 *     that elements of the matrix may be used or modified for which
 *     no array element is provided.

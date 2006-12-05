@@ -4,7 +4,7 @@
 *
 *  -- LAPACK routine (version 3.1) --
 *     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
-*     October 2006
+*     November 2006
 *     8-18-00:  Increase FUDGE factor for T3E (eca)
 *
 *     .. Scalar Arguments ..
