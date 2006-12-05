@@ -1,6 +1,6 @@
       SUBROUTINE CLAG2Z(M,N,SA,LDSA,A,LDA,INFO)
 *
-*  -- LAPACK PROTOTYPE driver routine (version 3.1) --
+*  -- LAPACK PROTOTYPE auxilary routine (version 3.1) --
 *     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
 *     November 2006
 *
