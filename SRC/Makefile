@@ -176,7 +176,7 @@ CLASRC = \
    cungbr.o cunghr.o cungl2.o cunglq.o cungql.o cungqr.o cungr2.o \
    cungrq.o cungtr.o cunm2l.o cunm2r.o cunmbr.o cunmhr.o cunml2.o \
    cunmlq.o cunmql.o cunmqr.o cunmr2.o cunmr3.o cunmrq.o cunmrz.o \
-   cunmtr.o cupgtr.o cupmtr.o icmax1.o scsum1.o cisnan.o cstemr.o
+   cunmtr.o cupgtr.o cupmtr.o icmax1.o scsum1.o cstemr.o
 
 DLASRC = \
    dgbbrd.o dgbcon.o dgbequ.o dgbrfs.o dgbsv.o  \
@@ -284,7 +284,7 @@ ZLASRC = \
    zungrq.o zungtr.o zunm2l.o zunm2r.o zunmbr.o zunmhr.o zunml2.o \
    zunmlq.o zunmql.o zunmqr.o zunmr2.o zunmr3.o zunmrq.o zunmrz.o \
    zunmtr.o zupgtr.o \
-   zupmtr.o izmax1.o dzsum1.o zisnan.o zstemr.o
+   zupmtr.o izmax1.o dzsum1.o zstemr.o
 
 all: ../$(LAPACKLIB)
 
