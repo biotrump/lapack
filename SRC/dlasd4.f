@@ -58,7 +58,7 @@
 *         The scalar in the symmetric updating formula.
 *
 *  SIGMA  (output) DOUBLE PRECISION
-*         The computed lambda_I, the I-th updated eigenvalue.
+*         The computed sigma_I, the I-th updated eigenvalue.
 *
 *  WORK   (workspace) DOUBLE PRECISION array, dimension ( N )
 *         If N .ne. 1, WORK contains (D(j) + sigma_I) in its  j-th

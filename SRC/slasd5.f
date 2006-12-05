@@ -41,7 +41,7 @@
 *         The components of the updating vector.
 *
 *  DELTA  (output) REAL array, dimension (2)
-*         Contains (D(j) - lambda_I) in its  j-th component.
+*         Contains (D(j) - sigma_I) in its  j-th component.
 *         The vector DELTA contains the information necessary
 *         to construct the eigenvectors.
 *
@@ -49,7 +49,7 @@
 *         The scalar in the symmetric updating formula.
 *
 *  DSIGMA (output) REAL
-*         The computed lambda_I, the I-th updated eigenvalue.
+*         The computed sigma_I, the I-th updated eigenvalue.
 *
 *  WORK   (workspace) REAL array, dimension (2)
 *         WORK contains (D(j) + sigma_I) in its  j-th component.

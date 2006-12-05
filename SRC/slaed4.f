@@ -48,10 +48,10 @@
 *         The components of the updating vector.
 *
 *  DELTA  (output) REAL array, dimension (N)
-*         If N .ne. 1, DELTA contains (D(j) - lambda_I) in its  j-th
-*         component.  If N = 1, then DELTA(1) = 1.  The vector DELTA
-*         contains the information necessary to construct the
-*         eigenvectors.
+*         If N .GT. 2, DELTA contains (D(j) - lambda_I) in its  j-th
+*         component.  If N = 1, then DELTA(1) = 1. If N = 2, see SLAED5
+*         for detail. The vector DELTA contains the information necessary
+*         to construct the eigenvectors by SLAED3 and SLAED9.
 *
 *  RHO    (input) REAL
 *         The scalar in the symmetric updating formula.

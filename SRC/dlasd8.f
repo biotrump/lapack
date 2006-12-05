@@ -156,7 +156,7 @@
 *     changes the bottommost bits of DSIGMA(I). It does not account
 *     for hexadecimal or decimal machines without guard digits
 *     (we know of none). We use a subroutine call to compute
-*     2*DLAMBDA(I) to prevent optimizing compilers from eliminating
+*     2*DSIGMA(I) to prevent optimizing compilers from eliminating
 *     this code.
 *
       DO 10 I = 1, K
