@@ -166,12 +166,27 @@ ZLINTST = zchkaa.o \
    ztrt02.o ztrt03.o ztrt05.o ztrt06.o \
    ztzt01.o ztzt02.o dget06.o
 
-all:  single double complex complex16
+DSLINTST = dchkab.o \
+	ddrvab.o derrab.o dget08.o          \
+	alaerh.o alahd.o  aladhd.o alareq.o \
+	chkxer.o dlarhs.o dlatb4.o xerbla.o \
+	dget02.o
+
+ZCLINTST = zchkab.o \
+	zdrvab.o zerrab.o zget08.o          \
+	alaerh.o alahd.o  aladhd.o alareq.o \
+	chkxer.o zget02.o zlarhs.o zlatb4.o \
+	zsbmv.o  xerbla.o
+
+all:  single double complex complex16 proto-double proto-complex16
 
 single: ../xlintsts
 double: ../xlintstd
 complex: ../xlintstc
-complex16: ../xlintstz
+complex16: ../xlintstz 
+
+proto-double: ../xlintstds
+proto-complex16: ../xlintstzc 
 
 ../xlintsts : $(ALINTST) $(SLINTST) $(SCLNTST)
 	$(LOADER) $(LOADOPTS)  $(ALINTST) $(SCLNTST) $(SLINTST) \
@@ -187,6 +202,14 @@ complex16: ../xlintstz
  
 ../xlintstz : $(ALINTST) $(ZLINTST) $(DZLNTST)
 	$(LOADER) $(LOADOPTS)  $(ALINTST) $(DZLNTST) $(ZLINTST) \
+        ../../$(TMGLIB) ../../$(LAPACKLIB) $(BLASLIB)  -o $@
+ 
+../xlintstds : $(DSLINTST)
+	$(LOADER) $(LOADOPTS)  $(DSLINTST) \
+        ../../$(TMGLIB) ../../$(LAPACKLIB) $(BLASLIB)  -o $@
+ 
+../xlintstzc : $(ZCLINTST)
+	$(LOADER) $(LOADOPTS)  $(ZCLINTST) \
         ../../$(TMGLIB) ../../$(LAPACKLIB) $(BLASLIB)  -o $@
  
 $(ALINTST): $(FRC)

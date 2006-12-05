@@ -37,7 +37,7 @@
 
 include ../make.inc
 
-all:     single complex double complex16
+all:     single complex double complex16 doubleproto complex16proto
 
 SEIGTST= snep.out \
          ssep.out \
@@ -122,12 +122,18 @@ CLINTST= ctest.out
 
 DLINTST= dtest.out
 
+DLINTSTPROTO= dstest.out
+
 ZLINTST= ztest.out
+
+ZLINTSTPROTO= zctest.out
 
 single:         $(SLINTST) $(SEIGTST)
 complex:        $(CLINTST) $(CEIGTST)
 double:         $(DLINTST) $(DEIGTST)
 complex16:      $(ZLINTST) $(ZEIGTST)
+doubleproto:    $(DLINTSTPROTO)
+complex16proto: $(ZLINTSTPROTO)
 
 #
 # ======== SINGLE LIN TESTS ===========================
@@ -153,6 +159,18 @@ dtest.out: dtest.in xlintstd
 ztest.out: ztest.in xlintstz
 	@echo Testing COMPLEX16 LAPACK linear equation routines
 	./xlintstz < ztest.in > $@ 2>&1
+#
+# ======== SINGLE-DOUBLE PROTO LIN TESTS ==============
+
+dstest.out: dstest.in xlintstds
+	@echo Testing SINGLE-DOUBLE PRECISION LAPACK prototype linear equation routines
+	./xlintstds < dstest.in > $@ 2>&1
+#
+# ======== COMPLEX-COMPLEX16 LIN TESTS ========================
+
+zctest.out: zctest.in xlintstzc
+	@echo Testing COMPLEX-COMPLEX16 LAPACK protoype linear equation routines
+	./xlintstzc < zctest.in > $@ 2>&1
 #
 #
 # ======== SINGLE EIG TESTS ===========================
@@ -464,6 +482,12 @@ xlintstd:
 
 xlintstz:
 	cd LIN ; $(MAKE) complex16
+
+xlintstds:
+	cd LIN ; $(MAKE) proto-double
+
+xlintstzc:
+	cd LIN ; $(MAKE) proto-complex16
 
 xeigtsts:
 	cd EIG ; $(MAKE) single
