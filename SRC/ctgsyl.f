@@ -159,7 +159,6 @@
 *          message related to LWORK is issued by XERBLA.
 *
 *  IWORK   (workspace) INTEGER array, dimension (M+N+2)
-*          If IJOB = 0, IWORK is not referenced.
 *
 *  INFO    (output) INTEGER
 *            =0: successful exit

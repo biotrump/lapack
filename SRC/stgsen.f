@@ -164,8 +164,7 @@
 *          If IJOB = 0 or 1, DIF is not referenced.
 *
 *  WORK    (workspace/output) REAL array, dimension (MAX(1,LWORK))
-*          IF IJOB = 0, WORK is not referenced.  Otherwise,
-*          on exit, if INFO = 0, WORK(1) returns the optimal LWORK.
+*          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER
 *          The dimension of the array WORK. LWORK >=  4*N+16.
