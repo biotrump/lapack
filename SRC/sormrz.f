@@ -177,6 +177,7 @@
 *           Determine the block size.  NB may be at most NBMAX, where
 *           NBMAX is used to define the local array T.
 *
+         ELSE
             NB = MIN( NBMAX, ILAENV( 1, 'SORMRQ', SIDE // TRANS, M, N,
      $                               K, -1 ) )
             LWKOPT = NW*NB
