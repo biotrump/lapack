@@ -106,7 +106,7 @@
 *          LDC >= max(1,N) if NCC > 0; LDC >=1 if NCC = 0.
 *
 *  WORK    (workspace) DOUBLE PRECISION array, dimension (2*N)
-*          if NCVT = NRU = NCC = 0, (max(1, 4*N-4)) otherwise
+*          if NCVT = NRU = NCC = 0, (max(1, 4*N)) otherwise
 *
 *  INFO    (output) INTEGER
 *          = 0:  successful exit
