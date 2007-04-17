@@ -256,7 +256,6 @@
 *
       LQUERY = ( ( LWORK.EQ.-1 ).OR.( LIWORK.EQ.-1 ) )
       ZQUERY = ( NZC.EQ.-1 )
-      TRYRAC = ( INFO.NE.0 )
 
 *     DSTEMR needs WORK of size 6*N, IWORK of size 3*N.
 *     In addition, DLARRE needs WORK of size 6*N, IWORK of size 5*N.
