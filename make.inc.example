@@ -44,7 +44,7 @@ TIMER    = EXT_ETIME
 # For RS6K : SECOND and DSECND will use a call to the EXTERNAL FUNCTION ETIME_
 # TIMER    = EXT_ETIME_
 # For gfortran compiler: SECOND and DSECND will use a call to the INTERNAL FUNCTION ETIME
-# TIMER    = INT_ETIME 
+# TIMER    = INT_ETIME
 # If your Fortran compiler does not provide etime (like Nag Fortran Compiler, etc...)
 # SECOND and DSECND will use a call to the INTERNAL FUNCTION CPU_TIME 
 # TIMER    = INT_CPU_TIME
