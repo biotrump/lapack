@@ -228,7 +228,7 @@
 *
 *     .. Parameters ..
       DOUBLE PRECISION   ZERO, ONE, TWO
-      PARAMETER          ( ZERO = 0.0D+0, ONE = 1.0D+0, TWO = 0.0D+0 )
+      PARAMETER          ( ZERO = 0.0D+0, ONE = 1.0D+0, TWO = 2.0D+0 )
 *     ..
 *     .. Local Scalars ..
       LOGICAL            ALLEIG, INDEIG, LOWER, LQUERY, VALEIG, WANTZ,
