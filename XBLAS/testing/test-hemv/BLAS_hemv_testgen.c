@@ -26,9 +26,6 @@
 
 
 
-
-
-
 void BLAS_sskew_testgen_hemv(int norm, enum blas_order_type order,
 			     enum blas_uplo_type uplo,
 			     int n, int randomize,
@@ -140,7 +137,7 @@ void BLAS_sskew_testgen_hemv(int norm, enum blas_order_type order,
   if (n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  ssymv_copy_vector(n_i, x_vec, 1, x_i, incx);
+  scopy_vector(x_i, n_i, incx, x_vec, 1);
 
   incyi = incy;
 
@@ -161,7 +158,7 @@ void BLAS_sskew_testgen_hemv(int norm, enum blas_order_type order,
     /* Fill in skew matrix A */
     for (i = 0, yi = y_starti, ri = 0; i < n_i; i++, ri += incri, yi += incyi) {
       /* x_i has already been copied to x_vec */
-      sskew_copy_row_hemv(order, uplo, n_i, a, lda, a_vec, i);
+      sskew_copy_row(order, uplo, blas_left_side, n_i, a, lda, a_vec, i);
       /* skew matricies have zeroed diagonals */
       a_vec[i] = 0.0;
       BLAS_sdot_testgen(n_i, i + 1, n_i - i - 1, norm,
@@ -170,7 +167,7 @@ void BLAS_sskew_testgen_hemv(int norm, enum blas_order_type order,
 			&y_elem, &head_r_true_elem, &tail_r_true_elem);
 
 
-      sskew_commit_row_hemv(order, uplo, n_i, a, lda, a_vec, i);
+      sskew_commit_row(order, uplo, blas_left_side, n_i, a, lda, a_vec, i);
 
       /*commits an element to the generated y */
       y_i[yi] = y_elem;
@@ -194,7 +191,7 @@ void BLAS_sskew_testgen_hemv(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < n_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	a_elem = (float) drand48();
+	a_elem = xrand(seed);
 	if (i != j) {
 	  a_i[aij] = a_elem;
 	} else {
@@ -207,10 +204,10 @@ void BLAS_sskew_testgen_hemv(int norm, enum blas_order_type order,
     /* now compute appropriate y vector */
 
     /* get x */
-    ssymv_copy_vector(n_i, x_vec, 1, x_i, incx);
+    scopy_vector(x_i, n_i, incx, x_vec, 1);
 
     for (i = 0, yi = y_starti, ri = 0; i < n_i; i++, yi += incyi, ri += incri) {
-      sskew_copy_row_hemv(order, uplo, n_i, a, lda, a_vec, i);
+      sskew_copy_row(order, uplo, blas_left_side, n_i, a, lda, a_vec, i);
 
       BLAS_sdot_testgen(n_i, n_i, 0, norm,
 			blas_no_conj, alpha_i, 1,
@@ -337,7 +334,7 @@ void BLAS_dskew_testgen_hemv(int norm, enum blas_order_type order,
   if (n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  dsymv_copy_vector(n_i, x_vec, 1, x_i, incx);
+  dcopy_vector(x_i, n_i, incx, x_vec, 1);
 
   incyi = incy;
 
@@ -358,7 +355,7 @@ void BLAS_dskew_testgen_hemv(int norm, enum blas_order_type order,
     /* Fill in skew matrix A */
     for (i = 0, yi = y_starti, ri = 0; i < n_i; i++, ri += incri, yi += incyi) {
       /* x_i has already been copied to x_vec */
-      dskew_copy_row_hemv(order, uplo, n_i, a, lda, a_vec, i);
+      dskew_copy_row(order, uplo, blas_left_side, n_i, a, lda, a_vec, i);
       /* skew matricies have zeroed diagonals */
       a_vec[i] = 0.0;
       BLAS_ddot_testgen(n_i, i + 1, n_i - i - 1, norm,
@@ -367,7 +364,7 @@ void BLAS_dskew_testgen_hemv(int norm, enum blas_order_type order,
 			&y_elem, &head_r_true_elem, &tail_r_true_elem);
 
 
-      dskew_commit_row_hemv(order, uplo, n_i, a, lda, a_vec, i);
+      dskew_commit_row(order, uplo, blas_left_side, n_i, a, lda, a_vec, i);
 
       /*commits an element to the generated y */
       y_i[yi] = y_elem;
@@ -391,7 +388,7 @@ void BLAS_dskew_testgen_hemv(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < n_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	a_elem = (float) drand48();
+	a_elem = xrand(seed);
 	if (i != j) {
 	  a_i[aij] = a_elem;
 	} else {
@@ -404,10 +401,10 @@ void BLAS_dskew_testgen_hemv(int norm, enum blas_order_type order,
     /* now compute appropriate y vector */
 
     /* get x */
-    dsymv_copy_vector(n_i, x_vec, 1, x_i, incx);
+    dcopy_vector(x_i, n_i, incx, x_vec, 1);
 
     for (i = 0, yi = y_starti, ri = 0; i < n_i; i++, yi += incyi, ri += incri) {
-      dskew_copy_row_hemv(order, uplo, n_i, a, lda, a_vec, i);
+      dskew_copy_row(order, uplo, blas_left_side, n_i, a, lda, a_vec, i);
 
       BLAS_ddot_testgen(n_i, n_i, 0, norm,
 			blas_no_conj, alpha_i, 1,
@@ -534,7 +531,7 @@ void BLAS_dskew_testgen_hemv_d_s(int norm, enum blas_order_type order,
   if (n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  ssymv_copy_vector(n_i, x_vec, 1, x_i, incx);
+  scopy_vector(x_i, n_i, incx, x_vec, 1);
 
   incyi = incy;
 
@@ -555,7 +552,7 @@ void BLAS_dskew_testgen_hemv_d_s(int norm, enum blas_order_type order,
     /* Fill in skew matrix A */
     for (i = 0, yi = y_starti, ri = 0; i < n_i; i++, ri += incri, yi += incyi) {
       /* x_i has already been copied to x_vec */
-      dskew_copy_row_hemv(order, uplo, n_i, a, lda, a_vec, i);
+      dskew_copy_row(order, uplo, blas_left_side, n_i, a, lda, a_vec, i);
       /* skew matricies have zeroed diagonals */
       a_vec[i] = 0.0;
       BLAS_ddot_s_d_testgen(n_i, i + 1, n_i - i - 1, norm,
@@ -564,7 +561,7 @@ void BLAS_dskew_testgen_hemv_d_s(int norm, enum blas_order_type order,
 			    &y_elem, &head_r_true_elem, &tail_r_true_elem);
 
 
-      dskew_commit_row_hemv(order, uplo, n_i, a, lda, a_vec, i);
+      dskew_commit_row(order, uplo, blas_left_side, n_i, a, lda, a_vec, i);
 
       /*commits an element to the generated y */
       y_i[yi] = y_elem;
@@ -588,7 +585,7 @@ void BLAS_dskew_testgen_hemv_d_s(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < n_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	a_elem = (float) drand48();
+	a_elem = (float) xrand(seed);
 	if (i != j) {
 	  a_i[aij] = a_elem;
 	} else {
@@ -601,10 +598,10 @@ void BLAS_dskew_testgen_hemv_d_s(int norm, enum blas_order_type order,
     /* now compute appropriate y vector */
 
     /* get x */
-    ssymv_copy_vector(n_i, x_vec, 1, x_i, incx);
+    scopy_vector(x_i, n_i, incx, x_vec, 1);
 
     for (i = 0, yi = y_starti, ri = 0; i < n_i; i++, yi += incyi, ri += incri) {
-      dskew_copy_row_hemv(order, uplo, n_i, a, lda, a_vec, i);
+      dskew_copy_row(order, uplo, blas_left_side, n_i, a, lda, a_vec, i);
 
       BLAS_ddot_s_d_testgen(n_i, n_i, 0, norm,
 			    blas_no_conj, alpha_i, 1,
@@ -731,7 +728,7 @@ void BLAS_dskew_testgen_hemv_s_d(int norm, enum blas_order_type order,
   if (n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  dsymv_copy_vector(n_i, x_vec, 1, x_i, incx);
+  dcopy_vector(x_i, n_i, incx, x_vec, 1);
 
   incyi = incy;
 
@@ -752,7 +749,7 @@ void BLAS_dskew_testgen_hemv_s_d(int norm, enum blas_order_type order,
     /* Fill in skew matrix A */
     for (i = 0, yi = y_starti, ri = 0; i < n_i; i++, ri += incri, yi += incyi) {
       /* x_i has already been copied to x_vec */
-      sskew_copy_row_hemv(order, uplo, n_i, a, lda, a_vec, i);
+      sskew_copy_row(order, uplo, blas_left_side, n_i, a, lda, a_vec, i);
       /* skew matricies have zeroed diagonals */
       a_vec[i] = 0.0;
       BLAS_ddot_d_s_testgen(n_i, i + 1, n_i - i - 1, norm,
@@ -761,7 +758,7 @@ void BLAS_dskew_testgen_hemv_s_d(int norm, enum blas_order_type order,
 			    &y_elem, &head_r_true_elem, &tail_r_true_elem);
 
 
-      sskew_commit_row_hemv(order, uplo, n_i, a, lda, a_vec, i);
+      sskew_commit_row(order, uplo, blas_left_side, n_i, a, lda, a_vec, i);
 
       /*commits an element to the generated y */
       y_i[yi] = y_elem;
@@ -785,7 +782,7 @@ void BLAS_dskew_testgen_hemv_s_d(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < n_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	a_elem = (float) drand48();
+	a_elem = (float) xrand(seed);
 	if (i != j) {
 	  a_i[aij] = a_elem;
 	} else {
@@ -798,10 +795,10 @@ void BLAS_dskew_testgen_hemv_s_d(int norm, enum blas_order_type order,
     /* now compute appropriate y vector */
 
     /* get x */
-    dsymv_copy_vector(n_i, x_vec, 1, x_i, incx);
+    dcopy_vector(x_i, n_i, incx, x_vec, 1);
 
     for (i = 0, yi = y_starti, ri = 0; i < n_i; i++, yi += incyi, ri += incri) {
-      sskew_copy_row_hemv(order, uplo, n_i, a, lda, a_vec, i);
+      sskew_copy_row(order, uplo, blas_left_side, n_i, a, lda, a_vec, i);
 
       BLAS_ddot_d_s_testgen(n_i, n_i, 0, norm,
 			    blas_no_conj, alpha_i, 1,
@@ -928,7 +925,7 @@ void BLAS_dskew_testgen_hemv_s_s(int norm, enum blas_order_type order,
   if (n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  ssymv_copy_vector(n_i, x_vec, 1, x_i, incx);
+  scopy_vector(x_i, n_i, incx, x_vec, 1);
 
   incyi = incy;
 
@@ -949,7 +946,7 @@ void BLAS_dskew_testgen_hemv_s_s(int norm, enum blas_order_type order,
     /* Fill in skew matrix A */
     for (i = 0, yi = y_starti, ri = 0; i < n_i; i++, ri += incri, yi += incyi) {
       /* x_i has already been copied to x_vec */
-      sskew_copy_row_hemv(order, uplo, n_i, a, lda, a_vec, i);
+      sskew_copy_row(order, uplo, blas_left_side, n_i, a, lda, a_vec, i);
       /* skew matricies have zeroed diagonals */
       a_vec[i] = 0.0;
       BLAS_ddot_s_s_testgen(n_i, i + 1, n_i - i - 1, norm,
@@ -958,7 +955,7 @@ void BLAS_dskew_testgen_hemv_s_s(int norm, enum blas_order_type order,
 			    &y_elem, &head_r_true_elem, &tail_r_true_elem);
 
 
-      sskew_commit_row_hemv(order, uplo, n_i, a, lda, a_vec, i);
+      sskew_commit_row(order, uplo, blas_left_side, n_i, a, lda, a_vec, i);
 
       /*commits an element to the generated y */
       y_i[yi] = y_elem;
@@ -982,7 +979,7 @@ void BLAS_dskew_testgen_hemv_s_s(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < n_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	a_elem = (float) drand48();
+	a_elem = (float) xrand(seed);
 	if (i != j) {
 	  a_i[aij] = a_elem;
 	} else {
@@ -995,10 +992,10 @@ void BLAS_dskew_testgen_hemv_s_s(int norm, enum blas_order_type order,
     /* now compute appropriate y vector */
 
     /* get x */
-    ssymv_copy_vector(n_i, x_vec, 1, x_i, incx);
+    scopy_vector(x_i, n_i, incx, x_vec, 1);
 
     for (i = 0, yi = y_starti, ri = 0; i < n_i; i++, yi += incyi, ri += incri) {
-      sskew_copy_row_hemv(order, uplo, n_i, a, lda, a_vec, i);
+      sskew_copy_row(order, uplo, blas_left_side, n_i, a, lda, a_vec, i);
 
       BLAS_ddot_s_s_testgen(n_i, n_i, 0, norm,
 			    blas_no_conj, alpha_i, 1,
@@ -1504,19 +1501,19 @@ void BLAS_chemv_testgen(int norm, enum blas_order_type order,
 
 
       if (alpha_flag == 0) {
-	((float *) alpha_i)[0] = (float) drand48();
-	((float *) alpha_i)[1] = (float) drand48();
+	alpha_i[0] = xrand(seed);
+	alpha_i[1] = xrand(seed);
       }
       if (beta_flag == 0) {
-	((float *) beta_i)[0] = (float) drand48();
-	((float *) beta_i)[1] = (float) drand48();
+	beta_i[0] = xrand(seed);
+	beta_i[1] = xrand(seed);
       }
 
       /* Fill in matrix A -- Hermitian. */
       for (i = 0, ai = 0; i < n_i; i++, ai += incai) {
 	for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	  ((float *) a_elem)[0] = (float) drand48();
-	  ((float *) a_elem)[1] = (float) drand48();
+	  a_elem[0] = xrand(seed);
+	  a_elem[1] = xrand(seed);
 	  a_i[aij] = a_elem[0];
 	  a_i[aij + 1] = a_elem[1];
 	  if (i == j)
@@ -1526,18 +1523,18 @@ void BLAS_chemv_testgen(int norm, enum blas_order_type order,
 
       /* Fill in vector x */
       for (i = 0, xi = x_starti; i < n_i; i++, xi += incxi) {
-	((float *) x_elem)[0] = (float) drand48();
-	((float *) x_elem)[1] = (float) drand48();
+	x_elem[0] = xrand(seed);
+	x_elem[1] = xrand(seed);
 	x_i[xi] = x_elem[0];
 	x_i[xi + 1] = x_elem[1];
       }
 
-      csymv_copy_vector(n_i, x_vec, 1, x_i, incx);
+      ccopy_vector(x_i, n_i, incx, x_vec, 1);
 
 
       for (i = 0, yi = y_starti, ri = 0; i < n_i; i++, yi += incyi,
 	   ri += incri) {
-	chemm_copy_row(order, uplo, blas_left_side, n_i, a, lda, a_vec, i);
+	che_copy_row(order, uplo, blas_left_side, n_i, a, lda, a_vec, i);
 
 	BLAS_cdot_testgen(n_i, n_i, 0,
 			  norm, blas_no_conj,
@@ -2049,19 +2046,19 @@ void BLAS_zhemv_testgen(int norm, enum blas_order_type order,
 
 
       if (alpha_flag == 0) {
-	((double *) alpha_i)[0] = (float) drand48();
-	((double *) alpha_i)[1] = (float) drand48();
+	alpha_i[0] = xrand(seed);
+	alpha_i[1] = xrand(seed);
       }
       if (beta_flag == 0) {
-	((double *) beta_i)[0] = (float) drand48();
-	((double *) beta_i)[1] = (float) drand48();
+	beta_i[0] = xrand(seed);
+	beta_i[1] = xrand(seed);
       }
 
       /* Fill in matrix A -- Hermitian. */
       for (i = 0, ai = 0; i < n_i; i++, ai += incai) {
 	for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	  ((double *) a_elem)[0] = (float) drand48();
-	  ((double *) a_elem)[1] = (float) drand48();
+	  a_elem[0] = xrand(seed);
+	  a_elem[1] = xrand(seed);
 	  a_i[aij] = a_elem[0];
 	  a_i[aij + 1] = a_elem[1];
 	  if (i == j)
@@ -2071,18 +2068,18 @@ void BLAS_zhemv_testgen(int norm, enum blas_order_type order,
 
       /* Fill in vector x */
       for (i = 0, xi = x_starti; i < n_i; i++, xi += incxi) {
-	((double *) x_elem)[0] = (float) drand48();
-	((double *) x_elem)[1] = (float) drand48();
+	x_elem[0] = xrand(seed);
+	x_elem[1] = xrand(seed);
 	x_i[xi] = x_elem[0];
 	x_i[xi + 1] = x_elem[1];
       }
 
-      zsymv_copy_vector(n_i, x_vec, 1, x_i, incx);
+      zcopy_vector(x_i, n_i, incx, x_vec, 1);
 
 
       for (i = 0, yi = y_starti, ri = 0; i < n_i; i++, yi += incyi,
 	   ri += incri) {
-	zhemm_copy_row(order, uplo, blas_left_side, n_i, a, lda, a_vec, i);
+	zhe_copy_row(order, uplo, blas_left_side, n_i, a, lda, a_vec, i);
 
 	BLAS_zdot_testgen(n_i, n_i, 0,
 			  norm, blas_no_conj,
@@ -2594,19 +2591,19 @@ void BLAS_zhemv_c_z_testgen(int norm, enum blas_order_type order,
 
 
       if (alpha_flag == 0) {
-	((double *) alpha_i)[0] = (float) drand48();
-	((double *) alpha_i)[1] = (float) drand48();
+	alpha_i[0] = (float) xrand(seed);
+	alpha_i[1] = (float) xrand(seed);
       }
       if (beta_flag == 0) {
-	((double *) beta_i)[0] = (float) drand48();
-	((double *) beta_i)[1] = (float) drand48();
+	beta_i[0] = (float) xrand(seed);
+	beta_i[1] = (float) xrand(seed);
       }
 
       /* Fill in matrix A -- Hermitian. */
       for (i = 0, ai = 0; i < n_i; i++, ai += incai) {
 	for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	  ((float *) a_elem)[0] = (float) drand48();
-	  ((float *) a_elem)[1] = (float) drand48();
+	  a_elem[0] = (float) xrand(seed);
+	  a_elem[1] = (float) xrand(seed);
 	  a_i[aij] = a_elem[0];
 	  a_i[aij + 1] = a_elem[1];
 	  if (i == j)
@@ -2616,18 +2613,18 @@ void BLAS_zhemv_c_z_testgen(int norm, enum blas_order_type order,
 
       /* Fill in vector x */
       for (i = 0, xi = x_starti; i < n_i; i++, xi += incxi) {
-	((double *) x_elem)[0] = (float) drand48();
-	((double *) x_elem)[1] = (float) drand48();
+	x_elem[0] = (float) xrand(seed);
+	x_elem[1] = (float) xrand(seed);
 	x_i[xi] = x_elem[0];
 	x_i[xi + 1] = x_elem[1];
       }
 
-      zsymv_copy_vector(n_i, x_vec, 1, x_i, incx);
+      zcopy_vector(x_i, n_i, incx, x_vec, 1);
 
 
       for (i = 0, yi = y_starti, ri = 0; i < n_i; i++, yi += incyi,
 	   ri += incri) {
-	chemm_copy_row(order, uplo, blas_left_side, n_i, a, lda, a_vec, i);
+	che_copy_row(order, uplo, blas_left_side, n_i, a, lda, a_vec, i);
 
 	BLAS_zdot_c_z_testgen(n_i, n_i, 0,
 			      norm, blas_no_conj,
@@ -3139,19 +3136,19 @@ void BLAS_zhemv_z_c_testgen(int norm, enum blas_order_type order,
 
 
       if (alpha_flag == 0) {
-	((double *) alpha_i)[0] = (float) drand48();
-	((double *) alpha_i)[1] = (float) drand48();
+	alpha_i[0] = (float) xrand(seed);
+	alpha_i[1] = (float) xrand(seed);
       }
       if (beta_flag == 0) {
-	((double *) beta_i)[0] = (float) drand48();
-	((double *) beta_i)[1] = (float) drand48();
+	beta_i[0] = (float) xrand(seed);
+	beta_i[1] = (float) xrand(seed);
       }
 
       /* Fill in matrix A -- Hermitian. */
       for (i = 0, ai = 0; i < n_i; i++, ai += incai) {
 	for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	  ((double *) a_elem)[0] = (float) drand48();
-	  ((double *) a_elem)[1] = (float) drand48();
+	  a_elem[0] = (float) xrand(seed);
+	  a_elem[1] = (float) xrand(seed);
 	  a_i[aij] = a_elem[0];
 	  a_i[aij + 1] = a_elem[1];
 	  if (i == j)
@@ -3161,18 +3158,18 @@ void BLAS_zhemv_z_c_testgen(int norm, enum blas_order_type order,
 
       /* Fill in vector x */
       for (i = 0, xi = x_starti; i < n_i; i++, xi += incxi) {
-	((float *) x_elem)[0] = (float) drand48();
-	((float *) x_elem)[1] = (float) drand48();
+	x_elem[0] = (float) xrand(seed);
+	x_elem[1] = (float) xrand(seed);
 	x_i[xi] = x_elem[0];
 	x_i[xi + 1] = x_elem[1];
       }
 
-      csymv_copy_vector(n_i, x_vec, 1, x_i, incx);
+      ccopy_vector(x_i, n_i, incx, x_vec, 1);
 
 
       for (i = 0, yi = y_starti, ri = 0; i < n_i; i++, yi += incyi,
 	   ri += incri) {
-	zhemm_copy_row(order, uplo, blas_left_side, n_i, a, lda, a_vec, i);
+	zhe_copy_row(order, uplo, blas_left_side, n_i, a, lda, a_vec, i);
 
 	BLAS_zdot_z_c_testgen(n_i, n_i, 0,
 			      norm, blas_no_conj,
@@ -3684,19 +3681,19 @@ void BLAS_zhemv_c_c_testgen(int norm, enum blas_order_type order,
 
 
       if (alpha_flag == 0) {
-	((double *) alpha_i)[0] = (float) drand48();
-	((double *) alpha_i)[1] = (float) drand48();
+	alpha_i[0] = (float) xrand(seed);
+	alpha_i[1] = (float) xrand(seed);
       }
       if (beta_flag == 0) {
-	((double *) beta_i)[0] = (float) drand48();
-	((double *) beta_i)[1] = (float) drand48();
+	beta_i[0] = (float) xrand(seed);
+	beta_i[1] = (float) xrand(seed);
       }
 
       /* Fill in matrix A -- Hermitian. */
       for (i = 0, ai = 0; i < n_i; i++, ai += incai) {
 	for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	  ((float *) a_elem)[0] = (float) drand48();
-	  ((float *) a_elem)[1] = (float) drand48();
+	  a_elem[0] = (float) xrand(seed);
+	  a_elem[1] = (float) xrand(seed);
 	  a_i[aij] = a_elem[0];
 	  a_i[aij + 1] = a_elem[1];
 	  if (i == j)
@@ -3706,18 +3703,18 @@ void BLAS_zhemv_c_c_testgen(int norm, enum blas_order_type order,
 
       /* Fill in vector x */
       for (i = 0, xi = x_starti; i < n_i; i++, xi += incxi) {
-	((float *) x_elem)[0] = (float) drand48();
-	((float *) x_elem)[1] = (float) drand48();
+	x_elem[0] = (float) xrand(seed);
+	x_elem[1] = (float) xrand(seed);
 	x_i[xi] = x_elem[0];
 	x_i[xi + 1] = x_elem[1];
       }
 
-      csymv_copy_vector(n_i, x_vec, 1, x_i, incx);
+      ccopy_vector(x_i, n_i, incx, x_vec, 1);
 
 
       for (i = 0, yi = y_starti, ri = 0; i < n_i; i++, yi += incyi,
 	   ri += incri) {
-	chemm_copy_row(order, uplo, blas_left_side, n_i, a, lda, a_vec, i);
+	che_copy_row(order, uplo, blas_left_side, n_i, a, lda, a_vec, i);
 
 	BLAS_zdot_c_c_testgen(n_i, n_i, 0,
 			      norm, blas_no_conj,
@@ -4171,19 +4168,19 @@ void BLAS_zhemv_z_d_testgen(int norm, enum blas_order_type order,
       }
 
       if (alpha_flag == 0) {
-	((double *) alpha_i)[0] = (float) drand48();
-	((double *) alpha_i)[1] = (float) drand48();
+	alpha_i[0] = xrand(seed);
+	alpha_i[1] = xrand(seed);
       }
       if (beta_flag == 0) {
-	((double *) beta_i)[0] = (float) drand48();
-	((double *) beta_i)[1] = (float) drand48();
+	beta_i[0] = xrand(seed);
+	beta_i[1] = xrand(seed);
       }
 
       /* Fill in matrix A -- Hermitian. */
       for (i = 0, ai = 0; i < n_i; i++, ai += incai) {
 	for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	  ((double *) a_elem)[0] = (float) drand48();
-	  ((double *) a_elem)[1] = (float) drand48();
+	  a_elem[0] = xrand(seed);
+	  a_elem[1] = xrand(seed);
 	  a_i[aij] = a_elem[0];
 	  a_i[aij + 1] = a_elem[1];
 	  if (i == j)
@@ -4193,11 +4190,11 @@ void BLAS_zhemv_z_d_testgen(int norm, enum blas_order_type order,
 
       /* Fill in vector x */
       for (i = 0, xi = x_starti; i < n_i; i++, xi += incxi) {
-	x_elem = (float) drand48();
+	x_elem = xrand(seed);
 	x_i[xi] = x_elem;
       }
 
-      dsymv_copy_vector(n_i, x_vec, 1, x_i, incx);
+      dcopy_vector(x_i, n_i, incx, x_vec, 1);
 
       /* copy the real x_vec into complex xx_vec, so that 
          pure complex test case generator can be called. */
@@ -4211,7 +4208,7 @@ void BLAS_zhemv_z_d_testgen(int norm, enum blas_order_type order,
 
       for (i = 0, yi = y_starti, ri = 0; i < n_i; i++, yi += incyi,
 	   ri += incri) {
-	zhemm_copy_row(order, uplo, blas_left_side, n_i, a, lda, a_vec, i);
+	zhe_copy_row(order, uplo, blas_left_side, n_i, a, lda, a_vec, i);
 
 	BLAS_zdot_testgen(n_i, n_i, 0,
 			  norm, blas_no_conj,
@@ -4665,19 +4662,19 @@ void BLAS_chemv_c_s_testgen(int norm, enum blas_order_type order,
       }
 
       if (alpha_flag == 0) {
-	((float *) alpha_i)[0] = (float) drand48();
-	((float *) alpha_i)[1] = (float) drand48();
+	alpha_i[0] = xrand(seed);
+	alpha_i[1] = xrand(seed);
       }
       if (beta_flag == 0) {
-	((float *) beta_i)[0] = (float) drand48();
-	((float *) beta_i)[1] = (float) drand48();
+	beta_i[0] = xrand(seed);
+	beta_i[1] = xrand(seed);
       }
 
       /* Fill in matrix A -- Hermitian. */
       for (i = 0, ai = 0; i < n_i; i++, ai += incai) {
 	for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	  ((float *) a_elem)[0] = (float) drand48();
-	  ((float *) a_elem)[1] = (float) drand48();
+	  a_elem[0] = xrand(seed);
+	  a_elem[1] = xrand(seed);
 	  a_i[aij] = a_elem[0];
 	  a_i[aij + 1] = a_elem[1];
 	  if (i == j)
@@ -4687,11 +4684,11 @@ void BLAS_chemv_c_s_testgen(int norm, enum blas_order_type order,
 
       /* Fill in vector x */
       for (i = 0, xi = x_starti; i < n_i; i++, xi += incxi) {
-	x_elem = (float) drand48();
+	x_elem = xrand(seed);
 	x_i[xi] = x_elem;
       }
 
-      ssymv_copy_vector(n_i, x_vec, 1, x_i, incx);
+      scopy_vector(x_i, n_i, incx, x_vec, 1);
 
       /* copy the real x_vec into complex xx_vec, so that 
          pure complex test case generator can be called. */
@@ -4705,7 +4702,7 @@ void BLAS_chemv_c_s_testgen(int norm, enum blas_order_type order,
 
       for (i = 0, yi = y_starti, ri = 0; i < n_i; i++, yi += incyi,
 	   ri += incri) {
-	chemm_copy_row(order, uplo, blas_left_side, n_i, a, lda, a_vec, i);
+	che_copy_row(order, uplo, blas_left_side, n_i, a, lda, a_vec, i);
 
 	BLAS_cdot_testgen(n_i, n_i, 0,
 			  norm, blas_no_conj,

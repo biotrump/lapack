@@ -2,7 +2,6 @@
 #include "blas_extended_private.h"
 #include "blas_extended_test.h"
 
-
 extern double xrand(int *);
 
 
@@ -115,7 +114,7 @@ void BLAS_strsv_testgen(int norm, enum blas_order_type order,
 	T[i * lda + i] = Tii;
       } else {
 	Tii = 1.0;
-	T[i * lda + i] = 1.0;
+	T[i * lda + i] = Tii;
       }
 
       x[i] = xrand(seed);
@@ -379,7 +378,7 @@ void BLAS_dtrsv_testgen(int norm, enum blas_order_type order,
 	T[i * lda + i] = Tii;
       } else {
 	Tii = 1.0;
-	T[i * lda + i] = 1.0;
+	T[i * lda + i] = Tii;
       }
 
       x[i] = xrand(seed);
@@ -672,7 +671,7 @@ void BLAS_dtrsv_s_testgen(int norm, enum blas_order_type order,
 	T[i * lda + i] = Tii;
       } else {
 	Tii = 1.0;
-	T[i * lda + i] = 1.0;
+	T[i * lda + i] = Tii;
       }
 
       x[i] = xrand(seed);

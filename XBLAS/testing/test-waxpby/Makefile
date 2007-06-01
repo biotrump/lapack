@@ -16,7 +16,9 @@ TEST_DOT_OBJS = $(TEST_DOT_PATH)/test_dot.o \
            $(TEST_DOT_PATH)/testgen_BLAS_cdot.o \
            $(TEST_DOT_PATH)/testgen_BLAS_zdot.o \
 	   $(TEST_DOT_PATH)/testgen_aux.o \
-           $(TEST_DOT_PATH)/BLAS_dot_testgen.o
+           $(TEST_DOT_PATH)/BLAS_dot_testgen.o \
+	   $(TEST_DOT_PATH)/print_vector.o \
+	   $(TEST_DOT_PATH)/copy_vector.o
 
 TEST_OBJS = $(TEST_SRCS:.c=.o)
 COMMON_OBJS = ../common/dummy_main.o

@@ -160,39 +160,22 @@ void do_test_dgemm_d_s(int m, int n, int k, int ntests, int *seed,
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c_gen[i] = 0.0;
-  }
   a = (double *) blas_malloc(2 * m * k * sizeof(double));
   if (2 * m * k > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m * k * inca; i += inca) {
-    a[i] = 0.0;
   }
   b = (float *) blas_malloc(2 * k * n * sizeof(float));
   if (2 * k * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * k * n * incb; i += incb) {
-    b[i] = 0.0;
-  }
   a_vec = (double *) blas_malloc(k * sizeof(double));
   if (k > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < k * inca; i += inca) {
-    a_vec[i] = 0.0;
   }
   b_vec = (float *) blas_malloc(k * sizeof(float));
   if (k > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < k * incb; i += incb) {
-    b_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double));
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double));
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -334,7 +317,7 @@ void do_test_dgemm_d_s(int m, int n, int k, int ntests, int *seed,
 
 			/* copy generated C matrix since this will be
 			   over written */
-			dgemm_copy(order, m, n, c_gen, ldc, c, ldc);
+			dge_copy_matrix(order, m, n, c_gen, ldc, c, ldc);
 
 			/* call GEMM routines to be tested */
 			FPU_FIX_STOP;
@@ -363,13 +346,12 @@ void do_test_dgemm_d_s(int m, int n, int k, int ntests, int *seed,
 
 			for (i = 0, ci = 0, ri = 0; i < m;
 			     i++, ci += incci, ri += incri) {
-			  dgemm_copy_row(order, transa,
-					 m, k, a, lda, a_vec, i);
+			  dge_copy_row(order, transa, m, k, a, lda, a_vec, i);
 			  for (j = 0, cij = ci, rij = ri; j < n;
 			       j++, cij += inccij, rij += incrij) {
 			    /* copy i-th row of A and j-th col of B */
-			    sgemm_copy_col(order, transb,
-					   k, n, b, ldb, b_vec, j);
+			    sge_copy_col(order, transb,
+					 k, n, b, ldb, b_vec, j);
 
 			    test_BLAS_ddot_d_s(k, blas_no_conj,
 					       alpha, beta, c_gen[cij],
@@ -446,24 +428,20 @@ void do_test_dgemm_d_s(int m, int n, int k, int ntests, int *seed,
 			      printf("Randomized\n");
 
 			    /* print out info */
-			    printf("alpha=%.16e", alpha);;
+			    printf("alpha = ");
+			    printf("%24.16e", alpha);;
 			    printf("   ");
-			    printf("beta=%.16e", beta);;
+			    printf("beta = ");
+			    printf("%24.16e", beta);;
 			    printf("\n");
 
-			    printf("a\n");
-			    dprint_matrix(a, m, k, lda, order);
-			    printf("b\n");
-			    sprint_matrix(b, k, n, ldb, order);
-
-			    printf("c_gen\n");
-			    dprint_matrix(c_gen, m, n, ldc, order);
-
-			    printf("c\n");
-			    dprint_matrix(c, m, n, ldc, order);
-
-			    printf("truth\n");
-			    dprint_matrix(head_r_true, m, n, ldc, order);
+			    dge_print_matrix(a, m, k, lda, order, "A");
+			    sge_print_matrix(b, k, n, ldb, order, "B");
+			    dge_print_matrix(c_gen, m, n, ldc, order,
+					     "C_gen");
+			    dge_print_matrix(c, m, n, ldc, order, "C");
+			    dge_print_matrix(head_r_true, m, n, ldc, order,
+					     "truth");
 
 			    printf("ratio = %g\n", ratio);
 			  }
@@ -633,39 +611,22 @@ void do_test_dgemm_s_d(int m, int n, int k, int ntests, int *seed,
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c_gen[i] = 0.0;
-  }
   a = (float *) blas_malloc(2 * m * k * sizeof(float));
   if (2 * m * k > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m * k * inca; i += inca) {
-    a[i] = 0.0;
   }
   b = (double *) blas_malloc(2 * k * n * sizeof(double));
   if (2 * k * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * k * n * incb; i += incb) {
-    b[i] = 0.0;
-  }
   a_vec = (float *) blas_malloc(k * sizeof(float));
   if (k > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < k * inca; i += inca) {
-    a_vec[i] = 0.0;
   }
   b_vec = (double *) blas_malloc(k * sizeof(double));
   if (k > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < k * incb; i += incb) {
-    b_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double));
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double));
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -807,7 +768,7 @@ void do_test_dgemm_s_d(int m, int n, int k, int ntests, int *seed,
 
 			/* copy generated C matrix since this will be
 			   over written */
-			dgemm_copy(order, m, n, c_gen, ldc, c, ldc);
+			dge_copy_matrix(order, m, n, c_gen, ldc, c, ldc);
 
 			/* call GEMM routines to be tested */
 			FPU_FIX_STOP;
@@ -836,13 +797,12 @@ void do_test_dgemm_s_d(int m, int n, int k, int ntests, int *seed,
 
 			for (i = 0, ci = 0, ri = 0; i < m;
 			     i++, ci += incci, ri += incri) {
-			  sgemm_copy_row(order, transa,
-					 m, k, a, lda, a_vec, i);
+			  sge_copy_row(order, transa, m, k, a, lda, a_vec, i);
 			  for (j = 0, cij = ci, rij = ri; j < n;
 			       j++, cij += inccij, rij += incrij) {
 			    /* copy i-th row of A and j-th col of B */
-			    dgemm_copy_col(order, transb,
-					   k, n, b, ldb, b_vec, j);
+			    dge_copy_col(order, transb,
+					 k, n, b, ldb, b_vec, j);
 
 			    test_BLAS_ddot_s_d(k, blas_no_conj,
 					       alpha, beta, c_gen[cij],
@@ -919,24 +879,20 @@ void do_test_dgemm_s_d(int m, int n, int k, int ntests, int *seed,
 			      printf("Randomized\n");
 
 			    /* print out info */
-			    printf("alpha=%.16e", alpha);;
+			    printf("alpha = ");
+			    printf("%24.16e", alpha);;
 			    printf("   ");
-			    printf("beta=%.16e", beta);;
+			    printf("beta = ");
+			    printf("%24.16e", beta);;
 			    printf("\n");
 
-			    printf("a\n");
-			    sprint_matrix(a, m, k, lda, order);
-			    printf("b\n");
-			    dprint_matrix(b, k, n, ldb, order);
-
-			    printf("c_gen\n");
-			    dprint_matrix(c_gen, m, n, ldc, order);
-
-			    printf("c\n");
-			    dprint_matrix(c, m, n, ldc, order);
-
-			    printf("truth\n");
-			    dprint_matrix(head_r_true, m, n, ldc, order);
+			    sge_print_matrix(a, m, k, lda, order, "A");
+			    dge_print_matrix(b, k, n, ldb, order, "B");
+			    dge_print_matrix(c_gen, m, n, ldc, order,
+					     "C_gen");
+			    dge_print_matrix(c, m, n, ldc, order, "C");
+			    dge_print_matrix(head_r_true, m, n, ldc, order,
+					     "truth");
 
 			    printf("ratio = %g\n", ratio);
 			  }
@@ -1106,39 +1062,22 @@ void do_test_dgemm_s_s(int m, int n, int k, int ntests, int *seed,
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c_gen[i] = 0.0;
-  }
   a = (float *) blas_malloc(2 * m * k * sizeof(float));
   if (2 * m * k > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m * k * inca; i += inca) {
-    a[i] = 0.0;
   }
   b = (float *) blas_malloc(2 * k * n * sizeof(float));
   if (2 * k * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * k * n * incb; i += incb) {
-    b[i] = 0.0;
-  }
   a_vec = (float *) blas_malloc(k * sizeof(float));
   if (k > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < k * inca; i += inca) {
-    a_vec[i] = 0.0;
   }
   b_vec = (float *) blas_malloc(k * sizeof(float));
   if (k > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < k * incb; i += incb) {
-    b_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double));
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double));
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -1280,7 +1219,7 @@ void do_test_dgemm_s_s(int m, int n, int k, int ntests, int *seed,
 
 			/* copy generated C matrix since this will be
 			   over written */
-			dgemm_copy(order, m, n, c_gen, ldc, c, ldc);
+			dge_copy_matrix(order, m, n, c_gen, ldc, c, ldc);
 
 			/* call GEMM routines to be tested */
 			FPU_FIX_STOP;
@@ -1309,13 +1248,12 @@ void do_test_dgemm_s_s(int m, int n, int k, int ntests, int *seed,
 
 			for (i = 0, ci = 0, ri = 0; i < m;
 			     i++, ci += incci, ri += incri) {
-			  sgemm_copy_row(order, transa,
-					 m, k, a, lda, a_vec, i);
+			  sge_copy_row(order, transa, m, k, a, lda, a_vec, i);
 			  for (j = 0, cij = ci, rij = ri; j < n;
 			       j++, cij += inccij, rij += incrij) {
 			    /* copy i-th row of A and j-th col of B */
-			    sgemm_copy_col(order, transb,
-					   k, n, b, ldb, b_vec, j);
+			    sge_copy_col(order, transb,
+					 k, n, b, ldb, b_vec, j);
 
 			    test_BLAS_ddot_s_s(k, blas_no_conj,
 					       alpha, beta, c_gen[cij],
@@ -1392,24 +1330,20 @@ void do_test_dgemm_s_s(int m, int n, int k, int ntests, int *seed,
 			      printf("Randomized\n");
 
 			    /* print out info */
-			    printf("alpha=%.16e", alpha);;
+			    printf("alpha = ");
+			    printf("%24.16e", alpha);;
 			    printf("   ");
-			    printf("beta=%.16e", beta);;
+			    printf("beta = ");
+			    printf("%24.16e", beta);;
 			    printf("\n");
 
-			    printf("a\n");
-			    sprint_matrix(a, m, k, lda, order);
-			    printf("b\n");
-			    sprint_matrix(b, k, n, ldb, order);
-
-			    printf("c_gen\n");
-			    dprint_matrix(c_gen, m, n, ldc, order);
-
-			    printf("c\n");
-			    dprint_matrix(c, m, n, ldc, order);
-
-			    printf("truth\n");
-			    dprint_matrix(head_r_true, m, n, ldc, order);
+			    sge_print_matrix(a, m, k, lda, order, "A");
+			    sge_print_matrix(b, k, n, ldb, order, "B");
+			    dge_print_matrix(c_gen, m, n, ldc, order,
+					     "C_gen");
+			    dge_print_matrix(c, m, n, ldc, order, "C");
+			    dge_print_matrix(head_r_true, m, n, ldc, order,
+					     "truth");
 
 			    printf("ratio = %g\n", ratio);
 			  }
@@ -1580,45 +1514,22 @@ void do_test_zgemm_z_c(int m, int n, int k, int ntests, int *seed,
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c[i + 1] = 0.0;
-    c_gen[i] = 0.0;
-    c_gen[i + 1] = 0.0;
-  }
   a = (double *) blas_malloc(2 * m * k * sizeof(double) * 2);
   if (2 * m * k > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m * k * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   b = (float *) blas_malloc(2 * k * n * sizeof(float) * 2);
   if (2 * k * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * k * n * incb; i += incb) {
-    b[i] = 0.0;
-    b[i + 1] = 0.0;
-  }
   a_vec = (double *) blas_malloc(k * sizeof(double) * 2);
   if (k > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < k * inca; i += inca) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
   }
   b_vec = (float *) blas_malloc(k * sizeof(float) * 2);
   if (k > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < k * incb; i += incb) {
-    b_vec[i] = 0.0;
-    b_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -1762,7 +1673,7 @@ void do_test_zgemm_z_c(int m, int n, int k, int ntests, int *seed,
 
 			/* copy generated C matrix since this will be
 			   over written */
-			zgemm_copy(order, m, n, c_gen, ldc, c, ldc);
+			zge_copy_matrix(order, m, n, c_gen, ldc, c, ldc);
 
 			/* call GEMM routines to be tested */
 			FPU_FIX_STOP;
@@ -1791,13 +1702,12 @@ void do_test_zgemm_z_c(int m, int n, int k, int ntests, int *seed,
 
 			for (i = 0, ci = 0, ri = 0; i < m;
 			     i++, ci += incci, ri += incri) {
-			  zgemm_copy_row(order, transa,
-					 m, k, a, lda, a_vec, i);
+			  zge_copy_row(order, transa, m, k, a, lda, a_vec, i);
 			  for (j = 0, cij = ci, rij = ri; j < n;
 			       j++, cij += inccij, rij += incrij) {
 			    /* copy i-th row of A and j-th col of B */
-			    cgemm_copy_col(order, transb,
-					   k, n, b, ldb, b_vec, j);
+			    cge_copy_col(order, transb,
+					 k, n, b, ldb, b_vec, j);
 
 			    test_BLAS_zdot_z_c(k, blas_no_conj,
 					       alpha, beta, &c_gen[cij],
@@ -1874,26 +1784,20 @@ void do_test_zgemm_z_c(int m, int n, int k, int ntests, int *seed,
 			      printf("Randomized\n");
 
 			    /* print out info */
-			    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				   alpha[1]);;
+			    printf("alpha = ");
+			    printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);;
 			    printf("   ");
-			    printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				   beta[1]);;
+			    printf("beta = ");
+			    printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			    printf("\n");
 
-			    printf("a\n");
-			    zprint_matrix(a, m, k, lda, order);
-			    printf("b\n");
-			    cprint_matrix(b, k, n, ldb, order);
-
-			    printf("c_gen\n");
-			    zprint_matrix(c_gen, m, n, ldc, order);
-
-			    printf("c\n");
-			    zprint_matrix(c, m, n, ldc, order);
-
-			    printf("truth\n");
-			    zprint_matrix(head_r_true, m, n, ldc, order);
+			    zge_print_matrix(a, m, k, lda, order, "A");
+			    cge_print_matrix(b, k, n, ldb, order, "B");
+			    zge_print_matrix(c_gen, m, n, ldc, order,
+					     "C_gen");
+			    zge_print_matrix(c, m, n, ldc, order, "C");
+			    zge_print_matrix(head_r_true, m, n, ldc, order,
+					     "truth");
 
 			    printf("ratio = %g\n", ratio);
 			  }
@@ -2064,45 +1968,22 @@ void do_test_zgemm_c_z(int m, int n, int k, int ntests, int *seed,
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c[i + 1] = 0.0;
-    c_gen[i] = 0.0;
-    c_gen[i + 1] = 0.0;
-  }
   a = (float *) blas_malloc(2 * m * k * sizeof(float) * 2);
   if (2 * m * k > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m * k * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   b = (double *) blas_malloc(2 * k * n * sizeof(double) * 2);
   if (2 * k * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * k * n * incb; i += incb) {
-    b[i] = 0.0;
-    b[i + 1] = 0.0;
-  }
   a_vec = (float *) blas_malloc(k * sizeof(float) * 2);
   if (k > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < k * inca; i += inca) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
   }
   b_vec = (double *) blas_malloc(k * sizeof(double) * 2);
   if (k > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < k * incb; i += incb) {
-    b_vec[i] = 0.0;
-    b_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -2246,7 +2127,7 @@ void do_test_zgemm_c_z(int m, int n, int k, int ntests, int *seed,
 
 			/* copy generated C matrix since this will be
 			   over written */
-			zgemm_copy(order, m, n, c_gen, ldc, c, ldc);
+			zge_copy_matrix(order, m, n, c_gen, ldc, c, ldc);
 
 			/* call GEMM routines to be tested */
 			FPU_FIX_STOP;
@@ -2275,13 +2156,12 @@ void do_test_zgemm_c_z(int m, int n, int k, int ntests, int *seed,
 
 			for (i = 0, ci = 0, ri = 0; i < m;
 			     i++, ci += incci, ri += incri) {
-			  cgemm_copy_row(order, transa,
-					 m, k, a, lda, a_vec, i);
+			  cge_copy_row(order, transa, m, k, a, lda, a_vec, i);
 			  for (j = 0, cij = ci, rij = ri; j < n;
 			       j++, cij += inccij, rij += incrij) {
 			    /* copy i-th row of A and j-th col of B */
-			    zgemm_copy_col(order, transb,
-					   k, n, b, ldb, b_vec, j);
+			    zge_copy_col(order, transb,
+					 k, n, b, ldb, b_vec, j);
 
 			    test_BLAS_zdot_c_z(k, blas_no_conj,
 					       alpha, beta, &c_gen[cij],
@@ -2358,26 +2238,20 @@ void do_test_zgemm_c_z(int m, int n, int k, int ntests, int *seed,
 			      printf("Randomized\n");
 
 			    /* print out info */
-			    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				   alpha[1]);;
+			    printf("alpha = ");
+			    printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);;
 			    printf("   ");
-			    printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				   beta[1]);;
+			    printf("beta = ");
+			    printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			    printf("\n");
 
-			    printf("a\n");
-			    cprint_matrix(a, m, k, lda, order);
-			    printf("b\n");
-			    zprint_matrix(b, k, n, ldb, order);
-
-			    printf("c_gen\n");
-			    zprint_matrix(c_gen, m, n, ldc, order);
-
-			    printf("c\n");
-			    zprint_matrix(c, m, n, ldc, order);
-
-			    printf("truth\n");
-			    zprint_matrix(head_r_true, m, n, ldc, order);
+			    cge_print_matrix(a, m, k, lda, order, "A");
+			    zge_print_matrix(b, k, n, ldb, order, "B");
+			    zge_print_matrix(c_gen, m, n, ldc, order,
+					     "C_gen");
+			    zge_print_matrix(c, m, n, ldc, order, "C");
+			    zge_print_matrix(head_r_true, m, n, ldc, order,
+					     "truth");
 
 			    printf("ratio = %g\n", ratio);
 			  }
@@ -2548,45 +2422,22 @@ void do_test_zgemm_c_c(int m, int n, int k, int ntests, int *seed,
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c[i + 1] = 0.0;
-    c_gen[i] = 0.0;
-    c_gen[i + 1] = 0.0;
-  }
   a = (float *) blas_malloc(2 * m * k * sizeof(float) * 2);
   if (2 * m * k > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m * k * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   b = (float *) blas_malloc(2 * k * n * sizeof(float) * 2);
   if (2 * k * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * k * n * incb; i += incb) {
-    b[i] = 0.0;
-    b[i + 1] = 0.0;
-  }
   a_vec = (float *) blas_malloc(k * sizeof(float) * 2);
   if (k > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < k * inca; i += inca) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
   }
   b_vec = (float *) blas_malloc(k * sizeof(float) * 2);
   if (k > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < k * incb; i += incb) {
-    b_vec[i] = 0.0;
-    b_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -2730,7 +2581,7 @@ void do_test_zgemm_c_c(int m, int n, int k, int ntests, int *seed,
 
 			/* copy generated C matrix since this will be
 			   over written */
-			zgemm_copy(order, m, n, c_gen, ldc, c, ldc);
+			zge_copy_matrix(order, m, n, c_gen, ldc, c, ldc);
 
 			/* call GEMM routines to be tested */
 			FPU_FIX_STOP;
@@ -2759,13 +2610,12 @@ void do_test_zgemm_c_c(int m, int n, int k, int ntests, int *seed,
 
 			for (i = 0, ci = 0, ri = 0; i < m;
 			     i++, ci += incci, ri += incri) {
-			  cgemm_copy_row(order, transa,
-					 m, k, a, lda, a_vec, i);
+			  cge_copy_row(order, transa, m, k, a, lda, a_vec, i);
 			  for (j = 0, cij = ci, rij = ri; j < n;
 			       j++, cij += inccij, rij += incrij) {
 			    /* copy i-th row of A and j-th col of B */
-			    cgemm_copy_col(order, transb,
-					   k, n, b, ldb, b_vec, j);
+			    cge_copy_col(order, transb,
+					 k, n, b, ldb, b_vec, j);
 
 			    test_BLAS_zdot_c_c(k, blas_no_conj,
 					       alpha, beta, &c_gen[cij],
@@ -2842,26 +2692,20 @@ void do_test_zgemm_c_c(int m, int n, int k, int ntests, int *seed,
 			      printf("Randomized\n");
 
 			    /* print out info */
-			    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				   alpha[1]);;
+			    printf("alpha = ");
+			    printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);;
 			    printf("   ");
-			    printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				   beta[1]);;
+			    printf("beta = ");
+			    printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			    printf("\n");
 
-			    printf("a\n");
-			    cprint_matrix(a, m, k, lda, order);
-			    printf("b\n");
-			    cprint_matrix(b, k, n, ldb, order);
-
-			    printf("c_gen\n");
-			    zprint_matrix(c_gen, m, n, ldc, order);
-
-			    printf("c\n");
-			    zprint_matrix(c, m, n, ldc, order);
-
-			    printf("truth\n");
-			    zprint_matrix(head_r_true, m, n, ldc, order);
+			    cge_print_matrix(a, m, k, lda, order, "A");
+			    cge_print_matrix(b, k, n, ldb, order, "B");
+			    zge_print_matrix(c_gen, m, n, ldc, order,
+					     "C_gen");
+			    zge_print_matrix(c, m, n, ldc, order, "C");
+			    zge_print_matrix(head_r_true, m, n, ldc, order,
+					     "truth");
 
 			    printf("ratio = %g\n", ratio);
 			  }
@@ -3032,43 +2876,22 @@ void do_test_cgemm_c_s(int m, int n, int k, int ntests, int *seed,
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c[i + 1] = 0.0;
-    c_gen[i] = 0.0;
-    c_gen[i + 1] = 0.0;
-  }
   a = (float *) blas_malloc(2 * m * k * sizeof(float) * 2);
   if (2 * m * k > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m * k * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   b = (float *) blas_malloc(2 * k * n * sizeof(float));
   if (2 * k * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * k * n * incb; i += incb) {
-    b[i] = 0.0;
-  }
   a_vec = (float *) blas_malloc(k * sizeof(float) * 2);
   if (k > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < k * inca; i += inca) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
   }
   b_vec = (float *) blas_malloc(k * sizeof(float));
   if (k > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < k * incb; i += incb) {
-    b_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -3212,7 +3035,7 @@ void do_test_cgemm_c_s(int m, int n, int k, int ntests, int *seed,
 
 			/* copy generated C matrix since this will be
 			   over written */
-			cgemm_copy(order, m, n, c_gen, ldc, c, ldc);
+			cge_copy_matrix(order, m, n, c_gen, ldc, c, ldc);
 
 			/* call GEMM routines to be tested */
 			FPU_FIX_STOP;
@@ -3241,13 +3064,12 @@ void do_test_cgemm_c_s(int m, int n, int k, int ntests, int *seed,
 
 			for (i = 0, ci = 0, ri = 0; i < m;
 			     i++, ci += incci, ri += incri) {
-			  cgemm_copy_row(order, transa,
-					 m, k, a, lda, a_vec, i);
+			  cge_copy_row(order, transa, m, k, a, lda, a_vec, i);
 			  for (j = 0, cij = ci, rij = ri; j < n;
 			       j++, cij += inccij, rij += incrij) {
 			    /* copy i-th row of A and j-th col of B */
-			    sgemm_copy_col(order, transb,
-					   k, n, b, ldb, b_vec, j);
+			    sge_copy_col(order, transb,
+					 k, n, b, ldb, b_vec, j);
 
 			    test_BLAS_cdot_c_s(k, blas_no_conj,
 					       alpha, beta, &c_gen[cij],
@@ -3324,26 +3146,20 @@ void do_test_cgemm_c_s(int m, int n, int k, int ntests, int *seed,
 			      printf("Randomized\n");
 
 			    /* print out info */
-			    printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-				   alpha[1]);;
+			    printf("alpha = ");
+			    printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);;
 			    printf("   ");
-			    printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
-				   beta[1]);;
+			    printf("beta = ");
+			    printf("(%16.8e, %16.8e)", beta[0], beta[1]);;
 			    printf("\n");
 
-			    printf("a\n");
-			    cprint_matrix(a, m, k, lda, order);
-			    printf("b\n");
-			    sprint_matrix(b, k, n, ldb, order);
-
-			    printf("c_gen\n");
-			    cprint_matrix(c_gen, m, n, ldc, order);
-
-			    printf("c\n");
-			    cprint_matrix(c, m, n, ldc, order);
-
-			    printf("truth\n");
-			    zprint_matrix(head_r_true, m, n, ldc, order);
+			    cge_print_matrix(a, m, k, lda, order, "A");
+			    sge_print_matrix(b, k, n, ldb, order, "B");
+			    cge_print_matrix(c_gen, m, n, ldc, order,
+					     "C_gen");
+			    cge_print_matrix(c, m, n, ldc, order, "C");
+			    zge_print_matrix(head_r_true, m, n, ldc, order,
+					     "truth");
 
 			    printf("ratio = %g\n", ratio);
 			  }
@@ -3514,43 +3330,22 @@ void do_test_cgemm_s_c(int m, int n, int k, int ntests, int *seed,
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c[i + 1] = 0.0;
-    c_gen[i] = 0.0;
-    c_gen[i + 1] = 0.0;
-  }
   a = (float *) blas_malloc(2 * m * k * sizeof(float));
   if (2 * m * k > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m * k * inca; i += inca) {
-    a[i] = 0.0;
   }
   b = (float *) blas_malloc(2 * k * n * sizeof(float) * 2);
   if (2 * k * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * k * n * incb; i += incb) {
-    b[i] = 0.0;
-    b[i + 1] = 0.0;
-  }
   a_vec = (float *) blas_malloc(k * sizeof(float));
   if (k > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < k * inca; i += inca) {
-    a_vec[i] = 0.0;
   }
   b_vec = (float *) blas_malloc(k * sizeof(float) * 2);
   if (k > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < k * incb; i += incb) {
-    b_vec[i] = 0.0;
-    b_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -3694,7 +3489,7 @@ void do_test_cgemm_s_c(int m, int n, int k, int ntests, int *seed,
 
 			/* copy generated C matrix since this will be
 			   over written */
-			cgemm_copy(order, m, n, c_gen, ldc, c, ldc);
+			cge_copy_matrix(order, m, n, c_gen, ldc, c, ldc);
 
 			/* call GEMM routines to be tested */
 			FPU_FIX_STOP;
@@ -3723,13 +3518,12 @@ void do_test_cgemm_s_c(int m, int n, int k, int ntests, int *seed,
 
 			for (i = 0, ci = 0, ri = 0; i < m;
 			     i++, ci += incci, ri += incri) {
-			  sgemm_copy_row(order, transa,
-					 m, k, a, lda, a_vec, i);
+			  sge_copy_row(order, transa, m, k, a, lda, a_vec, i);
 			  for (j = 0, cij = ci, rij = ri; j < n;
 			       j++, cij += inccij, rij += incrij) {
 			    /* copy i-th row of A and j-th col of B */
-			    cgemm_copy_col(order, transb,
-					   k, n, b, ldb, b_vec, j);
+			    cge_copy_col(order, transb,
+					 k, n, b, ldb, b_vec, j);
 
 			    test_BLAS_cdot_s_c(k, blas_no_conj,
 					       alpha, beta, &c_gen[cij],
@@ -3806,26 +3600,20 @@ void do_test_cgemm_s_c(int m, int n, int k, int ntests, int *seed,
 			      printf("Randomized\n");
 
 			    /* print out info */
-			    printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-				   alpha[1]);;
+			    printf("alpha = ");
+			    printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);;
 			    printf("   ");
-			    printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
-				   beta[1]);;
+			    printf("beta = ");
+			    printf("(%16.8e, %16.8e)", beta[0], beta[1]);;
 			    printf("\n");
 
-			    printf("a\n");
-			    sprint_matrix(a, m, k, lda, order);
-			    printf("b\n");
-			    cprint_matrix(b, k, n, ldb, order);
-
-			    printf("c_gen\n");
-			    cprint_matrix(c_gen, m, n, ldc, order);
-
-			    printf("c\n");
-			    cprint_matrix(c, m, n, ldc, order);
-
-			    printf("truth\n");
-			    zprint_matrix(head_r_true, m, n, ldc, order);
+			    sge_print_matrix(a, m, k, lda, order, "A");
+			    cge_print_matrix(b, k, n, ldb, order, "B");
+			    cge_print_matrix(c_gen, m, n, ldc, order,
+					     "C_gen");
+			    cge_print_matrix(c, m, n, ldc, order, "C");
+			    zge_print_matrix(head_r_true, m, n, ldc, order,
+					     "truth");
 
 			    printf("ratio = %g\n", ratio);
 			  }
@@ -3996,41 +3784,22 @@ void do_test_cgemm_s_s(int m, int n, int k, int ntests, int *seed,
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c[i + 1] = 0.0;
-    c_gen[i] = 0.0;
-    c_gen[i + 1] = 0.0;
-  }
   a = (float *) blas_malloc(2 * m * k * sizeof(float));
   if (2 * m * k > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m * k * inca; i += inca) {
-    a[i] = 0.0;
   }
   b = (float *) blas_malloc(2 * k * n * sizeof(float));
   if (2 * k * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * k * n * incb; i += incb) {
-    b[i] = 0.0;
-  }
   a_vec = (float *) blas_malloc(k * sizeof(float));
   if (k > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < k * inca; i += inca) {
-    a_vec[i] = 0.0;
   }
   b_vec = (float *) blas_malloc(k * sizeof(float));
   if (k > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < k * incb; i += incb) {
-    b_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -4174,7 +3943,7 @@ void do_test_cgemm_s_s(int m, int n, int k, int ntests, int *seed,
 
 			/* copy generated C matrix since this will be
 			   over written */
-			cgemm_copy(order, m, n, c_gen, ldc, c, ldc);
+			cge_copy_matrix(order, m, n, c_gen, ldc, c, ldc);
 
 			/* call GEMM routines to be tested */
 			FPU_FIX_STOP;
@@ -4203,13 +3972,12 @@ void do_test_cgemm_s_s(int m, int n, int k, int ntests, int *seed,
 
 			for (i = 0, ci = 0, ri = 0; i < m;
 			     i++, ci += incci, ri += incri) {
-			  sgemm_copy_row(order, transa,
-					 m, k, a, lda, a_vec, i);
+			  sge_copy_row(order, transa, m, k, a, lda, a_vec, i);
 			  for (j = 0, cij = ci, rij = ri; j < n;
 			       j++, cij += inccij, rij += incrij) {
 			    /* copy i-th row of A and j-th col of B */
-			    sgemm_copy_col(order, transb,
-					   k, n, b, ldb, b_vec, j);
+			    sge_copy_col(order, transb,
+					 k, n, b, ldb, b_vec, j);
 
 			    test_BLAS_cdot_s_s(k, blas_no_conj,
 					       alpha, beta, &c_gen[cij],
@@ -4286,26 +4054,20 @@ void do_test_cgemm_s_s(int m, int n, int k, int ntests, int *seed,
 			      printf("Randomized\n");
 
 			    /* print out info */
-			    printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-				   alpha[1]);;
+			    printf("alpha = ");
+			    printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);;
 			    printf("   ");
-			    printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
-				   beta[1]);;
+			    printf("beta = ");
+			    printf("(%16.8e, %16.8e)", beta[0], beta[1]);;
 			    printf("\n");
 
-			    printf("a\n");
-			    sprint_matrix(a, m, k, lda, order);
-			    printf("b\n");
-			    sprint_matrix(b, k, n, ldb, order);
-
-			    printf("c_gen\n");
-			    cprint_matrix(c_gen, m, n, ldc, order);
-
-			    printf("c\n");
-			    cprint_matrix(c, m, n, ldc, order);
-
-			    printf("truth\n");
-			    zprint_matrix(head_r_true, m, n, ldc, order);
+			    sge_print_matrix(a, m, k, lda, order, "A");
+			    sge_print_matrix(b, k, n, ldb, order, "B");
+			    cge_print_matrix(c_gen, m, n, ldc, order,
+					     "C_gen");
+			    cge_print_matrix(c, m, n, ldc, order, "C");
+			    zge_print_matrix(head_r_true, m, n, ldc, order,
+					     "truth");
 
 			    printf("ratio = %g\n", ratio);
 			  }
@@ -4476,43 +4238,22 @@ void do_test_zgemm_z_d(int m, int n, int k, int ntests, int *seed,
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c[i + 1] = 0.0;
-    c_gen[i] = 0.0;
-    c_gen[i + 1] = 0.0;
-  }
   a = (double *) blas_malloc(2 * m * k * sizeof(double) * 2);
   if (2 * m * k > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m * k * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   b = (double *) blas_malloc(2 * k * n * sizeof(double));
   if (2 * k * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * k * n * incb; i += incb) {
-    b[i] = 0.0;
-  }
   a_vec = (double *) blas_malloc(k * sizeof(double) * 2);
   if (k > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < k * inca; i += inca) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
   }
   b_vec = (double *) blas_malloc(k * sizeof(double));
   if (k > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < k * incb; i += incb) {
-    b_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -4656,7 +4397,7 @@ void do_test_zgemm_z_d(int m, int n, int k, int ntests, int *seed,
 
 			/* copy generated C matrix since this will be
 			   over written */
-			zgemm_copy(order, m, n, c_gen, ldc, c, ldc);
+			zge_copy_matrix(order, m, n, c_gen, ldc, c, ldc);
 
 			/* call GEMM routines to be tested */
 			FPU_FIX_STOP;
@@ -4685,13 +4426,12 @@ void do_test_zgemm_z_d(int m, int n, int k, int ntests, int *seed,
 
 			for (i = 0, ci = 0, ri = 0; i < m;
 			     i++, ci += incci, ri += incri) {
-			  zgemm_copy_row(order, transa,
-					 m, k, a, lda, a_vec, i);
+			  zge_copy_row(order, transa, m, k, a, lda, a_vec, i);
 			  for (j = 0, cij = ci, rij = ri; j < n;
 			       j++, cij += inccij, rij += incrij) {
 			    /* copy i-th row of A and j-th col of B */
-			    dgemm_copy_col(order, transb,
-					   k, n, b, ldb, b_vec, j);
+			    dge_copy_col(order, transb,
+					 k, n, b, ldb, b_vec, j);
 
 			    test_BLAS_zdot_z_d(k, blas_no_conj,
 					       alpha, beta, &c_gen[cij],
@@ -4768,26 +4508,20 @@ void do_test_zgemm_z_d(int m, int n, int k, int ntests, int *seed,
 			      printf("Randomized\n");
 
 			    /* print out info */
-			    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				   alpha[1]);;
+			    printf("alpha = ");
+			    printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);;
 			    printf("   ");
-			    printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				   beta[1]);;
+			    printf("beta = ");
+			    printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			    printf("\n");
 
-			    printf("a\n");
-			    zprint_matrix(a, m, k, lda, order);
-			    printf("b\n");
-			    dprint_matrix(b, k, n, ldb, order);
-
-			    printf("c_gen\n");
-			    zprint_matrix(c_gen, m, n, ldc, order);
-
-			    printf("c\n");
-			    zprint_matrix(c, m, n, ldc, order);
-
-			    printf("truth\n");
-			    zprint_matrix(head_r_true, m, n, ldc, order);
+			    zge_print_matrix(a, m, k, lda, order, "A");
+			    dge_print_matrix(b, k, n, ldb, order, "B");
+			    zge_print_matrix(c_gen, m, n, ldc, order,
+					     "C_gen");
+			    zge_print_matrix(c, m, n, ldc, order, "C");
+			    zge_print_matrix(head_r_true, m, n, ldc, order,
+					     "truth");
 
 			    printf("ratio = %g\n", ratio);
 			  }
@@ -4958,43 +4692,22 @@ void do_test_zgemm_d_z(int m, int n, int k, int ntests, int *seed,
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c[i + 1] = 0.0;
-    c_gen[i] = 0.0;
-    c_gen[i + 1] = 0.0;
-  }
   a = (double *) blas_malloc(2 * m * k * sizeof(double));
   if (2 * m * k > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m * k * inca; i += inca) {
-    a[i] = 0.0;
   }
   b = (double *) blas_malloc(2 * k * n * sizeof(double) * 2);
   if (2 * k * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * k * n * incb; i += incb) {
-    b[i] = 0.0;
-    b[i + 1] = 0.0;
-  }
   a_vec = (double *) blas_malloc(k * sizeof(double));
   if (k > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < k * inca; i += inca) {
-    a_vec[i] = 0.0;
   }
   b_vec = (double *) blas_malloc(k * sizeof(double) * 2);
   if (k > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < k * incb; i += incb) {
-    b_vec[i] = 0.0;
-    b_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -5138,7 +4851,7 @@ void do_test_zgemm_d_z(int m, int n, int k, int ntests, int *seed,
 
 			/* copy generated C matrix since this will be
 			   over written */
-			zgemm_copy(order, m, n, c_gen, ldc, c, ldc);
+			zge_copy_matrix(order, m, n, c_gen, ldc, c, ldc);
 
 			/* call GEMM routines to be tested */
 			FPU_FIX_STOP;
@@ -5167,13 +4880,12 @@ void do_test_zgemm_d_z(int m, int n, int k, int ntests, int *seed,
 
 			for (i = 0, ci = 0, ri = 0; i < m;
 			     i++, ci += incci, ri += incri) {
-			  dgemm_copy_row(order, transa,
-					 m, k, a, lda, a_vec, i);
+			  dge_copy_row(order, transa, m, k, a, lda, a_vec, i);
 			  for (j = 0, cij = ci, rij = ri; j < n;
 			       j++, cij += inccij, rij += incrij) {
 			    /* copy i-th row of A and j-th col of B */
-			    zgemm_copy_col(order, transb,
-					   k, n, b, ldb, b_vec, j);
+			    zge_copy_col(order, transb,
+					 k, n, b, ldb, b_vec, j);
 
 			    test_BLAS_zdot_d_z(k, blas_no_conj,
 					       alpha, beta, &c_gen[cij],
@@ -5250,26 +4962,20 @@ void do_test_zgemm_d_z(int m, int n, int k, int ntests, int *seed,
 			      printf("Randomized\n");
 
 			    /* print out info */
-			    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				   alpha[1]);;
+			    printf("alpha = ");
+			    printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);;
 			    printf("   ");
-			    printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				   beta[1]);;
+			    printf("beta = ");
+			    printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			    printf("\n");
 
-			    printf("a\n");
-			    dprint_matrix(a, m, k, lda, order);
-			    printf("b\n");
-			    zprint_matrix(b, k, n, ldb, order);
-
-			    printf("c_gen\n");
-			    zprint_matrix(c_gen, m, n, ldc, order);
-
-			    printf("c\n");
-			    zprint_matrix(c, m, n, ldc, order);
-
-			    printf("truth\n");
-			    zprint_matrix(head_r_true, m, n, ldc, order);
+			    dge_print_matrix(a, m, k, lda, order, "A");
+			    zge_print_matrix(b, k, n, ldb, order, "B");
+			    zge_print_matrix(c_gen, m, n, ldc, order,
+					     "C_gen");
+			    zge_print_matrix(c, m, n, ldc, order, "C");
+			    zge_print_matrix(head_r_true, m, n, ldc, order,
+					     "truth");
 
 			    printf("ratio = %g\n", ratio);
 			  }
@@ -5440,41 +5146,22 @@ void do_test_zgemm_d_d(int m, int n, int k, int ntests, int *seed,
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c[i + 1] = 0.0;
-    c_gen[i] = 0.0;
-    c_gen[i + 1] = 0.0;
-  }
   a = (double *) blas_malloc(2 * m * k * sizeof(double));
   if (2 * m * k > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m * k * inca; i += inca) {
-    a[i] = 0.0;
   }
   b = (double *) blas_malloc(2 * k * n * sizeof(double));
   if (2 * k * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * k * n * incb; i += incb) {
-    b[i] = 0.0;
-  }
   a_vec = (double *) blas_malloc(k * sizeof(double));
   if (k > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < k * inca; i += inca) {
-    a_vec[i] = 0.0;
   }
   b_vec = (double *) blas_malloc(k * sizeof(double));
   if (k > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < k * incb; i += incb) {
-    b_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -5618,7 +5305,7 @@ void do_test_zgemm_d_d(int m, int n, int k, int ntests, int *seed,
 
 			/* copy generated C matrix since this will be
 			   over written */
-			zgemm_copy(order, m, n, c_gen, ldc, c, ldc);
+			zge_copy_matrix(order, m, n, c_gen, ldc, c, ldc);
 
 			/* call GEMM routines to be tested */
 			FPU_FIX_STOP;
@@ -5647,13 +5334,12 @@ void do_test_zgemm_d_d(int m, int n, int k, int ntests, int *seed,
 
 			for (i = 0, ci = 0, ri = 0; i < m;
 			     i++, ci += incci, ri += incri) {
-			  dgemm_copy_row(order, transa,
-					 m, k, a, lda, a_vec, i);
+			  dge_copy_row(order, transa, m, k, a, lda, a_vec, i);
 			  for (j = 0, cij = ci, rij = ri; j < n;
 			       j++, cij += inccij, rij += incrij) {
 			    /* copy i-th row of A and j-th col of B */
-			    dgemm_copy_col(order, transb,
-					   k, n, b, ldb, b_vec, j);
+			    dge_copy_col(order, transb,
+					 k, n, b, ldb, b_vec, j);
 
 			    test_BLAS_zdot_d_d(k, blas_no_conj,
 					       alpha, beta, &c_gen[cij],
@@ -5730,26 +5416,20 @@ void do_test_zgemm_d_d(int m, int n, int k, int ntests, int *seed,
 			      printf("Randomized\n");
 
 			    /* print out info */
-			    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				   alpha[1]);;
+			    printf("alpha = ");
+			    printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);;
 			    printf("   ");
-			    printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				   beta[1]);;
+			    printf("beta = ");
+			    printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			    printf("\n");
 
-			    printf("a\n");
-			    dprint_matrix(a, m, k, lda, order);
-			    printf("b\n");
-			    dprint_matrix(b, k, n, ldb, order);
-
-			    printf("c_gen\n");
-			    zprint_matrix(c_gen, m, n, ldc, order);
-
-			    printf("c\n");
-			    zprint_matrix(c, m, n, ldc, order);
-
-			    printf("truth\n");
-			    zprint_matrix(head_r_true, m, n, ldc, order);
+			    dge_print_matrix(a, m, k, lda, order, "A");
+			    dge_print_matrix(b, k, n, ldb, order, "B");
+			    zge_print_matrix(c_gen, m, n, ldc, order,
+					     "C_gen");
+			    zge_print_matrix(c, m, n, ldc, order, "C");
+			    zge_print_matrix(head_r_true, m, n, ldc, order,
+					     "truth");
 
 			    printf("ratio = %g\n", ratio);
 			  }
@@ -5919,39 +5599,22 @@ void do_test_sgemm_x(int m, int n, int k, int ntests, int *seed,
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c_gen[i] = 0.0;
-  }
   a = (float *) blas_malloc(2 * m * k * sizeof(float));
   if (2 * m * k > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m * k * inca; i += inca) {
-    a[i] = 0.0;
   }
   b = (float *) blas_malloc(2 * k * n * sizeof(float));
   if (2 * k * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * k * n * incb; i += incb) {
-    b[i] = 0.0;
-  }
   a_vec = (float *) blas_malloc(k * sizeof(float));
   if (k > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < k * inca; i += inca) {
-    a_vec[i] = 0.0;
   }
   b_vec = (float *) blas_malloc(k * sizeof(float));
   if (k > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < k * incb; i += incb) {
-    b_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double));
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double));
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -6112,7 +5775,7 @@ void do_test_sgemm_x(int m, int n, int k, int ntests, int *seed,
 
 			  /* copy generated C matrix since this will be
 			     over written */
-			  sgemm_copy(order, m, n, c_gen, ldc, c, ldc);
+			  sge_copy_matrix(order, m, n, c_gen, ldc, c, ldc);
 
 			  /* call GEMM routines to be tested */
 			  FPU_FIX_STOP;
@@ -6141,13 +5804,13 @@ void do_test_sgemm_x(int m, int n, int k, int ntests, int *seed,
 
 			  for (i = 0, ci = 0, ri = 0; i < m;
 			       i++, ci += incci, ri += incri) {
-			    sgemm_copy_row(order, transa,
-					   m, k, a, lda, a_vec, i);
+			    sge_copy_row(order, transa,
+					 m, k, a, lda, a_vec, i);
 			    for (j = 0, cij = ci, rij = ri; j < n;
 				 j++, cij += inccij, rij += incrij) {
 			      /* copy i-th row of A and j-th col of B */
-			      sgemm_copy_col(order, transb,
-					     k, n, b, ldb, b_vec, j);
+			      sge_copy_col(order, transb,
+					   k, n, b, ldb, b_vec, j);
 
 			      test_BLAS_sdot(k, blas_no_conj,
 					     alpha, beta, c_gen[cij],
@@ -6238,24 +5901,20 @@ void do_test_sgemm_x(int m, int n, int k, int ntests, int *seed,
 				printf("Randomized\n");
 
 			      /* print out info */
-			      printf("alpha=%.8e", alpha);;
+			      printf("alpha = ");
+			      printf("%16.8e", alpha);;
 			      printf("   ");
-			      printf("beta=%.8e", beta);;
+			      printf("beta = ");
+			      printf("%16.8e", beta);;
 			      printf("\n");
 
-			      printf("a\n");
-			      sprint_matrix(a, m, k, lda, order);
-			      printf("b\n");
-			      sprint_matrix(b, k, n, ldb, order);
-
-			      printf("c_gen\n");
-			      sprint_matrix(c_gen, m, n, ldc, order);
-
-			      printf("c\n");
-			      sprint_matrix(c, m, n, ldc, order);
-
-			      printf("truth\n");
-			      dprint_matrix(head_r_true, m, n, ldc, order);
+			      sge_print_matrix(a, m, k, lda, order, "A");
+			      sge_print_matrix(b, k, n, ldb, order, "B");
+			      sge_print_matrix(c_gen, m, n, ldc, order,
+					       "C_gen");
+			      sge_print_matrix(c, m, n, ldc, order, "C");
+			      dge_print_matrix(head_r_true, m, n, ldc, order,
+					       "truth");
 
 			      printf("ratio = %g\n", ratio);
 			    }
@@ -6427,39 +6086,22 @@ void do_test_dgemm_x(int m, int n, int k, int ntests, int *seed,
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c_gen[i] = 0.0;
-  }
   a = (double *) blas_malloc(2 * m * k * sizeof(double));
   if (2 * m * k > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m * k * inca; i += inca) {
-    a[i] = 0.0;
   }
   b = (double *) blas_malloc(2 * k * n * sizeof(double));
   if (2 * k * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * k * n * incb; i += incb) {
-    b[i] = 0.0;
-  }
   a_vec = (double *) blas_malloc(k * sizeof(double));
   if (k > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < k * inca; i += inca) {
-    a_vec[i] = 0.0;
   }
   b_vec = (double *) blas_malloc(k * sizeof(double));
   if (k > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < k * incb; i += incb) {
-    b_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double));
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double));
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -6620,7 +6262,7 @@ void do_test_dgemm_x(int m, int n, int k, int ntests, int *seed,
 
 			  /* copy generated C matrix since this will be
 			     over written */
-			  dgemm_copy(order, m, n, c_gen, ldc, c, ldc);
+			  dge_copy_matrix(order, m, n, c_gen, ldc, c, ldc);
 
 			  /* call GEMM routines to be tested */
 			  FPU_FIX_STOP;
@@ -6649,13 +6291,13 @@ void do_test_dgemm_x(int m, int n, int k, int ntests, int *seed,
 
 			  for (i = 0, ci = 0, ri = 0; i < m;
 			       i++, ci += incci, ri += incri) {
-			    dgemm_copy_row(order, transa,
-					   m, k, a, lda, a_vec, i);
+			    dge_copy_row(order, transa,
+					 m, k, a, lda, a_vec, i);
 			    for (j = 0, cij = ci, rij = ri; j < n;
 				 j++, cij += inccij, rij += incrij) {
 			      /* copy i-th row of A and j-th col of B */
-			      dgemm_copy_col(order, transb,
-					     k, n, b, ldb, b_vec, j);
+			      dge_copy_col(order, transb,
+					   k, n, b, ldb, b_vec, j);
 
 			      test_BLAS_ddot(k, blas_no_conj,
 					     alpha, beta, c_gen[cij],
@@ -6746,24 +6388,20 @@ void do_test_dgemm_x(int m, int n, int k, int ntests, int *seed,
 				printf("Randomized\n");
 
 			      /* print out info */
-			      printf("alpha=%.16e", alpha);;
+			      printf("alpha = ");
+			      printf("%24.16e", alpha);;
 			      printf("   ");
-			      printf("beta=%.16e", beta);;
+			      printf("beta = ");
+			      printf("%24.16e", beta);;
 			      printf("\n");
 
-			      printf("a\n");
-			      dprint_matrix(a, m, k, lda, order);
-			      printf("b\n");
-			      dprint_matrix(b, k, n, ldb, order);
-
-			      printf("c_gen\n");
-			      dprint_matrix(c_gen, m, n, ldc, order);
-
-			      printf("c\n");
-			      dprint_matrix(c, m, n, ldc, order);
-
-			      printf("truth\n");
-			      dprint_matrix(head_r_true, m, n, ldc, order);
+			      dge_print_matrix(a, m, k, lda, order, "A");
+			      dge_print_matrix(b, k, n, ldb, order, "B");
+			      dge_print_matrix(c_gen, m, n, ldc, order,
+					       "C_gen");
+			      dge_print_matrix(c, m, n, ldc, order, "C");
+			      dge_print_matrix(head_r_true, m, n, ldc, order,
+					       "truth");
 
 			      printf("ratio = %g\n", ratio);
 			    }
@@ -6936,45 +6574,22 @@ void do_test_cgemm_x(int m, int n, int k, int ntests, int *seed,
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c[i + 1] = 0.0;
-    c_gen[i] = 0.0;
-    c_gen[i + 1] = 0.0;
-  }
   a = (float *) blas_malloc(2 * m * k * sizeof(float) * 2);
   if (2 * m * k > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m * k * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   b = (float *) blas_malloc(2 * k * n * sizeof(float) * 2);
   if (2 * k * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * k * n * incb; i += incb) {
-    b[i] = 0.0;
-    b[i + 1] = 0.0;
-  }
   a_vec = (float *) blas_malloc(k * sizeof(float) * 2);
   if (k > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < k * inca; i += inca) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
   }
   b_vec = (float *) blas_malloc(k * sizeof(float) * 2);
   if (k > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < k * incb; i += incb) {
-    b_vec[i] = 0.0;
-    b_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -7137,7 +6752,7 @@ void do_test_cgemm_x(int m, int n, int k, int ntests, int *seed,
 
 			  /* copy generated C matrix since this will be
 			     over written */
-			  cgemm_copy(order, m, n, c_gen, ldc, c, ldc);
+			  cge_copy_matrix(order, m, n, c_gen, ldc, c, ldc);
 
 			  /* call GEMM routines to be tested */
 			  FPU_FIX_STOP;
@@ -7166,13 +6781,13 @@ void do_test_cgemm_x(int m, int n, int k, int ntests, int *seed,
 
 			  for (i = 0, ci = 0, ri = 0; i < m;
 			       i++, ci += incci, ri += incri) {
-			    cgemm_copy_row(order, transa,
-					   m, k, a, lda, a_vec, i);
+			    cge_copy_row(order, transa,
+					 m, k, a, lda, a_vec, i);
 			    for (j = 0, cij = ci, rij = ri; j < n;
 				 j++, cij += inccij, rij += incrij) {
 			      /* copy i-th row of A and j-th col of B */
-			      cgemm_copy_col(order, transb,
-					     k, n, b, ldb, b_vec, j);
+			      cge_copy_col(order, transb,
+					   k, n, b, ldb, b_vec, j);
 
 			      test_BLAS_cdot(k, blas_no_conj,
 					     alpha, beta, &c_gen[cij],
@@ -7263,26 +6878,20 @@ void do_test_cgemm_x(int m, int n, int k, int ntests, int *seed,
 				printf("Randomized\n");
 
 			      /* print out info */
-			      printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-				     alpha[1]);;
+			      printf("alpha = ");
+			      printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);;
 			      printf("   ");
-			      printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
-				     beta[1]);;
+			      printf("beta = ");
+			      printf("(%16.8e, %16.8e)", beta[0], beta[1]);;
 			      printf("\n");
 
-			      printf("a\n");
-			      cprint_matrix(a, m, k, lda, order);
-			      printf("b\n");
-			      cprint_matrix(b, k, n, ldb, order);
-
-			      printf("c_gen\n");
-			      cprint_matrix(c_gen, m, n, ldc, order);
-
-			      printf("c\n");
-			      cprint_matrix(c, m, n, ldc, order);
-
-			      printf("truth\n");
-			      zprint_matrix(head_r_true, m, n, ldc, order);
+			      cge_print_matrix(a, m, k, lda, order, "A");
+			      cge_print_matrix(b, k, n, ldb, order, "B");
+			      cge_print_matrix(c_gen, m, n, ldc, order,
+					       "C_gen");
+			      cge_print_matrix(c, m, n, ldc, order, "C");
+			      zge_print_matrix(head_r_true, m, n, ldc, order,
+					       "truth");
 
 			      printf("ratio = %g\n", ratio);
 			    }
@@ -7455,45 +7064,22 @@ void do_test_zgemm_x(int m, int n, int k, int ntests, int *seed,
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c[i + 1] = 0.0;
-    c_gen[i] = 0.0;
-    c_gen[i + 1] = 0.0;
-  }
   a = (double *) blas_malloc(2 * m * k * sizeof(double) * 2);
   if (2 * m * k > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m * k * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   b = (double *) blas_malloc(2 * k * n * sizeof(double) * 2);
   if (2 * k * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * k * n * incb; i += incb) {
-    b[i] = 0.0;
-    b[i + 1] = 0.0;
-  }
   a_vec = (double *) blas_malloc(k * sizeof(double) * 2);
   if (k > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < k * inca; i += inca) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
   }
   b_vec = (double *) blas_malloc(k * sizeof(double) * 2);
   if (k > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < k * incb; i += incb) {
-    b_vec[i] = 0.0;
-    b_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -7656,7 +7242,7 @@ void do_test_zgemm_x(int m, int n, int k, int ntests, int *seed,
 
 			  /* copy generated C matrix since this will be
 			     over written */
-			  zgemm_copy(order, m, n, c_gen, ldc, c, ldc);
+			  zge_copy_matrix(order, m, n, c_gen, ldc, c, ldc);
 
 			  /* call GEMM routines to be tested */
 			  FPU_FIX_STOP;
@@ -7685,13 +7271,13 @@ void do_test_zgemm_x(int m, int n, int k, int ntests, int *seed,
 
 			  for (i = 0, ci = 0, ri = 0; i < m;
 			       i++, ci += incci, ri += incri) {
-			    zgemm_copy_row(order, transa,
-					   m, k, a, lda, a_vec, i);
+			    zge_copy_row(order, transa,
+					 m, k, a, lda, a_vec, i);
 			    for (j = 0, cij = ci, rij = ri; j < n;
 				 j++, cij += inccij, rij += incrij) {
 			      /* copy i-th row of A and j-th col of B */
-			      zgemm_copy_col(order, transb,
-					     k, n, b, ldb, b_vec, j);
+			      zge_copy_col(order, transb,
+					   k, n, b, ldb, b_vec, j);
 
 			      test_BLAS_zdot(k, blas_no_conj,
 					     alpha, beta, &c_gen[cij],
@@ -7782,26 +7368,21 @@ void do_test_zgemm_x(int m, int n, int k, int ntests, int *seed,
 				printf("Randomized\n");
 
 			      /* print out info */
-			      printf("alpha[0]=%.16e, alpha[1]=%.16e",
-				     alpha[0], alpha[1]);;
+			      printf("alpha = ");
+			      printf("(%24.16e, %24.16e)", alpha[0],
+				     alpha[1]);;
 			      printf("   ");
-			      printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				     beta[1]);;
+			      printf("beta = ");
+			      printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			      printf("\n");
 
-			      printf("a\n");
-			      zprint_matrix(a, m, k, lda, order);
-			      printf("b\n");
-			      zprint_matrix(b, k, n, ldb, order);
-
-			      printf("c_gen\n");
-			      zprint_matrix(c_gen, m, n, ldc, order);
-
-			      printf("c\n");
-			      zprint_matrix(c, m, n, ldc, order);
-
-			      printf("truth\n");
-			      zprint_matrix(head_r_true, m, n, ldc, order);
+			      zge_print_matrix(a, m, k, lda, order, "A");
+			      zge_print_matrix(b, k, n, ldb, order, "B");
+			      zge_print_matrix(c_gen, m, n, ldc, order,
+					       "C_gen");
+			      zge_print_matrix(c, m, n, ldc, order, "C");
+			      zge_print_matrix(head_r_true, m, n, ldc, order,
+					       "truth");
 
 			      printf("ratio = %g\n", ratio);
 			    }
@@ -7973,39 +7554,22 @@ void do_test_dgemm_d_s_x(int m, int n, int k, int ntests, int *seed,
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c_gen[i] = 0.0;
-  }
   a = (double *) blas_malloc(2 * m * k * sizeof(double));
   if (2 * m * k > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m * k * inca; i += inca) {
-    a[i] = 0.0;
   }
   b = (float *) blas_malloc(2 * k * n * sizeof(float));
   if (2 * k * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * k * n * incb; i += incb) {
-    b[i] = 0.0;
-  }
   a_vec = (double *) blas_malloc(k * sizeof(double));
   if (k > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < k * inca; i += inca) {
-    a_vec[i] = 0.0;
   }
   b_vec = (float *) blas_malloc(k * sizeof(float));
   if (k > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < k * incb; i += incb) {
-    b_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double));
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double));
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -8167,7 +7731,7 @@ void do_test_dgemm_d_s_x(int m, int n, int k, int ntests, int *seed,
 
 			  /* copy generated C matrix since this will be
 			     over written */
-			  dgemm_copy(order, m, n, c_gen, ldc, c, ldc);
+			  dge_copy_matrix(order, m, n, c_gen, ldc, c, ldc);
 
 			  /* call GEMM routines to be tested */
 			  FPU_FIX_STOP;
@@ -8196,13 +7760,13 @@ void do_test_dgemm_d_s_x(int m, int n, int k, int ntests, int *seed,
 
 			  for (i = 0, ci = 0, ri = 0; i < m;
 			       i++, ci += incci, ri += incri) {
-			    dgemm_copy_row(order, transa,
-					   m, k, a, lda, a_vec, i);
+			    dge_copy_row(order, transa,
+					 m, k, a, lda, a_vec, i);
 			    for (j = 0, cij = ci, rij = ri; j < n;
 				 j++, cij += inccij, rij += incrij) {
 			      /* copy i-th row of A and j-th col of B */
-			      sgemm_copy_col(order, transb,
-					     k, n, b, ldb, b_vec, j);
+			      sge_copy_col(order, transb,
+					   k, n, b, ldb, b_vec, j);
 
 			      test_BLAS_ddot_d_s(k, blas_no_conj,
 						 alpha, beta, c_gen[cij],
@@ -8293,24 +7857,20 @@ void do_test_dgemm_d_s_x(int m, int n, int k, int ntests, int *seed,
 				printf("Randomized\n");
 
 			      /* print out info */
-			      printf("alpha=%.16e", alpha);;
+			      printf("alpha = ");
+			      printf("%24.16e", alpha);;
 			      printf("   ");
-			      printf("beta=%.16e", beta);;
+			      printf("beta = ");
+			      printf("%24.16e", beta);;
 			      printf("\n");
 
-			      printf("a\n");
-			      dprint_matrix(a, m, k, lda, order);
-			      printf("b\n");
-			      sprint_matrix(b, k, n, ldb, order);
-
-			      printf("c_gen\n");
-			      dprint_matrix(c_gen, m, n, ldc, order);
-
-			      printf("c\n");
-			      dprint_matrix(c, m, n, ldc, order);
-
-			      printf("truth\n");
-			      dprint_matrix(head_r_true, m, n, ldc, order);
+			      dge_print_matrix(a, m, k, lda, order, "A");
+			      sge_print_matrix(b, k, n, ldb, order, "B");
+			      dge_print_matrix(c_gen, m, n, ldc, order,
+					       "C_gen");
+			      dge_print_matrix(c, m, n, ldc, order, "C");
+			      dge_print_matrix(head_r_true, m, n, ldc, order,
+					       "truth");
 
 			      printf("ratio = %g\n", ratio);
 			    }
@@ -8482,39 +8042,22 @@ void do_test_dgemm_s_d_x(int m, int n, int k, int ntests, int *seed,
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c_gen[i] = 0.0;
-  }
   a = (float *) blas_malloc(2 * m * k * sizeof(float));
   if (2 * m * k > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m * k * inca; i += inca) {
-    a[i] = 0.0;
   }
   b = (double *) blas_malloc(2 * k * n * sizeof(double));
   if (2 * k * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * k * n * incb; i += incb) {
-    b[i] = 0.0;
-  }
   a_vec = (float *) blas_malloc(k * sizeof(float));
   if (k > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < k * inca; i += inca) {
-    a_vec[i] = 0.0;
   }
   b_vec = (double *) blas_malloc(k * sizeof(double));
   if (k > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < k * incb; i += incb) {
-    b_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double));
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double));
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -8676,7 +8219,7 @@ void do_test_dgemm_s_d_x(int m, int n, int k, int ntests, int *seed,
 
 			  /* copy generated C matrix since this will be
 			     over written */
-			  dgemm_copy(order, m, n, c_gen, ldc, c, ldc);
+			  dge_copy_matrix(order, m, n, c_gen, ldc, c, ldc);
 
 			  /* call GEMM routines to be tested */
 			  FPU_FIX_STOP;
@@ -8705,13 +8248,13 @@ void do_test_dgemm_s_d_x(int m, int n, int k, int ntests, int *seed,
 
 			  for (i = 0, ci = 0, ri = 0; i < m;
 			       i++, ci += incci, ri += incri) {
-			    sgemm_copy_row(order, transa,
-					   m, k, a, lda, a_vec, i);
+			    sge_copy_row(order, transa,
+					 m, k, a, lda, a_vec, i);
 			    for (j = 0, cij = ci, rij = ri; j < n;
 				 j++, cij += inccij, rij += incrij) {
 			      /* copy i-th row of A and j-th col of B */
-			      dgemm_copy_col(order, transb,
-					     k, n, b, ldb, b_vec, j);
+			      dge_copy_col(order, transb,
+					   k, n, b, ldb, b_vec, j);
 
 			      test_BLAS_ddot_s_d(k, blas_no_conj,
 						 alpha, beta, c_gen[cij],
@@ -8802,24 +8345,20 @@ void do_test_dgemm_s_d_x(int m, int n, int k, int ntests, int *seed,
 				printf("Randomized\n");
 
 			      /* print out info */
-			      printf("alpha=%.16e", alpha);;
+			      printf("alpha = ");
+			      printf("%24.16e", alpha);;
 			      printf("   ");
-			      printf("beta=%.16e", beta);;
+			      printf("beta = ");
+			      printf("%24.16e", beta);;
 			      printf("\n");
 
-			      printf("a\n");
-			      sprint_matrix(a, m, k, lda, order);
-			      printf("b\n");
-			      dprint_matrix(b, k, n, ldb, order);
-
-			      printf("c_gen\n");
-			      dprint_matrix(c_gen, m, n, ldc, order);
-
-			      printf("c\n");
-			      dprint_matrix(c, m, n, ldc, order);
-
-			      printf("truth\n");
-			      dprint_matrix(head_r_true, m, n, ldc, order);
+			      sge_print_matrix(a, m, k, lda, order, "A");
+			      dge_print_matrix(b, k, n, ldb, order, "B");
+			      dge_print_matrix(c_gen, m, n, ldc, order,
+					       "C_gen");
+			      dge_print_matrix(c, m, n, ldc, order, "C");
+			      dge_print_matrix(head_r_true, m, n, ldc, order,
+					       "truth");
 
 			      printf("ratio = %g\n", ratio);
 			    }
@@ -8991,39 +8530,22 @@ void do_test_dgemm_s_s_x(int m, int n, int k, int ntests, int *seed,
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c_gen[i] = 0.0;
-  }
   a = (float *) blas_malloc(2 * m * k * sizeof(float));
   if (2 * m * k > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m * k * inca; i += inca) {
-    a[i] = 0.0;
   }
   b = (float *) blas_malloc(2 * k * n * sizeof(float));
   if (2 * k * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * k * n * incb; i += incb) {
-    b[i] = 0.0;
-  }
   a_vec = (float *) blas_malloc(k * sizeof(float));
   if (k > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < k * inca; i += inca) {
-    a_vec[i] = 0.0;
   }
   b_vec = (float *) blas_malloc(k * sizeof(float));
   if (k > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < k * incb; i += incb) {
-    b_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double));
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double));
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -9185,7 +8707,7 @@ void do_test_dgemm_s_s_x(int m, int n, int k, int ntests, int *seed,
 
 			  /* copy generated C matrix since this will be
 			     over written */
-			  dgemm_copy(order, m, n, c_gen, ldc, c, ldc);
+			  dge_copy_matrix(order, m, n, c_gen, ldc, c, ldc);
 
 			  /* call GEMM routines to be tested */
 			  FPU_FIX_STOP;
@@ -9214,13 +8736,13 @@ void do_test_dgemm_s_s_x(int m, int n, int k, int ntests, int *seed,
 
 			  for (i = 0, ci = 0, ri = 0; i < m;
 			       i++, ci += incci, ri += incri) {
-			    sgemm_copy_row(order, transa,
-					   m, k, a, lda, a_vec, i);
+			    sge_copy_row(order, transa,
+					 m, k, a, lda, a_vec, i);
 			    for (j = 0, cij = ci, rij = ri; j < n;
 				 j++, cij += inccij, rij += incrij) {
 			      /* copy i-th row of A and j-th col of B */
-			      sgemm_copy_col(order, transb,
-					     k, n, b, ldb, b_vec, j);
+			      sge_copy_col(order, transb,
+					   k, n, b, ldb, b_vec, j);
 
 			      test_BLAS_ddot_s_s(k, blas_no_conj,
 						 alpha, beta, c_gen[cij],
@@ -9311,24 +8833,20 @@ void do_test_dgemm_s_s_x(int m, int n, int k, int ntests, int *seed,
 				printf("Randomized\n");
 
 			      /* print out info */
-			      printf("alpha=%.16e", alpha);;
+			      printf("alpha = ");
+			      printf("%24.16e", alpha);;
 			      printf("   ");
-			      printf("beta=%.16e", beta);;
+			      printf("beta = ");
+			      printf("%24.16e", beta);;
 			      printf("\n");
 
-			      printf("a\n");
-			      sprint_matrix(a, m, k, lda, order);
-			      printf("b\n");
-			      sprint_matrix(b, k, n, ldb, order);
-
-			      printf("c_gen\n");
-			      dprint_matrix(c_gen, m, n, ldc, order);
-
-			      printf("c\n");
-			      dprint_matrix(c, m, n, ldc, order);
-
-			      printf("truth\n");
-			      dprint_matrix(head_r_true, m, n, ldc, order);
+			      sge_print_matrix(a, m, k, lda, order, "A");
+			      sge_print_matrix(b, k, n, ldb, order, "B");
+			      dge_print_matrix(c_gen, m, n, ldc, order,
+					       "C_gen");
+			      dge_print_matrix(c, m, n, ldc, order, "C");
+			      dge_print_matrix(head_r_true, m, n, ldc, order,
+					       "truth");
 
 			      printf("ratio = %g\n", ratio);
 			    }
@@ -9501,45 +9019,22 @@ void do_test_zgemm_z_c_x(int m, int n, int k, int ntests, int *seed,
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c[i + 1] = 0.0;
-    c_gen[i] = 0.0;
-    c_gen[i + 1] = 0.0;
-  }
   a = (double *) blas_malloc(2 * m * k * sizeof(double) * 2);
   if (2 * m * k > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m * k * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   b = (float *) blas_malloc(2 * k * n * sizeof(float) * 2);
   if (2 * k * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * k * n * incb; i += incb) {
-    b[i] = 0.0;
-    b[i + 1] = 0.0;
-  }
   a_vec = (double *) blas_malloc(k * sizeof(double) * 2);
   if (k > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < k * inca; i += inca) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
   }
   b_vec = (float *) blas_malloc(k * sizeof(float) * 2);
   if (k > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < k * incb; i += incb) {
-    b_vec[i] = 0.0;
-    b_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -9703,7 +9198,7 @@ void do_test_zgemm_z_c_x(int m, int n, int k, int ntests, int *seed,
 
 			  /* copy generated C matrix since this will be
 			     over written */
-			  zgemm_copy(order, m, n, c_gen, ldc, c, ldc);
+			  zge_copy_matrix(order, m, n, c_gen, ldc, c, ldc);
 
 			  /* call GEMM routines to be tested */
 			  FPU_FIX_STOP;
@@ -9732,13 +9227,13 @@ void do_test_zgemm_z_c_x(int m, int n, int k, int ntests, int *seed,
 
 			  for (i = 0, ci = 0, ri = 0; i < m;
 			       i++, ci += incci, ri += incri) {
-			    zgemm_copy_row(order, transa,
-					   m, k, a, lda, a_vec, i);
+			    zge_copy_row(order, transa,
+					 m, k, a, lda, a_vec, i);
 			    for (j = 0, cij = ci, rij = ri; j < n;
 				 j++, cij += inccij, rij += incrij) {
 			      /* copy i-th row of A and j-th col of B */
-			      cgemm_copy_col(order, transb,
-					     k, n, b, ldb, b_vec, j);
+			      cge_copy_col(order, transb,
+					   k, n, b, ldb, b_vec, j);
 
 			      test_BLAS_zdot_z_c(k, blas_no_conj,
 						 alpha, beta, &c_gen[cij],
@@ -9829,26 +9324,21 @@ void do_test_zgemm_z_c_x(int m, int n, int k, int ntests, int *seed,
 				printf("Randomized\n");
 
 			      /* print out info */
-			      printf("alpha[0]=%.16e, alpha[1]=%.16e",
-				     alpha[0], alpha[1]);;
+			      printf("alpha = ");
+			      printf("(%24.16e, %24.16e)", alpha[0],
+				     alpha[1]);;
 			      printf("   ");
-			      printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				     beta[1]);;
+			      printf("beta = ");
+			      printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			      printf("\n");
 
-			      printf("a\n");
-			      zprint_matrix(a, m, k, lda, order);
-			      printf("b\n");
-			      cprint_matrix(b, k, n, ldb, order);
-
-			      printf("c_gen\n");
-			      zprint_matrix(c_gen, m, n, ldc, order);
-
-			      printf("c\n");
-			      zprint_matrix(c, m, n, ldc, order);
-
-			      printf("truth\n");
-			      zprint_matrix(head_r_true, m, n, ldc, order);
+			      zge_print_matrix(a, m, k, lda, order, "A");
+			      cge_print_matrix(b, k, n, ldb, order, "B");
+			      zge_print_matrix(c_gen, m, n, ldc, order,
+					       "C_gen");
+			      zge_print_matrix(c, m, n, ldc, order, "C");
+			      zge_print_matrix(head_r_true, m, n, ldc, order,
+					       "truth");
 
 			      printf("ratio = %g\n", ratio);
 			    }
@@ -10021,45 +9511,22 @@ void do_test_zgemm_c_z_x(int m, int n, int k, int ntests, int *seed,
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c[i + 1] = 0.0;
-    c_gen[i] = 0.0;
-    c_gen[i + 1] = 0.0;
-  }
   a = (float *) blas_malloc(2 * m * k * sizeof(float) * 2);
   if (2 * m * k > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m * k * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   b = (double *) blas_malloc(2 * k * n * sizeof(double) * 2);
   if (2 * k * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * k * n * incb; i += incb) {
-    b[i] = 0.0;
-    b[i + 1] = 0.0;
-  }
   a_vec = (float *) blas_malloc(k * sizeof(float) * 2);
   if (k > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < k * inca; i += inca) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
   }
   b_vec = (double *) blas_malloc(k * sizeof(double) * 2);
   if (k > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < k * incb; i += incb) {
-    b_vec[i] = 0.0;
-    b_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -10223,7 +9690,7 @@ void do_test_zgemm_c_z_x(int m, int n, int k, int ntests, int *seed,
 
 			  /* copy generated C matrix since this will be
 			     over written */
-			  zgemm_copy(order, m, n, c_gen, ldc, c, ldc);
+			  zge_copy_matrix(order, m, n, c_gen, ldc, c, ldc);
 
 			  /* call GEMM routines to be tested */
 			  FPU_FIX_STOP;
@@ -10252,13 +9719,13 @@ void do_test_zgemm_c_z_x(int m, int n, int k, int ntests, int *seed,
 
 			  for (i = 0, ci = 0, ri = 0; i < m;
 			       i++, ci += incci, ri += incri) {
-			    cgemm_copy_row(order, transa,
-					   m, k, a, lda, a_vec, i);
+			    cge_copy_row(order, transa,
+					 m, k, a, lda, a_vec, i);
 			    for (j = 0, cij = ci, rij = ri; j < n;
 				 j++, cij += inccij, rij += incrij) {
 			      /* copy i-th row of A and j-th col of B */
-			      zgemm_copy_col(order, transb,
-					     k, n, b, ldb, b_vec, j);
+			      zge_copy_col(order, transb,
+					   k, n, b, ldb, b_vec, j);
 
 			      test_BLAS_zdot_c_z(k, blas_no_conj,
 						 alpha, beta, &c_gen[cij],
@@ -10349,26 +9816,21 @@ void do_test_zgemm_c_z_x(int m, int n, int k, int ntests, int *seed,
 				printf("Randomized\n");
 
 			      /* print out info */
-			      printf("alpha[0]=%.16e, alpha[1]=%.16e",
-				     alpha[0], alpha[1]);;
+			      printf("alpha = ");
+			      printf("(%24.16e, %24.16e)", alpha[0],
+				     alpha[1]);;
 			      printf("   ");
-			      printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				     beta[1]);;
+			      printf("beta = ");
+			      printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			      printf("\n");
 
-			      printf("a\n");
-			      cprint_matrix(a, m, k, lda, order);
-			      printf("b\n");
-			      zprint_matrix(b, k, n, ldb, order);
-
-			      printf("c_gen\n");
-			      zprint_matrix(c_gen, m, n, ldc, order);
-
-			      printf("c\n");
-			      zprint_matrix(c, m, n, ldc, order);
-
-			      printf("truth\n");
-			      zprint_matrix(head_r_true, m, n, ldc, order);
+			      cge_print_matrix(a, m, k, lda, order, "A");
+			      zge_print_matrix(b, k, n, ldb, order, "B");
+			      zge_print_matrix(c_gen, m, n, ldc, order,
+					       "C_gen");
+			      zge_print_matrix(c, m, n, ldc, order, "C");
+			      zge_print_matrix(head_r_true, m, n, ldc, order,
+					       "truth");
 
 			      printf("ratio = %g\n", ratio);
 			    }
@@ -10541,45 +10003,22 @@ void do_test_zgemm_c_c_x(int m, int n, int k, int ntests, int *seed,
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c[i + 1] = 0.0;
-    c_gen[i] = 0.0;
-    c_gen[i + 1] = 0.0;
-  }
   a = (float *) blas_malloc(2 * m * k * sizeof(float) * 2);
   if (2 * m * k > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m * k * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   b = (float *) blas_malloc(2 * k * n * sizeof(float) * 2);
   if (2 * k * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * k * n * incb; i += incb) {
-    b[i] = 0.0;
-    b[i + 1] = 0.0;
-  }
   a_vec = (float *) blas_malloc(k * sizeof(float) * 2);
   if (k > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < k * inca; i += inca) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
   }
   b_vec = (float *) blas_malloc(k * sizeof(float) * 2);
   if (k > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < k * incb; i += incb) {
-    b_vec[i] = 0.0;
-    b_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -10743,7 +10182,7 @@ void do_test_zgemm_c_c_x(int m, int n, int k, int ntests, int *seed,
 
 			  /* copy generated C matrix since this will be
 			     over written */
-			  zgemm_copy(order, m, n, c_gen, ldc, c, ldc);
+			  zge_copy_matrix(order, m, n, c_gen, ldc, c, ldc);
 
 			  /* call GEMM routines to be tested */
 			  FPU_FIX_STOP;
@@ -10772,13 +10211,13 @@ void do_test_zgemm_c_c_x(int m, int n, int k, int ntests, int *seed,
 
 			  for (i = 0, ci = 0, ri = 0; i < m;
 			       i++, ci += incci, ri += incri) {
-			    cgemm_copy_row(order, transa,
-					   m, k, a, lda, a_vec, i);
+			    cge_copy_row(order, transa,
+					 m, k, a, lda, a_vec, i);
 			    for (j = 0, cij = ci, rij = ri; j < n;
 				 j++, cij += inccij, rij += incrij) {
 			      /* copy i-th row of A and j-th col of B */
-			      cgemm_copy_col(order, transb,
-					     k, n, b, ldb, b_vec, j);
+			      cge_copy_col(order, transb,
+					   k, n, b, ldb, b_vec, j);
 
 			      test_BLAS_zdot_c_c(k, blas_no_conj,
 						 alpha, beta, &c_gen[cij],
@@ -10869,26 +10308,21 @@ void do_test_zgemm_c_c_x(int m, int n, int k, int ntests, int *seed,
 				printf("Randomized\n");
 
 			      /* print out info */
-			      printf("alpha[0]=%.16e, alpha[1]=%.16e",
-				     alpha[0], alpha[1]);;
+			      printf("alpha = ");
+			      printf("(%24.16e, %24.16e)", alpha[0],
+				     alpha[1]);;
 			      printf("   ");
-			      printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				     beta[1]);;
+			      printf("beta = ");
+			      printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			      printf("\n");
 
-			      printf("a\n");
-			      cprint_matrix(a, m, k, lda, order);
-			      printf("b\n");
-			      cprint_matrix(b, k, n, ldb, order);
-
-			      printf("c_gen\n");
-			      zprint_matrix(c_gen, m, n, ldc, order);
-
-			      printf("c\n");
-			      zprint_matrix(c, m, n, ldc, order);
-
-			      printf("truth\n");
-			      zprint_matrix(head_r_true, m, n, ldc, order);
+			      cge_print_matrix(a, m, k, lda, order, "A");
+			      cge_print_matrix(b, k, n, ldb, order, "B");
+			      zge_print_matrix(c_gen, m, n, ldc, order,
+					       "C_gen");
+			      zge_print_matrix(c, m, n, ldc, order, "C");
+			      zge_print_matrix(head_r_true, m, n, ldc, order,
+					       "truth");
 
 			      printf("ratio = %g\n", ratio);
 			    }
@@ -11061,43 +10495,22 @@ void do_test_cgemm_c_s_x(int m, int n, int k, int ntests, int *seed,
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c[i + 1] = 0.0;
-    c_gen[i] = 0.0;
-    c_gen[i + 1] = 0.0;
-  }
   a = (float *) blas_malloc(2 * m * k * sizeof(float) * 2);
   if (2 * m * k > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m * k * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   b = (float *) blas_malloc(2 * k * n * sizeof(float));
   if (2 * k * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * k * n * incb; i += incb) {
-    b[i] = 0.0;
-  }
   a_vec = (float *) blas_malloc(k * sizeof(float) * 2);
   if (k > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < k * inca; i += inca) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
   }
   b_vec = (float *) blas_malloc(k * sizeof(float));
   if (k > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < k * incb; i += incb) {
-    b_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -11261,7 +10674,7 @@ void do_test_cgemm_c_s_x(int m, int n, int k, int ntests, int *seed,
 
 			  /* copy generated C matrix since this will be
 			     over written */
-			  cgemm_copy(order, m, n, c_gen, ldc, c, ldc);
+			  cge_copy_matrix(order, m, n, c_gen, ldc, c, ldc);
 
 			  /* call GEMM routines to be tested */
 			  FPU_FIX_STOP;
@@ -11290,13 +10703,13 @@ void do_test_cgemm_c_s_x(int m, int n, int k, int ntests, int *seed,
 
 			  for (i = 0, ci = 0, ri = 0; i < m;
 			       i++, ci += incci, ri += incri) {
-			    cgemm_copy_row(order, transa,
-					   m, k, a, lda, a_vec, i);
+			    cge_copy_row(order, transa,
+					 m, k, a, lda, a_vec, i);
 			    for (j = 0, cij = ci, rij = ri; j < n;
 				 j++, cij += inccij, rij += incrij) {
 			      /* copy i-th row of A and j-th col of B */
-			      sgemm_copy_col(order, transb,
-					     k, n, b, ldb, b_vec, j);
+			      sge_copy_col(order, transb,
+					   k, n, b, ldb, b_vec, j);
 
 			      test_BLAS_cdot_c_s(k, blas_no_conj,
 						 alpha, beta, &c_gen[cij],
@@ -11387,26 +10800,20 @@ void do_test_cgemm_c_s_x(int m, int n, int k, int ntests, int *seed,
 				printf("Randomized\n");
 
 			      /* print out info */
-			      printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-				     alpha[1]);;
+			      printf("alpha = ");
+			      printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);;
 			      printf("   ");
-			      printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
-				     beta[1]);;
+			      printf("beta = ");
+			      printf("(%16.8e, %16.8e)", beta[0], beta[1]);;
 			      printf("\n");
 
-			      printf("a\n");
-			      cprint_matrix(a, m, k, lda, order);
-			      printf("b\n");
-			      sprint_matrix(b, k, n, ldb, order);
-
-			      printf("c_gen\n");
-			      cprint_matrix(c_gen, m, n, ldc, order);
-
-			      printf("c\n");
-			      cprint_matrix(c, m, n, ldc, order);
-
-			      printf("truth\n");
-			      zprint_matrix(head_r_true, m, n, ldc, order);
+			      cge_print_matrix(a, m, k, lda, order, "A");
+			      sge_print_matrix(b, k, n, ldb, order, "B");
+			      cge_print_matrix(c_gen, m, n, ldc, order,
+					       "C_gen");
+			      cge_print_matrix(c, m, n, ldc, order, "C");
+			      zge_print_matrix(head_r_true, m, n, ldc, order,
+					       "truth");
 
 			      printf("ratio = %g\n", ratio);
 			    }
@@ -11579,43 +10986,22 @@ void do_test_cgemm_s_c_x(int m, int n, int k, int ntests, int *seed,
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c[i + 1] = 0.0;
-    c_gen[i] = 0.0;
-    c_gen[i + 1] = 0.0;
-  }
   a = (float *) blas_malloc(2 * m * k * sizeof(float));
   if (2 * m * k > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m * k * inca; i += inca) {
-    a[i] = 0.0;
   }
   b = (float *) blas_malloc(2 * k * n * sizeof(float) * 2);
   if (2 * k * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * k * n * incb; i += incb) {
-    b[i] = 0.0;
-    b[i + 1] = 0.0;
-  }
   a_vec = (float *) blas_malloc(k * sizeof(float));
   if (k > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < k * inca; i += inca) {
-    a_vec[i] = 0.0;
   }
   b_vec = (float *) blas_malloc(k * sizeof(float) * 2);
   if (k > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < k * incb; i += incb) {
-    b_vec[i] = 0.0;
-    b_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -11779,7 +11165,7 @@ void do_test_cgemm_s_c_x(int m, int n, int k, int ntests, int *seed,
 
 			  /* copy generated C matrix since this will be
 			     over written */
-			  cgemm_copy(order, m, n, c_gen, ldc, c, ldc);
+			  cge_copy_matrix(order, m, n, c_gen, ldc, c, ldc);
 
 			  /* call GEMM routines to be tested */
 			  FPU_FIX_STOP;
@@ -11808,13 +11194,13 @@ void do_test_cgemm_s_c_x(int m, int n, int k, int ntests, int *seed,
 
 			  for (i = 0, ci = 0, ri = 0; i < m;
 			       i++, ci += incci, ri += incri) {
-			    sgemm_copy_row(order, transa,
-					   m, k, a, lda, a_vec, i);
+			    sge_copy_row(order, transa,
+					 m, k, a, lda, a_vec, i);
 			    for (j = 0, cij = ci, rij = ri; j < n;
 				 j++, cij += inccij, rij += incrij) {
 			      /* copy i-th row of A and j-th col of B */
-			      cgemm_copy_col(order, transb,
-					     k, n, b, ldb, b_vec, j);
+			      cge_copy_col(order, transb,
+					   k, n, b, ldb, b_vec, j);
 
 			      test_BLAS_cdot_s_c(k, blas_no_conj,
 						 alpha, beta, &c_gen[cij],
@@ -11905,26 +11291,20 @@ void do_test_cgemm_s_c_x(int m, int n, int k, int ntests, int *seed,
 				printf("Randomized\n");
 
 			      /* print out info */
-			      printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-				     alpha[1]);;
+			      printf("alpha = ");
+			      printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);;
 			      printf("   ");
-			      printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
-				     beta[1]);;
+			      printf("beta = ");
+			      printf("(%16.8e, %16.8e)", beta[0], beta[1]);;
 			      printf("\n");
 
-			      printf("a\n");
-			      sprint_matrix(a, m, k, lda, order);
-			      printf("b\n");
-			      cprint_matrix(b, k, n, ldb, order);
-
-			      printf("c_gen\n");
-			      cprint_matrix(c_gen, m, n, ldc, order);
-
-			      printf("c\n");
-			      cprint_matrix(c, m, n, ldc, order);
-
-			      printf("truth\n");
-			      zprint_matrix(head_r_true, m, n, ldc, order);
+			      sge_print_matrix(a, m, k, lda, order, "A");
+			      cge_print_matrix(b, k, n, ldb, order, "B");
+			      cge_print_matrix(c_gen, m, n, ldc, order,
+					       "C_gen");
+			      cge_print_matrix(c, m, n, ldc, order, "C");
+			      zge_print_matrix(head_r_true, m, n, ldc, order,
+					       "truth");
 
 			      printf("ratio = %g\n", ratio);
 			    }
@@ -12097,41 +11477,22 @@ void do_test_cgemm_s_s_x(int m, int n, int k, int ntests, int *seed,
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c[i + 1] = 0.0;
-    c_gen[i] = 0.0;
-    c_gen[i + 1] = 0.0;
-  }
   a = (float *) blas_malloc(2 * m * k * sizeof(float));
   if (2 * m * k > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m * k * inca; i += inca) {
-    a[i] = 0.0;
   }
   b = (float *) blas_malloc(2 * k * n * sizeof(float));
   if (2 * k * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * k * n * incb; i += incb) {
-    b[i] = 0.0;
-  }
   a_vec = (float *) blas_malloc(k * sizeof(float));
   if (k > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < k * inca; i += inca) {
-    a_vec[i] = 0.0;
   }
   b_vec = (float *) blas_malloc(k * sizeof(float));
   if (k > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < k * incb; i += incb) {
-    b_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -12295,7 +11656,7 @@ void do_test_cgemm_s_s_x(int m, int n, int k, int ntests, int *seed,
 
 			  /* copy generated C matrix since this will be
 			     over written */
-			  cgemm_copy(order, m, n, c_gen, ldc, c, ldc);
+			  cge_copy_matrix(order, m, n, c_gen, ldc, c, ldc);
 
 			  /* call GEMM routines to be tested */
 			  FPU_FIX_STOP;
@@ -12324,13 +11685,13 @@ void do_test_cgemm_s_s_x(int m, int n, int k, int ntests, int *seed,
 
 			  for (i = 0, ci = 0, ri = 0; i < m;
 			       i++, ci += incci, ri += incri) {
-			    sgemm_copy_row(order, transa,
-					   m, k, a, lda, a_vec, i);
+			    sge_copy_row(order, transa,
+					 m, k, a, lda, a_vec, i);
 			    for (j = 0, cij = ci, rij = ri; j < n;
 				 j++, cij += inccij, rij += incrij) {
 			      /* copy i-th row of A and j-th col of B */
-			      sgemm_copy_col(order, transb,
-					     k, n, b, ldb, b_vec, j);
+			      sge_copy_col(order, transb,
+					   k, n, b, ldb, b_vec, j);
 
 			      test_BLAS_cdot_s_s(k, blas_no_conj,
 						 alpha, beta, &c_gen[cij],
@@ -12421,26 +11782,20 @@ void do_test_cgemm_s_s_x(int m, int n, int k, int ntests, int *seed,
 				printf("Randomized\n");
 
 			      /* print out info */
-			      printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-				     alpha[1]);;
+			      printf("alpha = ");
+			      printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);;
 			      printf("   ");
-			      printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
-				     beta[1]);;
+			      printf("beta = ");
+			      printf("(%16.8e, %16.8e)", beta[0], beta[1]);;
 			      printf("\n");
 
-			      printf("a\n");
-			      sprint_matrix(a, m, k, lda, order);
-			      printf("b\n");
-			      sprint_matrix(b, k, n, ldb, order);
-
-			      printf("c_gen\n");
-			      cprint_matrix(c_gen, m, n, ldc, order);
-
-			      printf("c\n");
-			      cprint_matrix(c, m, n, ldc, order);
-
-			      printf("truth\n");
-			      zprint_matrix(head_r_true, m, n, ldc, order);
+			      sge_print_matrix(a, m, k, lda, order, "A");
+			      sge_print_matrix(b, k, n, ldb, order, "B");
+			      cge_print_matrix(c_gen, m, n, ldc, order,
+					       "C_gen");
+			      cge_print_matrix(c, m, n, ldc, order, "C");
+			      zge_print_matrix(head_r_true, m, n, ldc, order,
+					       "truth");
 
 			      printf("ratio = %g\n", ratio);
 			    }
@@ -12613,43 +11968,22 @@ void do_test_zgemm_z_d_x(int m, int n, int k, int ntests, int *seed,
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c[i + 1] = 0.0;
-    c_gen[i] = 0.0;
-    c_gen[i + 1] = 0.0;
-  }
   a = (double *) blas_malloc(2 * m * k * sizeof(double) * 2);
   if (2 * m * k > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m * k * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   b = (double *) blas_malloc(2 * k * n * sizeof(double));
   if (2 * k * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * k * n * incb; i += incb) {
-    b[i] = 0.0;
-  }
   a_vec = (double *) blas_malloc(k * sizeof(double) * 2);
   if (k > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < k * inca; i += inca) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
   }
   b_vec = (double *) blas_malloc(k * sizeof(double));
   if (k > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < k * incb; i += incb) {
-    b_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -12813,7 +12147,7 @@ void do_test_zgemm_z_d_x(int m, int n, int k, int ntests, int *seed,
 
 			  /* copy generated C matrix since this will be
 			     over written */
-			  zgemm_copy(order, m, n, c_gen, ldc, c, ldc);
+			  zge_copy_matrix(order, m, n, c_gen, ldc, c, ldc);
 
 			  /* call GEMM routines to be tested */
 			  FPU_FIX_STOP;
@@ -12842,13 +12176,13 @@ void do_test_zgemm_z_d_x(int m, int n, int k, int ntests, int *seed,
 
 			  for (i = 0, ci = 0, ri = 0; i < m;
 			       i++, ci += incci, ri += incri) {
-			    zgemm_copy_row(order, transa,
-					   m, k, a, lda, a_vec, i);
+			    zge_copy_row(order, transa,
+					 m, k, a, lda, a_vec, i);
 			    for (j = 0, cij = ci, rij = ri; j < n;
 				 j++, cij += inccij, rij += incrij) {
 			      /* copy i-th row of A and j-th col of B */
-			      dgemm_copy_col(order, transb,
-					     k, n, b, ldb, b_vec, j);
+			      dge_copy_col(order, transb,
+					   k, n, b, ldb, b_vec, j);
 
 			      test_BLAS_zdot_z_d(k, blas_no_conj,
 						 alpha, beta, &c_gen[cij],
@@ -12939,26 +12273,21 @@ void do_test_zgemm_z_d_x(int m, int n, int k, int ntests, int *seed,
 				printf("Randomized\n");
 
 			      /* print out info */
-			      printf("alpha[0]=%.16e, alpha[1]=%.16e",
-				     alpha[0], alpha[1]);;
+			      printf("alpha = ");
+			      printf("(%24.16e, %24.16e)", alpha[0],
+				     alpha[1]);;
 			      printf("   ");
-			      printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				     beta[1]);;
+			      printf("beta = ");
+			      printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			      printf("\n");
 
-			      printf("a\n");
-			      zprint_matrix(a, m, k, lda, order);
-			      printf("b\n");
-			      dprint_matrix(b, k, n, ldb, order);
-
-			      printf("c_gen\n");
-			      zprint_matrix(c_gen, m, n, ldc, order);
-
-			      printf("c\n");
-			      zprint_matrix(c, m, n, ldc, order);
-
-			      printf("truth\n");
-			      zprint_matrix(head_r_true, m, n, ldc, order);
+			      zge_print_matrix(a, m, k, lda, order, "A");
+			      dge_print_matrix(b, k, n, ldb, order, "B");
+			      zge_print_matrix(c_gen, m, n, ldc, order,
+					       "C_gen");
+			      zge_print_matrix(c, m, n, ldc, order, "C");
+			      zge_print_matrix(head_r_true, m, n, ldc, order,
+					       "truth");
 
 			      printf("ratio = %g\n", ratio);
 			    }
@@ -13131,43 +12460,22 @@ void do_test_zgemm_d_z_x(int m, int n, int k, int ntests, int *seed,
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c[i + 1] = 0.0;
-    c_gen[i] = 0.0;
-    c_gen[i + 1] = 0.0;
-  }
   a = (double *) blas_malloc(2 * m * k * sizeof(double));
   if (2 * m * k > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m * k * inca; i += inca) {
-    a[i] = 0.0;
   }
   b = (double *) blas_malloc(2 * k * n * sizeof(double) * 2);
   if (2 * k * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * k * n * incb; i += incb) {
-    b[i] = 0.0;
-    b[i + 1] = 0.0;
-  }
   a_vec = (double *) blas_malloc(k * sizeof(double));
   if (k > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < k * inca; i += inca) {
-    a_vec[i] = 0.0;
   }
   b_vec = (double *) blas_malloc(k * sizeof(double) * 2);
   if (k > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < k * incb; i += incb) {
-    b_vec[i] = 0.0;
-    b_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -13331,7 +12639,7 @@ void do_test_zgemm_d_z_x(int m, int n, int k, int ntests, int *seed,
 
 			  /* copy generated C matrix since this will be
 			     over written */
-			  zgemm_copy(order, m, n, c_gen, ldc, c, ldc);
+			  zge_copy_matrix(order, m, n, c_gen, ldc, c, ldc);
 
 			  /* call GEMM routines to be tested */
 			  FPU_FIX_STOP;
@@ -13360,13 +12668,13 @@ void do_test_zgemm_d_z_x(int m, int n, int k, int ntests, int *seed,
 
 			  for (i = 0, ci = 0, ri = 0; i < m;
 			       i++, ci += incci, ri += incri) {
-			    dgemm_copy_row(order, transa,
-					   m, k, a, lda, a_vec, i);
+			    dge_copy_row(order, transa,
+					 m, k, a, lda, a_vec, i);
 			    for (j = 0, cij = ci, rij = ri; j < n;
 				 j++, cij += inccij, rij += incrij) {
 			      /* copy i-th row of A and j-th col of B */
-			      zgemm_copy_col(order, transb,
-					     k, n, b, ldb, b_vec, j);
+			      zge_copy_col(order, transb,
+					   k, n, b, ldb, b_vec, j);
 
 			      test_BLAS_zdot_d_z(k, blas_no_conj,
 						 alpha, beta, &c_gen[cij],
@@ -13457,26 +12765,21 @@ void do_test_zgemm_d_z_x(int m, int n, int k, int ntests, int *seed,
 				printf("Randomized\n");
 
 			      /* print out info */
-			      printf("alpha[0]=%.16e, alpha[1]=%.16e",
-				     alpha[0], alpha[1]);;
+			      printf("alpha = ");
+			      printf("(%24.16e, %24.16e)", alpha[0],
+				     alpha[1]);;
 			      printf("   ");
-			      printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				     beta[1]);;
+			      printf("beta = ");
+			      printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			      printf("\n");
 
-			      printf("a\n");
-			      dprint_matrix(a, m, k, lda, order);
-			      printf("b\n");
-			      zprint_matrix(b, k, n, ldb, order);
-
-			      printf("c_gen\n");
-			      zprint_matrix(c_gen, m, n, ldc, order);
-
-			      printf("c\n");
-			      zprint_matrix(c, m, n, ldc, order);
-
-			      printf("truth\n");
-			      zprint_matrix(head_r_true, m, n, ldc, order);
+			      dge_print_matrix(a, m, k, lda, order, "A");
+			      zge_print_matrix(b, k, n, ldb, order, "B");
+			      zge_print_matrix(c_gen, m, n, ldc, order,
+					       "C_gen");
+			      zge_print_matrix(c, m, n, ldc, order, "C");
+			      zge_print_matrix(head_r_true, m, n, ldc, order,
+					       "truth");
 
 			      printf("ratio = %g\n", ratio);
 			    }
@@ -13649,41 +12952,22 @@ void do_test_zgemm_d_d_x(int m, int n, int k, int ntests, int *seed,
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c[i + 1] = 0.0;
-    c_gen[i] = 0.0;
-    c_gen[i + 1] = 0.0;
-  }
   a = (double *) blas_malloc(2 * m * k * sizeof(double));
   if (2 * m * k > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m * k * inca; i += inca) {
-    a[i] = 0.0;
   }
   b = (double *) blas_malloc(2 * k * n * sizeof(double));
   if (2 * k * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * k * n * incb; i += incb) {
-    b[i] = 0.0;
-  }
   a_vec = (double *) blas_malloc(k * sizeof(double));
   if (k > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < k * inca; i += inca) {
-    a_vec[i] = 0.0;
   }
   b_vec = (double *) blas_malloc(k * sizeof(double));
   if (k > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < k * incb; i += incb) {
-    b_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -13847,7 +13131,7 @@ void do_test_zgemm_d_d_x(int m, int n, int k, int ntests, int *seed,
 
 			  /* copy generated C matrix since this will be
 			     over written */
-			  zgemm_copy(order, m, n, c_gen, ldc, c, ldc);
+			  zge_copy_matrix(order, m, n, c_gen, ldc, c, ldc);
 
 			  /* call GEMM routines to be tested */
 			  FPU_FIX_STOP;
@@ -13876,13 +13160,13 @@ void do_test_zgemm_d_d_x(int m, int n, int k, int ntests, int *seed,
 
 			  for (i = 0, ci = 0, ri = 0; i < m;
 			       i++, ci += incci, ri += incri) {
-			    dgemm_copy_row(order, transa,
-					   m, k, a, lda, a_vec, i);
+			    dge_copy_row(order, transa,
+					 m, k, a, lda, a_vec, i);
 			    for (j = 0, cij = ci, rij = ri; j < n;
 				 j++, cij += inccij, rij += incrij) {
 			      /* copy i-th row of A and j-th col of B */
-			      dgemm_copy_col(order, transb,
-					     k, n, b, ldb, b_vec, j);
+			      dge_copy_col(order, transb,
+					   k, n, b, ldb, b_vec, j);
 
 			      test_BLAS_zdot_d_d(k, blas_no_conj,
 						 alpha, beta, &c_gen[cij],
@@ -13973,26 +13257,21 @@ void do_test_zgemm_d_d_x(int m, int n, int k, int ntests, int *seed,
 				printf("Randomized\n");
 
 			      /* print out info */
-			      printf("alpha[0]=%.16e, alpha[1]=%.16e",
-				     alpha[0], alpha[1]);;
+			      printf("alpha = ");
+			      printf("(%24.16e, %24.16e)", alpha[0],
+				     alpha[1]);;
 			      printf("   ");
-			      printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				     beta[1]);;
+			      printf("beta = ");
+			      printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			      printf("\n");
 
-			      printf("a\n");
-			      dprint_matrix(a, m, k, lda, order);
-			      printf("b\n");
-			      dprint_matrix(b, k, n, ldb, order);
-
-			      printf("c_gen\n");
-			      zprint_matrix(c_gen, m, n, ldc, order);
-
-			      printf("c\n");
-			      zprint_matrix(c, m, n, ldc, order);
-
-			      printf("truth\n");
-			      zprint_matrix(head_r_true, m, n, ldc, order);
+			      dge_print_matrix(a, m, k, lda, order, "A");
+			      dge_print_matrix(b, k, n, ldb, order, "B");
+			      zge_print_matrix(c_gen, m, n, ldc, order,
+					       "C_gen");
+			      zge_print_matrix(c, m, n, ldc, order, "C");
+			      zge_print_matrix(head_r_true, m, n, ldc, order,
+					       "truth");
 
 			      printf("ratio = %g\n", ratio);
 			    }

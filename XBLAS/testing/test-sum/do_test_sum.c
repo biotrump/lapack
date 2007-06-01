@@ -112,15 +112,9 @@ void do_test_ssum_x(int n, int ntests, int *seed, double thresh,
   if (n * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2 * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-  }
   x_gen = (float *) blas_malloc(n * sizeof(float));
   if (n > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
   }
 
   /* initialization */
@@ -228,15 +222,16 @@ void do_test_ssum_x(int n, int ntests, int *seed, double thresh,
 	      xi = (incx < 0) ? -(n - 1) * incx : 0;
 	      printf(" [ ");
 	      for (j = 0; j < n; j++, xi += incx) {
-		printf("x[%d]=%.8e", xi, x[xi]);
+		printf("%16.8e", x[xi]);
 	      }
 	      printf("]\n");
 
-	      printf("sum=%.8e", sum);
+	      printf("sum = ");
+	      printf("%16.8e", sum);
 	      printf("\n");
 	      printf("ratio = %.4e\n", ratio);
-	      printf("head_sum_true=%.16e, tail_sum_true=%.16e",
-		     head_sum_true, tail_sum_true);
+	      printf("sum_true = ");
+	      printf("[%24.16e %24.16e]", head_sum_true, tail_sum_true);
 
 	    }			/* end of if (debug == 3) */
 	  }
@@ -363,15 +358,9 @@ void do_test_dsum_x(int n, int ntests, int *seed, double thresh,
   if (n * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2 * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-  }
   x_gen = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
   }
 
   /* initialization */
@@ -479,15 +468,16 @@ void do_test_dsum_x(int n, int ntests, int *seed, double thresh,
 	      xi = (incx < 0) ? -(n - 1) * incx : 0;
 	      printf(" [ ");
 	      for (j = 0; j < n; j++, xi += incx) {
-		printf("x[%d]=%.16e", xi, x[xi]);
+		printf("%24.16e", x[xi]);
 	      }
 	      printf("]\n");
 
-	      printf("sum=%.16e", sum);
+	      printf("sum = ");
+	      printf("%24.16e", sum);
 	      printf("\n");
 	      printf("ratio = %.4e\n", ratio);
-	      printf("head_sum_true=%.16e, tail_sum_true=%.16e",
-		     head_sum_true, tail_sum_true);
+	      printf("sum_true = ");
+	      printf("[%24.16e %24.16e]", head_sum_true, tail_sum_true);
 
 	    }			/* end of if (debug == 3) */
 	  }
@@ -614,17 +604,9 @@ void do_test_csum_x(int n, int ntests, int *seed, double thresh,
   if (n * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2 * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
   x_gen = (float *) blas_malloc(n * sizeof(float) * 2);
   if (n > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
   }
 
   /* initialization */
@@ -734,17 +716,18 @@ void do_test_csum_x(int n, int ntests, int *seed, double thresh,
 	      xi = (incx < 0) ? -(n - 1) * incx : 0;
 	      printf(" [ ");
 	      for (j = 0; j < n; j++, xi += incx) {
-		printf("x[%d]=%.8e, x[%d+1]=%.8e", xi, x[xi], xi, x[xi + 1]);
+		printf("(%16.8e, %16.8e)", x[xi], x[xi + 1]);
 	      }
 	      printf("]\n");
 
-	      printf("sum[0]=%.8e, sum[1]=%.8e", sum[0], sum[1]);
+	      printf("sum = ");
+	      printf("(%16.8e, %16.8e)", sum[0], sum[1]);
 	      printf("\n");
 	      printf("ratio = %.4e\n", ratio);
-	      printf
-		("head_sum_true[0]=%.16e, head_sum_true[1]=%.16e,\nTAIL(sum_true)[0]=%.16e, tail_sum_true[1]=%.16e",
-		 head_sum_true[0], head_sum_true[1], tail_sum_true[0],
-		 tail_sum_true[1]);
+	      printf("sum_true = ");
+	      printf("([%24.16e  %24.16e], [%24.16e %24.16e])",
+		     head_sum_true[0], tail_sum_true[0], head_sum_true[1],
+		     tail_sum_true[1]);
 
 	    }			/* end of if (debug == 3) */
 	  }
@@ -871,17 +854,9 @@ void do_test_zsum_x(int n, int ntests, int *seed, double thresh,
   if (n * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2 * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
   x_gen = (double *) blas_malloc(n * sizeof(double) * 2);
   if (n > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
   }
 
   /* initialization */
@@ -991,18 +966,18 @@ void do_test_zsum_x(int n, int ntests, int *seed, double thresh,
 	      xi = (incx < 0) ? -(n - 1) * incx : 0;
 	      printf(" [ ");
 	      for (j = 0; j < n; j++, xi += incx) {
-		printf("x[%d]=%.16e, x[%d+1]=%.16e", xi, x[xi], xi,
-		       x[xi + 1]);
+		printf("(%24.16e, %24.16e)", x[xi], x[xi + 1]);
 	      }
 	      printf("]\n");
 
-	      printf("sum[0]=%.16e, sum[1]=%.16e", sum[0], sum[1]);
+	      printf("sum = ");
+	      printf("(%24.16e, %24.16e)", sum[0], sum[1]);
 	      printf("\n");
 	      printf("ratio = %.4e\n", ratio);
-	      printf
-		("head_sum_true[0]=%.16e, head_sum_true[1]=%.16e,\nTAIL(sum_true)[0]=%.16e, tail_sum_true[1]=%.16e",
-		 head_sum_true[0], head_sum_true[1], tail_sum_true[0],
-		 tail_sum_true[1]);
+	      printf("sum_true = ");
+	      printf("([%24.16e  %24.16e], [%24.16e %24.16e])",
+		     head_sum_true[0], tail_sum_true[0], head_sum_true[1],
+		     tail_sum_true[1]);
 
 	    }			/* end of if (debug == 3) */
 	  }

@@ -163,39 +163,22 @@ void do_test_dsymm_d_s
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c_gen[i] = 0.0;
-  }
   a = (double *) blas_malloc(2 * max_mn * max_mn * sizeof(double));
   if (2 * max_mn * max_mn > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * max_mn * max_mn * inca; i += inca) {
-    a[i] = 0.0;
   }
   b = (float *) blas_malloc(2 * m * n * sizeof(float));
   if (2 * m * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incb; i += incb) {
-    b[i] = 0.0;
-  }
   a_vec = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * inca; i += inca) {
-    a_vec[i] = 0.0;
   }
   b_vec = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incb; i += incb) {
-    b_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double));
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double));
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -322,7 +305,7 @@ void do_test_dsymm_d_s
 
 			/* copy generated C matrix since this will be
 			   over written */
-			dgemm_copy(order_type, m, n, c_gen, ldc, c, ldc);
+			dge_copy_matrix(order_type, m, n, c_gen, ldc, c, ldc);
 
 			/* call symm routines to be tested */
 			FPU_FIX_STOP;
@@ -353,17 +336,17 @@ void do_test_dsymm_d_s
 
 			for (i = 0, ci = 0, ri = 0;
 			     i < m_i; i++, ci += incci, ri += incri) {
-			  dsymm_copy_row(order_type, uplo_type, side_type,
-					 m_i, a, lda, a_vec, i);
-			  for (j = 0, cij = ci, rij = ri;
-			       j < n_i; j++, cij += inccij, rij += incrij) {
+			  dsy_copy_row(order_type, uplo_type, m_i, a, lda,
+				       a_vec, i);
+			  for (j = 0, cij = ci, rij = ri; j < n_i;
+			       j++, cij += inccij, rij += incrij) {
 			    /* copy i-th row of A and j-th col of B */
 			    if (side_type == blas_left_side)
-			      sgemm_copy_col(order_type, blas_no_trans,
-					     m, n, b, ldb, b_vec, j);
+			      sge_copy_col(order_type, blas_no_trans,
+					   m, n, b, ldb, b_vec, j);
 			    else
-			      sgemm_copy_row(order_type, blas_no_trans,
-					     m, n, b, ldb, b_vec, j);
+			      sge_copy_row(order_type, blas_no_trans,
+					   m, n, b, ldb, b_vec, j);
 			    rin = c_gen[cij];
 			    rout = c[cij];
 			    head_r_true_elem = head_r_true[cij];
@@ -419,22 +402,20 @@ void do_test_dsymm_d_s
 				   norm, alpha_val, beta_val);
 
 			    /* print out info */
-			    printf("alpha=%.16e", alpha);;
+			    printf("alpha = ");
+			    printf("%24.16e", alpha);;
 			    printf("   ");
-			    printf("beta=%.16e", beta);;
+			    printf("beta = ");
+			    printf("%24.16e", beta);;
 			    printf("\n");
 
 			    printf("a\n");
-			    dprint_symm_matrix(a, m_i,
-					       lda, order_type, uplo_type);
-			    printf("b\n");
-			    sprint_matrix(b, m, n, ldb, order_type);
-
-			    printf("c_gen\n");
-			    dprint_matrix(c_gen, m, n, ldc, order_type);
-
-			    printf("c\n");
-			    dprint_matrix(c, m, n, ldc, order_type);
+			    dsy_print_matrix(a, m_i, lda, order_type,
+					     uplo_type);
+			    sge_print_matrix(b, m, n, ldb, order_type, "B");
+			    dge_print_matrix(c_gen, m, n, ldc, order_type,
+					     "C_gen");
+			    dge_print_matrix(c, m, n, ldc, order_type, "C");
 
 			    printf("ratio = %g\n", ratio);
 			  }
@@ -605,39 +586,22 @@ void do_test_dsymm_s_d
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c_gen[i] = 0.0;
-  }
   a = (float *) blas_malloc(2 * max_mn * max_mn * sizeof(float));
   if (2 * max_mn * max_mn > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * max_mn * max_mn * inca; i += inca) {
-    a[i] = 0.0;
   }
   b = (double *) blas_malloc(2 * m * n * sizeof(double));
   if (2 * m * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incb; i += incb) {
-    b[i] = 0.0;
-  }
   a_vec = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * inca; i += inca) {
-    a_vec[i] = 0.0;
   }
   b_vec = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incb; i += incb) {
-    b_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double));
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double));
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -764,7 +728,7 @@ void do_test_dsymm_s_d
 
 			/* copy generated C matrix since this will be
 			   over written */
-			dgemm_copy(order_type, m, n, c_gen, ldc, c, ldc);
+			dge_copy_matrix(order_type, m, n, c_gen, ldc, c, ldc);
 
 			/* call symm routines to be tested */
 			FPU_FIX_STOP;
@@ -795,17 +759,17 @@ void do_test_dsymm_s_d
 
 			for (i = 0, ci = 0, ri = 0;
 			     i < m_i; i++, ci += incci, ri += incri) {
-			  ssymm_copy_row(order_type, uplo_type, side_type,
-					 m_i, a, lda, a_vec, i);
-			  for (j = 0, cij = ci, rij = ri;
-			       j < n_i; j++, cij += inccij, rij += incrij) {
+			  ssy_copy_row(order_type, uplo_type, m_i, a, lda,
+				       a_vec, i);
+			  for (j = 0, cij = ci, rij = ri; j < n_i;
+			       j++, cij += inccij, rij += incrij) {
 			    /* copy i-th row of A and j-th col of B */
 			    if (side_type == blas_left_side)
-			      dgemm_copy_col(order_type, blas_no_trans,
-					     m, n, b, ldb, b_vec, j);
+			      dge_copy_col(order_type, blas_no_trans,
+					   m, n, b, ldb, b_vec, j);
 			    else
-			      dgemm_copy_row(order_type, blas_no_trans,
-					     m, n, b, ldb, b_vec, j);
+			      dge_copy_row(order_type, blas_no_trans,
+					   m, n, b, ldb, b_vec, j);
 			    rin = c_gen[cij];
 			    rout = c[cij];
 			    head_r_true_elem = head_r_true[cij];
@@ -861,22 +825,20 @@ void do_test_dsymm_s_d
 				   norm, alpha_val, beta_val);
 
 			    /* print out info */
-			    printf("alpha=%.16e", alpha);;
+			    printf("alpha = ");
+			    printf("%24.16e", alpha);;
 			    printf("   ");
-			    printf("beta=%.16e", beta);;
+			    printf("beta = ");
+			    printf("%24.16e", beta);;
 			    printf("\n");
 
 			    printf("a\n");
-			    sprint_symm_matrix(a, m_i,
-					       lda, order_type, uplo_type);
-			    printf("b\n");
-			    dprint_matrix(b, m, n, ldb, order_type);
-
-			    printf("c_gen\n");
-			    dprint_matrix(c_gen, m, n, ldc, order_type);
-
-			    printf("c\n");
-			    dprint_matrix(c, m, n, ldc, order_type);
+			    ssy_print_matrix(a, m_i, lda, order_type,
+					     uplo_type);
+			    dge_print_matrix(b, m, n, ldb, order_type, "B");
+			    dge_print_matrix(c_gen, m, n, ldc, order_type,
+					     "C_gen");
+			    dge_print_matrix(c, m, n, ldc, order_type, "C");
 
 			    printf("ratio = %g\n", ratio);
 			  }
@@ -1047,39 +1009,22 @@ void do_test_dsymm_s_s
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c_gen[i] = 0.0;
-  }
   a = (float *) blas_malloc(2 * max_mn * max_mn * sizeof(float));
   if (2 * max_mn * max_mn > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * max_mn * max_mn * inca; i += inca) {
-    a[i] = 0.0;
   }
   b = (float *) blas_malloc(2 * m * n * sizeof(float));
   if (2 * m * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incb; i += incb) {
-    b[i] = 0.0;
-  }
   a_vec = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * inca; i += inca) {
-    a_vec[i] = 0.0;
   }
   b_vec = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incb; i += incb) {
-    b_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double));
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double));
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -1206,7 +1151,7 @@ void do_test_dsymm_s_s
 
 			/* copy generated C matrix since this will be
 			   over written */
-			dgemm_copy(order_type, m, n, c_gen, ldc, c, ldc);
+			dge_copy_matrix(order_type, m, n, c_gen, ldc, c, ldc);
 
 			/* call symm routines to be tested */
 			FPU_FIX_STOP;
@@ -1237,17 +1182,17 @@ void do_test_dsymm_s_s
 
 			for (i = 0, ci = 0, ri = 0;
 			     i < m_i; i++, ci += incci, ri += incri) {
-			  ssymm_copy_row(order_type, uplo_type, side_type,
-					 m_i, a, lda, a_vec, i);
-			  for (j = 0, cij = ci, rij = ri;
-			       j < n_i; j++, cij += inccij, rij += incrij) {
+			  ssy_copy_row(order_type, uplo_type, m_i, a, lda,
+				       a_vec, i);
+			  for (j = 0, cij = ci, rij = ri; j < n_i;
+			       j++, cij += inccij, rij += incrij) {
 			    /* copy i-th row of A and j-th col of B */
 			    if (side_type == blas_left_side)
-			      sgemm_copy_col(order_type, blas_no_trans,
-					     m, n, b, ldb, b_vec, j);
+			      sge_copy_col(order_type, blas_no_trans,
+					   m, n, b, ldb, b_vec, j);
 			    else
-			      sgemm_copy_row(order_type, blas_no_trans,
-					     m, n, b, ldb, b_vec, j);
+			      sge_copy_row(order_type, blas_no_trans,
+					   m, n, b, ldb, b_vec, j);
 			    rin = c_gen[cij];
 			    rout = c[cij];
 			    head_r_true_elem = head_r_true[cij];
@@ -1303,22 +1248,20 @@ void do_test_dsymm_s_s
 				   norm, alpha_val, beta_val);
 
 			    /* print out info */
-			    printf("alpha=%.16e", alpha);;
+			    printf("alpha = ");
+			    printf("%24.16e", alpha);;
 			    printf("   ");
-			    printf("beta=%.16e", beta);;
+			    printf("beta = ");
+			    printf("%24.16e", beta);;
 			    printf("\n");
 
 			    printf("a\n");
-			    sprint_symm_matrix(a, m_i,
-					       lda, order_type, uplo_type);
-			    printf("b\n");
-			    sprint_matrix(b, m, n, ldb, order_type);
-
-			    printf("c_gen\n");
-			    dprint_matrix(c_gen, m, n, ldc, order_type);
-
-			    printf("c\n");
-			    dprint_matrix(c, m, n, ldc, order_type);
+			    ssy_print_matrix(a, m_i, lda, order_type,
+					     uplo_type);
+			    sge_print_matrix(b, m, n, ldb, order_type, "B");
+			    dge_print_matrix(c_gen, m, n, ldc, order_type,
+					     "C_gen");
+			    dge_print_matrix(c, m, n, ldc, order_type, "C");
 
 			    printf("ratio = %g\n", ratio);
 			  }
@@ -1490,45 +1433,22 @@ void do_test_zsymm_z_c
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c[i + 1] = 0.0;
-    c_gen[i] = 0.0;
-    c_gen[i + 1] = 0.0;
-  }
   a = (double *) blas_malloc(2 * max_mn * max_mn * sizeof(double) * 2);
   if (2 * max_mn * max_mn > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * max_mn * max_mn * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   b = (float *) blas_malloc(2 * m * n * sizeof(float) * 2);
   if (2 * m * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incb; i += incb) {
-    b[i] = 0.0;
-    b[i + 1] = 0.0;
-  }
   a_vec = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * inca; i += inca) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
   }
   b_vec = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incb; i += incb) {
-    b_vec[i] = 0.0;
-    b_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -1657,7 +1577,7 @@ void do_test_zsymm_z_c
 
 			/* copy generated C matrix since this will be
 			   over written */
-			zgemm_copy(order_type, m, n, c_gen, ldc, c, ldc);
+			zge_copy_matrix(order_type, m, n, c_gen, ldc, c, ldc);
 
 			/* call symm routines to be tested */
 			FPU_FIX_STOP;
@@ -1688,17 +1608,17 @@ void do_test_zsymm_z_c
 
 			for (i = 0, ci = 0, ri = 0;
 			     i < m_i; i++, ci += incci, ri += incri) {
-			  zsymm_copy_row(order_type, uplo_type, side_type,
-					 m_i, a, lda, a_vec, i);
-			  for (j = 0, cij = ci, rij = ri;
-			       j < n_i; j++, cij += inccij, rij += incrij) {
+			  zsy_copy_row(order_type, uplo_type, m_i, a, lda,
+				       a_vec, i);
+			  for (j = 0, cij = ci, rij = ri; j < n_i;
+			       j++, cij += inccij, rij += incrij) {
 			    /* copy i-th row of A and j-th col of B */
 			    if (side_type == blas_left_side)
-			      cgemm_copy_col(order_type, blas_no_trans,
-					     m, n, b, ldb, b_vec, j);
+			      cge_copy_col(order_type, blas_no_trans,
+					   m, n, b, ldb, b_vec, j);
 			    else
-			      cgemm_copy_row(order_type, blas_no_trans,
-					     m, n, b, ldb, b_vec, j);
+			      cge_copy_row(order_type, blas_no_trans,
+					   m, n, b, ldb, b_vec, j);
 			    rin[0] = c_gen[cij];
 			    rin[1] = c_gen[cij + 1];
 			    rout[0] = c[cij];
@@ -1758,24 +1678,20 @@ void do_test_zsymm_z_c
 				   norm, alpha_val, beta_val);
 
 			    /* print out info */
-			    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				   alpha[1]);;
+			    printf("alpha = ");
+			    printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);;
 			    printf("   ");
-			    printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				   beta[1]);;
+			    printf("beta = ");
+			    printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			    printf("\n");
 
 			    printf("a\n");
-			    zprint_symm_matrix(a, m_i,
-					       lda, order_type, uplo_type);
-			    printf("b\n");
-			    cprint_matrix(b, m, n, ldb, order_type);
-
-			    printf("c_gen\n");
-			    zprint_matrix(c_gen, m, n, ldc, order_type);
-
-			    printf("c\n");
-			    zprint_matrix(c, m, n, ldc, order_type);
+			    zsy_print_matrix(a, m_i, lda, order_type,
+					     uplo_type);
+			    cge_print_matrix(b, m, n, ldb, order_type, "B");
+			    zge_print_matrix(c_gen, m, n, ldc, order_type,
+					     "C_gen");
+			    zge_print_matrix(c, m, n, ldc, order_type, "C");
 
 			    printf("ratio = %g\n", ratio);
 			  }
@@ -1947,45 +1863,22 @@ void do_test_zsymm_c_z
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c[i + 1] = 0.0;
-    c_gen[i] = 0.0;
-    c_gen[i + 1] = 0.0;
-  }
   a = (float *) blas_malloc(2 * max_mn * max_mn * sizeof(float) * 2);
   if (2 * max_mn * max_mn > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * max_mn * max_mn * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   b = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incb; i += incb) {
-    b[i] = 0.0;
-    b[i + 1] = 0.0;
-  }
   a_vec = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * inca; i += inca) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
   }
   b_vec = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incb; i += incb) {
-    b_vec[i] = 0.0;
-    b_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -2114,7 +2007,7 @@ void do_test_zsymm_c_z
 
 			/* copy generated C matrix since this will be
 			   over written */
-			zgemm_copy(order_type, m, n, c_gen, ldc, c, ldc);
+			zge_copy_matrix(order_type, m, n, c_gen, ldc, c, ldc);
 
 			/* call symm routines to be tested */
 			FPU_FIX_STOP;
@@ -2145,17 +2038,17 @@ void do_test_zsymm_c_z
 
 			for (i = 0, ci = 0, ri = 0;
 			     i < m_i; i++, ci += incci, ri += incri) {
-			  csymm_copy_row(order_type, uplo_type, side_type,
-					 m_i, a, lda, a_vec, i);
-			  for (j = 0, cij = ci, rij = ri;
-			       j < n_i; j++, cij += inccij, rij += incrij) {
+			  csy_copy_row(order_type, uplo_type, m_i, a, lda,
+				       a_vec, i);
+			  for (j = 0, cij = ci, rij = ri; j < n_i;
+			       j++, cij += inccij, rij += incrij) {
 			    /* copy i-th row of A and j-th col of B */
 			    if (side_type == blas_left_side)
-			      zgemm_copy_col(order_type, blas_no_trans,
-					     m, n, b, ldb, b_vec, j);
+			      zge_copy_col(order_type, blas_no_trans,
+					   m, n, b, ldb, b_vec, j);
 			    else
-			      zgemm_copy_row(order_type, blas_no_trans,
-					     m, n, b, ldb, b_vec, j);
+			      zge_copy_row(order_type, blas_no_trans,
+					   m, n, b, ldb, b_vec, j);
 			    rin[0] = c_gen[cij];
 			    rin[1] = c_gen[cij + 1];
 			    rout[0] = c[cij];
@@ -2215,24 +2108,20 @@ void do_test_zsymm_c_z
 				   norm, alpha_val, beta_val);
 
 			    /* print out info */
-			    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				   alpha[1]);;
+			    printf("alpha = ");
+			    printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);;
 			    printf("   ");
-			    printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				   beta[1]);;
+			    printf("beta = ");
+			    printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			    printf("\n");
 
 			    printf("a\n");
-			    cprint_symm_matrix(a, m_i,
-					       lda, order_type, uplo_type);
-			    printf("b\n");
-			    zprint_matrix(b, m, n, ldb, order_type);
-
-			    printf("c_gen\n");
-			    zprint_matrix(c_gen, m, n, ldc, order_type);
-
-			    printf("c\n");
-			    zprint_matrix(c, m, n, ldc, order_type);
+			    csy_print_matrix(a, m_i, lda, order_type,
+					     uplo_type);
+			    zge_print_matrix(b, m, n, ldb, order_type, "B");
+			    zge_print_matrix(c_gen, m, n, ldc, order_type,
+					     "C_gen");
+			    zge_print_matrix(c, m, n, ldc, order_type, "C");
 
 			    printf("ratio = %g\n", ratio);
 			  }
@@ -2404,45 +2293,22 @@ void do_test_zsymm_c_c
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c[i + 1] = 0.0;
-    c_gen[i] = 0.0;
-    c_gen[i + 1] = 0.0;
-  }
   a = (float *) blas_malloc(2 * max_mn * max_mn * sizeof(float) * 2);
   if (2 * max_mn * max_mn > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * max_mn * max_mn * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   b = (float *) blas_malloc(2 * m * n * sizeof(float) * 2);
   if (2 * m * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incb; i += incb) {
-    b[i] = 0.0;
-    b[i + 1] = 0.0;
-  }
   a_vec = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * inca; i += inca) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
   }
   b_vec = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incb; i += incb) {
-    b_vec[i] = 0.0;
-    b_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -2571,7 +2437,7 @@ void do_test_zsymm_c_c
 
 			/* copy generated C matrix since this will be
 			   over written */
-			zgemm_copy(order_type, m, n, c_gen, ldc, c, ldc);
+			zge_copy_matrix(order_type, m, n, c_gen, ldc, c, ldc);
 
 			/* call symm routines to be tested */
 			FPU_FIX_STOP;
@@ -2602,17 +2468,17 @@ void do_test_zsymm_c_c
 
 			for (i = 0, ci = 0, ri = 0;
 			     i < m_i; i++, ci += incci, ri += incri) {
-			  csymm_copy_row(order_type, uplo_type, side_type,
-					 m_i, a, lda, a_vec, i);
-			  for (j = 0, cij = ci, rij = ri;
-			       j < n_i; j++, cij += inccij, rij += incrij) {
+			  csy_copy_row(order_type, uplo_type, m_i, a, lda,
+				       a_vec, i);
+			  for (j = 0, cij = ci, rij = ri; j < n_i;
+			       j++, cij += inccij, rij += incrij) {
 			    /* copy i-th row of A and j-th col of B */
 			    if (side_type == blas_left_side)
-			      cgemm_copy_col(order_type, blas_no_trans,
-					     m, n, b, ldb, b_vec, j);
+			      cge_copy_col(order_type, blas_no_trans,
+					   m, n, b, ldb, b_vec, j);
 			    else
-			      cgemm_copy_row(order_type, blas_no_trans,
-					     m, n, b, ldb, b_vec, j);
+			      cge_copy_row(order_type, blas_no_trans,
+					   m, n, b, ldb, b_vec, j);
 			    rin[0] = c_gen[cij];
 			    rin[1] = c_gen[cij + 1];
 			    rout[0] = c[cij];
@@ -2672,24 +2538,20 @@ void do_test_zsymm_c_c
 				   norm, alpha_val, beta_val);
 
 			    /* print out info */
-			    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				   alpha[1]);;
+			    printf("alpha = ");
+			    printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);;
 			    printf("   ");
-			    printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				   beta[1]);;
+			    printf("beta = ");
+			    printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			    printf("\n");
 
 			    printf("a\n");
-			    cprint_symm_matrix(a, m_i,
-					       lda, order_type, uplo_type);
-			    printf("b\n");
-			    cprint_matrix(b, m, n, ldb, order_type);
-
-			    printf("c_gen\n");
-			    zprint_matrix(c_gen, m, n, ldc, order_type);
-
-			    printf("c\n");
-			    zprint_matrix(c, m, n, ldc, order_type);
+			    csy_print_matrix(a, m_i, lda, order_type,
+					     uplo_type);
+			    cge_print_matrix(b, m, n, ldb, order_type, "B");
+			    zge_print_matrix(c_gen, m, n, ldc, order_type,
+					     "C_gen");
+			    zge_print_matrix(c, m, n, ldc, order_type, "C");
 
 			    printf("ratio = %g\n", ratio);
 			  }
@@ -2861,43 +2723,22 @@ void do_test_csymm_c_s
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c[i + 1] = 0.0;
-    c_gen[i] = 0.0;
-    c_gen[i + 1] = 0.0;
-  }
   a = (float *) blas_malloc(2 * max_mn * max_mn * sizeof(float) * 2);
   if (2 * max_mn * max_mn > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * max_mn * max_mn * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   b = (float *) blas_malloc(2 * m * n * sizeof(float));
   if (2 * m * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incb; i += incb) {
-    b[i] = 0.0;
-  }
   a_vec = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * inca; i += inca) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
   }
   b_vec = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incb; i += incb) {
-    b_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -3026,7 +2867,7 @@ void do_test_csymm_c_s
 
 			/* copy generated C matrix since this will be
 			   over written */
-			cgemm_copy(order_type, m, n, c_gen, ldc, c, ldc);
+			cge_copy_matrix(order_type, m, n, c_gen, ldc, c, ldc);
 
 			/* call symm routines to be tested */
 			FPU_FIX_STOP;
@@ -3057,17 +2898,17 @@ void do_test_csymm_c_s
 
 			for (i = 0, ci = 0, ri = 0;
 			     i < m_i; i++, ci += incci, ri += incri) {
-			  csymm_copy_row(order_type, uplo_type, side_type,
-					 m_i, a, lda, a_vec, i);
-			  for (j = 0, cij = ci, rij = ri;
-			       j < n_i; j++, cij += inccij, rij += incrij) {
+			  csy_copy_row(order_type, uplo_type, m_i, a, lda,
+				       a_vec, i);
+			  for (j = 0, cij = ci, rij = ri; j < n_i;
+			       j++, cij += inccij, rij += incrij) {
 			    /* copy i-th row of A and j-th col of B */
 			    if (side_type == blas_left_side)
-			      sgemm_copy_col(order_type, blas_no_trans,
-					     m, n, b, ldb, b_vec, j);
+			      sge_copy_col(order_type, blas_no_trans,
+					   m, n, b, ldb, b_vec, j);
 			    else
-			      sgemm_copy_row(order_type, blas_no_trans,
-					     m, n, b, ldb, b_vec, j);
+			      sge_copy_row(order_type, blas_no_trans,
+					   m, n, b, ldb, b_vec, j);
 			    rin[0] = c_gen[cij];
 			    rin[1] = c_gen[cij + 1];
 			    rout[0] = c[cij];
@@ -3127,24 +2968,20 @@ void do_test_csymm_c_s
 				   norm, alpha_val, beta_val);
 
 			    /* print out info */
-			    printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-				   alpha[1]);;
+			    printf("alpha = ");
+			    printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);;
 			    printf("   ");
-			    printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
-				   beta[1]);;
+			    printf("beta = ");
+			    printf("(%16.8e, %16.8e)", beta[0], beta[1]);;
 			    printf("\n");
 
 			    printf("a\n");
-			    cprint_symm_matrix(a, m_i,
-					       lda, order_type, uplo_type);
-			    printf("b\n");
-			    sprint_matrix(b, m, n, ldb, order_type);
-
-			    printf("c_gen\n");
-			    cprint_matrix(c_gen, m, n, ldc, order_type);
-
-			    printf("c\n");
-			    cprint_matrix(c, m, n, ldc, order_type);
+			    csy_print_matrix(a, m_i, lda, order_type,
+					     uplo_type);
+			    sge_print_matrix(b, m, n, ldb, order_type, "B");
+			    cge_print_matrix(c_gen, m, n, ldc, order_type,
+					     "C_gen");
+			    cge_print_matrix(c, m, n, ldc, order_type, "C");
 
 			    printf("ratio = %g\n", ratio);
 			  }
@@ -3316,43 +3153,22 @@ void do_test_csymm_s_c
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c[i + 1] = 0.0;
-    c_gen[i] = 0.0;
-    c_gen[i + 1] = 0.0;
-  }
   a = (float *) blas_malloc(2 * max_mn * max_mn * sizeof(float));
   if (2 * max_mn * max_mn > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * max_mn * max_mn * inca; i += inca) {
-    a[i] = 0.0;
   }
   b = (float *) blas_malloc(2 * m * n * sizeof(float) * 2);
   if (2 * m * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incb; i += incb) {
-    b[i] = 0.0;
-    b[i + 1] = 0.0;
-  }
   a_vec = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * inca; i += inca) {
-    a_vec[i] = 0.0;
   }
   b_vec = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incb; i += incb) {
-    b_vec[i] = 0.0;
-    b_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -3481,7 +3297,7 @@ void do_test_csymm_s_c
 
 			/* copy generated C matrix since this will be
 			   over written */
-			cgemm_copy(order_type, m, n, c_gen, ldc, c, ldc);
+			cge_copy_matrix(order_type, m, n, c_gen, ldc, c, ldc);
 
 			/* call symm routines to be tested */
 			FPU_FIX_STOP;
@@ -3512,17 +3328,17 @@ void do_test_csymm_s_c
 
 			for (i = 0, ci = 0, ri = 0;
 			     i < m_i; i++, ci += incci, ri += incri) {
-			  ssymm_copy_row(order_type, uplo_type, side_type,
-					 m_i, a, lda, a_vec, i);
-			  for (j = 0, cij = ci, rij = ri;
-			       j < n_i; j++, cij += inccij, rij += incrij) {
+			  ssy_copy_row(order_type, uplo_type, m_i, a, lda,
+				       a_vec, i);
+			  for (j = 0, cij = ci, rij = ri; j < n_i;
+			       j++, cij += inccij, rij += incrij) {
 			    /* copy i-th row of A and j-th col of B */
 			    if (side_type == blas_left_side)
-			      cgemm_copy_col(order_type, blas_no_trans,
-					     m, n, b, ldb, b_vec, j);
+			      cge_copy_col(order_type, blas_no_trans,
+					   m, n, b, ldb, b_vec, j);
 			    else
-			      cgemm_copy_row(order_type, blas_no_trans,
-					     m, n, b, ldb, b_vec, j);
+			      cge_copy_row(order_type, blas_no_trans,
+					   m, n, b, ldb, b_vec, j);
 			    rin[0] = c_gen[cij];
 			    rin[1] = c_gen[cij + 1];
 			    rout[0] = c[cij];
@@ -3582,24 +3398,20 @@ void do_test_csymm_s_c
 				   norm, alpha_val, beta_val);
 
 			    /* print out info */
-			    printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-				   alpha[1]);;
+			    printf("alpha = ");
+			    printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);;
 			    printf("   ");
-			    printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
-				   beta[1]);;
+			    printf("beta = ");
+			    printf("(%16.8e, %16.8e)", beta[0], beta[1]);;
 			    printf("\n");
 
 			    printf("a\n");
-			    sprint_symm_matrix(a, m_i,
-					       lda, order_type, uplo_type);
-			    printf("b\n");
-			    cprint_matrix(b, m, n, ldb, order_type);
-
-			    printf("c_gen\n");
-			    cprint_matrix(c_gen, m, n, ldc, order_type);
-
-			    printf("c\n");
-			    cprint_matrix(c, m, n, ldc, order_type);
+			    ssy_print_matrix(a, m_i, lda, order_type,
+					     uplo_type);
+			    cge_print_matrix(b, m, n, ldb, order_type, "B");
+			    cge_print_matrix(c_gen, m, n, ldc, order_type,
+					     "C_gen");
+			    cge_print_matrix(c, m, n, ldc, order_type, "C");
 
 			    printf("ratio = %g\n", ratio);
 			  }
@@ -3771,41 +3583,22 @@ void do_test_csymm_s_s
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c[i + 1] = 0.0;
-    c_gen[i] = 0.0;
-    c_gen[i + 1] = 0.0;
-  }
   a = (float *) blas_malloc(2 * max_mn * max_mn * sizeof(float));
   if (2 * max_mn * max_mn > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * max_mn * max_mn * inca; i += inca) {
-    a[i] = 0.0;
   }
   b = (float *) blas_malloc(2 * m * n * sizeof(float));
   if (2 * m * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incb; i += incb) {
-    b[i] = 0.0;
-  }
   a_vec = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * inca; i += inca) {
-    a_vec[i] = 0.0;
   }
   b_vec = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incb; i += incb) {
-    b_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -3934,7 +3727,7 @@ void do_test_csymm_s_s
 
 			/* copy generated C matrix since this will be
 			   over written */
-			cgemm_copy(order_type, m, n, c_gen, ldc, c, ldc);
+			cge_copy_matrix(order_type, m, n, c_gen, ldc, c, ldc);
 
 			/* call symm routines to be tested */
 			FPU_FIX_STOP;
@@ -3965,17 +3758,17 @@ void do_test_csymm_s_s
 
 			for (i = 0, ci = 0, ri = 0;
 			     i < m_i; i++, ci += incci, ri += incri) {
-			  ssymm_copy_row(order_type, uplo_type, side_type,
-					 m_i, a, lda, a_vec, i);
-			  for (j = 0, cij = ci, rij = ri;
-			       j < n_i; j++, cij += inccij, rij += incrij) {
+			  ssy_copy_row(order_type, uplo_type, m_i, a, lda,
+				       a_vec, i);
+			  for (j = 0, cij = ci, rij = ri; j < n_i;
+			       j++, cij += inccij, rij += incrij) {
 			    /* copy i-th row of A and j-th col of B */
 			    if (side_type == blas_left_side)
-			      sgemm_copy_col(order_type, blas_no_trans,
-					     m, n, b, ldb, b_vec, j);
+			      sge_copy_col(order_type, blas_no_trans,
+					   m, n, b, ldb, b_vec, j);
 			    else
-			      sgemm_copy_row(order_type, blas_no_trans,
-					     m, n, b, ldb, b_vec, j);
+			      sge_copy_row(order_type, blas_no_trans,
+					   m, n, b, ldb, b_vec, j);
 			    rin[0] = c_gen[cij];
 			    rin[1] = c_gen[cij + 1];
 			    rout[0] = c[cij];
@@ -4035,24 +3828,20 @@ void do_test_csymm_s_s
 				   norm, alpha_val, beta_val);
 
 			    /* print out info */
-			    printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-				   alpha[1]);;
+			    printf("alpha = ");
+			    printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);;
 			    printf("   ");
-			    printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
-				   beta[1]);;
+			    printf("beta = ");
+			    printf("(%16.8e, %16.8e)", beta[0], beta[1]);;
 			    printf("\n");
 
 			    printf("a\n");
-			    sprint_symm_matrix(a, m_i,
-					       lda, order_type, uplo_type);
-			    printf("b\n");
-			    sprint_matrix(b, m, n, ldb, order_type);
-
-			    printf("c_gen\n");
-			    cprint_matrix(c_gen, m, n, ldc, order_type);
-
-			    printf("c\n");
-			    cprint_matrix(c, m, n, ldc, order_type);
+			    ssy_print_matrix(a, m_i, lda, order_type,
+					     uplo_type);
+			    sge_print_matrix(b, m, n, ldb, order_type, "B");
+			    cge_print_matrix(c_gen, m, n, ldc, order_type,
+					     "C_gen");
+			    cge_print_matrix(c, m, n, ldc, order_type, "C");
 
 			    printf("ratio = %g\n", ratio);
 			  }
@@ -4224,43 +4013,22 @@ void do_test_zsymm_z_d
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c[i + 1] = 0.0;
-    c_gen[i] = 0.0;
-    c_gen[i + 1] = 0.0;
-  }
   a = (double *) blas_malloc(2 * max_mn * max_mn * sizeof(double) * 2);
   if (2 * max_mn * max_mn > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * max_mn * max_mn * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   b = (double *) blas_malloc(2 * m * n * sizeof(double));
   if (2 * m * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incb; i += incb) {
-    b[i] = 0.0;
-  }
   a_vec = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * inca; i += inca) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
   }
   b_vec = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incb; i += incb) {
-    b_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -4389,7 +4157,7 @@ void do_test_zsymm_z_d
 
 			/* copy generated C matrix since this will be
 			   over written */
-			zgemm_copy(order_type, m, n, c_gen, ldc, c, ldc);
+			zge_copy_matrix(order_type, m, n, c_gen, ldc, c, ldc);
 
 			/* call symm routines to be tested */
 			FPU_FIX_STOP;
@@ -4420,17 +4188,17 @@ void do_test_zsymm_z_d
 
 			for (i = 0, ci = 0, ri = 0;
 			     i < m_i; i++, ci += incci, ri += incri) {
-			  zsymm_copy_row(order_type, uplo_type, side_type,
-					 m_i, a, lda, a_vec, i);
-			  for (j = 0, cij = ci, rij = ri;
-			       j < n_i; j++, cij += inccij, rij += incrij) {
+			  zsy_copy_row(order_type, uplo_type, m_i, a, lda,
+				       a_vec, i);
+			  for (j = 0, cij = ci, rij = ri; j < n_i;
+			       j++, cij += inccij, rij += incrij) {
 			    /* copy i-th row of A and j-th col of B */
 			    if (side_type == blas_left_side)
-			      dgemm_copy_col(order_type, blas_no_trans,
-					     m, n, b, ldb, b_vec, j);
+			      dge_copy_col(order_type, blas_no_trans,
+					   m, n, b, ldb, b_vec, j);
 			    else
-			      dgemm_copy_row(order_type, blas_no_trans,
-					     m, n, b, ldb, b_vec, j);
+			      dge_copy_row(order_type, blas_no_trans,
+					   m, n, b, ldb, b_vec, j);
 			    rin[0] = c_gen[cij];
 			    rin[1] = c_gen[cij + 1];
 			    rout[0] = c[cij];
@@ -4490,24 +4258,20 @@ void do_test_zsymm_z_d
 				   norm, alpha_val, beta_val);
 
 			    /* print out info */
-			    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				   alpha[1]);;
+			    printf("alpha = ");
+			    printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);;
 			    printf("   ");
-			    printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				   beta[1]);;
+			    printf("beta = ");
+			    printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			    printf("\n");
 
 			    printf("a\n");
-			    zprint_symm_matrix(a, m_i,
-					       lda, order_type, uplo_type);
-			    printf("b\n");
-			    dprint_matrix(b, m, n, ldb, order_type);
-
-			    printf("c_gen\n");
-			    zprint_matrix(c_gen, m, n, ldc, order_type);
-
-			    printf("c\n");
-			    zprint_matrix(c, m, n, ldc, order_type);
+			    zsy_print_matrix(a, m_i, lda, order_type,
+					     uplo_type);
+			    dge_print_matrix(b, m, n, ldb, order_type, "B");
+			    zge_print_matrix(c_gen, m, n, ldc, order_type,
+					     "C_gen");
+			    zge_print_matrix(c, m, n, ldc, order_type, "C");
 
 			    printf("ratio = %g\n", ratio);
 			  }
@@ -4679,43 +4443,22 @@ void do_test_zsymm_d_z
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c[i + 1] = 0.0;
-    c_gen[i] = 0.0;
-    c_gen[i + 1] = 0.0;
-  }
   a = (double *) blas_malloc(2 * max_mn * max_mn * sizeof(double));
   if (2 * max_mn * max_mn > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * max_mn * max_mn * inca; i += inca) {
-    a[i] = 0.0;
   }
   b = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incb; i += incb) {
-    b[i] = 0.0;
-    b[i + 1] = 0.0;
-  }
   a_vec = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * inca; i += inca) {
-    a_vec[i] = 0.0;
   }
   b_vec = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incb; i += incb) {
-    b_vec[i] = 0.0;
-    b_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -4844,7 +4587,7 @@ void do_test_zsymm_d_z
 
 			/* copy generated C matrix since this will be
 			   over written */
-			zgemm_copy(order_type, m, n, c_gen, ldc, c, ldc);
+			zge_copy_matrix(order_type, m, n, c_gen, ldc, c, ldc);
 
 			/* call symm routines to be tested */
 			FPU_FIX_STOP;
@@ -4875,17 +4618,17 @@ void do_test_zsymm_d_z
 
 			for (i = 0, ci = 0, ri = 0;
 			     i < m_i; i++, ci += incci, ri += incri) {
-			  dsymm_copy_row(order_type, uplo_type, side_type,
-					 m_i, a, lda, a_vec, i);
-			  for (j = 0, cij = ci, rij = ri;
-			       j < n_i; j++, cij += inccij, rij += incrij) {
+			  dsy_copy_row(order_type, uplo_type, m_i, a, lda,
+				       a_vec, i);
+			  for (j = 0, cij = ci, rij = ri; j < n_i;
+			       j++, cij += inccij, rij += incrij) {
 			    /* copy i-th row of A and j-th col of B */
 			    if (side_type == blas_left_side)
-			      zgemm_copy_col(order_type, blas_no_trans,
-					     m, n, b, ldb, b_vec, j);
+			      zge_copy_col(order_type, blas_no_trans,
+					   m, n, b, ldb, b_vec, j);
 			    else
-			      zgemm_copy_row(order_type, blas_no_trans,
-					     m, n, b, ldb, b_vec, j);
+			      zge_copy_row(order_type, blas_no_trans,
+					   m, n, b, ldb, b_vec, j);
 			    rin[0] = c_gen[cij];
 			    rin[1] = c_gen[cij + 1];
 			    rout[0] = c[cij];
@@ -4945,24 +4688,20 @@ void do_test_zsymm_d_z
 				   norm, alpha_val, beta_val);
 
 			    /* print out info */
-			    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				   alpha[1]);;
+			    printf("alpha = ");
+			    printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);;
 			    printf("   ");
-			    printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				   beta[1]);;
+			    printf("beta = ");
+			    printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			    printf("\n");
 
 			    printf("a\n");
-			    dprint_symm_matrix(a, m_i,
-					       lda, order_type, uplo_type);
-			    printf("b\n");
-			    zprint_matrix(b, m, n, ldb, order_type);
-
-			    printf("c_gen\n");
-			    zprint_matrix(c_gen, m, n, ldc, order_type);
-
-			    printf("c\n");
-			    zprint_matrix(c, m, n, ldc, order_type);
+			    dsy_print_matrix(a, m_i, lda, order_type,
+					     uplo_type);
+			    zge_print_matrix(b, m, n, ldb, order_type, "B");
+			    zge_print_matrix(c_gen, m, n, ldc, order_type,
+					     "C_gen");
+			    zge_print_matrix(c, m, n, ldc, order_type, "C");
 
 			    printf("ratio = %g\n", ratio);
 			  }
@@ -5134,41 +4873,22 @@ void do_test_zsymm_d_d
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c[i + 1] = 0.0;
-    c_gen[i] = 0.0;
-    c_gen[i + 1] = 0.0;
-  }
   a = (double *) blas_malloc(2 * max_mn * max_mn * sizeof(double));
   if (2 * max_mn * max_mn > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * max_mn * max_mn * inca; i += inca) {
-    a[i] = 0.0;
   }
   b = (double *) blas_malloc(2 * m * n * sizeof(double));
   if (2 * m * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incb; i += incb) {
-    b[i] = 0.0;
-  }
   a_vec = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * inca; i += inca) {
-    a_vec[i] = 0.0;
   }
   b_vec = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incb; i += incb) {
-    b_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -5297,7 +5017,7 @@ void do_test_zsymm_d_d
 
 			/* copy generated C matrix since this will be
 			   over written */
-			zgemm_copy(order_type, m, n, c_gen, ldc, c, ldc);
+			zge_copy_matrix(order_type, m, n, c_gen, ldc, c, ldc);
 
 			/* call symm routines to be tested */
 			FPU_FIX_STOP;
@@ -5328,17 +5048,17 @@ void do_test_zsymm_d_d
 
 			for (i = 0, ci = 0, ri = 0;
 			     i < m_i; i++, ci += incci, ri += incri) {
-			  dsymm_copy_row(order_type, uplo_type, side_type,
-					 m_i, a, lda, a_vec, i);
-			  for (j = 0, cij = ci, rij = ri;
-			       j < n_i; j++, cij += inccij, rij += incrij) {
+			  dsy_copy_row(order_type, uplo_type, m_i, a, lda,
+				       a_vec, i);
+			  for (j = 0, cij = ci, rij = ri; j < n_i;
+			       j++, cij += inccij, rij += incrij) {
 			    /* copy i-th row of A and j-th col of B */
 			    if (side_type == blas_left_side)
-			      dgemm_copy_col(order_type, blas_no_trans,
-					     m, n, b, ldb, b_vec, j);
+			      dge_copy_col(order_type, blas_no_trans,
+					   m, n, b, ldb, b_vec, j);
 			    else
-			      dgemm_copy_row(order_type, blas_no_trans,
-					     m, n, b, ldb, b_vec, j);
+			      dge_copy_row(order_type, blas_no_trans,
+					   m, n, b, ldb, b_vec, j);
 			    rin[0] = c_gen[cij];
 			    rin[1] = c_gen[cij + 1];
 			    rout[0] = c[cij];
@@ -5398,24 +5118,20 @@ void do_test_zsymm_d_d
 				   norm, alpha_val, beta_val);
 
 			    /* print out info */
-			    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				   alpha[1]);;
+			    printf("alpha = ");
+			    printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);;
 			    printf("   ");
-			    printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				   beta[1]);;
+			    printf("beta = ");
+			    printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			    printf("\n");
 
 			    printf("a\n");
-			    dprint_symm_matrix(a, m_i,
-					       lda, order_type, uplo_type);
-			    printf("b\n");
-			    dprint_matrix(b, m, n, ldb, order_type);
-
-			    printf("c_gen\n");
-			    zprint_matrix(c_gen, m, n, ldc, order_type);
-
-			    printf("c\n");
-			    zprint_matrix(c, m, n, ldc, order_type);
+			    dsy_print_matrix(a, m_i, lda, order_type,
+					     uplo_type);
+			    dge_print_matrix(b, m, n, ldb, order_type, "B");
+			    zge_print_matrix(c_gen, m, n, ldc, order_type,
+					     "C_gen");
+			    zge_print_matrix(c, m, n, ldc, order_type, "C");
 
 			    printf("ratio = %g\n", ratio);
 			  }
@@ -5586,39 +5302,22 @@ void do_test_ssymm_x
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c_gen[i] = 0.0;
-  }
   a = (float *) blas_malloc(2 * max_mn * max_mn * sizeof(float));
   if (2 * max_mn * max_mn > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * max_mn * max_mn * inca; i += inca) {
-    a[i] = 0.0;
   }
   b = (float *) blas_malloc(2 * m * n * sizeof(float));
   if (2 * m * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incb; i += incb) {
-    b[i] = 0.0;
-  }
   a_vec = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * inca; i += inca) {
-    a_vec[i] = 0.0;
   }
   b_vec = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incb; i += incb) {
-    b_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double));
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double));
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -5765,7 +5464,8 @@ void do_test_ssymm_x
 
 			  /* copy generated C matrix since this will be
 			     over written */
-			  sgemm_copy(order_type, m, n, c_gen, ldc, c, ldc);
+			  sge_copy_matrix(order_type, m, n, c_gen, ldc, c,
+					  ldc);
 
 			  /* call symm routines to be tested */
 			  FPU_FIX_STOP;
@@ -5796,17 +5496,17 @@ void do_test_ssymm_x
 
 			  for (i = 0, ci = 0, ri = 0;
 			       i < m_i; i++, ci += incci, ri += incri) {
-			    ssymm_copy_row(order_type, uplo_type, side_type,
-					   m_i, a, lda, a_vec, i);
-			    for (j = 0, cij = ci, rij = ri;
-				 j < n_i; j++, cij += inccij, rij += incrij) {
+			    ssy_copy_row(order_type, uplo_type, m_i, a, lda,
+					 a_vec, i);
+			    for (j = 0, cij = ci, rij = ri; j < n_i;
+				 j++, cij += inccij, rij += incrij) {
 			      /* copy i-th row of A and j-th col of B */
 			      if (side_type == blas_left_side)
-				sgemm_copy_col(order_type, blas_no_trans,
-					       m, n, b, ldb, b_vec, j);
+				sge_copy_col(order_type, blas_no_trans,
+					     m, n, b, ldb, b_vec, j);
 			      else
-				sgemm_copy_row(order_type, blas_no_trans,
-					       m, n, b, ldb, b_vec, j);
+				sge_copy_row(order_type, blas_no_trans,
+					     m, n, b, ldb, b_vec, j);
 			      rin = c_gen[cij];
 			      rout = c[cij];
 			      head_r_true_elem = head_r_true[cij];
@@ -5863,22 +5563,20 @@ void do_test_ssymm_x
 				     norm, alpha_val, beta_val);
 
 			      /* print out info */
-			      printf("alpha=%.8e", alpha);;
+			      printf("alpha = ");
+			      printf("%16.8e", alpha);;
 			      printf("   ");
-			      printf("beta=%.8e", beta);;
+			      printf("beta = ");
+			      printf("%16.8e", beta);;
 			      printf("\n");
 
 			      printf("a\n");
-			      sprint_symm_matrix(a, m_i,
-						 lda, order_type, uplo_type);
-			      printf("b\n");
-			      sprint_matrix(b, m, n, ldb, order_type);
-
-			      printf("c_gen\n");
-			      sprint_matrix(c_gen, m, n, ldc, order_type);
-
-			      printf("c\n");
-			      sprint_matrix(c, m, n, ldc, order_type);
+			      ssy_print_matrix(a, m_i, lda, order_type,
+					       uplo_type);
+			      sge_print_matrix(b, m, n, ldb, order_type, "B");
+			      sge_print_matrix(c_gen, m, n, ldc, order_type,
+					       "C_gen");
+			      sge_print_matrix(c, m, n, ldc, order_type, "C");
 
 			      printf("ratio = %g\n", ratio);
 			    }
@@ -6051,39 +5749,22 @@ void do_test_dsymm_x
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c_gen[i] = 0.0;
-  }
   a = (double *) blas_malloc(2 * max_mn * max_mn * sizeof(double));
   if (2 * max_mn * max_mn > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * max_mn * max_mn * inca; i += inca) {
-    a[i] = 0.0;
   }
   b = (double *) blas_malloc(2 * m * n * sizeof(double));
   if (2 * m * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incb; i += incb) {
-    b[i] = 0.0;
-  }
   a_vec = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * inca; i += inca) {
-    a_vec[i] = 0.0;
   }
   b_vec = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incb; i += incb) {
-    b_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double));
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double));
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -6230,7 +5911,8 @@ void do_test_dsymm_x
 
 			  /* copy generated C matrix since this will be
 			     over written */
-			  dgemm_copy(order_type, m, n, c_gen, ldc, c, ldc);
+			  dge_copy_matrix(order_type, m, n, c_gen, ldc, c,
+					  ldc);
 
 			  /* call symm routines to be tested */
 			  FPU_FIX_STOP;
@@ -6261,17 +5943,17 @@ void do_test_dsymm_x
 
 			  for (i = 0, ci = 0, ri = 0;
 			       i < m_i; i++, ci += incci, ri += incri) {
-			    dsymm_copy_row(order_type, uplo_type, side_type,
-					   m_i, a, lda, a_vec, i);
-			    for (j = 0, cij = ci, rij = ri;
-				 j < n_i; j++, cij += inccij, rij += incrij) {
+			    dsy_copy_row(order_type, uplo_type, m_i, a, lda,
+					 a_vec, i);
+			    for (j = 0, cij = ci, rij = ri; j < n_i;
+				 j++, cij += inccij, rij += incrij) {
 			      /* copy i-th row of A and j-th col of B */
 			      if (side_type == blas_left_side)
-				dgemm_copy_col(order_type, blas_no_trans,
-					       m, n, b, ldb, b_vec, j);
+				dge_copy_col(order_type, blas_no_trans,
+					     m, n, b, ldb, b_vec, j);
 			      else
-				dgemm_copy_row(order_type, blas_no_trans,
-					       m, n, b, ldb, b_vec, j);
+				dge_copy_row(order_type, blas_no_trans,
+					     m, n, b, ldb, b_vec, j);
 			      rin = c_gen[cij];
 			      rout = c[cij];
 			      head_r_true_elem = head_r_true[cij];
@@ -6328,22 +6010,20 @@ void do_test_dsymm_x
 				     norm, alpha_val, beta_val);
 
 			      /* print out info */
-			      printf("alpha=%.16e", alpha);;
+			      printf("alpha = ");
+			      printf("%24.16e", alpha);;
 			      printf("   ");
-			      printf("beta=%.16e", beta);;
+			      printf("beta = ");
+			      printf("%24.16e", beta);;
 			      printf("\n");
 
 			      printf("a\n");
-			      dprint_symm_matrix(a, m_i,
-						 lda, order_type, uplo_type);
-			      printf("b\n");
-			      dprint_matrix(b, m, n, ldb, order_type);
-
-			      printf("c_gen\n");
-			      dprint_matrix(c_gen, m, n, ldc, order_type);
-
-			      printf("c\n");
-			      dprint_matrix(c, m, n, ldc, order_type);
+			      dsy_print_matrix(a, m_i, lda, order_type,
+					       uplo_type);
+			      dge_print_matrix(b, m, n, ldb, order_type, "B");
+			      dge_print_matrix(c_gen, m, n, ldc, order_type,
+					       "C_gen");
+			      dge_print_matrix(c, m, n, ldc, order_type, "C");
 
 			      printf("ratio = %g\n", ratio);
 			    }
@@ -6517,45 +6197,22 @@ void do_test_csymm_x
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c[i + 1] = 0.0;
-    c_gen[i] = 0.0;
-    c_gen[i + 1] = 0.0;
-  }
   a = (float *) blas_malloc(2 * max_mn * max_mn * sizeof(float) * 2);
   if (2 * max_mn * max_mn > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * max_mn * max_mn * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   b = (float *) blas_malloc(2 * m * n * sizeof(float) * 2);
   if (2 * m * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incb; i += incb) {
-    b[i] = 0.0;
-    b[i + 1] = 0.0;
-  }
   a_vec = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * inca; i += inca) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
   }
   b_vec = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incb; i += incb) {
-    b_vec[i] = 0.0;
-    b_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -6704,7 +6361,8 @@ void do_test_csymm_x
 
 			  /* copy generated C matrix since this will be
 			     over written */
-			  cgemm_copy(order_type, m, n, c_gen, ldc, c, ldc);
+			  cge_copy_matrix(order_type, m, n, c_gen, ldc, c,
+					  ldc);
 
 			  /* call symm routines to be tested */
 			  FPU_FIX_STOP;
@@ -6735,17 +6393,17 @@ void do_test_csymm_x
 
 			  for (i = 0, ci = 0, ri = 0;
 			       i < m_i; i++, ci += incci, ri += incri) {
-			    csymm_copy_row(order_type, uplo_type, side_type,
-					   m_i, a, lda, a_vec, i);
-			    for (j = 0, cij = ci, rij = ri;
-				 j < n_i; j++, cij += inccij, rij += incrij) {
+			    csy_copy_row(order_type, uplo_type, m_i, a, lda,
+					 a_vec, i);
+			    for (j = 0, cij = ci, rij = ri; j < n_i;
+				 j++, cij += inccij, rij += incrij) {
 			      /* copy i-th row of A and j-th col of B */
 			      if (side_type == blas_left_side)
-				cgemm_copy_col(order_type, blas_no_trans,
-					       m, n, b, ldb, b_vec, j);
+				cge_copy_col(order_type, blas_no_trans,
+					     m, n, b, ldb, b_vec, j);
 			      else
-				cgemm_copy_row(order_type, blas_no_trans,
-					       m, n, b, ldb, b_vec, j);
+				cge_copy_row(order_type, blas_no_trans,
+					     m, n, b, ldb, b_vec, j);
 			      rin[0] = c_gen[cij];
 			      rin[1] = c_gen[cij + 1];
 			      rout[0] = c[cij];
@@ -6806,24 +6464,20 @@ void do_test_csymm_x
 				     norm, alpha_val, beta_val);
 
 			      /* print out info */
-			      printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-				     alpha[1]);;
+			      printf("alpha = ");
+			      printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);;
 			      printf("   ");
-			      printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
-				     beta[1]);;
+			      printf("beta = ");
+			      printf("(%16.8e, %16.8e)", beta[0], beta[1]);;
 			      printf("\n");
 
 			      printf("a\n");
-			      cprint_symm_matrix(a, m_i,
-						 lda, order_type, uplo_type);
-			      printf("b\n");
-			      cprint_matrix(b, m, n, ldb, order_type);
-
-			      printf("c_gen\n");
-			      cprint_matrix(c_gen, m, n, ldc, order_type);
-
-			      printf("c\n");
-			      cprint_matrix(c, m, n, ldc, order_type);
+			      csy_print_matrix(a, m_i, lda, order_type,
+					       uplo_type);
+			      cge_print_matrix(b, m, n, ldb, order_type, "B");
+			      cge_print_matrix(c_gen, m, n, ldc, order_type,
+					       "C_gen");
+			      cge_print_matrix(c, m, n, ldc, order_type, "C");
 
 			      printf("ratio = %g\n", ratio);
 			    }
@@ -6997,45 +6651,22 @@ void do_test_zsymm_x
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c[i + 1] = 0.0;
-    c_gen[i] = 0.0;
-    c_gen[i + 1] = 0.0;
-  }
   a = (double *) blas_malloc(2 * max_mn * max_mn * sizeof(double) * 2);
   if (2 * max_mn * max_mn > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * max_mn * max_mn * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   b = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incb; i += incb) {
-    b[i] = 0.0;
-    b[i + 1] = 0.0;
-  }
   a_vec = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * inca; i += inca) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
   }
   b_vec = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incb; i += incb) {
-    b_vec[i] = 0.0;
-    b_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -7184,7 +6815,8 @@ void do_test_zsymm_x
 
 			  /* copy generated C matrix since this will be
 			     over written */
-			  zgemm_copy(order_type, m, n, c_gen, ldc, c, ldc);
+			  zge_copy_matrix(order_type, m, n, c_gen, ldc, c,
+					  ldc);
 
 			  /* call symm routines to be tested */
 			  FPU_FIX_STOP;
@@ -7215,17 +6847,17 @@ void do_test_zsymm_x
 
 			  for (i = 0, ci = 0, ri = 0;
 			       i < m_i; i++, ci += incci, ri += incri) {
-			    zsymm_copy_row(order_type, uplo_type, side_type,
-					   m_i, a, lda, a_vec, i);
-			    for (j = 0, cij = ci, rij = ri;
-				 j < n_i; j++, cij += inccij, rij += incrij) {
+			    zsy_copy_row(order_type, uplo_type, m_i, a, lda,
+					 a_vec, i);
+			    for (j = 0, cij = ci, rij = ri; j < n_i;
+				 j++, cij += inccij, rij += incrij) {
 			      /* copy i-th row of A and j-th col of B */
 			      if (side_type == blas_left_side)
-				zgemm_copy_col(order_type, blas_no_trans,
-					       m, n, b, ldb, b_vec, j);
+				zge_copy_col(order_type, blas_no_trans,
+					     m, n, b, ldb, b_vec, j);
 			      else
-				zgemm_copy_row(order_type, blas_no_trans,
-					       m, n, b, ldb, b_vec, j);
+				zge_copy_row(order_type, blas_no_trans,
+					     m, n, b, ldb, b_vec, j);
 			      rin[0] = c_gen[cij];
 			      rin[1] = c_gen[cij + 1];
 			      rout[0] = c[cij];
@@ -7286,24 +6918,21 @@ void do_test_zsymm_x
 				     norm, alpha_val, beta_val);
 
 			      /* print out info */
-			      printf("alpha[0]=%.16e, alpha[1]=%.16e",
-				     alpha[0], alpha[1]);;
+			      printf("alpha = ");
+			      printf("(%24.16e, %24.16e)", alpha[0],
+				     alpha[1]);;
 			      printf("   ");
-			      printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				     beta[1]);;
+			      printf("beta = ");
+			      printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			      printf("\n");
 
 			      printf("a\n");
-			      zprint_symm_matrix(a, m_i,
-						 lda, order_type, uplo_type);
-			      printf("b\n");
-			      zprint_matrix(b, m, n, ldb, order_type);
-
-			      printf("c_gen\n");
-			      zprint_matrix(c_gen, m, n, ldc, order_type);
-
-			      printf("c\n");
-			      zprint_matrix(c, m, n, ldc, order_type);
+			      zsy_print_matrix(a, m_i, lda, order_type,
+					       uplo_type);
+			      zge_print_matrix(b, m, n, ldb, order_type, "B");
+			      zge_print_matrix(c_gen, m, n, ldc, order_type,
+					       "C_gen");
+			      zge_print_matrix(c, m, n, ldc, order_type, "C");
 
 			      printf("ratio = %g\n", ratio);
 			    }
@@ -7476,39 +7105,22 @@ void do_test_dsymm_d_s_x
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c_gen[i] = 0.0;
-  }
   a = (double *) blas_malloc(2 * max_mn * max_mn * sizeof(double));
   if (2 * max_mn * max_mn > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * max_mn * max_mn * inca; i += inca) {
-    a[i] = 0.0;
   }
   b = (float *) blas_malloc(2 * m * n * sizeof(float));
   if (2 * m * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incb; i += incb) {
-    b[i] = 0.0;
-  }
   a_vec = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * inca; i += inca) {
-    a_vec[i] = 0.0;
   }
   b_vec = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incb; i += incb) {
-    b_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double));
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double));
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -7655,7 +7267,8 @@ void do_test_dsymm_d_s_x
 
 			  /* copy generated C matrix since this will be
 			     over written */
-			  dgemm_copy(order_type, m, n, c_gen, ldc, c, ldc);
+			  dge_copy_matrix(order_type, m, n, c_gen, ldc, c,
+					  ldc);
 
 			  /* call symm routines to be tested */
 			  FPU_FIX_STOP;
@@ -7686,17 +7299,17 @@ void do_test_dsymm_d_s_x
 
 			  for (i = 0, ci = 0, ri = 0;
 			       i < m_i; i++, ci += incci, ri += incri) {
-			    dsymm_copy_row(order_type, uplo_type, side_type,
-					   m_i, a, lda, a_vec, i);
-			    for (j = 0, cij = ci, rij = ri;
-				 j < n_i; j++, cij += inccij, rij += incrij) {
+			    dsy_copy_row(order_type, uplo_type, m_i, a, lda,
+					 a_vec, i);
+			    for (j = 0, cij = ci, rij = ri; j < n_i;
+				 j++, cij += inccij, rij += incrij) {
 			      /* copy i-th row of A and j-th col of B */
 			      if (side_type == blas_left_side)
-				sgemm_copy_col(order_type, blas_no_trans,
-					       m, n, b, ldb, b_vec, j);
+				sge_copy_col(order_type, blas_no_trans,
+					     m, n, b, ldb, b_vec, j);
 			      else
-				sgemm_copy_row(order_type, blas_no_trans,
-					       m, n, b, ldb, b_vec, j);
+				sge_copy_row(order_type, blas_no_trans,
+					     m, n, b, ldb, b_vec, j);
 			      rin = c_gen[cij];
 			      rout = c[cij];
 			      head_r_true_elem = head_r_true[cij];
@@ -7753,22 +7366,20 @@ void do_test_dsymm_d_s_x
 				     norm, alpha_val, beta_val);
 
 			      /* print out info */
-			      printf("alpha=%.16e", alpha);;
+			      printf("alpha = ");
+			      printf("%24.16e", alpha);;
 			      printf("   ");
-			      printf("beta=%.16e", beta);;
+			      printf("beta = ");
+			      printf("%24.16e", beta);;
 			      printf("\n");
 
 			      printf("a\n");
-			      dprint_symm_matrix(a, m_i,
-						 lda, order_type, uplo_type);
-			      printf("b\n");
-			      sprint_matrix(b, m, n, ldb, order_type);
-
-			      printf("c_gen\n");
-			      dprint_matrix(c_gen, m, n, ldc, order_type);
-
-			      printf("c\n");
-			      dprint_matrix(c, m, n, ldc, order_type);
+			      dsy_print_matrix(a, m_i, lda, order_type,
+					       uplo_type);
+			      sge_print_matrix(b, m, n, ldb, order_type, "B");
+			      dge_print_matrix(c_gen, m, n, ldc, order_type,
+					       "C_gen");
+			      dge_print_matrix(c, m, n, ldc, order_type, "C");
 
 			      printf("ratio = %g\n", ratio);
 			    }
@@ -7941,39 +7552,22 @@ void do_test_dsymm_s_d_x
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c_gen[i] = 0.0;
-  }
   a = (float *) blas_malloc(2 * max_mn * max_mn * sizeof(float));
   if (2 * max_mn * max_mn > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * max_mn * max_mn * inca; i += inca) {
-    a[i] = 0.0;
   }
   b = (double *) blas_malloc(2 * m * n * sizeof(double));
   if (2 * m * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incb; i += incb) {
-    b[i] = 0.0;
-  }
   a_vec = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * inca; i += inca) {
-    a_vec[i] = 0.0;
   }
   b_vec = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incb; i += incb) {
-    b_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double));
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double));
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -8120,7 +7714,8 @@ void do_test_dsymm_s_d_x
 
 			  /* copy generated C matrix since this will be
 			     over written */
-			  dgemm_copy(order_type, m, n, c_gen, ldc, c, ldc);
+			  dge_copy_matrix(order_type, m, n, c_gen, ldc, c,
+					  ldc);
 
 			  /* call symm routines to be tested */
 			  FPU_FIX_STOP;
@@ -8151,17 +7746,17 @@ void do_test_dsymm_s_d_x
 
 			  for (i = 0, ci = 0, ri = 0;
 			       i < m_i; i++, ci += incci, ri += incri) {
-			    ssymm_copy_row(order_type, uplo_type, side_type,
-					   m_i, a, lda, a_vec, i);
-			    for (j = 0, cij = ci, rij = ri;
-				 j < n_i; j++, cij += inccij, rij += incrij) {
+			    ssy_copy_row(order_type, uplo_type, m_i, a, lda,
+					 a_vec, i);
+			    for (j = 0, cij = ci, rij = ri; j < n_i;
+				 j++, cij += inccij, rij += incrij) {
 			      /* copy i-th row of A and j-th col of B */
 			      if (side_type == blas_left_side)
-				dgemm_copy_col(order_type, blas_no_trans,
-					       m, n, b, ldb, b_vec, j);
+				dge_copy_col(order_type, blas_no_trans,
+					     m, n, b, ldb, b_vec, j);
 			      else
-				dgemm_copy_row(order_type, blas_no_trans,
-					       m, n, b, ldb, b_vec, j);
+				dge_copy_row(order_type, blas_no_trans,
+					     m, n, b, ldb, b_vec, j);
 			      rin = c_gen[cij];
 			      rout = c[cij];
 			      head_r_true_elem = head_r_true[cij];
@@ -8218,22 +7813,20 @@ void do_test_dsymm_s_d_x
 				     norm, alpha_val, beta_val);
 
 			      /* print out info */
-			      printf("alpha=%.16e", alpha);;
+			      printf("alpha = ");
+			      printf("%24.16e", alpha);;
 			      printf("   ");
-			      printf("beta=%.16e", beta);;
+			      printf("beta = ");
+			      printf("%24.16e", beta);;
 			      printf("\n");
 
 			      printf("a\n");
-			      sprint_symm_matrix(a, m_i,
-						 lda, order_type, uplo_type);
-			      printf("b\n");
-			      dprint_matrix(b, m, n, ldb, order_type);
-
-			      printf("c_gen\n");
-			      dprint_matrix(c_gen, m, n, ldc, order_type);
-
-			      printf("c\n");
-			      dprint_matrix(c, m, n, ldc, order_type);
+			      ssy_print_matrix(a, m_i, lda, order_type,
+					       uplo_type);
+			      dge_print_matrix(b, m, n, ldb, order_type, "B");
+			      dge_print_matrix(c_gen, m, n, ldc, order_type,
+					       "C_gen");
+			      dge_print_matrix(c, m, n, ldc, order_type, "C");
 
 			      printf("ratio = %g\n", ratio);
 			    }
@@ -8406,39 +7999,22 @@ void do_test_dsymm_s_s_x
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c_gen[i] = 0.0;
-  }
   a = (float *) blas_malloc(2 * max_mn * max_mn * sizeof(float));
   if (2 * max_mn * max_mn > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * max_mn * max_mn * inca; i += inca) {
-    a[i] = 0.0;
   }
   b = (float *) blas_malloc(2 * m * n * sizeof(float));
   if (2 * m * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incb; i += incb) {
-    b[i] = 0.0;
-  }
   a_vec = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * inca; i += inca) {
-    a_vec[i] = 0.0;
   }
   b_vec = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incb; i += incb) {
-    b_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double));
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double));
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -8585,7 +8161,8 @@ void do_test_dsymm_s_s_x
 
 			  /* copy generated C matrix since this will be
 			     over written */
-			  dgemm_copy(order_type, m, n, c_gen, ldc, c, ldc);
+			  dge_copy_matrix(order_type, m, n, c_gen, ldc, c,
+					  ldc);
 
 			  /* call symm routines to be tested */
 			  FPU_FIX_STOP;
@@ -8616,17 +8193,17 @@ void do_test_dsymm_s_s_x
 
 			  for (i = 0, ci = 0, ri = 0;
 			       i < m_i; i++, ci += incci, ri += incri) {
-			    ssymm_copy_row(order_type, uplo_type, side_type,
-					   m_i, a, lda, a_vec, i);
-			    for (j = 0, cij = ci, rij = ri;
-				 j < n_i; j++, cij += inccij, rij += incrij) {
+			    ssy_copy_row(order_type, uplo_type, m_i, a, lda,
+					 a_vec, i);
+			    for (j = 0, cij = ci, rij = ri; j < n_i;
+				 j++, cij += inccij, rij += incrij) {
 			      /* copy i-th row of A and j-th col of B */
 			      if (side_type == blas_left_side)
-				sgemm_copy_col(order_type, blas_no_trans,
-					       m, n, b, ldb, b_vec, j);
+				sge_copy_col(order_type, blas_no_trans,
+					     m, n, b, ldb, b_vec, j);
 			      else
-				sgemm_copy_row(order_type, blas_no_trans,
-					       m, n, b, ldb, b_vec, j);
+				sge_copy_row(order_type, blas_no_trans,
+					     m, n, b, ldb, b_vec, j);
 			      rin = c_gen[cij];
 			      rout = c[cij];
 			      head_r_true_elem = head_r_true[cij];
@@ -8683,22 +8260,20 @@ void do_test_dsymm_s_s_x
 				     norm, alpha_val, beta_val);
 
 			      /* print out info */
-			      printf("alpha=%.16e", alpha);;
+			      printf("alpha = ");
+			      printf("%24.16e", alpha);;
 			      printf("   ");
-			      printf("beta=%.16e", beta);;
+			      printf("beta = ");
+			      printf("%24.16e", beta);;
 			      printf("\n");
 
 			      printf("a\n");
-			      sprint_symm_matrix(a, m_i,
-						 lda, order_type, uplo_type);
-			      printf("b\n");
-			      sprint_matrix(b, m, n, ldb, order_type);
-
-			      printf("c_gen\n");
-			      dprint_matrix(c_gen, m, n, ldc, order_type);
-
-			      printf("c\n");
-			      dprint_matrix(c, m, n, ldc, order_type);
+			      ssy_print_matrix(a, m_i, lda, order_type,
+					       uplo_type);
+			      sge_print_matrix(b, m, n, ldb, order_type, "B");
+			      dge_print_matrix(c_gen, m, n, ldc, order_type,
+					       "C_gen");
+			      dge_print_matrix(c, m, n, ldc, order_type, "C");
 
 			      printf("ratio = %g\n", ratio);
 			    }
@@ -8872,45 +8447,22 @@ void do_test_zsymm_z_c_x
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c[i + 1] = 0.0;
-    c_gen[i] = 0.0;
-    c_gen[i + 1] = 0.0;
-  }
   a = (double *) blas_malloc(2 * max_mn * max_mn * sizeof(double) * 2);
   if (2 * max_mn * max_mn > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * max_mn * max_mn * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   b = (float *) blas_malloc(2 * m * n * sizeof(float) * 2);
   if (2 * m * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incb; i += incb) {
-    b[i] = 0.0;
-    b[i + 1] = 0.0;
-  }
   a_vec = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * inca; i += inca) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
   }
   b_vec = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incb; i += incb) {
-    b_vec[i] = 0.0;
-    b_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -9059,7 +8611,8 @@ void do_test_zsymm_z_c_x
 
 			  /* copy generated C matrix since this will be
 			     over written */
-			  zgemm_copy(order_type, m, n, c_gen, ldc, c, ldc);
+			  zge_copy_matrix(order_type, m, n, c_gen, ldc, c,
+					  ldc);
 
 			  /* call symm routines to be tested */
 			  FPU_FIX_STOP;
@@ -9090,17 +8643,17 @@ void do_test_zsymm_z_c_x
 
 			  for (i = 0, ci = 0, ri = 0;
 			       i < m_i; i++, ci += incci, ri += incri) {
-			    zsymm_copy_row(order_type, uplo_type, side_type,
-					   m_i, a, lda, a_vec, i);
-			    for (j = 0, cij = ci, rij = ri;
-				 j < n_i; j++, cij += inccij, rij += incrij) {
+			    zsy_copy_row(order_type, uplo_type, m_i, a, lda,
+					 a_vec, i);
+			    for (j = 0, cij = ci, rij = ri; j < n_i;
+				 j++, cij += inccij, rij += incrij) {
 			      /* copy i-th row of A and j-th col of B */
 			      if (side_type == blas_left_side)
-				cgemm_copy_col(order_type, blas_no_trans,
-					       m, n, b, ldb, b_vec, j);
+				cge_copy_col(order_type, blas_no_trans,
+					     m, n, b, ldb, b_vec, j);
 			      else
-				cgemm_copy_row(order_type, blas_no_trans,
-					       m, n, b, ldb, b_vec, j);
+				cge_copy_row(order_type, blas_no_trans,
+					     m, n, b, ldb, b_vec, j);
 			      rin[0] = c_gen[cij];
 			      rin[1] = c_gen[cij + 1];
 			      rout[0] = c[cij];
@@ -9161,24 +8714,21 @@ void do_test_zsymm_z_c_x
 				     norm, alpha_val, beta_val);
 
 			      /* print out info */
-			      printf("alpha[0]=%.16e, alpha[1]=%.16e",
-				     alpha[0], alpha[1]);;
+			      printf("alpha = ");
+			      printf("(%24.16e, %24.16e)", alpha[0],
+				     alpha[1]);;
 			      printf("   ");
-			      printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				     beta[1]);;
+			      printf("beta = ");
+			      printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			      printf("\n");
 
 			      printf("a\n");
-			      zprint_symm_matrix(a, m_i,
-						 lda, order_type, uplo_type);
-			      printf("b\n");
-			      cprint_matrix(b, m, n, ldb, order_type);
-
-			      printf("c_gen\n");
-			      zprint_matrix(c_gen, m, n, ldc, order_type);
-
-			      printf("c\n");
-			      zprint_matrix(c, m, n, ldc, order_type);
+			      zsy_print_matrix(a, m_i, lda, order_type,
+					       uplo_type);
+			      cge_print_matrix(b, m, n, ldb, order_type, "B");
+			      zge_print_matrix(c_gen, m, n, ldc, order_type,
+					       "C_gen");
+			      zge_print_matrix(c, m, n, ldc, order_type, "C");
 
 			      printf("ratio = %g\n", ratio);
 			    }
@@ -9352,45 +8902,22 @@ void do_test_zsymm_c_z_x
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c[i + 1] = 0.0;
-    c_gen[i] = 0.0;
-    c_gen[i + 1] = 0.0;
-  }
   a = (float *) blas_malloc(2 * max_mn * max_mn * sizeof(float) * 2);
   if (2 * max_mn * max_mn > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * max_mn * max_mn * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   b = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incb; i += incb) {
-    b[i] = 0.0;
-    b[i + 1] = 0.0;
-  }
   a_vec = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * inca; i += inca) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
   }
   b_vec = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incb; i += incb) {
-    b_vec[i] = 0.0;
-    b_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -9539,7 +9066,8 @@ void do_test_zsymm_c_z_x
 
 			  /* copy generated C matrix since this will be
 			     over written */
-			  zgemm_copy(order_type, m, n, c_gen, ldc, c, ldc);
+			  zge_copy_matrix(order_type, m, n, c_gen, ldc, c,
+					  ldc);
 
 			  /* call symm routines to be tested */
 			  FPU_FIX_STOP;
@@ -9570,17 +9098,17 @@ void do_test_zsymm_c_z_x
 
 			  for (i = 0, ci = 0, ri = 0;
 			       i < m_i; i++, ci += incci, ri += incri) {
-			    csymm_copy_row(order_type, uplo_type, side_type,
-					   m_i, a, lda, a_vec, i);
-			    for (j = 0, cij = ci, rij = ri;
-				 j < n_i; j++, cij += inccij, rij += incrij) {
+			    csy_copy_row(order_type, uplo_type, m_i, a, lda,
+					 a_vec, i);
+			    for (j = 0, cij = ci, rij = ri; j < n_i;
+				 j++, cij += inccij, rij += incrij) {
 			      /* copy i-th row of A and j-th col of B */
 			      if (side_type == blas_left_side)
-				zgemm_copy_col(order_type, blas_no_trans,
-					       m, n, b, ldb, b_vec, j);
+				zge_copy_col(order_type, blas_no_trans,
+					     m, n, b, ldb, b_vec, j);
 			      else
-				zgemm_copy_row(order_type, blas_no_trans,
-					       m, n, b, ldb, b_vec, j);
+				zge_copy_row(order_type, blas_no_trans,
+					     m, n, b, ldb, b_vec, j);
 			      rin[0] = c_gen[cij];
 			      rin[1] = c_gen[cij + 1];
 			      rout[0] = c[cij];
@@ -9641,24 +9169,21 @@ void do_test_zsymm_c_z_x
 				     norm, alpha_val, beta_val);
 
 			      /* print out info */
-			      printf("alpha[0]=%.16e, alpha[1]=%.16e",
-				     alpha[0], alpha[1]);;
+			      printf("alpha = ");
+			      printf("(%24.16e, %24.16e)", alpha[0],
+				     alpha[1]);;
 			      printf("   ");
-			      printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				     beta[1]);;
+			      printf("beta = ");
+			      printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			      printf("\n");
 
 			      printf("a\n");
-			      cprint_symm_matrix(a, m_i,
-						 lda, order_type, uplo_type);
-			      printf("b\n");
-			      zprint_matrix(b, m, n, ldb, order_type);
-
-			      printf("c_gen\n");
-			      zprint_matrix(c_gen, m, n, ldc, order_type);
-
-			      printf("c\n");
-			      zprint_matrix(c, m, n, ldc, order_type);
+			      csy_print_matrix(a, m_i, lda, order_type,
+					       uplo_type);
+			      zge_print_matrix(b, m, n, ldb, order_type, "B");
+			      zge_print_matrix(c_gen, m, n, ldc, order_type,
+					       "C_gen");
+			      zge_print_matrix(c, m, n, ldc, order_type, "C");
 
 			      printf("ratio = %g\n", ratio);
 			    }
@@ -9832,45 +9357,22 @@ void do_test_zsymm_c_c_x
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c[i + 1] = 0.0;
-    c_gen[i] = 0.0;
-    c_gen[i + 1] = 0.0;
-  }
   a = (float *) blas_malloc(2 * max_mn * max_mn * sizeof(float) * 2);
   if (2 * max_mn * max_mn > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * max_mn * max_mn * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   b = (float *) blas_malloc(2 * m * n * sizeof(float) * 2);
   if (2 * m * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incb; i += incb) {
-    b[i] = 0.0;
-    b[i + 1] = 0.0;
-  }
   a_vec = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * inca; i += inca) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
   }
   b_vec = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incb; i += incb) {
-    b_vec[i] = 0.0;
-    b_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -10019,7 +9521,8 @@ void do_test_zsymm_c_c_x
 
 			  /* copy generated C matrix since this will be
 			     over written */
-			  zgemm_copy(order_type, m, n, c_gen, ldc, c, ldc);
+			  zge_copy_matrix(order_type, m, n, c_gen, ldc, c,
+					  ldc);
 
 			  /* call symm routines to be tested */
 			  FPU_FIX_STOP;
@@ -10050,17 +9553,17 @@ void do_test_zsymm_c_c_x
 
 			  for (i = 0, ci = 0, ri = 0;
 			       i < m_i; i++, ci += incci, ri += incri) {
-			    csymm_copy_row(order_type, uplo_type, side_type,
-					   m_i, a, lda, a_vec, i);
-			    for (j = 0, cij = ci, rij = ri;
-				 j < n_i; j++, cij += inccij, rij += incrij) {
+			    csy_copy_row(order_type, uplo_type, m_i, a, lda,
+					 a_vec, i);
+			    for (j = 0, cij = ci, rij = ri; j < n_i;
+				 j++, cij += inccij, rij += incrij) {
 			      /* copy i-th row of A and j-th col of B */
 			      if (side_type == blas_left_side)
-				cgemm_copy_col(order_type, blas_no_trans,
-					       m, n, b, ldb, b_vec, j);
+				cge_copy_col(order_type, blas_no_trans,
+					     m, n, b, ldb, b_vec, j);
 			      else
-				cgemm_copy_row(order_type, blas_no_trans,
-					       m, n, b, ldb, b_vec, j);
+				cge_copy_row(order_type, blas_no_trans,
+					     m, n, b, ldb, b_vec, j);
 			      rin[0] = c_gen[cij];
 			      rin[1] = c_gen[cij + 1];
 			      rout[0] = c[cij];
@@ -10121,24 +9624,21 @@ void do_test_zsymm_c_c_x
 				     norm, alpha_val, beta_val);
 
 			      /* print out info */
-			      printf("alpha[0]=%.16e, alpha[1]=%.16e",
-				     alpha[0], alpha[1]);;
+			      printf("alpha = ");
+			      printf("(%24.16e, %24.16e)", alpha[0],
+				     alpha[1]);;
 			      printf("   ");
-			      printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				     beta[1]);;
+			      printf("beta = ");
+			      printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			      printf("\n");
 
 			      printf("a\n");
-			      cprint_symm_matrix(a, m_i,
-						 lda, order_type, uplo_type);
-			      printf("b\n");
-			      cprint_matrix(b, m, n, ldb, order_type);
-
-			      printf("c_gen\n");
-			      zprint_matrix(c_gen, m, n, ldc, order_type);
-
-			      printf("c\n");
-			      zprint_matrix(c, m, n, ldc, order_type);
+			      csy_print_matrix(a, m_i, lda, order_type,
+					       uplo_type);
+			      cge_print_matrix(b, m, n, ldb, order_type, "B");
+			      zge_print_matrix(c_gen, m, n, ldc, order_type,
+					       "C_gen");
+			      zge_print_matrix(c, m, n, ldc, order_type, "C");
 
 			      printf("ratio = %g\n", ratio);
 			    }
@@ -10312,43 +9812,22 @@ void do_test_csymm_c_s_x
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c[i + 1] = 0.0;
-    c_gen[i] = 0.0;
-    c_gen[i + 1] = 0.0;
-  }
   a = (float *) blas_malloc(2 * max_mn * max_mn * sizeof(float) * 2);
   if (2 * max_mn * max_mn > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * max_mn * max_mn * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   b = (float *) blas_malloc(2 * m * n * sizeof(float));
   if (2 * m * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incb; i += incb) {
-    b[i] = 0.0;
-  }
   a_vec = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * inca; i += inca) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
   }
   b_vec = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incb; i += incb) {
-    b_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -10497,7 +9976,8 @@ void do_test_csymm_c_s_x
 
 			  /* copy generated C matrix since this will be
 			     over written */
-			  cgemm_copy(order_type, m, n, c_gen, ldc, c, ldc);
+			  cge_copy_matrix(order_type, m, n, c_gen, ldc, c,
+					  ldc);
 
 			  /* call symm routines to be tested */
 			  FPU_FIX_STOP;
@@ -10528,17 +10008,17 @@ void do_test_csymm_c_s_x
 
 			  for (i = 0, ci = 0, ri = 0;
 			       i < m_i; i++, ci += incci, ri += incri) {
-			    csymm_copy_row(order_type, uplo_type, side_type,
-					   m_i, a, lda, a_vec, i);
-			    for (j = 0, cij = ci, rij = ri;
-				 j < n_i; j++, cij += inccij, rij += incrij) {
+			    csy_copy_row(order_type, uplo_type, m_i, a, lda,
+					 a_vec, i);
+			    for (j = 0, cij = ci, rij = ri; j < n_i;
+				 j++, cij += inccij, rij += incrij) {
 			      /* copy i-th row of A and j-th col of B */
 			      if (side_type == blas_left_side)
-				sgemm_copy_col(order_type, blas_no_trans,
-					       m, n, b, ldb, b_vec, j);
+				sge_copy_col(order_type, blas_no_trans,
+					     m, n, b, ldb, b_vec, j);
 			      else
-				sgemm_copy_row(order_type, blas_no_trans,
-					       m, n, b, ldb, b_vec, j);
+				sge_copy_row(order_type, blas_no_trans,
+					     m, n, b, ldb, b_vec, j);
 			      rin[0] = c_gen[cij];
 			      rin[1] = c_gen[cij + 1];
 			      rout[0] = c[cij];
@@ -10599,24 +10079,20 @@ void do_test_csymm_c_s_x
 				     norm, alpha_val, beta_val);
 
 			      /* print out info */
-			      printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-				     alpha[1]);;
+			      printf("alpha = ");
+			      printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);;
 			      printf("   ");
-			      printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
-				     beta[1]);;
+			      printf("beta = ");
+			      printf("(%16.8e, %16.8e)", beta[0], beta[1]);;
 			      printf("\n");
 
 			      printf("a\n");
-			      cprint_symm_matrix(a, m_i,
-						 lda, order_type, uplo_type);
-			      printf("b\n");
-			      sprint_matrix(b, m, n, ldb, order_type);
-
-			      printf("c_gen\n");
-			      cprint_matrix(c_gen, m, n, ldc, order_type);
-
-			      printf("c\n");
-			      cprint_matrix(c, m, n, ldc, order_type);
+			      csy_print_matrix(a, m_i, lda, order_type,
+					       uplo_type);
+			      sge_print_matrix(b, m, n, ldb, order_type, "B");
+			      cge_print_matrix(c_gen, m, n, ldc, order_type,
+					       "C_gen");
+			      cge_print_matrix(c, m, n, ldc, order_type, "C");
 
 			      printf("ratio = %g\n", ratio);
 			    }
@@ -10790,43 +10266,22 @@ void do_test_csymm_s_c_x
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c[i + 1] = 0.0;
-    c_gen[i] = 0.0;
-    c_gen[i + 1] = 0.0;
-  }
   a = (float *) blas_malloc(2 * max_mn * max_mn * sizeof(float));
   if (2 * max_mn * max_mn > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * max_mn * max_mn * inca; i += inca) {
-    a[i] = 0.0;
   }
   b = (float *) blas_malloc(2 * m * n * sizeof(float) * 2);
   if (2 * m * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incb; i += incb) {
-    b[i] = 0.0;
-    b[i + 1] = 0.0;
-  }
   a_vec = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * inca; i += inca) {
-    a_vec[i] = 0.0;
   }
   b_vec = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incb; i += incb) {
-    b_vec[i] = 0.0;
-    b_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -10975,7 +10430,8 @@ void do_test_csymm_s_c_x
 
 			  /* copy generated C matrix since this will be
 			     over written */
-			  cgemm_copy(order_type, m, n, c_gen, ldc, c, ldc);
+			  cge_copy_matrix(order_type, m, n, c_gen, ldc, c,
+					  ldc);
 
 			  /* call symm routines to be tested */
 			  FPU_FIX_STOP;
@@ -11006,17 +10462,17 @@ void do_test_csymm_s_c_x
 
 			  for (i = 0, ci = 0, ri = 0;
 			       i < m_i; i++, ci += incci, ri += incri) {
-			    ssymm_copy_row(order_type, uplo_type, side_type,
-					   m_i, a, lda, a_vec, i);
-			    for (j = 0, cij = ci, rij = ri;
-				 j < n_i; j++, cij += inccij, rij += incrij) {
+			    ssy_copy_row(order_type, uplo_type, m_i, a, lda,
+					 a_vec, i);
+			    for (j = 0, cij = ci, rij = ri; j < n_i;
+				 j++, cij += inccij, rij += incrij) {
 			      /* copy i-th row of A and j-th col of B */
 			      if (side_type == blas_left_side)
-				cgemm_copy_col(order_type, blas_no_trans,
-					       m, n, b, ldb, b_vec, j);
+				cge_copy_col(order_type, blas_no_trans,
+					     m, n, b, ldb, b_vec, j);
 			      else
-				cgemm_copy_row(order_type, blas_no_trans,
-					       m, n, b, ldb, b_vec, j);
+				cge_copy_row(order_type, blas_no_trans,
+					     m, n, b, ldb, b_vec, j);
 			      rin[0] = c_gen[cij];
 			      rin[1] = c_gen[cij + 1];
 			      rout[0] = c[cij];
@@ -11077,24 +10533,20 @@ void do_test_csymm_s_c_x
 				     norm, alpha_val, beta_val);
 
 			      /* print out info */
-			      printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-				     alpha[1]);;
+			      printf("alpha = ");
+			      printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);;
 			      printf("   ");
-			      printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
-				     beta[1]);;
+			      printf("beta = ");
+			      printf("(%16.8e, %16.8e)", beta[0], beta[1]);;
 			      printf("\n");
 
 			      printf("a\n");
-			      sprint_symm_matrix(a, m_i,
-						 lda, order_type, uplo_type);
-			      printf("b\n");
-			      cprint_matrix(b, m, n, ldb, order_type);
-
-			      printf("c_gen\n");
-			      cprint_matrix(c_gen, m, n, ldc, order_type);
-
-			      printf("c\n");
-			      cprint_matrix(c, m, n, ldc, order_type);
+			      ssy_print_matrix(a, m_i, lda, order_type,
+					       uplo_type);
+			      cge_print_matrix(b, m, n, ldb, order_type, "B");
+			      cge_print_matrix(c_gen, m, n, ldc, order_type,
+					       "C_gen");
+			      cge_print_matrix(c, m, n, ldc, order_type, "C");
 
 			      printf("ratio = %g\n", ratio);
 			    }
@@ -11268,41 +10720,22 @@ void do_test_csymm_s_s_x
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c[i + 1] = 0.0;
-    c_gen[i] = 0.0;
-    c_gen[i + 1] = 0.0;
-  }
   a = (float *) blas_malloc(2 * max_mn * max_mn * sizeof(float));
   if (2 * max_mn * max_mn > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * max_mn * max_mn * inca; i += inca) {
-    a[i] = 0.0;
   }
   b = (float *) blas_malloc(2 * m * n * sizeof(float));
   if (2 * m * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incb; i += incb) {
-    b[i] = 0.0;
-  }
   a_vec = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * inca; i += inca) {
-    a_vec[i] = 0.0;
   }
   b_vec = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incb; i += incb) {
-    b_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -11451,7 +10884,8 @@ void do_test_csymm_s_s_x
 
 			  /* copy generated C matrix since this will be
 			     over written */
-			  cgemm_copy(order_type, m, n, c_gen, ldc, c, ldc);
+			  cge_copy_matrix(order_type, m, n, c_gen, ldc, c,
+					  ldc);
 
 			  /* call symm routines to be tested */
 			  FPU_FIX_STOP;
@@ -11482,17 +10916,17 @@ void do_test_csymm_s_s_x
 
 			  for (i = 0, ci = 0, ri = 0;
 			       i < m_i; i++, ci += incci, ri += incri) {
-			    ssymm_copy_row(order_type, uplo_type, side_type,
-					   m_i, a, lda, a_vec, i);
-			    for (j = 0, cij = ci, rij = ri;
-				 j < n_i; j++, cij += inccij, rij += incrij) {
+			    ssy_copy_row(order_type, uplo_type, m_i, a, lda,
+					 a_vec, i);
+			    for (j = 0, cij = ci, rij = ri; j < n_i;
+				 j++, cij += inccij, rij += incrij) {
 			      /* copy i-th row of A and j-th col of B */
 			      if (side_type == blas_left_side)
-				sgemm_copy_col(order_type, blas_no_trans,
-					       m, n, b, ldb, b_vec, j);
+				sge_copy_col(order_type, blas_no_trans,
+					     m, n, b, ldb, b_vec, j);
 			      else
-				sgemm_copy_row(order_type, blas_no_trans,
-					       m, n, b, ldb, b_vec, j);
+				sge_copy_row(order_type, blas_no_trans,
+					     m, n, b, ldb, b_vec, j);
 			      rin[0] = c_gen[cij];
 			      rin[1] = c_gen[cij + 1];
 			      rout[0] = c[cij];
@@ -11553,24 +10987,20 @@ void do_test_csymm_s_s_x
 				     norm, alpha_val, beta_val);
 
 			      /* print out info */
-			      printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-				     alpha[1]);;
+			      printf("alpha = ");
+			      printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);;
 			      printf("   ");
-			      printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
-				     beta[1]);;
+			      printf("beta = ");
+			      printf("(%16.8e, %16.8e)", beta[0], beta[1]);;
 			      printf("\n");
 
 			      printf("a\n");
-			      sprint_symm_matrix(a, m_i,
-						 lda, order_type, uplo_type);
-			      printf("b\n");
-			      sprint_matrix(b, m, n, ldb, order_type);
-
-			      printf("c_gen\n");
-			      cprint_matrix(c_gen, m, n, ldc, order_type);
-
-			      printf("c\n");
-			      cprint_matrix(c, m, n, ldc, order_type);
+			      ssy_print_matrix(a, m_i, lda, order_type,
+					       uplo_type);
+			      sge_print_matrix(b, m, n, ldb, order_type, "B");
+			      cge_print_matrix(c_gen, m, n, ldc, order_type,
+					       "C_gen");
+			      cge_print_matrix(c, m, n, ldc, order_type, "C");
 
 			      printf("ratio = %g\n", ratio);
 			    }
@@ -11744,43 +11174,22 @@ void do_test_zsymm_z_d_x
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c[i + 1] = 0.0;
-    c_gen[i] = 0.0;
-    c_gen[i + 1] = 0.0;
-  }
   a = (double *) blas_malloc(2 * max_mn * max_mn * sizeof(double) * 2);
   if (2 * max_mn * max_mn > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * max_mn * max_mn * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   b = (double *) blas_malloc(2 * m * n * sizeof(double));
   if (2 * m * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incb; i += incb) {
-    b[i] = 0.0;
-  }
   a_vec = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * inca; i += inca) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
   }
   b_vec = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incb; i += incb) {
-    b_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -11929,7 +11338,8 @@ void do_test_zsymm_z_d_x
 
 			  /* copy generated C matrix since this will be
 			     over written */
-			  zgemm_copy(order_type, m, n, c_gen, ldc, c, ldc);
+			  zge_copy_matrix(order_type, m, n, c_gen, ldc, c,
+					  ldc);
 
 			  /* call symm routines to be tested */
 			  FPU_FIX_STOP;
@@ -11960,17 +11370,17 @@ void do_test_zsymm_z_d_x
 
 			  for (i = 0, ci = 0, ri = 0;
 			       i < m_i; i++, ci += incci, ri += incri) {
-			    zsymm_copy_row(order_type, uplo_type, side_type,
-					   m_i, a, lda, a_vec, i);
-			    for (j = 0, cij = ci, rij = ri;
-				 j < n_i; j++, cij += inccij, rij += incrij) {
+			    zsy_copy_row(order_type, uplo_type, m_i, a, lda,
+					 a_vec, i);
+			    for (j = 0, cij = ci, rij = ri; j < n_i;
+				 j++, cij += inccij, rij += incrij) {
 			      /* copy i-th row of A and j-th col of B */
 			      if (side_type == blas_left_side)
-				dgemm_copy_col(order_type, blas_no_trans,
-					       m, n, b, ldb, b_vec, j);
+				dge_copy_col(order_type, blas_no_trans,
+					     m, n, b, ldb, b_vec, j);
 			      else
-				dgemm_copy_row(order_type, blas_no_trans,
-					       m, n, b, ldb, b_vec, j);
+				dge_copy_row(order_type, blas_no_trans,
+					     m, n, b, ldb, b_vec, j);
 			      rin[0] = c_gen[cij];
 			      rin[1] = c_gen[cij + 1];
 			      rout[0] = c[cij];
@@ -12031,24 +11441,21 @@ void do_test_zsymm_z_d_x
 				     norm, alpha_val, beta_val);
 
 			      /* print out info */
-			      printf("alpha[0]=%.16e, alpha[1]=%.16e",
-				     alpha[0], alpha[1]);;
+			      printf("alpha = ");
+			      printf("(%24.16e, %24.16e)", alpha[0],
+				     alpha[1]);;
 			      printf("   ");
-			      printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				     beta[1]);;
+			      printf("beta = ");
+			      printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			      printf("\n");
 
 			      printf("a\n");
-			      zprint_symm_matrix(a, m_i,
-						 lda, order_type, uplo_type);
-			      printf("b\n");
-			      dprint_matrix(b, m, n, ldb, order_type);
-
-			      printf("c_gen\n");
-			      zprint_matrix(c_gen, m, n, ldc, order_type);
-
-			      printf("c\n");
-			      zprint_matrix(c, m, n, ldc, order_type);
+			      zsy_print_matrix(a, m_i, lda, order_type,
+					       uplo_type);
+			      dge_print_matrix(b, m, n, ldb, order_type, "B");
+			      zge_print_matrix(c_gen, m, n, ldc, order_type,
+					       "C_gen");
+			      zge_print_matrix(c, m, n, ldc, order_type, "C");
 
 			      printf("ratio = %g\n", ratio);
 			    }
@@ -12222,43 +11629,22 @@ void do_test_zsymm_d_z_x
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c[i + 1] = 0.0;
-    c_gen[i] = 0.0;
-    c_gen[i + 1] = 0.0;
-  }
   a = (double *) blas_malloc(2 * max_mn * max_mn * sizeof(double));
   if (2 * max_mn * max_mn > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * max_mn * max_mn * inca; i += inca) {
-    a[i] = 0.0;
   }
   b = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incb; i += incb) {
-    b[i] = 0.0;
-    b[i + 1] = 0.0;
-  }
   a_vec = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * inca; i += inca) {
-    a_vec[i] = 0.0;
   }
   b_vec = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incb; i += incb) {
-    b_vec[i] = 0.0;
-    b_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -12407,7 +11793,8 @@ void do_test_zsymm_d_z_x
 
 			  /* copy generated C matrix since this will be
 			     over written */
-			  zgemm_copy(order_type, m, n, c_gen, ldc, c, ldc);
+			  zge_copy_matrix(order_type, m, n, c_gen, ldc, c,
+					  ldc);
 
 			  /* call symm routines to be tested */
 			  FPU_FIX_STOP;
@@ -12438,17 +11825,17 @@ void do_test_zsymm_d_z_x
 
 			  for (i = 0, ci = 0, ri = 0;
 			       i < m_i; i++, ci += incci, ri += incri) {
-			    dsymm_copy_row(order_type, uplo_type, side_type,
-					   m_i, a, lda, a_vec, i);
-			    for (j = 0, cij = ci, rij = ri;
-				 j < n_i; j++, cij += inccij, rij += incrij) {
+			    dsy_copy_row(order_type, uplo_type, m_i, a, lda,
+					 a_vec, i);
+			    for (j = 0, cij = ci, rij = ri; j < n_i;
+				 j++, cij += inccij, rij += incrij) {
 			      /* copy i-th row of A and j-th col of B */
 			      if (side_type == blas_left_side)
-				zgemm_copy_col(order_type, blas_no_trans,
-					       m, n, b, ldb, b_vec, j);
+				zge_copy_col(order_type, blas_no_trans,
+					     m, n, b, ldb, b_vec, j);
 			      else
-				zgemm_copy_row(order_type, blas_no_trans,
-					       m, n, b, ldb, b_vec, j);
+				zge_copy_row(order_type, blas_no_trans,
+					     m, n, b, ldb, b_vec, j);
 			      rin[0] = c_gen[cij];
 			      rin[1] = c_gen[cij + 1];
 			      rout[0] = c[cij];
@@ -12509,24 +11896,21 @@ void do_test_zsymm_d_z_x
 				     norm, alpha_val, beta_val);
 
 			      /* print out info */
-			      printf("alpha[0]=%.16e, alpha[1]=%.16e",
-				     alpha[0], alpha[1]);;
+			      printf("alpha = ");
+			      printf("(%24.16e, %24.16e)", alpha[0],
+				     alpha[1]);;
 			      printf("   ");
-			      printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				     beta[1]);;
+			      printf("beta = ");
+			      printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			      printf("\n");
 
 			      printf("a\n");
-			      dprint_symm_matrix(a, m_i,
-						 lda, order_type, uplo_type);
-			      printf("b\n");
-			      zprint_matrix(b, m, n, ldb, order_type);
-
-			      printf("c_gen\n");
-			      zprint_matrix(c_gen, m, n, ldc, order_type);
-
-			      printf("c\n");
-			      zprint_matrix(c, m, n, ldc, order_type);
+			      dsy_print_matrix(a, m_i, lda, order_type,
+					       uplo_type);
+			      zge_print_matrix(b, m, n, ldb, order_type, "B");
+			      zge_print_matrix(c_gen, m, n, ldc, order_type,
+					       "C_gen");
+			      zge_print_matrix(c, m, n, ldc, order_type, "C");
 
 			      printf("ratio = %g\n", ratio);
 			    }
@@ -12700,41 +12084,22 @@ void do_test_zsymm_d_d_x
   if (2 * m * n > 0 && c_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c[i + 1] = 0.0;
-    c_gen[i] = 0.0;
-    c_gen[i + 1] = 0.0;
-  }
   a = (double *) blas_malloc(2 * max_mn * max_mn * sizeof(double));
   if (2 * max_mn * max_mn > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * max_mn * max_mn * inca; i += inca) {
-    a[i] = 0.0;
   }
   b = (double *) blas_malloc(2 * m * n * sizeof(double));
   if (2 * m * n > 0 && b == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m * n * incb; i += incb) {
-    b[i] = 0.0;
-  }
   a_vec = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * inca; i += inca) {
-    a_vec[i] = 0.0;
   }
   b_vec = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && b_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incb; i += incb) {
-    b_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
   if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -12883,7 +12248,8 @@ void do_test_zsymm_d_d_x
 
 			  /* copy generated C matrix since this will be
 			     over written */
-			  zgemm_copy(order_type, m, n, c_gen, ldc, c, ldc);
+			  zge_copy_matrix(order_type, m, n, c_gen, ldc, c,
+					  ldc);
 
 			  /* call symm routines to be tested */
 			  FPU_FIX_STOP;
@@ -12914,17 +12280,17 @@ void do_test_zsymm_d_d_x
 
 			  for (i = 0, ci = 0, ri = 0;
 			       i < m_i; i++, ci += incci, ri += incri) {
-			    dsymm_copy_row(order_type, uplo_type, side_type,
-					   m_i, a, lda, a_vec, i);
-			    for (j = 0, cij = ci, rij = ri;
-				 j < n_i; j++, cij += inccij, rij += incrij) {
+			    dsy_copy_row(order_type, uplo_type, m_i, a, lda,
+					 a_vec, i);
+			    for (j = 0, cij = ci, rij = ri; j < n_i;
+				 j++, cij += inccij, rij += incrij) {
 			      /* copy i-th row of A and j-th col of B */
 			      if (side_type == blas_left_side)
-				dgemm_copy_col(order_type, blas_no_trans,
-					       m, n, b, ldb, b_vec, j);
+				dge_copy_col(order_type, blas_no_trans,
+					     m, n, b, ldb, b_vec, j);
 			      else
-				dgemm_copy_row(order_type, blas_no_trans,
-					       m, n, b, ldb, b_vec, j);
+				dge_copy_row(order_type, blas_no_trans,
+					     m, n, b, ldb, b_vec, j);
 			      rin[0] = c_gen[cij];
 			      rin[1] = c_gen[cij + 1];
 			      rout[0] = c[cij];
@@ -12985,24 +12351,21 @@ void do_test_zsymm_d_d_x
 				     norm, alpha_val, beta_val);
 
 			      /* print out info */
-			      printf("alpha[0]=%.16e, alpha[1]=%.16e",
-				     alpha[0], alpha[1]);;
+			      printf("alpha = ");
+			      printf("(%24.16e, %24.16e)", alpha[0],
+				     alpha[1]);;
 			      printf("   ");
-			      printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				     beta[1]);;
+			      printf("beta = ");
+			      printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			      printf("\n");
 
 			      printf("a\n");
-			      dprint_symm_matrix(a, m_i,
-						 lda, order_type, uplo_type);
-			      printf("b\n");
-			      dprint_matrix(b, m, n, ldb, order_type);
-
-			      printf("c_gen\n");
-			      zprint_matrix(c_gen, m, n, ldc, order_type);
-
-			      printf("c\n");
-			      zprint_matrix(c, m, n, ldc, order_type);
+			      dsy_print_matrix(a, m_i, lda, order_type,
+					       uplo_type);
+			      dge_print_matrix(b, m, n, ldb, order_type, "B");
+			      zge_print_matrix(c_gen, m, n, ldc, order_type,
+					       "C_gen");
+			      zge_print_matrix(c, m, n, ldc, order_type, "C");
 
 			      printf("ratio = %g\n", ratio);
 			    }

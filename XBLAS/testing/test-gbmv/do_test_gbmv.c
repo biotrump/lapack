@@ -104,7 +104,6 @@ double do_test_dgbmv_d_s(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incAB;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -183,8 +182,7 @@ double do_test_dgbmv_d_s(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incAB = 1;
-
+  incx_gen = incy_gen = 1;
 
 
 
@@ -193,36 +191,21 @@ double do_test_dgbmv_d_s(int m, int n,
   if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-  }
   y = (double *) blas_malloc(max_mn * 2 * sizeof(double));
   if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-  }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-  }
   temp = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incAB; i += incAB) {
-    temp[i] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double));
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double));
@@ -376,11 +359,6 @@ double do_test_dgbmv_d_s(int m, int n,
 			incx = incx_val;
 
 
-			/* zero out x */
-			for (j = 0; j < n_i * 2 * incx_gen; j++) {
-			  x[j] = 0.0;
-			}
-
 			/* set x starting index */
 			ix = 0;
 			if (incx < 0)
@@ -401,11 +379,6 @@ double do_test_dgbmv_d_s(int m, int n,
 			  /* setting incy */
 			  incy = incy_val;
 
-
-			  /* zero out vector */
-			  for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			    y[j] = 0.0;
-			  }
 
 			  /* set y starting index */
 			  iy = 0;
@@ -541,11 +514,7 @@ double do_test_dgbmv_d_s(int m, int n,
 
 				if (j > 0)
 				  printf("        ");
-				for (k = 0; k < n_i * incAB; k += incAB) {
-				  printf("%.16e", temp[k]);
-				  printf("  ");
-				}
-				printf("\n");
+				dprint_vector(temp, n_i, 1, NULL);
 			      }
 
 			      for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
@@ -553,18 +522,16 @@ double do_test_dgbmv_d_s(int m, int n,
 
 				if (j < n_i) {
 				  printf("      ");
-				  printf("x[%d]=%.8e", ix, x[ix]);
+				  printf("%16.8e", x[ix]);
 				  printf("\n");
 				}
 				if (k < m_i) {
 				  printf("      ");
-				  printf("y_gen[%d]=%.16e", k * incy_gen,
-					 y_gen[k * incy_gen]);
+				  printf("%24.16e", y_gen[k * incy_gen]);
 				  printf("\n");
 				  printf("      ");
-				  printf("y_final[%d]=", iy);
-				  printf("%.16e", y[iy]);
-
+				  printf("y_final[%d] = ", iy);
+				  printf("%24.16e", y[iy]);
 				  printf("\n");
 				}
 
@@ -573,16 +540,17 @@ double do_test_dgbmv_d_s(int m, int n,
 			      }
 
 			      printf("      ");
-			      printf("alpha=%.16e", alpha);
+			      printf("alpha = ");
+			      printf("%24.16e", alpha);
 			      printf("\n      ");
-			      printf("beta=%.16e", beta);
+			      printf("beta = ");
+			      printf("%24.16e", beta);
 			      printf("\n");
 			      for (j = 0; j < m_i; j++) {
 				printf("      ");
-				printf
-				  ("head_r_true[%d]=%.16e, tail_r_true[%d]=%.16e",
-				   j * incy_gen, head_r_true[j * incy_gen],
-				   j * incy_gen, tail_r_true[j * incy_gen]);
+				printf("[%24.16e, %24.16e]",
+				       head_r_true[j * incy_gen],
+				       tail_r_true[j * incy_gen]);
 				printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 			      }
 
@@ -749,7 +717,6 @@ double do_test_dgbmv_s_d(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incAB;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -828,8 +795,7 @@ double do_test_dgbmv_s_d(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incAB = 1;
-
+  incx_gen = incy_gen = 1;
 
 
 
@@ -838,36 +804,21 @@ double do_test_dgbmv_s_d(int m, int n,
   if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-  }
   y = (double *) blas_malloc(max_mn * 2 * sizeof(double));
   if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
   }
   x_gen = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-  }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-  }
   temp = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incAB; i += incAB) {
-    temp[i] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double));
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double));
@@ -1021,11 +972,6 @@ double do_test_dgbmv_s_d(int m, int n,
 			incx = incx_val;
 
 
-			/* zero out x */
-			for (j = 0; j < n_i * 2 * incx_gen; j++) {
-			  x[j] = 0.0;
-			}
-
 			/* set x starting index */
 			ix = 0;
 			if (incx < 0)
@@ -1046,11 +992,6 @@ double do_test_dgbmv_s_d(int m, int n,
 			  /* setting incy */
 			  incy = incy_val;
 
-
-			  /* zero out vector */
-			  for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			    y[j] = 0.0;
-			  }
 
 			  /* set y starting index */
 			  iy = 0;
@@ -1186,11 +1127,7 @@ double do_test_dgbmv_s_d(int m, int n,
 
 				if (j > 0)
 				  printf("        ");
-				for (k = 0; k < n_i * incAB; k += incAB) {
-				  printf("%.8e", temp[k]);
-				  printf("  ");
-				}
-				printf("\n");
+				sprint_vector(temp, n_i, 1, NULL);
 			      }
 
 			      for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
@@ -1198,18 +1135,16 @@ double do_test_dgbmv_s_d(int m, int n,
 
 				if (j < n_i) {
 				  printf("      ");
-				  printf("x[%d]=%.16e", ix, x[ix]);
+				  printf("%24.16e", x[ix]);
 				  printf("\n");
 				}
 				if (k < m_i) {
 				  printf("      ");
-				  printf("y_gen[%d]=%.16e", k * incy_gen,
-					 y_gen[k * incy_gen]);
+				  printf("%24.16e", y_gen[k * incy_gen]);
 				  printf("\n");
 				  printf("      ");
-				  printf("y_final[%d]=", iy);
-				  printf("%.16e", y[iy]);
-
+				  printf("y_final[%d] = ", iy);
+				  printf("%24.16e", y[iy]);
 				  printf("\n");
 				}
 
@@ -1218,16 +1153,17 @@ double do_test_dgbmv_s_d(int m, int n,
 			      }
 
 			      printf("      ");
-			      printf("alpha=%.16e", alpha);
+			      printf("alpha = ");
+			      printf("%24.16e", alpha);
 			      printf("\n      ");
-			      printf("beta=%.16e", beta);
+			      printf("beta = ");
+			      printf("%24.16e", beta);
 			      printf("\n");
 			      for (j = 0; j < m_i; j++) {
 				printf("      ");
-				printf
-				  ("head_r_true[%d]=%.16e, tail_r_true[%d]=%.16e",
-				   j * incy_gen, head_r_true[j * incy_gen],
-				   j * incy_gen, tail_r_true[j * incy_gen]);
+				printf("[%24.16e, %24.16e]",
+				       head_r_true[j * incy_gen],
+				       tail_r_true[j * incy_gen]);
 				printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 			      }
 
@@ -1394,7 +1330,6 @@ double do_test_dgbmv_s_s(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incAB;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -1473,8 +1408,7 @@ double do_test_dgbmv_s_s(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incAB = 1;
-
+  incx_gen = incy_gen = 1;
 
 
 
@@ -1483,36 +1417,21 @@ double do_test_dgbmv_s_s(int m, int n,
   if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-  }
   y = (double *) blas_malloc(max_mn * 2 * sizeof(double));
   if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-  }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-  }
   temp = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incAB; i += incAB) {
-    temp[i] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double));
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double));
@@ -1666,11 +1585,6 @@ double do_test_dgbmv_s_s(int m, int n,
 			incx = incx_val;
 
 
-			/* zero out x */
-			for (j = 0; j < n_i * 2 * incx_gen; j++) {
-			  x[j] = 0.0;
-			}
-
 			/* set x starting index */
 			ix = 0;
 			if (incx < 0)
@@ -1691,11 +1605,6 @@ double do_test_dgbmv_s_s(int m, int n,
 			  /* setting incy */
 			  incy = incy_val;
 
-
-			  /* zero out vector */
-			  for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			    y[j] = 0.0;
-			  }
 
 			  /* set y starting index */
 			  iy = 0;
@@ -1831,11 +1740,7 @@ double do_test_dgbmv_s_s(int m, int n,
 
 				if (j > 0)
 				  printf("        ");
-				for (k = 0; k < n_i * incAB; k += incAB) {
-				  printf("%.8e", temp[k]);
-				  printf("  ");
-				}
-				printf("\n");
+				sprint_vector(temp, n_i, 1, NULL);
 			      }
 
 			      for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
@@ -1843,18 +1748,16 @@ double do_test_dgbmv_s_s(int m, int n,
 
 				if (j < n_i) {
 				  printf("      ");
-				  printf("x[%d]=%.8e", ix, x[ix]);
+				  printf("%16.8e", x[ix]);
 				  printf("\n");
 				}
 				if (k < m_i) {
 				  printf("      ");
-				  printf("y_gen[%d]=%.16e", k * incy_gen,
-					 y_gen[k * incy_gen]);
+				  printf("%24.16e", y_gen[k * incy_gen]);
 				  printf("\n");
 				  printf("      ");
-				  printf("y_final[%d]=", iy);
-				  printf("%.16e", y[iy]);
-
+				  printf("y_final[%d] = ", iy);
+				  printf("%24.16e", y[iy]);
 				  printf("\n");
 				}
 
@@ -1863,16 +1766,17 @@ double do_test_dgbmv_s_s(int m, int n,
 			      }
 
 			      printf("      ");
-			      printf("alpha=%.16e", alpha);
+			      printf("alpha = ");
+			      printf("%24.16e", alpha);
 			      printf("\n      ");
-			      printf("beta=%.16e", beta);
+			      printf("beta = ");
+			      printf("%24.16e", beta);
 			      printf("\n");
 			      for (j = 0; j < m_i; j++) {
 				printf("      ");
-				printf
-				  ("head_r_true[%d]=%.16e, tail_r_true[%d]=%.16e",
-				   j * incy_gen, head_r_true[j * incy_gen],
-				   j * incy_gen, tail_r_true[j * incy_gen]);
+				printf("[%24.16e, %24.16e]",
+				       head_r_true[j * incy_gen],
+				       tail_r_true[j * incy_gen]);
 				printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 			      }
 
@@ -2039,7 +1943,6 @@ double do_test_zgbmv_z_c(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incAB;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -2119,51 +2022,30 @@ double do_test_zgbmv_z_c(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incAB = 1;
+  incx_gen = incy_gen = 1;
   incx_gen *= 2;
   incy_gen *= 2;
-  incAB *= 2;
 
   /* get space for calculation */
   x = (float *) blas_malloc(max_mn * 2 * sizeof(float) * 2);
   if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
   y = (double *) blas_malloc(max_mn * 2 * sizeof(double) * 2);
   if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
-  }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
   temp = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incAB; i += incAB) {
-    temp[i] = 0.0;
-    temp[i + 1] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
@@ -2320,11 +2202,6 @@ double do_test_zgbmv_z_c(int m, int n,
 			incx = incx_val;
 			incx *= 2;
 
-			/* zero out x */
-			for (j = 0; j < n_i * 2 * incx_gen; j++) {
-			  x[j] = 0.0;
-			}
-
 			/* set x starting index */
 			ix = 0;
 			if (incx < 0)
@@ -2346,11 +2223,6 @@ double do_test_zgbmv_z_c(int m, int n,
 			  /* setting incy */
 			  incy = incy_val;
 			  incy *= 2;
-
-			  /* zero out vector */
-			  for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			    y[j] = 0.0;
-			  }
 
 			  /* set y starting index */
 			  iy = 0;
@@ -2487,12 +2359,7 @@ double do_test_zgbmv_z_c(int m, int n,
 
 				if (j > 0)
 				  printf("        ");
-				for (k = 0; k < n_i * incAB; k += incAB) {
-				  printf("(%.16e, %.16e)", temp[k],
-					 temp[k + 1]);
-				  printf("  ");
-				}
-				printf("\n");
+				zprint_vector(temp, n_i, 1, NULL);
 			      }
 
 			      for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
@@ -2500,21 +2367,20 @@ double do_test_zgbmv_z_c(int m, int n,
 
 				if (j < n_i) {
 				  printf("      ");
-				  printf("x[%d]=%.8e, x[%d+1]=%.8e", ix,
-					 x[ix], ix, x[ix + 1]);
+				  printf("(%16.8e, %16.8e)", x[ix],
+					 x[ix + 1]);
 				  printf("\n");
 				}
 				if (k < m_i) {
 				  printf("      ");
-				  printf("y_gen[%d]=%.16e, y_gen[%d+1]=%.16e",
-					 k * incy_gen, y_gen[k * incy_gen],
-					 k * incy_gen,
+				  printf("(%24.16e, %24.16e)",
+					 y_gen[k * incy_gen],
 					 y_gen[k * incy_gen + 1]);
 				  printf("\n");
 				  printf("      ");
-				  printf("y_final[%d]=", iy);
-				  printf("(%.16e, %.16e)", y[iy], y[iy + 1]);
-
+				  printf("y_final[%d] = ", iy);
+				  printf("(%24.16e, %24.16e)", y[iy],
+					 y[iy + 1]);
 				  printf("\n");
 				}
 
@@ -2523,15 +2389,21 @@ double do_test_zgbmv_z_c(int m, int n,
 			      }
 
 			      printf("      ");
-			      printf("alpha[0]=%.16e, alpha[1]=%.16e",
-				     alpha[0], alpha[1]);
+			      printf("alpha = ");
+			      printf("(%24.16e, %24.16e)", alpha[0],
+				     alpha[1]);
 			      printf("\n      ");
-			      printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				     beta[1]);
+			      printf("beta = ");
+			      printf("(%24.16e, %24.16e)", beta[0], beta[1]);
 			      printf("\n");
 			      for (j = 0; j < m_i; j++) {
 				printf("      ");
-
+				printf
+				  ("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				   head_r_true[j * incy_gen],
+				   tail_r_true[j * incy_gen],
+				   head_r_true[j * incy_gen + 1],
+				   tail_r_true[j * incy_gen + 1]);
 				printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 			      }
 
@@ -2698,7 +2570,6 @@ double do_test_zgbmv_c_z(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incAB;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -2778,51 +2649,30 @@ double do_test_zgbmv_c_z(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incAB = 1;
+  incx_gen = incy_gen = 1;
   incx_gen *= 2;
   incy_gen *= 2;
-  incAB *= 2;
 
   /* get space for calculation */
   x = (double *) blas_malloc(max_mn * 2 * sizeof(double) * 2);
   if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
   y = (double *) blas_malloc(max_mn * 2 * sizeof(double) * 2);
   if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
   }
   x_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
-  }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
   temp = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incAB; i += incAB) {
-    temp[i] = 0.0;
-    temp[i + 1] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
@@ -2979,11 +2829,6 @@ double do_test_zgbmv_c_z(int m, int n,
 			incx = incx_val;
 			incx *= 2;
 
-			/* zero out x */
-			for (j = 0; j < n_i * 2 * incx_gen; j++) {
-			  x[j] = 0.0;
-			}
-
 			/* set x starting index */
 			ix = 0;
 			if (incx < 0)
@@ -3005,11 +2850,6 @@ double do_test_zgbmv_c_z(int m, int n,
 			  /* setting incy */
 			  incy = incy_val;
 			  incy *= 2;
-
-			  /* zero out vector */
-			  for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			    y[j] = 0.0;
-			  }
 
 			  /* set y starting index */
 			  iy = 0;
@@ -3146,12 +2986,7 @@ double do_test_zgbmv_c_z(int m, int n,
 
 				if (j > 0)
 				  printf("        ");
-				for (k = 0; k < n_i * incAB; k += incAB) {
-				  printf("(%.8e, %.8e)", temp[k],
-					 temp[k + 1]);
-				  printf("  ");
-				}
-				printf("\n");
+				cprint_vector(temp, n_i, 1, NULL);
 			      }
 
 			      for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
@@ -3159,21 +2994,20 @@ double do_test_zgbmv_c_z(int m, int n,
 
 				if (j < n_i) {
 				  printf("      ");
-				  printf("x[%d]=%.16e, x[%d+1]=%.16e", ix,
-					 x[ix], ix, x[ix + 1]);
+				  printf("(%24.16e, %24.16e)", x[ix],
+					 x[ix + 1]);
 				  printf("\n");
 				}
 				if (k < m_i) {
 				  printf("      ");
-				  printf("y_gen[%d]=%.16e, y_gen[%d+1]=%.16e",
-					 k * incy_gen, y_gen[k * incy_gen],
-					 k * incy_gen,
+				  printf("(%24.16e, %24.16e)",
+					 y_gen[k * incy_gen],
 					 y_gen[k * incy_gen + 1]);
 				  printf("\n");
 				  printf("      ");
-				  printf("y_final[%d]=", iy);
-				  printf("(%.16e, %.16e)", y[iy], y[iy + 1]);
-
+				  printf("y_final[%d] = ", iy);
+				  printf("(%24.16e, %24.16e)", y[iy],
+					 y[iy + 1]);
 				  printf("\n");
 				}
 
@@ -3182,15 +3016,21 @@ double do_test_zgbmv_c_z(int m, int n,
 			      }
 
 			      printf("      ");
-			      printf("alpha[0]=%.16e, alpha[1]=%.16e",
-				     alpha[0], alpha[1]);
+			      printf("alpha = ");
+			      printf("(%24.16e, %24.16e)", alpha[0],
+				     alpha[1]);
 			      printf("\n      ");
-			      printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				     beta[1]);
+			      printf("beta = ");
+			      printf("(%24.16e, %24.16e)", beta[0], beta[1]);
 			      printf("\n");
 			      for (j = 0; j < m_i; j++) {
 				printf("      ");
-
+				printf
+				  ("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				   head_r_true[j * incy_gen],
+				   tail_r_true[j * incy_gen],
+				   head_r_true[j * incy_gen + 1],
+				   tail_r_true[j * incy_gen + 1]);
 				printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 			      }
 
@@ -3357,7 +3197,6 @@ double do_test_zgbmv_c_c(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incAB;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -3437,51 +3276,30 @@ double do_test_zgbmv_c_c(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incAB = 1;
+  incx_gen = incy_gen = 1;
   incx_gen *= 2;
   incy_gen *= 2;
-  incAB *= 2;
 
   /* get space for calculation */
   x = (float *) blas_malloc(max_mn * 2 * sizeof(float) * 2);
   if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
   y = (double *) blas_malloc(max_mn * 2 * sizeof(double) * 2);
   if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
-  }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
   temp = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incAB; i += incAB) {
-    temp[i] = 0.0;
-    temp[i + 1] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
@@ -3638,11 +3456,6 @@ double do_test_zgbmv_c_c(int m, int n,
 			incx = incx_val;
 			incx *= 2;
 
-			/* zero out x */
-			for (j = 0; j < n_i * 2 * incx_gen; j++) {
-			  x[j] = 0.0;
-			}
-
 			/* set x starting index */
 			ix = 0;
 			if (incx < 0)
@@ -3664,11 +3477,6 @@ double do_test_zgbmv_c_c(int m, int n,
 			  /* setting incy */
 			  incy = incy_val;
 			  incy *= 2;
-
-			  /* zero out vector */
-			  for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			    y[j] = 0.0;
-			  }
 
 			  /* set y starting index */
 			  iy = 0;
@@ -3805,12 +3613,7 @@ double do_test_zgbmv_c_c(int m, int n,
 
 				if (j > 0)
 				  printf("        ");
-				for (k = 0; k < n_i * incAB; k += incAB) {
-				  printf("(%.8e, %.8e)", temp[k],
-					 temp[k + 1]);
-				  printf("  ");
-				}
-				printf("\n");
+				cprint_vector(temp, n_i, 1, NULL);
 			      }
 
 			      for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
@@ -3818,21 +3621,20 @@ double do_test_zgbmv_c_c(int m, int n,
 
 				if (j < n_i) {
 				  printf("      ");
-				  printf("x[%d]=%.8e, x[%d+1]=%.8e", ix,
-					 x[ix], ix, x[ix + 1]);
+				  printf("(%16.8e, %16.8e)", x[ix],
+					 x[ix + 1]);
 				  printf("\n");
 				}
 				if (k < m_i) {
 				  printf("      ");
-				  printf("y_gen[%d]=%.16e, y_gen[%d+1]=%.16e",
-					 k * incy_gen, y_gen[k * incy_gen],
-					 k * incy_gen,
+				  printf("(%24.16e, %24.16e)",
+					 y_gen[k * incy_gen],
 					 y_gen[k * incy_gen + 1]);
 				  printf("\n");
 				  printf("      ");
-				  printf("y_final[%d]=", iy);
-				  printf("(%.16e, %.16e)", y[iy], y[iy + 1]);
-
+				  printf("y_final[%d] = ", iy);
+				  printf("(%24.16e, %24.16e)", y[iy],
+					 y[iy + 1]);
 				  printf("\n");
 				}
 
@@ -3841,15 +3643,21 @@ double do_test_zgbmv_c_c(int m, int n,
 			      }
 
 			      printf("      ");
-			      printf("alpha[0]=%.16e, alpha[1]=%.16e",
-				     alpha[0], alpha[1]);
+			      printf("alpha = ");
+			      printf("(%24.16e, %24.16e)", alpha[0],
+				     alpha[1]);
 			      printf("\n      ");
-			      printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				     beta[1]);
+			      printf("beta = ");
+			      printf("(%24.16e, %24.16e)", beta[0], beta[1]);
 			      printf("\n");
 			      for (j = 0; j < m_i; j++) {
 				printf("      ");
-
+				printf
+				  ("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				   head_r_true[j * incy_gen],
+				   tail_r_true[j * incy_gen],
+				   head_r_true[j * incy_gen + 1],
+				   tail_r_true[j * incy_gen + 1]);
 				printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 			      }
 
@@ -4016,7 +3824,6 @@ double do_test_cgbmv_c_s(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incAB;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -4096,49 +3903,30 @@ double do_test_cgbmv_c_s(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incAB = 1;
+  incx_gen = incy_gen = 1;
 
   incy_gen *= 2;
-  incAB *= 2;
 
   /* get space for calculation */
   x = (float *) blas_malloc(max_mn * 2 * sizeof(float));
   if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-  }
   y = (float *) blas_malloc(max_mn * 2 * sizeof(float) * 2);
   if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-  }
   y_gen = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
   temp = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incAB; i += incAB) {
-    temp[i] = 0.0;
-    temp[i + 1] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
@@ -4295,11 +4083,6 @@ double do_test_cgbmv_c_s(int m, int n,
 			incx = incx_val;
 
 
-			/* zero out x */
-			for (j = 0; j < n_i * 2 * incx_gen; j++) {
-			  x[j] = 0.0;
-			}
-
 			/* set x starting index */
 			ix = 0;
 			if (incx < 0)
@@ -4320,11 +4103,6 @@ double do_test_cgbmv_c_s(int m, int n,
 			  /* setting incy */
 			  incy = incy_val;
 			  incy *= 2;
-
-			  /* zero out vector */
-			  for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			    y[j] = 0.0;
-			  }
 
 			  /* set y starting index */
 			  iy = 0;
@@ -4461,12 +4239,7 @@ double do_test_cgbmv_c_s(int m, int n,
 
 				if (j > 0)
 				  printf("        ");
-				for (k = 0; k < n_i * incAB; k += incAB) {
-				  printf("(%.8e, %.8e)", temp[k],
-					 temp[k + 1]);
-				  printf("  ");
-				}
-				printf("\n");
+				cprint_vector(temp, n_i, 1, NULL);
 			      }
 
 			      for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
@@ -4474,20 +4247,19 @@ double do_test_cgbmv_c_s(int m, int n,
 
 				if (j < n_i) {
 				  printf("      ");
-				  printf("x[%d]=%.8e", ix, x[ix]);
+				  printf("%16.8e", x[ix]);
 				  printf("\n");
 				}
 				if (k < m_i) {
 				  printf("      ");
-				  printf("y_gen[%d]=%.8e, y_gen[%d+1]=%.8e",
-					 k * incy_gen, y_gen[k * incy_gen],
-					 k * incy_gen,
+				  printf("(%16.8e, %16.8e)",
+					 y_gen[k * incy_gen],
 					 y_gen[k * incy_gen + 1]);
 				  printf("\n");
 				  printf("      ");
-				  printf("y_final[%d]=", iy);
-				  printf("(%.8e, %.8e)", y[iy], y[iy + 1]);
-
+				  printf("y_final[%d] = ", iy);
+				  printf("(%16.8e, %16.8e)", y[iy],
+					 y[iy + 1]);
 				  printf("\n");
 				}
 
@@ -4496,15 +4268,20 @@ double do_test_cgbmv_c_s(int m, int n,
 			      }
 
 			      printf("      ");
-			      printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-				     alpha[1]);
+			      printf("alpha = ");
+			      printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);
 			      printf("\n      ");
-			      printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
-				     beta[1]);
+			      printf("beta = ");
+			      printf("(%16.8e, %16.8e)", beta[0], beta[1]);
 			      printf("\n");
 			      for (j = 0; j < m_i; j++) {
 				printf("      ");
-
+				printf
+				  ("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				   head_r_true[j * incy_gen],
+				   tail_r_true[j * incy_gen],
+				   head_r_true[j * incy_gen + 1],
+				   tail_r_true[j * incy_gen + 1]);
 				printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 			      }
 
@@ -4671,7 +4448,6 @@ double do_test_cgbmv_s_c(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incAB;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -4751,50 +4527,30 @@ double do_test_cgbmv_s_c(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incAB = 1;
+  incx_gen = incy_gen = 1;
   incx_gen *= 2;
   incy_gen *= 2;
-
 
   /* get space for calculation */
   x = (float *) blas_malloc(max_mn * 2 * sizeof(float) * 2);
   if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
   y = (float *) blas_malloc(max_mn * 2 * sizeof(float) * 2);
   if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
-  }
   y_gen = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
   temp = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incAB; i += incAB) {
-    temp[i] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
@@ -4950,11 +4706,6 @@ double do_test_cgbmv_s_c(int m, int n,
 			incx = incx_val;
 			incx *= 2;
 
-			/* zero out x */
-			for (j = 0; j < n_i * 2 * incx_gen; j++) {
-			  x[j] = 0.0;
-			}
-
 			/* set x starting index */
 			ix = 0;
 			if (incx < 0)
@@ -4976,11 +4727,6 @@ double do_test_cgbmv_s_c(int m, int n,
 			  /* setting incy */
 			  incy = incy_val;
 			  incy *= 2;
-
-			  /* zero out vector */
-			  for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			    y[j] = 0.0;
-			  }
 
 			  /* set y starting index */
 			  iy = 0;
@@ -5117,11 +4863,7 @@ double do_test_cgbmv_s_c(int m, int n,
 
 				if (j > 0)
 				  printf("        ");
-				for (k = 0; k < n_i * incAB; k += incAB) {
-				  printf("%.8e", temp[k]);
-				  printf("  ");
-				}
-				printf("\n");
+				sprint_vector(temp, n_i, 1, NULL);
 			      }
 
 			      for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
@@ -5129,21 +4871,20 @@ double do_test_cgbmv_s_c(int m, int n,
 
 				if (j < n_i) {
 				  printf("      ");
-				  printf("x[%d]=%.8e, x[%d+1]=%.8e", ix,
-					 x[ix], ix, x[ix + 1]);
+				  printf("(%16.8e, %16.8e)", x[ix],
+					 x[ix + 1]);
 				  printf("\n");
 				}
 				if (k < m_i) {
 				  printf("      ");
-				  printf("y_gen[%d]=%.8e, y_gen[%d+1]=%.8e",
-					 k * incy_gen, y_gen[k * incy_gen],
-					 k * incy_gen,
+				  printf("(%16.8e, %16.8e)",
+					 y_gen[k * incy_gen],
 					 y_gen[k * incy_gen + 1]);
 				  printf("\n");
 				  printf("      ");
-				  printf("y_final[%d]=", iy);
-				  printf("(%.8e, %.8e)", y[iy], y[iy + 1]);
-
+				  printf("y_final[%d] = ", iy);
+				  printf("(%16.8e, %16.8e)", y[iy],
+					 y[iy + 1]);
 				  printf("\n");
 				}
 
@@ -5152,15 +4893,20 @@ double do_test_cgbmv_s_c(int m, int n,
 			      }
 
 			      printf("      ");
-			      printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-				     alpha[1]);
+			      printf("alpha = ");
+			      printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);
 			      printf("\n      ");
-			      printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
-				     beta[1]);
+			      printf("beta = ");
+			      printf("(%16.8e, %16.8e)", beta[0], beta[1]);
 			      printf("\n");
 			      for (j = 0; j < m_i; j++) {
 				printf("      ");
-
+				printf
+				  ("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				   head_r_true[j * incy_gen],
+				   tail_r_true[j * incy_gen],
+				   head_r_true[j * incy_gen + 1],
+				   tail_r_true[j * incy_gen + 1]);
 				printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 			      }
 
@@ -5327,7 +5073,6 @@ double do_test_cgbmv_s_s(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incAB;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -5407,48 +5152,30 @@ double do_test_cgbmv_s_s(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incAB = 1;
+  incx_gen = incy_gen = 1;
 
   incy_gen *= 2;
-
 
   /* get space for calculation */
   x = (float *) blas_malloc(max_mn * 2 * sizeof(float));
   if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-  }
   y = (float *) blas_malloc(max_mn * 2 * sizeof(float) * 2);
   if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-  }
   y_gen = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
   temp = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incAB; i += incAB) {
-    temp[i] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
@@ -5604,11 +5331,6 @@ double do_test_cgbmv_s_s(int m, int n,
 			incx = incx_val;
 
 
-			/* zero out x */
-			for (j = 0; j < n_i * 2 * incx_gen; j++) {
-			  x[j] = 0.0;
-			}
-
 			/* set x starting index */
 			ix = 0;
 			if (incx < 0)
@@ -5629,11 +5351,6 @@ double do_test_cgbmv_s_s(int m, int n,
 			  /* setting incy */
 			  incy = incy_val;
 			  incy *= 2;
-
-			  /* zero out vector */
-			  for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			    y[j] = 0.0;
-			  }
 
 			  /* set y starting index */
 			  iy = 0;
@@ -5770,11 +5487,7 @@ double do_test_cgbmv_s_s(int m, int n,
 
 				if (j > 0)
 				  printf("        ");
-				for (k = 0; k < n_i * incAB; k += incAB) {
-				  printf("%.8e", temp[k]);
-				  printf("  ");
-				}
-				printf("\n");
+				sprint_vector(temp, n_i, 1, NULL);
 			      }
 
 			      for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
@@ -5782,20 +5495,19 @@ double do_test_cgbmv_s_s(int m, int n,
 
 				if (j < n_i) {
 				  printf("      ");
-				  printf("x[%d]=%.8e", ix, x[ix]);
+				  printf("%16.8e", x[ix]);
 				  printf("\n");
 				}
 				if (k < m_i) {
 				  printf("      ");
-				  printf("y_gen[%d]=%.8e, y_gen[%d+1]=%.8e",
-					 k * incy_gen, y_gen[k * incy_gen],
-					 k * incy_gen,
+				  printf("(%16.8e, %16.8e)",
+					 y_gen[k * incy_gen],
 					 y_gen[k * incy_gen + 1]);
 				  printf("\n");
 				  printf("      ");
-				  printf("y_final[%d]=", iy);
-				  printf("(%.8e, %.8e)", y[iy], y[iy + 1]);
-
+				  printf("y_final[%d] = ", iy);
+				  printf("(%16.8e, %16.8e)", y[iy],
+					 y[iy + 1]);
 				  printf("\n");
 				}
 
@@ -5804,15 +5516,20 @@ double do_test_cgbmv_s_s(int m, int n,
 			      }
 
 			      printf("      ");
-			      printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-				     alpha[1]);
+			      printf("alpha = ");
+			      printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);
 			      printf("\n      ");
-			      printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
-				     beta[1]);
+			      printf("beta = ");
+			      printf("(%16.8e, %16.8e)", beta[0], beta[1]);
 			      printf("\n");
 			      for (j = 0; j < m_i; j++) {
 				printf("      ");
-
+				printf
+				  ("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				   head_r_true[j * incy_gen],
+				   tail_r_true[j * incy_gen],
+				   head_r_true[j * incy_gen + 1],
+				   tail_r_true[j * incy_gen + 1]);
 				printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 			      }
 
@@ -5979,7 +5696,6 @@ double do_test_zgbmv_z_d(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incAB;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -6059,49 +5775,30 @@ double do_test_zgbmv_z_d(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incAB = 1;
+  incx_gen = incy_gen = 1;
 
   incy_gen *= 2;
-  incAB *= 2;
 
   /* get space for calculation */
   x = (double *) blas_malloc(max_mn * 2 * sizeof(double));
   if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-  }
   y = (double *) blas_malloc(max_mn * 2 * sizeof(double) * 2);
   if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
   }
   x_gen = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-  }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
   temp = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incAB; i += incAB) {
-    temp[i] = 0.0;
-    temp[i + 1] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
@@ -6258,11 +5955,6 @@ double do_test_zgbmv_z_d(int m, int n,
 			incx = incx_val;
 
 
-			/* zero out x */
-			for (j = 0; j < n_i * 2 * incx_gen; j++) {
-			  x[j] = 0.0;
-			}
-
 			/* set x starting index */
 			ix = 0;
 			if (incx < 0)
@@ -6283,11 +5975,6 @@ double do_test_zgbmv_z_d(int m, int n,
 			  /* setting incy */
 			  incy = incy_val;
 			  incy *= 2;
-
-			  /* zero out vector */
-			  for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			    y[j] = 0.0;
-			  }
 
 			  /* set y starting index */
 			  iy = 0;
@@ -6424,12 +6111,7 @@ double do_test_zgbmv_z_d(int m, int n,
 
 				if (j > 0)
 				  printf("        ");
-				for (k = 0; k < n_i * incAB; k += incAB) {
-				  printf("(%.16e, %.16e)", temp[k],
-					 temp[k + 1]);
-				  printf("  ");
-				}
-				printf("\n");
+				zprint_vector(temp, n_i, 1, NULL);
 			      }
 
 			      for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
@@ -6437,20 +6119,19 @@ double do_test_zgbmv_z_d(int m, int n,
 
 				if (j < n_i) {
 				  printf("      ");
-				  printf("x[%d]=%.16e", ix, x[ix]);
+				  printf("%24.16e", x[ix]);
 				  printf("\n");
 				}
 				if (k < m_i) {
 				  printf("      ");
-				  printf("y_gen[%d]=%.16e, y_gen[%d+1]=%.16e",
-					 k * incy_gen, y_gen[k * incy_gen],
-					 k * incy_gen,
+				  printf("(%24.16e, %24.16e)",
+					 y_gen[k * incy_gen],
 					 y_gen[k * incy_gen + 1]);
 				  printf("\n");
 				  printf("      ");
-				  printf("y_final[%d]=", iy);
-				  printf("(%.16e, %.16e)", y[iy], y[iy + 1]);
-
+				  printf("y_final[%d] = ", iy);
+				  printf("(%24.16e, %24.16e)", y[iy],
+					 y[iy + 1]);
 				  printf("\n");
 				}
 
@@ -6459,15 +6140,21 @@ double do_test_zgbmv_z_d(int m, int n,
 			      }
 
 			      printf("      ");
-			      printf("alpha[0]=%.16e, alpha[1]=%.16e",
-				     alpha[0], alpha[1]);
+			      printf("alpha = ");
+			      printf("(%24.16e, %24.16e)", alpha[0],
+				     alpha[1]);
 			      printf("\n      ");
-			      printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				     beta[1]);
+			      printf("beta = ");
+			      printf("(%24.16e, %24.16e)", beta[0], beta[1]);
 			      printf("\n");
 			      for (j = 0; j < m_i; j++) {
 				printf("      ");
-
+				printf
+				  ("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				   head_r_true[j * incy_gen],
+				   tail_r_true[j * incy_gen],
+				   head_r_true[j * incy_gen + 1],
+				   tail_r_true[j * incy_gen + 1]);
 				printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 			      }
 
@@ -6634,7 +6321,6 @@ double do_test_zgbmv_d_z(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incAB;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -6714,50 +6400,30 @@ double do_test_zgbmv_d_z(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incAB = 1;
+  incx_gen = incy_gen = 1;
   incx_gen *= 2;
   incy_gen *= 2;
-
 
   /* get space for calculation */
   x = (double *) blas_malloc(max_mn * 2 * sizeof(double) * 2);
   if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
   y = (double *) blas_malloc(max_mn * 2 * sizeof(double) * 2);
   if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
   }
   x_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
-  }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
   temp = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incAB; i += incAB) {
-    temp[i] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
@@ -6913,11 +6579,6 @@ double do_test_zgbmv_d_z(int m, int n,
 			incx = incx_val;
 			incx *= 2;
 
-			/* zero out x */
-			for (j = 0; j < n_i * 2 * incx_gen; j++) {
-			  x[j] = 0.0;
-			}
-
 			/* set x starting index */
 			ix = 0;
 			if (incx < 0)
@@ -6939,11 +6600,6 @@ double do_test_zgbmv_d_z(int m, int n,
 			  /* setting incy */
 			  incy = incy_val;
 			  incy *= 2;
-
-			  /* zero out vector */
-			  for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			    y[j] = 0.0;
-			  }
 
 			  /* set y starting index */
 			  iy = 0;
@@ -7080,11 +6736,7 @@ double do_test_zgbmv_d_z(int m, int n,
 
 				if (j > 0)
 				  printf("        ");
-				for (k = 0; k < n_i * incAB; k += incAB) {
-				  printf("%.16e", temp[k]);
-				  printf("  ");
-				}
-				printf("\n");
+				dprint_vector(temp, n_i, 1, NULL);
 			      }
 
 			      for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
@@ -7092,21 +6744,20 @@ double do_test_zgbmv_d_z(int m, int n,
 
 				if (j < n_i) {
 				  printf("      ");
-				  printf("x[%d]=%.16e, x[%d+1]=%.16e", ix,
-					 x[ix], ix, x[ix + 1]);
+				  printf("(%24.16e, %24.16e)", x[ix],
+					 x[ix + 1]);
 				  printf("\n");
 				}
 				if (k < m_i) {
 				  printf("      ");
-				  printf("y_gen[%d]=%.16e, y_gen[%d+1]=%.16e",
-					 k * incy_gen, y_gen[k * incy_gen],
-					 k * incy_gen,
+				  printf("(%24.16e, %24.16e)",
+					 y_gen[k * incy_gen],
 					 y_gen[k * incy_gen + 1]);
 				  printf("\n");
 				  printf("      ");
-				  printf("y_final[%d]=", iy);
-				  printf("(%.16e, %.16e)", y[iy], y[iy + 1]);
-
+				  printf("y_final[%d] = ", iy);
+				  printf("(%24.16e, %24.16e)", y[iy],
+					 y[iy + 1]);
 				  printf("\n");
 				}
 
@@ -7115,15 +6766,21 @@ double do_test_zgbmv_d_z(int m, int n,
 			      }
 
 			      printf("      ");
-			      printf("alpha[0]=%.16e, alpha[1]=%.16e",
-				     alpha[0], alpha[1]);
+			      printf("alpha = ");
+			      printf("(%24.16e, %24.16e)", alpha[0],
+				     alpha[1]);
 			      printf("\n      ");
-			      printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				     beta[1]);
+			      printf("beta = ");
+			      printf("(%24.16e, %24.16e)", beta[0], beta[1]);
 			      printf("\n");
 			      for (j = 0; j < m_i; j++) {
 				printf("      ");
-
+				printf
+				  ("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				   head_r_true[j * incy_gen],
+				   tail_r_true[j * incy_gen],
+				   head_r_true[j * incy_gen + 1],
+				   tail_r_true[j * incy_gen + 1]);
 				printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 			      }
 
@@ -7290,7 +6947,6 @@ double do_test_zgbmv_d_d(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incAB;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -7370,48 +7026,30 @@ double do_test_zgbmv_d_d(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incAB = 1;
+  incx_gen = incy_gen = 1;
 
   incy_gen *= 2;
-
 
   /* get space for calculation */
   x = (double *) blas_malloc(max_mn * 2 * sizeof(double));
   if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-  }
   y = (double *) blas_malloc(max_mn * 2 * sizeof(double) * 2);
   if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
   }
   x_gen = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-  }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
   temp = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incAB; i += incAB) {
-    temp[i] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
@@ -7567,11 +7205,6 @@ double do_test_zgbmv_d_d(int m, int n,
 			incx = incx_val;
 
 
-			/* zero out x */
-			for (j = 0; j < n_i * 2 * incx_gen; j++) {
-			  x[j] = 0.0;
-			}
-
 			/* set x starting index */
 			ix = 0;
 			if (incx < 0)
@@ -7592,11 +7225,6 @@ double do_test_zgbmv_d_d(int m, int n,
 			  /* setting incy */
 			  incy = incy_val;
 			  incy *= 2;
-
-			  /* zero out vector */
-			  for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			    y[j] = 0.0;
-			  }
 
 			  /* set y starting index */
 			  iy = 0;
@@ -7733,11 +7361,7 @@ double do_test_zgbmv_d_d(int m, int n,
 
 				if (j > 0)
 				  printf("        ");
-				for (k = 0; k < n_i * incAB; k += incAB) {
-				  printf("%.16e", temp[k]);
-				  printf("  ");
-				}
-				printf("\n");
+				dprint_vector(temp, n_i, 1, NULL);
 			      }
 
 			      for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
@@ -7745,20 +7369,19 @@ double do_test_zgbmv_d_d(int m, int n,
 
 				if (j < n_i) {
 				  printf("      ");
-				  printf("x[%d]=%.16e", ix, x[ix]);
+				  printf("%24.16e", x[ix]);
 				  printf("\n");
 				}
 				if (k < m_i) {
 				  printf("      ");
-				  printf("y_gen[%d]=%.16e, y_gen[%d+1]=%.16e",
-					 k * incy_gen, y_gen[k * incy_gen],
-					 k * incy_gen,
+				  printf("(%24.16e, %24.16e)",
+					 y_gen[k * incy_gen],
 					 y_gen[k * incy_gen + 1]);
 				  printf("\n");
 				  printf("      ");
-				  printf("y_final[%d]=", iy);
-				  printf("(%.16e, %.16e)", y[iy], y[iy + 1]);
-
+				  printf("y_final[%d] = ", iy);
+				  printf("(%24.16e, %24.16e)", y[iy],
+					 y[iy + 1]);
 				  printf("\n");
 				}
 
@@ -7767,15 +7390,21 @@ double do_test_zgbmv_d_d(int m, int n,
 			      }
 
 			      printf("      ");
-			      printf("alpha[0]=%.16e, alpha[1]=%.16e",
-				     alpha[0], alpha[1]);
+			      printf("alpha = ");
+			      printf("(%24.16e, %24.16e)", alpha[0],
+				     alpha[1]);
 			      printf("\n      ");
-			      printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				     beta[1]);
+			      printf("beta = ");
+			      printf("(%24.16e, %24.16e)", beta[0], beta[1]);
 			      printf("\n");
 			      for (j = 0; j < m_i; j++) {
 				printf("      ");
-
+				printf
+				  ("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				   head_r_true[j * incy_gen],
+				   tail_r_true[j * incy_gen],
+				   head_r_true[j * incy_gen + 1],
+				   tail_r_true[j * incy_gen + 1]);
 				printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 			      }
 
@@ -7941,7 +7570,6 @@ double do_test_sgbmv_x(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incAB;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -8020,8 +7648,7 @@ double do_test_sgbmv_x(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incAB = 1;
-
+  incx_gen = incy_gen = 1;
 
 
 
@@ -8030,36 +7657,21 @@ double do_test_sgbmv_x(int m, int n,
   if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-  }
   y = (float *) blas_malloc(max_mn * 2 * sizeof(float));
   if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-  }
   y_gen = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-  }
   temp = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incAB; i += incAB) {
-    temp[i] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double));
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double));
@@ -8233,11 +7845,6 @@ double do_test_sgbmv_x(int m, int n,
 			  incx = incx_val;
 
 
-			  /* zero out x */
-			  for (j = 0; j < n_i * 2 * incx_gen; j++) {
-			    x[j] = 0.0;
-			  }
-
 			  /* set x starting index */
 			  ix = 0;
 			  if (incx < 0)
@@ -8258,11 +7865,6 @@ double do_test_sgbmv_x(int m, int n,
 			    /* setting incy */
 			    incy = incy_val;
 
-
-			    /* zero out vector */
-			    for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			      y[j] = 0.0;
-			    }
 
 			    /* set y starting index */
 			    iy = 0;
@@ -8398,11 +8000,7 @@ double do_test_sgbmv_x(int m, int n,
 
 				  if (j > 0)
 				    printf("        ");
-				  for (k = 0; k < n_i * incAB; k += incAB) {
-				    printf("%.8e", temp[k]);
-				    printf("  ");
-				  }
-				  printf("\n");
+				  sprint_vector(temp, n_i, 1, NULL);
 				}
 
 				for (j = 0, k = 0; j < n_i || k < m_i;
@@ -8411,18 +8009,16 @@ double do_test_sgbmv_x(int m, int n,
 
 				  if (j < n_i) {
 				    printf("      ");
-				    printf("x[%d]=%.8e", ix, x[ix]);
+				    printf("%16.8e", x[ix]);
 				    printf("\n");
 				  }
 				  if (k < m_i) {
 				    printf("      ");
-				    printf("y_gen[%d]=%.8e", k * incy_gen,
-					   y_gen[k * incy_gen]);
+				    printf("%16.8e", y_gen[k * incy_gen]);
 				    printf("\n");
 				    printf("      ");
-				    printf("y_final[%d]=", iy);
-				    printf("%.8e", y[iy]);
-
+				    printf("y_final[%d] = ", iy);
+				    printf("%16.8e", y[iy]);
 				    printf("\n");
 				  }
 
@@ -8431,16 +8027,17 @@ double do_test_sgbmv_x(int m, int n,
 				}
 
 				printf("      ");
-				printf("alpha=%.8e", alpha);
+				printf("alpha = ");
+				printf("%16.8e", alpha);
 				printf("\n      ");
-				printf("beta=%.8e", beta);
+				printf("beta = ");
+				printf("%16.8e", beta);
 				printf("\n");
 				for (j = 0; j < m_i; j++) {
 				  printf("      ");
-				  printf
-				    ("head_r_true[%d]=%.16e, tail_r_true[%d]=%.16e",
-				     j * incy_gen, head_r_true[j * incy_gen],
-				     j * incy_gen, tail_r_true[j * incy_gen]);
+				  printf("[%24.16e, %24.16e]",
+					 head_r_true[j * incy_gen],
+					 tail_r_true[j * incy_gen]);
 				  printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 				}
 
@@ -8606,7 +8203,6 @@ double do_test_dgbmv_x(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incAB;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -8685,8 +8281,7 @@ double do_test_dgbmv_x(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incAB = 1;
-
+  incx_gen = incy_gen = 1;
 
 
 
@@ -8695,36 +8290,21 @@ double do_test_dgbmv_x(int m, int n,
   if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-  }
   y = (double *) blas_malloc(max_mn * 2 * sizeof(double));
   if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
   }
   x_gen = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-  }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-  }
   temp = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incAB; i += incAB) {
-    temp[i] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double));
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double));
@@ -8898,11 +8478,6 @@ double do_test_dgbmv_x(int m, int n,
 			  incx = incx_val;
 
 
-			  /* zero out x */
-			  for (j = 0; j < n_i * 2 * incx_gen; j++) {
-			    x[j] = 0.0;
-			  }
-
 			  /* set x starting index */
 			  ix = 0;
 			  if (incx < 0)
@@ -8923,11 +8498,6 @@ double do_test_dgbmv_x(int m, int n,
 			    /* setting incy */
 			    incy = incy_val;
 
-
-			    /* zero out vector */
-			    for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			      y[j] = 0.0;
-			    }
 
 			    /* set y starting index */
 			    iy = 0;
@@ -9063,11 +8633,7 @@ double do_test_dgbmv_x(int m, int n,
 
 				  if (j > 0)
 				    printf("        ");
-				  for (k = 0; k < n_i * incAB; k += incAB) {
-				    printf("%.16e", temp[k]);
-				    printf("  ");
-				  }
-				  printf("\n");
+				  dprint_vector(temp, n_i, 1, NULL);
 				}
 
 				for (j = 0, k = 0; j < n_i || k < m_i;
@@ -9076,18 +8642,16 @@ double do_test_dgbmv_x(int m, int n,
 
 				  if (j < n_i) {
 				    printf("      ");
-				    printf("x[%d]=%.16e", ix, x[ix]);
+				    printf("%24.16e", x[ix]);
 				    printf("\n");
 				  }
 				  if (k < m_i) {
 				    printf("      ");
-				    printf("y_gen[%d]=%.16e", k * incy_gen,
-					   y_gen[k * incy_gen]);
+				    printf("%24.16e", y_gen[k * incy_gen]);
 				    printf("\n");
 				    printf("      ");
-				    printf("y_final[%d]=", iy);
-				    printf("%.16e", y[iy]);
-
+				    printf("y_final[%d] = ", iy);
+				    printf("%24.16e", y[iy]);
 				    printf("\n");
 				  }
 
@@ -9096,16 +8660,17 @@ double do_test_dgbmv_x(int m, int n,
 				}
 
 				printf("      ");
-				printf("alpha=%.16e", alpha);
+				printf("alpha = ");
+				printf("%24.16e", alpha);
 				printf("\n      ");
-				printf("beta=%.16e", beta);
+				printf("beta = ");
+				printf("%24.16e", beta);
 				printf("\n");
 				for (j = 0; j < m_i; j++) {
 				  printf("      ");
-				  printf
-				    ("head_r_true[%d]=%.16e, tail_r_true[%d]=%.16e",
-				     j * incy_gen, head_r_true[j * incy_gen],
-				     j * incy_gen, tail_r_true[j * incy_gen]);
+				  printf("[%24.16e, %24.16e]",
+					 head_r_true[j * incy_gen],
+					 tail_r_true[j * incy_gen]);
 				  printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 				}
 
@@ -9271,7 +8836,6 @@ double do_test_cgbmv_x(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incAB;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -9351,51 +8915,30 @@ double do_test_cgbmv_x(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incAB = 1;
+  incx_gen = incy_gen = 1;
   incx_gen *= 2;
   incy_gen *= 2;
-  incAB *= 2;
 
   /* get space for calculation */
   x = (float *) blas_malloc(max_mn * 2 * sizeof(float) * 2);
   if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
   y = (float *) blas_malloc(max_mn * 2 * sizeof(float) * 2);
   if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
-  }
   y_gen = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
   temp = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incAB; i += incAB) {
-    temp[i] = 0.0;
-    temp[i + 1] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
@@ -9572,11 +9115,6 @@ double do_test_cgbmv_x(int m, int n,
 			  incx = incx_val;
 			  incx *= 2;
 
-			  /* zero out x */
-			  for (j = 0; j < n_i * 2 * incx_gen; j++) {
-			    x[j] = 0.0;
-			  }
-
 			  /* set x starting index */
 			  ix = 0;
 			  if (incx < 0)
@@ -9598,11 +9136,6 @@ double do_test_cgbmv_x(int m, int n,
 			    /* setting incy */
 			    incy = incy_val;
 			    incy *= 2;
-
-			    /* zero out vector */
-			    for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			      y[j] = 0.0;
-			    }
 
 			    /* set y starting index */
 			    iy = 0;
@@ -9739,12 +9272,7 @@ double do_test_cgbmv_x(int m, int n,
 
 				  if (j > 0)
 				    printf("        ");
-				  for (k = 0; k < n_i * incAB; k += incAB) {
-				    printf("(%.8e, %.8e)", temp[k],
-					   temp[k + 1]);
-				    printf("  ");
-				  }
-				  printf("\n");
+				  cprint_vector(temp, n_i, 1, NULL);
 				}
 
 				for (j = 0, k = 0; j < n_i || k < m_i;
@@ -9753,21 +9281,20 @@ double do_test_cgbmv_x(int m, int n,
 
 				  if (j < n_i) {
 				    printf("      ");
-				    printf("x[%d]=%.8e, x[%d+1]=%.8e", ix,
-					   x[ix], ix, x[ix + 1]);
+				    printf("(%16.8e, %16.8e)", x[ix],
+					   x[ix + 1]);
 				    printf("\n");
 				  }
 				  if (k < m_i) {
 				    printf("      ");
-				    printf("y_gen[%d]=%.8e, y_gen[%d+1]=%.8e",
-					   k * incy_gen, y_gen[k * incy_gen],
-					   k * incy_gen,
+				    printf("(%16.8e, %16.8e)",
+					   y_gen[k * incy_gen],
 					   y_gen[k * incy_gen + 1]);
 				    printf("\n");
 				    printf("      ");
-				    printf("y_final[%d]=", iy);
-				    printf("(%.8e, %.8e)", y[iy], y[iy + 1]);
-
+				    printf("y_final[%d] = ", iy);
+				    printf("(%16.8e, %16.8e)", y[iy],
+					   y[iy + 1]);
 				    printf("\n");
 				  }
 
@@ -9776,15 +9303,21 @@ double do_test_cgbmv_x(int m, int n,
 				}
 
 				printf("      ");
-				printf("alpha[0]=%.8e, alpha[1]=%.8e",
-				       alpha[0], alpha[1]);
+				printf("alpha = ");
+				printf("(%16.8e, %16.8e)", alpha[0],
+				       alpha[1]);
 				printf("\n      ");
-				printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
-				       beta[1]);
+				printf("beta = ");
+				printf("(%16.8e, %16.8e)", beta[0], beta[1]);
 				printf("\n");
 				for (j = 0; j < m_i; j++) {
 				  printf("      ");
-
+				  printf
+				    ("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				     head_r_true[j * incy_gen],
+				     tail_r_true[j * incy_gen],
+				     head_r_true[j * incy_gen + 1],
+				     tail_r_true[j * incy_gen + 1]);
 				  printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 				}
 
@@ -9950,7 +9483,6 @@ double do_test_zgbmv_x(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incAB;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -10030,51 +9562,30 @@ double do_test_zgbmv_x(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incAB = 1;
+  incx_gen = incy_gen = 1;
   incx_gen *= 2;
   incy_gen *= 2;
-  incAB *= 2;
 
   /* get space for calculation */
   x = (double *) blas_malloc(max_mn * 2 * sizeof(double) * 2);
   if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
   y = (double *) blas_malloc(max_mn * 2 * sizeof(double) * 2);
   if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
   }
   x_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
-  }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
   temp = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incAB; i += incAB) {
-    temp[i] = 0.0;
-    temp[i + 1] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
@@ -10251,11 +9762,6 @@ double do_test_zgbmv_x(int m, int n,
 			  incx = incx_val;
 			  incx *= 2;
 
-			  /* zero out x */
-			  for (j = 0; j < n_i * 2 * incx_gen; j++) {
-			    x[j] = 0.0;
-			  }
-
 			  /* set x starting index */
 			  ix = 0;
 			  if (incx < 0)
@@ -10277,11 +9783,6 @@ double do_test_zgbmv_x(int m, int n,
 			    /* setting incy */
 			    incy = incy_val;
 			    incy *= 2;
-
-			    /* zero out vector */
-			    for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			      y[j] = 0.0;
-			    }
 
 			    /* set y starting index */
 			    iy = 0;
@@ -10418,12 +9919,7 @@ double do_test_zgbmv_x(int m, int n,
 
 				  if (j > 0)
 				    printf("        ");
-				  for (k = 0; k < n_i * incAB; k += incAB) {
-				    printf("(%.16e, %.16e)", temp[k],
-					   temp[k + 1]);
-				    printf("  ");
-				  }
-				  printf("\n");
+				  zprint_vector(temp, n_i, 1, NULL);
 				}
 
 				for (j = 0, k = 0; j < n_i || k < m_i;
@@ -10432,22 +9928,20 @@ double do_test_zgbmv_x(int m, int n,
 
 				  if (j < n_i) {
 				    printf("      ");
-				    printf("x[%d]=%.16e, x[%d+1]=%.16e", ix,
-					   x[ix], ix, x[ix + 1]);
+				    printf("(%24.16e, %24.16e)", x[ix],
+					   x[ix + 1]);
 				    printf("\n");
 				  }
 				  if (k < m_i) {
 				    printf("      ");
-				    printf
-				      ("y_gen[%d]=%.16e, y_gen[%d+1]=%.16e",
-				       k * incy_gen, y_gen[k * incy_gen],
-				       k * incy_gen, y_gen[k * incy_gen + 1]);
+				    printf("(%24.16e, %24.16e)",
+					   y_gen[k * incy_gen],
+					   y_gen[k * incy_gen + 1]);
 				    printf("\n");
 				    printf("      ");
-				    printf("y_final[%d]=", iy);
-				    printf("(%.16e, %.16e)", y[iy],
+				    printf("y_final[%d] = ", iy);
+				    printf("(%24.16e, %24.16e)", y[iy],
 					   y[iy + 1]);
-
 				    printf("\n");
 				  }
 
@@ -10456,15 +9950,22 @@ double do_test_zgbmv_x(int m, int n,
 				}
 
 				printf("      ");
-				printf("alpha[0]=%.16e, alpha[1]=%.16e",
-				       alpha[0], alpha[1]);
+				printf("alpha = ");
+				printf("(%24.16e, %24.16e)", alpha[0],
+				       alpha[1]);
 				printf("\n      ");
-				printf("beta[0]=%.16e, beta[1]=%.16e",
-				       beta[0], beta[1]);
+				printf("beta = ");
+				printf("(%24.16e, %24.16e)", beta[0],
+				       beta[1]);
 				printf("\n");
 				for (j = 0; j < m_i; j++) {
 				  printf("      ");
-
+				  printf
+				    ("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				     head_r_true[j * incy_gen],
+				     tail_r_true[j * incy_gen],
+				     head_r_true[j * incy_gen + 1],
+				     tail_r_true[j * incy_gen + 1]);
 				  printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 				}
 
@@ -10631,7 +10132,6 @@ double do_test_dgbmv_d_s_x(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incAB;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -10710,8 +10210,7 @@ double do_test_dgbmv_d_s_x(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incAB = 1;
-
+  incx_gen = incy_gen = 1;
 
 
 
@@ -10720,36 +10219,21 @@ double do_test_dgbmv_d_s_x(int m, int n,
   if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-  }
   y = (double *) blas_malloc(max_mn * 2 * sizeof(double));
   if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-  }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-  }
   temp = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incAB; i += incAB) {
-    temp[i] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double));
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double));
@@ -10924,11 +10408,6 @@ double do_test_dgbmv_d_s_x(int m, int n,
 			  incx = incx_val;
 
 
-			  /* zero out x */
-			  for (j = 0; j < n_i * 2 * incx_gen; j++) {
-			    x[j] = 0.0;
-			  }
-
 			  /* set x starting index */
 			  ix = 0;
 			  if (incx < 0)
@@ -10949,11 +10428,6 @@ double do_test_dgbmv_d_s_x(int m, int n,
 			    /* setting incy */
 			    incy = incy_val;
 
-
-			    /* zero out vector */
-			    for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			      y[j] = 0.0;
-			    }
 
 			    /* set y starting index */
 			    iy = 0;
@@ -11089,11 +10563,7 @@ double do_test_dgbmv_d_s_x(int m, int n,
 
 				  if (j > 0)
 				    printf("        ");
-				  for (k = 0; k < n_i * incAB; k += incAB) {
-				    printf("%.16e", temp[k]);
-				    printf("  ");
-				  }
-				  printf("\n");
+				  dprint_vector(temp, n_i, 1, NULL);
 				}
 
 				for (j = 0, k = 0; j < n_i || k < m_i;
@@ -11102,18 +10572,16 @@ double do_test_dgbmv_d_s_x(int m, int n,
 
 				  if (j < n_i) {
 				    printf("      ");
-				    printf("x[%d]=%.8e", ix, x[ix]);
+				    printf("%16.8e", x[ix]);
 				    printf("\n");
 				  }
 				  if (k < m_i) {
 				    printf("      ");
-				    printf("y_gen[%d]=%.16e", k * incy_gen,
-					   y_gen[k * incy_gen]);
+				    printf("%24.16e", y_gen[k * incy_gen]);
 				    printf("\n");
 				    printf("      ");
-				    printf("y_final[%d]=", iy);
-				    printf("%.16e", y[iy]);
-
+				    printf("y_final[%d] = ", iy);
+				    printf("%24.16e", y[iy]);
 				    printf("\n");
 				  }
 
@@ -11122,16 +10590,17 @@ double do_test_dgbmv_d_s_x(int m, int n,
 				}
 
 				printf("      ");
-				printf("alpha=%.16e", alpha);
+				printf("alpha = ");
+				printf("%24.16e", alpha);
 				printf("\n      ");
-				printf("beta=%.16e", beta);
+				printf("beta = ");
+				printf("%24.16e", beta);
 				printf("\n");
 				for (j = 0; j < m_i; j++) {
 				  printf("      ");
-				  printf
-				    ("head_r_true[%d]=%.16e, tail_r_true[%d]=%.16e",
-				     j * incy_gen, head_r_true[j * incy_gen],
-				     j * incy_gen, tail_r_true[j * incy_gen]);
+				  printf("[%24.16e, %24.16e]",
+					 head_r_true[j * incy_gen],
+					 tail_r_true[j * incy_gen]);
 				  printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 				}
 
@@ -11298,7 +10767,6 @@ double do_test_dgbmv_s_d_x(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incAB;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -11377,8 +10845,7 @@ double do_test_dgbmv_s_d_x(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incAB = 1;
-
+  incx_gen = incy_gen = 1;
 
 
 
@@ -11387,36 +10854,21 @@ double do_test_dgbmv_s_d_x(int m, int n,
   if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-  }
   y = (double *) blas_malloc(max_mn * 2 * sizeof(double));
   if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
   }
   x_gen = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-  }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-  }
   temp = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incAB; i += incAB) {
-    temp[i] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double));
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double));
@@ -11591,11 +11043,6 @@ double do_test_dgbmv_s_d_x(int m, int n,
 			  incx = incx_val;
 
 
-			  /* zero out x */
-			  for (j = 0; j < n_i * 2 * incx_gen; j++) {
-			    x[j] = 0.0;
-			  }
-
 			  /* set x starting index */
 			  ix = 0;
 			  if (incx < 0)
@@ -11616,11 +11063,6 @@ double do_test_dgbmv_s_d_x(int m, int n,
 			    /* setting incy */
 			    incy = incy_val;
 
-
-			    /* zero out vector */
-			    for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			      y[j] = 0.0;
-			    }
 
 			    /* set y starting index */
 			    iy = 0;
@@ -11756,11 +11198,7 @@ double do_test_dgbmv_s_d_x(int m, int n,
 
 				  if (j > 0)
 				    printf("        ");
-				  for (k = 0; k < n_i * incAB; k += incAB) {
-				    printf("%.8e", temp[k]);
-				    printf("  ");
-				  }
-				  printf("\n");
+				  sprint_vector(temp, n_i, 1, NULL);
 				}
 
 				for (j = 0, k = 0; j < n_i || k < m_i;
@@ -11769,18 +11207,16 @@ double do_test_dgbmv_s_d_x(int m, int n,
 
 				  if (j < n_i) {
 				    printf("      ");
-				    printf("x[%d]=%.16e", ix, x[ix]);
+				    printf("%24.16e", x[ix]);
 				    printf("\n");
 				  }
 				  if (k < m_i) {
 				    printf("      ");
-				    printf("y_gen[%d]=%.16e", k * incy_gen,
-					   y_gen[k * incy_gen]);
+				    printf("%24.16e", y_gen[k * incy_gen]);
 				    printf("\n");
 				    printf("      ");
-				    printf("y_final[%d]=", iy);
-				    printf("%.16e", y[iy]);
-
+				    printf("y_final[%d] = ", iy);
+				    printf("%24.16e", y[iy]);
 				    printf("\n");
 				  }
 
@@ -11789,16 +11225,17 @@ double do_test_dgbmv_s_d_x(int m, int n,
 				}
 
 				printf("      ");
-				printf("alpha=%.16e", alpha);
+				printf("alpha = ");
+				printf("%24.16e", alpha);
 				printf("\n      ");
-				printf("beta=%.16e", beta);
+				printf("beta = ");
+				printf("%24.16e", beta);
 				printf("\n");
 				for (j = 0; j < m_i; j++) {
 				  printf("      ");
-				  printf
-				    ("head_r_true[%d]=%.16e, tail_r_true[%d]=%.16e",
-				     j * incy_gen, head_r_true[j * incy_gen],
-				     j * incy_gen, tail_r_true[j * incy_gen]);
+				  printf("[%24.16e, %24.16e]",
+					 head_r_true[j * incy_gen],
+					 tail_r_true[j * incy_gen]);
 				  printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 				}
 
@@ -11965,7 +11402,6 @@ double do_test_dgbmv_s_s_x(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incAB;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -12044,8 +11480,7 @@ double do_test_dgbmv_s_s_x(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incAB = 1;
-
+  incx_gen = incy_gen = 1;
 
 
 
@@ -12054,36 +11489,21 @@ double do_test_dgbmv_s_s_x(int m, int n,
   if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-  }
   y = (double *) blas_malloc(max_mn * 2 * sizeof(double));
   if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-  }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-  }
   temp = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incAB; i += incAB) {
-    temp[i] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double));
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double));
@@ -12258,11 +11678,6 @@ double do_test_dgbmv_s_s_x(int m, int n,
 			  incx = incx_val;
 
 
-			  /* zero out x */
-			  for (j = 0; j < n_i * 2 * incx_gen; j++) {
-			    x[j] = 0.0;
-			  }
-
 			  /* set x starting index */
 			  ix = 0;
 			  if (incx < 0)
@@ -12283,11 +11698,6 @@ double do_test_dgbmv_s_s_x(int m, int n,
 			    /* setting incy */
 			    incy = incy_val;
 
-
-			    /* zero out vector */
-			    for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			      y[j] = 0.0;
-			    }
 
 			    /* set y starting index */
 			    iy = 0;
@@ -12423,11 +11833,7 @@ double do_test_dgbmv_s_s_x(int m, int n,
 
 				  if (j > 0)
 				    printf("        ");
-				  for (k = 0; k < n_i * incAB; k += incAB) {
-				    printf("%.8e", temp[k]);
-				    printf("  ");
-				  }
-				  printf("\n");
+				  sprint_vector(temp, n_i, 1, NULL);
 				}
 
 				for (j = 0, k = 0; j < n_i || k < m_i;
@@ -12436,18 +11842,16 @@ double do_test_dgbmv_s_s_x(int m, int n,
 
 				  if (j < n_i) {
 				    printf("      ");
-				    printf("x[%d]=%.8e", ix, x[ix]);
+				    printf("%16.8e", x[ix]);
 				    printf("\n");
 				  }
 				  if (k < m_i) {
 				    printf("      ");
-				    printf("y_gen[%d]=%.16e", k * incy_gen,
-					   y_gen[k * incy_gen]);
+				    printf("%24.16e", y_gen[k * incy_gen]);
 				    printf("\n");
 				    printf("      ");
-				    printf("y_final[%d]=", iy);
-				    printf("%.16e", y[iy]);
-
+				    printf("y_final[%d] = ", iy);
+				    printf("%24.16e", y[iy]);
 				    printf("\n");
 				  }
 
@@ -12456,16 +11860,17 @@ double do_test_dgbmv_s_s_x(int m, int n,
 				}
 
 				printf("      ");
-				printf("alpha=%.16e", alpha);
+				printf("alpha = ");
+				printf("%24.16e", alpha);
 				printf("\n      ");
-				printf("beta=%.16e", beta);
+				printf("beta = ");
+				printf("%24.16e", beta);
 				printf("\n");
 				for (j = 0; j < m_i; j++) {
 				  printf("      ");
-				  printf
-				    ("head_r_true[%d]=%.16e, tail_r_true[%d]=%.16e",
-				     j * incy_gen, head_r_true[j * incy_gen],
-				     j * incy_gen, tail_r_true[j * incy_gen]);
+				  printf("[%24.16e, %24.16e]",
+					 head_r_true[j * incy_gen],
+					 tail_r_true[j * incy_gen]);
 				  printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 				}
 
@@ -12632,7 +12037,6 @@ double do_test_zgbmv_z_c_x(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incAB;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -12712,51 +12116,30 @@ double do_test_zgbmv_z_c_x(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incAB = 1;
+  incx_gen = incy_gen = 1;
   incx_gen *= 2;
   incy_gen *= 2;
-  incAB *= 2;
 
   /* get space for calculation */
   x = (float *) blas_malloc(max_mn * 2 * sizeof(float) * 2);
   if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
   y = (double *) blas_malloc(max_mn * 2 * sizeof(double) * 2);
   if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
-  }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
   temp = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incAB; i += incAB) {
-    temp[i] = 0.0;
-    temp[i + 1] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
@@ -12934,11 +12317,6 @@ double do_test_zgbmv_z_c_x(int m, int n,
 			  incx = incx_val;
 			  incx *= 2;
 
-			  /* zero out x */
-			  for (j = 0; j < n_i * 2 * incx_gen; j++) {
-			    x[j] = 0.0;
-			  }
-
 			  /* set x starting index */
 			  ix = 0;
 			  if (incx < 0)
@@ -12960,11 +12338,6 @@ double do_test_zgbmv_z_c_x(int m, int n,
 			    /* setting incy */
 			    incy = incy_val;
 			    incy *= 2;
-
-			    /* zero out vector */
-			    for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			      y[j] = 0.0;
-			    }
 
 			    /* set y starting index */
 			    iy = 0;
@@ -13101,12 +12474,7 @@ double do_test_zgbmv_z_c_x(int m, int n,
 
 				  if (j > 0)
 				    printf("        ");
-				  for (k = 0; k < n_i * incAB; k += incAB) {
-				    printf("(%.16e, %.16e)", temp[k],
-					   temp[k + 1]);
-				    printf("  ");
-				  }
-				  printf("\n");
+				  zprint_vector(temp, n_i, 1, NULL);
 				}
 
 				for (j = 0, k = 0; j < n_i || k < m_i;
@@ -13115,22 +12483,20 @@ double do_test_zgbmv_z_c_x(int m, int n,
 
 				  if (j < n_i) {
 				    printf("      ");
-				    printf("x[%d]=%.8e, x[%d+1]=%.8e", ix,
-					   x[ix], ix, x[ix + 1]);
+				    printf("(%16.8e, %16.8e)", x[ix],
+					   x[ix + 1]);
 				    printf("\n");
 				  }
 				  if (k < m_i) {
 				    printf("      ");
-				    printf
-				      ("y_gen[%d]=%.16e, y_gen[%d+1]=%.16e",
-				       k * incy_gen, y_gen[k * incy_gen],
-				       k * incy_gen, y_gen[k * incy_gen + 1]);
+				    printf("(%24.16e, %24.16e)",
+					   y_gen[k * incy_gen],
+					   y_gen[k * incy_gen + 1]);
 				    printf("\n");
 				    printf("      ");
-				    printf("y_final[%d]=", iy);
-				    printf("(%.16e, %.16e)", y[iy],
+				    printf("y_final[%d] = ", iy);
+				    printf("(%24.16e, %24.16e)", y[iy],
 					   y[iy + 1]);
-
 				    printf("\n");
 				  }
 
@@ -13139,15 +12505,22 @@ double do_test_zgbmv_z_c_x(int m, int n,
 				}
 
 				printf("      ");
-				printf("alpha[0]=%.16e, alpha[1]=%.16e",
-				       alpha[0], alpha[1]);
+				printf("alpha = ");
+				printf("(%24.16e, %24.16e)", alpha[0],
+				       alpha[1]);
 				printf("\n      ");
-				printf("beta[0]=%.16e, beta[1]=%.16e",
-				       beta[0], beta[1]);
+				printf("beta = ");
+				printf("(%24.16e, %24.16e)", beta[0],
+				       beta[1]);
 				printf("\n");
 				for (j = 0; j < m_i; j++) {
 				  printf("      ");
-
+				  printf
+				    ("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				     head_r_true[j * incy_gen],
+				     tail_r_true[j * incy_gen],
+				     head_r_true[j * incy_gen + 1],
+				     tail_r_true[j * incy_gen + 1]);
 				  printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 				}
 
@@ -13314,7 +12687,6 @@ double do_test_zgbmv_c_z_x(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incAB;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -13394,51 +12766,30 @@ double do_test_zgbmv_c_z_x(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incAB = 1;
+  incx_gen = incy_gen = 1;
   incx_gen *= 2;
   incy_gen *= 2;
-  incAB *= 2;
 
   /* get space for calculation */
   x = (double *) blas_malloc(max_mn * 2 * sizeof(double) * 2);
   if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
   y = (double *) blas_malloc(max_mn * 2 * sizeof(double) * 2);
   if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
   }
   x_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
-  }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
   temp = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incAB; i += incAB) {
-    temp[i] = 0.0;
-    temp[i + 1] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
@@ -13616,11 +12967,6 @@ double do_test_zgbmv_c_z_x(int m, int n,
 			  incx = incx_val;
 			  incx *= 2;
 
-			  /* zero out x */
-			  for (j = 0; j < n_i * 2 * incx_gen; j++) {
-			    x[j] = 0.0;
-			  }
-
 			  /* set x starting index */
 			  ix = 0;
 			  if (incx < 0)
@@ -13642,11 +12988,6 @@ double do_test_zgbmv_c_z_x(int m, int n,
 			    /* setting incy */
 			    incy = incy_val;
 			    incy *= 2;
-
-			    /* zero out vector */
-			    for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			      y[j] = 0.0;
-			    }
 
 			    /* set y starting index */
 			    iy = 0;
@@ -13783,12 +13124,7 @@ double do_test_zgbmv_c_z_x(int m, int n,
 
 				  if (j > 0)
 				    printf("        ");
-				  for (k = 0; k < n_i * incAB; k += incAB) {
-				    printf("(%.8e, %.8e)", temp[k],
-					   temp[k + 1]);
-				    printf("  ");
-				  }
-				  printf("\n");
+				  cprint_vector(temp, n_i, 1, NULL);
 				}
 
 				for (j = 0, k = 0; j < n_i || k < m_i;
@@ -13797,22 +13133,20 @@ double do_test_zgbmv_c_z_x(int m, int n,
 
 				  if (j < n_i) {
 				    printf("      ");
-				    printf("x[%d]=%.16e, x[%d+1]=%.16e", ix,
-					   x[ix], ix, x[ix + 1]);
+				    printf("(%24.16e, %24.16e)", x[ix],
+					   x[ix + 1]);
 				    printf("\n");
 				  }
 				  if (k < m_i) {
 				    printf("      ");
-				    printf
-				      ("y_gen[%d]=%.16e, y_gen[%d+1]=%.16e",
-				       k * incy_gen, y_gen[k * incy_gen],
-				       k * incy_gen, y_gen[k * incy_gen + 1]);
+				    printf("(%24.16e, %24.16e)",
+					   y_gen[k * incy_gen],
+					   y_gen[k * incy_gen + 1]);
 				    printf("\n");
 				    printf("      ");
-				    printf("y_final[%d]=", iy);
-				    printf("(%.16e, %.16e)", y[iy],
+				    printf("y_final[%d] = ", iy);
+				    printf("(%24.16e, %24.16e)", y[iy],
 					   y[iy + 1]);
-
 				    printf("\n");
 				  }
 
@@ -13821,15 +13155,22 @@ double do_test_zgbmv_c_z_x(int m, int n,
 				}
 
 				printf("      ");
-				printf("alpha[0]=%.16e, alpha[1]=%.16e",
-				       alpha[0], alpha[1]);
+				printf("alpha = ");
+				printf("(%24.16e, %24.16e)", alpha[0],
+				       alpha[1]);
 				printf("\n      ");
-				printf("beta[0]=%.16e, beta[1]=%.16e",
-				       beta[0], beta[1]);
+				printf("beta = ");
+				printf("(%24.16e, %24.16e)", beta[0],
+				       beta[1]);
 				printf("\n");
 				for (j = 0; j < m_i; j++) {
 				  printf("      ");
-
+				  printf
+				    ("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				     head_r_true[j * incy_gen],
+				     tail_r_true[j * incy_gen],
+				     head_r_true[j * incy_gen + 1],
+				     tail_r_true[j * incy_gen + 1]);
 				  printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 				}
 
@@ -13996,7 +13337,6 @@ double do_test_zgbmv_c_c_x(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incAB;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -14076,51 +13416,30 @@ double do_test_zgbmv_c_c_x(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incAB = 1;
+  incx_gen = incy_gen = 1;
   incx_gen *= 2;
   incy_gen *= 2;
-  incAB *= 2;
 
   /* get space for calculation */
   x = (float *) blas_malloc(max_mn * 2 * sizeof(float) * 2);
   if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
   y = (double *) blas_malloc(max_mn * 2 * sizeof(double) * 2);
   if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
-  }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
   temp = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incAB; i += incAB) {
-    temp[i] = 0.0;
-    temp[i + 1] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
@@ -14298,11 +13617,6 @@ double do_test_zgbmv_c_c_x(int m, int n,
 			  incx = incx_val;
 			  incx *= 2;
 
-			  /* zero out x */
-			  for (j = 0; j < n_i * 2 * incx_gen; j++) {
-			    x[j] = 0.0;
-			  }
-
 			  /* set x starting index */
 			  ix = 0;
 			  if (incx < 0)
@@ -14324,11 +13638,6 @@ double do_test_zgbmv_c_c_x(int m, int n,
 			    /* setting incy */
 			    incy = incy_val;
 			    incy *= 2;
-
-			    /* zero out vector */
-			    for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			      y[j] = 0.0;
-			    }
 
 			    /* set y starting index */
 			    iy = 0;
@@ -14465,12 +13774,7 @@ double do_test_zgbmv_c_c_x(int m, int n,
 
 				  if (j > 0)
 				    printf("        ");
-				  for (k = 0; k < n_i * incAB; k += incAB) {
-				    printf("(%.8e, %.8e)", temp[k],
-					   temp[k + 1]);
-				    printf("  ");
-				  }
-				  printf("\n");
+				  cprint_vector(temp, n_i, 1, NULL);
 				}
 
 				for (j = 0, k = 0; j < n_i || k < m_i;
@@ -14479,22 +13783,20 @@ double do_test_zgbmv_c_c_x(int m, int n,
 
 				  if (j < n_i) {
 				    printf("      ");
-				    printf("x[%d]=%.8e, x[%d+1]=%.8e", ix,
-					   x[ix], ix, x[ix + 1]);
+				    printf("(%16.8e, %16.8e)", x[ix],
+					   x[ix + 1]);
 				    printf("\n");
 				  }
 				  if (k < m_i) {
 				    printf("      ");
-				    printf
-				      ("y_gen[%d]=%.16e, y_gen[%d+1]=%.16e",
-				       k * incy_gen, y_gen[k * incy_gen],
-				       k * incy_gen, y_gen[k * incy_gen + 1]);
+				    printf("(%24.16e, %24.16e)",
+					   y_gen[k * incy_gen],
+					   y_gen[k * incy_gen + 1]);
 				    printf("\n");
 				    printf("      ");
-				    printf("y_final[%d]=", iy);
-				    printf("(%.16e, %.16e)", y[iy],
+				    printf("y_final[%d] = ", iy);
+				    printf("(%24.16e, %24.16e)", y[iy],
 					   y[iy + 1]);
-
 				    printf("\n");
 				  }
 
@@ -14503,15 +13805,22 @@ double do_test_zgbmv_c_c_x(int m, int n,
 				}
 
 				printf("      ");
-				printf("alpha[0]=%.16e, alpha[1]=%.16e",
-				       alpha[0], alpha[1]);
+				printf("alpha = ");
+				printf("(%24.16e, %24.16e)", alpha[0],
+				       alpha[1]);
 				printf("\n      ");
-				printf("beta[0]=%.16e, beta[1]=%.16e",
-				       beta[0], beta[1]);
+				printf("beta = ");
+				printf("(%24.16e, %24.16e)", beta[0],
+				       beta[1]);
 				printf("\n");
 				for (j = 0; j < m_i; j++) {
 				  printf("      ");
-
+				  printf
+				    ("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				     head_r_true[j * incy_gen],
+				     tail_r_true[j * incy_gen],
+				     head_r_true[j * incy_gen + 1],
+				     tail_r_true[j * incy_gen + 1]);
 				  printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 				}
 
@@ -14678,7 +13987,6 @@ double do_test_cgbmv_c_s_x(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incAB;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -14758,49 +14066,30 @@ double do_test_cgbmv_c_s_x(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incAB = 1;
+  incx_gen = incy_gen = 1;
 
   incy_gen *= 2;
-  incAB *= 2;
 
   /* get space for calculation */
   x = (float *) blas_malloc(max_mn * 2 * sizeof(float));
   if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-  }
   y = (float *) blas_malloc(max_mn * 2 * sizeof(float) * 2);
   if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-  }
   y_gen = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
   temp = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incAB; i += incAB) {
-    temp[i] = 0.0;
-    temp[i + 1] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
@@ -14978,11 +14267,6 @@ double do_test_cgbmv_c_s_x(int m, int n,
 			  incx = incx_val;
 
 
-			  /* zero out x */
-			  for (j = 0; j < n_i * 2 * incx_gen; j++) {
-			    x[j] = 0.0;
-			  }
-
 			  /* set x starting index */
 			  ix = 0;
 			  if (incx < 0)
@@ -15003,11 +14287,6 @@ double do_test_cgbmv_c_s_x(int m, int n,
 			    /* setting incy */
 			    incy = incy_val;
 			    incy *= 2;
-
-			    /* zero out vector */
-			    for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			      y[j] = 0.0;
-			    }
 
 			    /* set y starting index */
 			    iy = 0;
@@ -15144,12 +14423,7 @@ double do_test_cgbmv_c_s_x(int m, int n,
 
 				  if (j > 0)
 				    printf("        ");
-				  for (k = 0; k < n_i * incAB; k += incAB) {
-				    printf("(%.8e, %.8e)", temp[k],
-					   temp[k + 1]);
-				    printf("  ");
-				  }
-				  printf("\n");
+				  cprint_vector(temp, n_i, 1, NULL);
 				}
 
 				for (j = 0, k = 0; j < n_i || k < m_i;
@@ -15158,20 +14432,19 @@ double do_test_cgbmv_c_s_x(int m, int n,
 
 				  if (j < n_i) {
 				    printf("      ");
-				    printf("x[%d]=%.8e", ix, x[ix]);
+				    printf("%16.8e", x[ix]);
 				    printf("\n");
 				  }
 				  if (k < m_i) {
 				    printf("      ");
-				    printf("y_gen[%d]=%.8e, y_gen[%d+1]=%.8e",
-					   k * incy_gen, y_gen[k * incy_gen],
-					   k * incy_gen,
+				    printf("(%16.8e, %16.8e)",
+					   y_gen[k * incy_gen],
 					   y_gen[k * incy_gen + 1]);
 				    printf("\n");
 				    printf("      ");
-				    printf("y_final[%d]=", iy);
-				    printf("(%.8e, %.8e)", y[iy], y[iy + 1]);
-
+				    printf("y_final[%d] = ", iy);
+				    printf("(%16.8e, %16.8e)", y[iy],
+					   y[iy + 1]);
 				    printf("\n");
 				  }
 
@@ -15180,15 +14453,21 @@ double do_test_cgbmv_c_s_x(int m, int n,
 				}
 
 				printf("      ");
-				printf("alpha[0]=%.8e, alpha[1]=%.8e",
-				       alpha[0], alpha[1]);
+				printf("alpha = ");
+				printf("(%16.8e, %16.8e)", alpha[0],
+				       alpha[1]);
 				printf("\n      ");
-				printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
-				       beta[1]);
+				printf("beta = ");
+				printf("(%16.8e, %16.8e)", beta[0], beta[1]);
 				printf("\n");
 				for (j = 0; j < m_i; j++) {
 				  printf("      ");
-
+				  printf
+				    ("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				     head_r_true[j * incy_gen],
+				     tail_r_true[j * incy_gen],
+				     head_r_true[j * incy_gen + 1],
+				     tail_r_true[j * incy_gen + 1]);
 				  printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 				}
 
@@ -15355,7 +14634,6 @@ double do_test_cgbmv_s_c_x(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incAB;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -15435,50 +14713,30 @@ double do_test_cgbmv_s_c_x(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incAB = 1;
+  incx_gen = incy_gen = 1;
   incx_gen *= 2;
   incy_gen *= 2;
-
 
   /* get space for calculation */
   x = (float *) blas_malloc(max_mn * 2 * sizeof(float) * 2);
   if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
   y = (float *) blas_malloc(max_mn * 2 * sizeof(float) * 2);
   if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
-  }
   y_gen = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
   temp = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incAB; i += incAB) {
-    temp[i] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
@@ -15655,11 +14913,6 @@ double do_test_cgbmv_s_c_x(int m, int n,
 			  incx = incx_val;
 			  incx *= 2;
 
-			  /* zero out x */
-			  for (j = 0; j < n_i * 2 * incx_gen; j++) {
-			    x[j] = 0.0;
-			  }
-
 			  /* set x starting index */
 			  ix = 0;
 			  if (incx < 0)
@@ -15681,11 +14934,6 @@ double do_test_cgbmv_s_c_x(int m, int n,
 			    /* setting incy */
 			    incy = incy_val;
 			    incy *= 2;
-
-			    /* zero out vector */
-			    for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			      y[j] = 0.0;
-			    }
 
 			    /* set y starting index */
 			    iy = 0;
@@ -15822,11 +15070,7 @@ double do_test_cgbmv_s_c_x(int m, int n,
 
 				  if (j > 0)
 				    printf("        ");
-				  for (k = 0; k < n_i * incAB; k += incAB) {
-				    printf("%.8e", temp[k]);
-				    printf("  ");
-				  }
-				  printf("\n");
+				  sprint_vector(temp, n_i, 1, NULL);
 				}
 
 				for (j = 0, k = 0; j < n_i || k < m_i;
@@ -15835,21 +15079,20 @@ double do_test_cgbmv_s_c_x(int m, int n,
 
 				  if (j < n_i) {
 				    printf("      ");
-				    printf("x[%d]=%.8e, x[%d+1]=%.8e", ix,
-					   x[ix], ix, x[ix + 1]);
+				    printf("(%16.8e, %16.8e)", x[ix],
+					   x[ix + 1]);
 				    printf("\n");
 				  }
 				  if (k < m_i) {
 				    printf("      ");
-				    printf("y_gen[%d]=%.8e, y_gen[%d+1]=%.8e",
-					   k * incy_gen, y_gen[k * incy_gen],
-					   k * incy_gen,
+				    printf("(%16.8e, %16.8e)",
+					   y_gen[k * incy_gen],
 					   y_gen[k * incy_gen + 1]);
 				    printf("\n");
 				    printf("      ");
-				    printf("y_final[%d]=", iy);
-				    printf("(%.8e, %.8e)", y[iy], y[iy + 1]);
-
+				    printf("y_final[%d] = ", iy);
+				    printf("(%16.8e, %16.8e)", y[iy],
+					   y[iy + 1]);
 				    printf("\n");
 				  }
 
@@ -15858,15 +15101,21 @@ double do_test_cgbmv_s_c_x(int m, int n,
 				}
 
 				printf("      ");
-				printf("alpha[0]=%.8e, alpha[1]=%.8e",
-				       alpha[0], alpha[1]);
+				printf("alpha = ");
+				printf("(%16.8e, %16.8e)", alpha[0],
+				       alpha[1]);
 				printf("\n      ");
-				printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
-				       beta[1]);
+				printf("beta = ");
+				printf("(%16.8e, %16.8e)", beta[0], beta[1]);
 				printf("\n");
 				for (j = 0; j < m_i; j++) {
 				  printf("      ");
-
+				  printf
+				    ("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				     head_r_true[j * incy_gen],
+				     tail_r_true[j * incy_gen],
+				     head_r_true[j * incy_gen + 1],
+				     tail_r_true[j * incy_gen + 1]);
 				  printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 				}
 
@@ -16033,7 +15282,6 @@ double do_test_cgbmv_s_s_x(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incAB;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -16113,48 +15361,30 @@ double do_test_cgbmv_s_s_x(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incAB = 1;
+  incx_gen = incy_gen = 1;
 
   incy_gen *= 2;
-
 
   /* get space for calculation */
   x = (float *) blas_malloc(max_mn * 2 * sizeof(float));
   if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-  }
   y = (float *) blas_malloc(max_mn * 2 * sizeof(float) * 2);
   if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-  }
   y_gen = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
   temp = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incAB; i += incAB) {
-    temp[i] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
@@ -16331,11 +15561,6 @@ double do_test_cgbmv_s_s_x(int m, int n,
 			  incx = incx_val;
 
 
-			  /* zero out x */
-			  for (j = 0; j < n_i * 2 * incx_gen; j++) {
-			    x[j] = 0.0;
-			  }
-
 			  /* set x starting index */
 			  ix = 0;
 			  if (incx < 0)
@@ -16356,11 +15581,6 @@ double do_test_cgbmv_s_s_x(int m, int n,
 			    /* setting incy */
 			    incy = incy_val;
 			    incy *= 2;
-
-			    /* zero out vector */
-			    for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			      y[j] = 0.0;
-			    }
 
 			    /* set y starting index */
 			    iy = 0;
@@ -16497,11 +15717,7 @@ double do_test_cgbmv_s_s_x(int m, int n,
 
 				  if (j > 0)
 				    printf("        ");
-				  for (k = 0; k < n_i * incAB; k += incAB) {
-				    printf("%.8e", temp[k]);
-				    printf("  ");
-				  }
-				  printf("\n");
+				  sprint_vector(temp, n_i, 1, NULL);
 				}
 
 				for (j = 0, k = 0; j < n_i || k < m_i;
@@ -16510,20 +15726,19 @@ double do_test_cgbmv_s_s_x(int m, int n,
 
 				  if (j < n_i) {
 				    printf("      ");
-				    printf("x[%d]=%.8e", ix, x[ix]);
+				    printf("%16.8e", x[ix]);
 				    printf("\n");
 				  }
 				  if (k < m_i) {
 				    printf("      ");
-				    printf("y_gen[%d]=%.8e, y_gen[%d+1]=%.8e",
-					   k * incy_gen, y_gen[k * incy_gen],
-					   k * incy_gen,
+				    printf("(%16.8e, %16.8e)",
+					   y_gen[k * incy_gen],
 					   y_gen[k * incy_gen + 1]);
 				    printf("\n");
 				    printf("      ");
-				    printf("y_final[%d]=", iy);
-				    printf("(%.8e, %.8e)", y[iy], y[iy + 1]);
-
+				    printf("y_final[%d] = ", iy);
+				    printf("(%16.8e, %16.8e)", y[iy],
+					   y[iy + 1]);
 				    printf("\n");
 				  }
 
@@ -16532,15 +15747,21 @@ double do_test_cgbmv_s_s_x(int m, int n,
 				}
 
 				printf("      ");
-				printf("alpha[0]=%.8e, alpha[1]=%.8e",
-				       alpha[0], alpha[1]);
+				printf("alpha = ");
+				printf("(%16.8e, %16.8e)", alpha[0],
+				       alpha[1]);
 				printf("\n      ");
-				printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
-				       beta[1]);
+				printf("beta = ");
+				printf("(%16.8e, %16.8e)", beta[0], beta[1]);
 				printf("\n");
 				for (j = 0; j < m_i; j++) {
 				  printf("      ");
-
+				  printf
+				    ("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				     head_r_true[j * incy_gen],
+				     tail_r_true[j * incy_gen],
+				     head_r_true[j * incy_gen + 1],
+				     tail_r_true[j * incy_gen + 1]);
 				  printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 				}
 
@@ -16707,7 +15928,6 @@ double do_test_zgbmv_z_d_x(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incAB;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -16787,49 +16007,30 @@ double do_test_zgbmv_z_d_x(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incAB = 1;
+  incx_gen = incy_gen = 1;
 
   incy_gen *= 2;
-  incAB *= 2;
 
   /* get space for calculation */
   x = (double *) blas_malloc(max_mn * 2 * sizeof(double));
   if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-  }
   y = (double *) blas_malloc(max_mn * 2 * sizeof(double) * 2);
   if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
   }
   x_gen = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-  }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
   temp = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incAB; i += incAB) {
-    temp[i] = 0.0;
-    temp[i + 1] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
@@ -17007,11 +16208,6 @@ double do_test_zgbmv_z_d_x(int m, int n,
 			  incx = incx_val;
 
 
-			  /* zero out x */
-			  for (j = 0; j < n_i * 2 * incx_gen; j++) {
-			    x[j] = 0.0;
-			  }
-
 			  /* set x starting index */
 			  ix = 0;
 			  if (incx < 0)
@@ -17032,11 +16228,6 @@ double do_test_zgbmv_z_d_x(int m, int n,
 			    /* setting incy */
 			    incy = incy_val;
 			    incy *= 2;
-
-			    /* zero out vector */
-			    for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			      y[j] = 0.0;
-			    }
 
 			    /* set y starting index */
 			    iy = 0;
@@ -17173,12 +16364,7 @@ double do_test_zgbmv_z_d_x(int m, int n,
 
 				  if (j > 0)
 				    printf("        ");
-				  for (k = 0; k < n_i * incAB; k += incAB) {
-				    printf("(%.16e, %.16e)", temp[k],
-					   temp[k + 1]);
-				    printf("  ");
-				  }
-				  printf("\n");
+				  zprint_vector(temp, n_i, 1, NULL);
 				}
 
 				for (j = 0, k = 0; j < n_i || k < m_i;
@@ -17187,21 +16373,19 @@ double do_test_zgbmv_z_d_x(int m, int n,
 
 				  if (j < n_i) {
 				    printf("      ");
-				    printf("x[%d]=%.16e", ix, x[ix]);
+				    printf("%24.16e", x[ix]);
 				    printf("\n");
 				  }
 				  if (k < m_i) {
 				    printf("      ");
-				    printf
-				      ("y_gen[%d]=%.16e, y_gen[%d+1]=%.16e",
-				       k * incy_gen, y_gen[k * incy_gen],
-				       k * incy_gen, y_gen[k * incy_gen + 1]);
+				    printf("(%24.16e, %24.16e)",
+					   y_gen[k * incy_gen],
+					   y_gen[k * incy_gen + 1]);
 				    printf("\n");
 				    printf("      ");
-				    printf("y_final[%d]=", iy);
-				    printf("(%.16e, %.16e)", y[iy],
+				    printf("y_final[%d] = ", iy);
+				    printf("(%24.16e, %24.16e)", y[iy],
 					   y[iy + 1]);
-
 				    printf("\n");
 				  }
 
@@ -17210,15 +16394,22 @@ double do_test_zgbmv_z_d_x(int m, int n,
 				}
 
 				printf("      ");
-				printf("alpha[0]=%.16e, alpha[1]=%.16e",
-				       alpha[0], alpha[1]);
+				printf("alpha = ");
+				printf("(%24.16e, %24.16e)", alpha[0],
+				       alpha[1]);
 				printf("\n      ");
-				printf("beta[0]=%.16e, beta[1]=%.16e",
-				       beta[0], beta[1]);
+				printf("beta = ");
+				printf("(%24.16e, %24.16e)", beta[0],
+				       beta[1]);
 				printf("\n");
 				for (j = 0; j < m_i; j++) {
 				  printf("      ");
-
+				  printf
+				    ("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				     head_r_true[j * incy_gen],
+				     tail_r_true[j * incy_gen],
+				     head_r_true[j * incy_gen + 1],
+				     tail_r_true[j * incy_gen + 1]);
 				  printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 				}
 
@@ -17385,7 +16576,6 @@ double do_test_zgbmv_d_z_x(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incAB;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -17465,50 +16655,30 @@ double do_test_zgbmv_d_z_x(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incAB = 1;
+  incx_gen = incy_gen = 1;
   incx_gen *= 2;
   incy_gen *= 2;
-
 
   /* get space for calculation */
   x = (double *) blas_malloc(max_mn * 2 * sizeof(double) * 2);
   if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
   y = (double *) blas_malloc(max_mn * 2 * sizeof(double) * 2);
   if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
   }
   x_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
-  }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
   temp = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incAB; i += incAB) {
-    temp[i] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
@@ -17685,11 +16855,6 @@ double do_test_zgbmv_d_z_x(int m, int n,
 			  incx = incx_val;
 			  incx *= 2;
 
-			  /* zero out x */
-			  for (j = 0; j < n_i * 2 * incx_gen; j++) {
-			    x[j] = 0.0;
-			  }
-
 			  /* set x starting index */
 			  ix = 0;
 			  if (incx < 0)
@@ -17711,11 +16876,6 @@ double do_test_zgbmv_d_z_x(int m, int n,
 			    /* setting incy */
 			    incy = incy_val;
 			    incy *= 2;
-
-			    /* zero out vector */
-			    for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			      y[j] = 0.0;
-			    }
 
 			    /* set y starting index */
 			    iy = 0;
@@ -17852,11 +17012,7 @@ double do_test_zgbmv_d_z_x(int m, int n,
 
 				  if (j > 0)
 				    printf("        ");
-				  for (k = 0; k < n_i * incAB; k += incAB) {
-				    printf("%.16e", temp[k]);
-				    printf("  ");
-				  }
-				  printf("\n");
+				  dprint_vector(temp, n_i, 1, NULL);
 				}
 
 				for (j = 0, k = 0; j < n_i || k < m_i;
@@ -17865,22 +17021,20 @@ double do_test_zgbmv_d_z_x(int m, int n,
 
 				  if (j < n_i) {
 				    printf("      ");
-				    printf("x[%d]=%.16e, x[%d+1]=%.16e", ix,
-					   x[ix], ix, x[ix + 1]);
+				    printf("(%24.16e, %24.16e)", x[ix],
+					   x[ix + 1]);
 				    printf("\n");
 				  }
 				  if (k < m_i) {
 				    printf("      ");
-				    printf
-				      ("y_gen[%d]=%.16e, y_gen[%d+1]=%.16e",
-				       k * incy_gen, y_gen[k * incy_gen],
-				       k * incy_gen, y_gen[k * incy_gen + 1]);
+				    printf("(%24.16e, %24.16e)",
+					   y_gen[k * incy_gen],
+					   y_gen[k * incy_gen + 1]);
 				    printf("\n");
 				    printf("      ");
-				    printf("y_final[%d]=", iy);
-				    printf("(%.16e, %.16e)", y[iy],
+				    printf("y_final[%d] = ", iy);
+				    printf("(%24.16e, %24.16e)", y[iy],
 					   y[iy + 1]);
-
 				    printf("\n");
 				  }
 
@@ -17889,15 +17043,22 @@ double do_test_zgbmv_d_z_x(int m, int n,
 				}
 
 				printf("      ");
-				printf("alpha[0]=%.16e, alpha[1]=%.16e",
-				       alpha[0], alpha[1]);
+				printf("alpha = ");
+				printf("(%24.16e, %24.16e)", alpha[0],
+				       alpha[1]);
 				printf("\n      ");
-				printf("beta[0]=%.16e, beta[1]=%.16e",
-				       beta[0], beta[1]);
+				printf("beta = ");
+				printf("(%24.16e, %24.16e)", beta[0],
+				       beta[1]);
 				printf("\n");
 				for (j = 0; j < m_i; j++) {
 				  printf("      ");
-
+				  printf
+				    ("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				     head_r_true[j * incy_gen],
+				     tail_r_true[j * incy_gen],
+				     head_r_true[j * incy_gen + 1],
+				     tail_r_true[j * incy_gen + 1]);
 				  printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 				}
 
@@ -18064,7 +17225,6 @@ double do_test_zgbmv_d_d_x(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incAB;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -18144,48 +17304,30 @@ double do_test_zgbmv_d_d_x(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incAB = 1;
+  incx_gen = incy_gen = 1;
 
   incy_gen *= 2;
-
 
   /* get space for calculation */
   x = (double *) blas_malloc(max_mn * 2 * sizeof(double));
   if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-  }
   y = (double *) blas_malloc(max_mn * 2 * sizeof(double) * 2);
   if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
   }
   x_gen = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-  }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
   temp = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incAB; i += incAB) {
-    temp[i] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
@@ -18362,11 +17504,6 @@ double do_test_zgbmv_d_d_x(int m, int n,
 			  incx = incx_val;
 
 
-			  /* zero out x */
-			  for (j = 0; j < n_i * 2 * incx_gen; j++) {
-			    x[j] = 0.0;
-			  }
-
 			  /* set x starting index */
 			  ix = 0;
 			  if (incx < 0)
@@ -18387,11 +17524,6 @@ double do_test_zgbmv_d_d_x(int m, int n,
 			    /* setting incy */
 			    incy = incy_val;
 			    incy *= 2;
-
-			    /* zero out vector */
-			    for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			      y[j] = 0.0;
-			    }
 
 			    /* set y starting index */
 			    iy = 0;
@@ -18528,11 +17660,7 @@ double do_test_zgbmv_d_d_x(int m, int n,
 
 				  if (j > 0)
 				    printf("        ");
-				  for (k = 0; k < n_i * incAB; k += incAB) {
-				    printf("%.16e", temp[k]);
-				    printf("  ");
-				  }
-				  printf("\n");
+				  dprint_vector(temp, n_i, 1, NULL);
 				}
 
 				for (j = 0, k = 0; j < n_i || k < m_i;
@@ -18541,21 +17669,19 @@ double do_test_zgbmv_d_d_x(int m, int n,
 
 				  if (j < n_i) {
 				    printf("      ");
-				    printf("x[%d]=%.16e", ix, x[ix]);
+				    printf("%24.16e", x[ix]);
 				    printf("\n");
 				  }
 				  if (k < m_i) {
 				    printf("      ");
-				    printf
-				      ("y_gen[%d]=%.16e, y_gen[%d+1]=%.16e",
-				       k * incy_gen, y_gen[k * incy_gen],
-				       k * incy_gen, y_gen[k * incy_gen + 1]);
+				    printf("(%24.16e, %24.16e)",
+					   y_gen[k * incy_gen],
+					   y_gen[k * incy_gen + 1]);
 				    printf("\n");
 				    printf("      ");
-				    printf("y_final[%d]=", iy);
-				    printf("(%.16e, %.16e)", y[iy],
+				    printf("y_final[%d] = ", iy);
+				    printf("(%24.16e, %24.16e)", y[iy],
 					   y[iy + 1]);
-
 				    printf("\n");
 				  }
 
@@ -18564,15 +17690,22 @@ double do_test_zgbmv_d_d_x(int m, int n,
 				}
 
 				printf("      ");
-				printf("alpha[0]=%.16e, alpha[1]=%.16e",
-				       alpha[0], alpha[1]);
+				printf("alpha = ");
+				printf("(%24.16e, %24.16e)", alpha[0],
+				       alpha[1]);
 				printf("\n      ");
-				printf("beta[0]=%.16e, beta[1]=%.16e",
-				       beta[0], beta[1]);
+				printf("beta = ");
+				printf("(%24.16e, %24.16e)", beta[0],
+				       beta[1]);
 				printf("\n");
 				for (j = 0; j < m_i; j++) {
 				  printf("      ");
-
+				  printf
+				    ("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				     head_r_true[j * incy_gen],
+				     tail_r_true[j * incy_gen],
+				     head_r_true[j * incy_gen + 1],
+				     tail_r_true[j * incy_gen + 1]);
 				  printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 				}
 

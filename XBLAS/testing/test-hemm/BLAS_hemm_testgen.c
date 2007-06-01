@@ -22,7 +22,6 @@
 
 
 
-
 void BLAS_chemm_testgen(int norm, enum blas_order_type order,
 			enum blas_uplo_type uplo, enum blas_side_type side,
 			int m, int n, int randomize,
@@ -506,19 +505,19 @@ void BLAS_chemm_testgen(int norm, enum blas_order_type order,
 
 
     if (alpha_flag == 0) {
-      ((float *) alpha_i)[0] = (float) drand48();
-      ((float *) alpha_i)[1] = (float) drand48();
+      alpha_i[0] = xrand(seed);
+      alpha_i[1] = xrand(seed);
     }
     if (beta_flag == 0) {
-      ((float *) beta_i)[0] = (float) drand48();
-      ((float *) beta_i)[1] = (float) drand48();
+      beta_i[0] = xrand(seed);
+      beta_i[1] = xrand(seed);
     }
 
     /* Fill in matrix A -- Hermitian. */
     for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < m_i; j++, aij += incaij) {
-	((float *) a_elem)[0] = (float) drand48();
-	((float *) a_elem)[1] = (float) drand48();
+	a_elem[0] = xrand(seed);
+	a_elem[1] = xrand(seed);
 	a_i[aij] = a_elem[0];
 	a_i[aij + 1] = a_elem[1];
 	if (i == j)
@@ -529,21 +528,21 @@ void BLAS_chemm_testgen(int norm, enum blas_order_type order,
     /* Fill in matrix B */
     for (i = 0, bi = 0; i < m_i; i++, bi += incbi) {
       for (j = 0, bij = bi; j < n_i; j++, bij += incbij) {
-	((float *) b_elem)[0] = (float) drand48();
-	((float *) b_elem)[1] = (float) drand48();
+	b_elem[0] = xrand(seed);
+	b_elem[1] = xrand(seed);
 	b_i[bij] = b_elem[0];
 	b_i[bij + 1] = b_elem[1];
       }
     }
 
     for (i = 0, ci = 0; i < m_i; i++, ci += incci) {
-      chemm_copy_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      che_copy_row(order, uplo, side, m_i, a, lda, a_vec, i);
       for (j = 0, cij = ci; j < n_i; j++, cij += inccij) {
 
 	if (side == blas_left_side)
-	  cgemm_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	  cge_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
 	else
-	  cgemm_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	  cge_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
 
 	/* copy the real b_vec into complex bb_vec, so that 
 	   pure complex test case generator can be called. */
@@ -1051,19 +1050,19 @@ void BLAS_zhemm_testgen(int norm, enum blas_order_type order,
 
 
     if (alpha_flag == 0) {
-      ((double *) alpha_i)[0] = (float) drand48();
-      ((double *) alpha_i)[1] = (float) drand48();
+      alpha_i[0] = xrand(seed);
+      alpha_i[1] = xrand(seed);
     }
     if (beta_flag == 0) {
-      ((double *) beta_i)[0] = (float) drand48();
-      ((double *) beta_i)[1] = (float) drand48();
+      beta_i[0] = xrand(seed);
+      beta_i[1] = xrand(seed);
     }
 
     /* Fill in matrix A -- Hermitian. */
     for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < m_i; j++, aij += incaij) {
-	((double *) a_elem)[0] = (float) drand48();
-	((double *) a_elem)[1] = (float) drand48();
+	a_elem[0] = xrand(seed);
+	a_elem[1] = xrand(seed);
 	a_i[aij] = a_elem[0];
 	a_i[aij + 1] = a_elem[1];
 	if (i == j)
@@ -1074,21 +1073,21 @@ void BLAS_zhemm_testgen(int norm, enum blas_order_type order,
     /* Fill in matrix B */
     for (i = 0, bi = 0; i < m_i; i++, bi += incbi) {
       for (j = 0, bij = bi; j < n_i; j++, bij += incbij) {
-	((double *) b_elem)[0] = (float) drand48();
-	((double *) b_elem)[1] = (float) drand48();
+	b_elem[0] = xrand(seed);
+	b_elem[1] = xrand(seed);
 	b_i[bij] = b_elem[0];
 	b_i[bij + 1] = b_elem[1];
       }
     }
 
     for (i = 0, ci = 0; i < m_i; i++, ci += incci) {
-      zhemm_copy_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      zhe_copy_row(order, uplo, side, m_i, a, lda, a_vec, i);
       for (j = 0, cij = ci; j < n_i; j++, cij += inccij) {
 
 	if (side == blas_left_side)
-	  zgemm_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	  zge_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
 	else
-	  zgemm_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	  zge_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
 
 	/* copy the real b_vec into complex bb_vec, so that 
 	   pure complex test case generator can be called. */
@@ -1596,19 +1595,19 @@ void BLAS_zhemm_c_z_testgen(int norm, enum blas_order_type order,
 
 
     if (alpha_flag == 0) {
-      ((double *) alpha_i)[0] = (float) drand48();
-      ((double *) alpha_i)[1] = (float) drand48();
+      alpha_i[0] = (float) xrand(seed);
+      alpha_i[1] = (float) xrand(seed);
     }
     if (beta_flag == 0) {
-      ((double *) beta_i)[0] = (float) drand48();
-      ((double *) beta_i)[1] = (float) drand48();
+      beta_i[0] = (float) xrand(seed);
+      beta_i[1] = (float) xrand(seed);
     }
 
     /* Fill in matrix A -- Hermitian. */
     for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < m_i; j++, aij += incaij) {
-	((float *) a_elem)[0] = (float) drand48();
-	((float *) a_elem)[1] = (float) drand48();
+	a_elem[0] = (float) xrand(seed);
+	a_elem[1] = (float) xrand(seed);
 	a_i[aij] = a_elem[0];
 	a_i[aij + 1] = a_elem[1];
 	if (i == j)
@@ -1619,21 +1618,21 @@ void BLAS_zhemm_c_z_testgen(int norm, enum blas_order_type order,
     /* Fill in matrix B */
     for (i = 0, bi = 0; i < m_i; i++, bi += incbi) {
       for (j = 0, bij = bi; j < n_i; j++, bij += incbij) {
-	((double *) b_elem)[0] = (float) drand48();
-	((double *) b_elem)[1] = (float) drand48();
+	b_elem[0] = (float) xrand(seed);
+	b_elem[1] = (float) xrand(seed);
 	b_i[bij] = b_elem[0];
 	b_i[bij + 1] = b_elem[1];
       }
     }
 
     for (i = 0, ci = 0; i < m_i; i++, ci += incci) {
-      chemm_copy_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      che_copy_row(order, uplo, side, m_i, a, lda, a_vec, i);
       for (j = 0, cij = ci; j < n_i; j++, cij += inccij) {
 
 	if (side == blas_left_side)
-	  zgemm_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	  zge_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
 	else
-	  zgemm_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	  zge_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
 
 	/* copy the real b_vec into complex bb_vec, so that 
 	   pure complex test case generator can be called. */
@@ -2141,19 +2140,19 @@ void BLAS_zhemm_z_c_testgen(int norm, enum blas_order_type order,
 
 
     if (alpha_flag == 0) {
-      ((double *) alpha_i)[0] = (float) drand48();
-      ((double *) alpha_i)[1] = (float) drand48();
+      alpha_i[0] = (float) xrand(seed);
+      alpha_i[1] = (float) xrand(seed);
     }
     if (beta_flag == 0) {
-      ((double *) beta_i)[0] = (float) drand48();
-      ((double *) beta_i)[1] = (float) drand48();
+      beta_i[0] = (float) xrand(seed);
+      beta_i[1] = (float) xrand(seed);
     }
 
     /* Fill in matrix A -- Hermitian. */
     for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < m_i; j++, aij += incaij) {
-	((double *) a_elem)[0] = (float) drand48();
-	((double *) a_elem)[1] = (float) drand48();
+	a_elem[0] = (float) xrand(seed);
+	a_elem[1] = (float) xrand(seed);
 	a_i[aij] = a_elem[0];
 	a_i[aij + 1] = a_elem[1];
 	if (i == j)
@@ -2164,21 +2163,21 @@ void BLAS_zhemm_z_c_testgen(int norm, enum blas_order_type order,
     /* Fill in matrix B */
     for (i = 0, bi = 0; i < m_i; i++, bi += incbi) {
       for (j = 0, bij = bi; j < n_i; j++, bij += incbij) {
-	((float *) b_elem)[0] = (float) drand48();
-	((float *) b_elem)[1] = (float) drand48();
+	b_elem[0] = (float) xrand(seed);
+	b_elem[1] = (float) xrand(seed);
 	b_i[bij] = b_elem[0];
 	b_i[bij + 1] = b_elem[1];
       }
     }
 
     for (i = 0, ci = 0; i < m_i; i++, ci += incci) {
-      zhemm_copy_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      zhe_copy_row(order, uplo, side, m_i, a, lda, a_vec, i);
       for (j = 0, cij = ci; j < n_i; j++, cij += inccij) {
 
 	if (side == blas_left_side)
-	  cgemm_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	  cge_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
 	else
-	  cgemm_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	  cge_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
 
 	/* copy the real b_vec into complex bb_vec, so that 
 	   pure complex test case generator can be called. */
@@ -2686,19 +2685,19 @@ void BLAS_zhemm_c_c_testgen(int norm, enum blas_order_type order,
 
 
     if (alpha_flag == 0) {
-      ((double *) alpha_i)[0] = (float) drand48();
-      ((double *) alpha_i)[1] = (float) drand48();
+      alpha_i[0] = (float) xrand(seed);
+      alpha_i[1] = (float) xrand(seed);
     }
     if (beta_flag == 0) {
-      ((double *) beta_i)[0] = (float) drand48();
-      ((double *) beta_i)[1] = (float) drand48();
+      beta_i[0] = (float) xrand(seed);
+      beta_i[1] = (float) xrand(seed);
     }
 
     /* Fill in matrix A -- Hermitian. */
     for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < m_i; j++, aij += incaij) {
-	((float *) a_elem)[0] = (float) drand48();
-	((float *) a_elem)[1] = (float) drand48();
+	a_elem[0] = (float) xrand(seed);
+	a_elem[1] = (float) xrand(seed);
 	a_i[aij] = a_elem[0];
 	a_i[aij + 1] = a_elem[1];
 	if (i == j)
@@ -2709,21 +2708,21 @@ void BLAS_zhemm_c_c_testgen(int norm, enum blas_order_type order,
     /* Fill in matrix B */
     for (i = 0, bi = 0; i < m_i; i++, bi += incbi) {
       for (j = 0, bij = bi; j < n_i; j++, bij += incbij) {
-	((float *) b_elem)[0] = (float) drand48();
-	((float *) b_elem)[1] = (float) drand48();
+	b_elem[0] = (float) xrand(seed);
+	b_elem[1] = (float) xrand(seed);
 	b_i[bij] = b_elem[0];
 	b_i[bij + 1] = b_elem[1];
       }
     }
 
     for (i = 0, ci = 0; i < m_i; i++, ci += incci) {
-      chemm_copy_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      che_copy_row(order, uplo, side, m_i, a, lda, a_vec, i);
       for (j = 0, cij = ci; j < n_i; j++, cij += inccij) {
 
 	if (side == blas_left_side)
-	  cgemm_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	  cge_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
 	else
-	  cgemm_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	  cge_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
 
 	/* copy the real b_vec into complex bb_vec, so that 
 	   pure complex test case generator can be called. */
@@ -3176,19 +3175,19 @@ void BLAS_zhemm_z_d_testgen(int norm, enum blas_order_type order,
     }
 
     if (alpha_flag == 0) {
-      ((double *) alpha_i)[0] = (float) drand48();
-      ((double *) alpha_i)[1] = (float) drand48();
+      alpha_i[0] = xrand(seed);
+      alpha_i[1] = xrand(seed);
     }
     if (beta_flag == 0) {
-      ((double *) beta_i)[0] = (float) drand48();
-      ((double *) beta_i)[1] = (float) drand48();
+      beta_i[0] = xrand(seed);
+      beta_i[1] = xrand(seed);
     }
 
     /* Fill in matrix A -- Hermitian. */
     for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < m_i; j++, aij += incaij) {
-	((double *) a_elem)[0] = (float) drand48();
-	((double *) a_elem)[1] = (float) drand48();
+	a_elem[0] = xrand(seed);
+	a_elem[1] = xrand(seed);
 	a_i[aij] = a_elem[0];
 	a_i[aij + 1] = a_elem[1];
 	if (i == j)
@@ -3199,19 +3198,19 @@ void BLAS_zhemm_z_d_testgen(int norm, enum blas_order_type order,
     /* Fill in matrix B */
     for (i = 0, bi = 0; i < m_i; i++, bi += incbi) {
       for (j = 0, bij = bi; j < n_i; j++, bij += incbij) {
-	b_elem = (float) drand48();
+	b_elem = xrand(seed);
 	b_i[bij] = b_elem;
       }
     }
 
     for (i = 0, ci = 0; i < m_i; i++, ci += incci) {
-      zhemm_copy_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      zhe_copy_row(order, uplo, side, m_i, a, lda, a_vec, i);
       for (j = 0, cij = ci; j < n_i; j++, cij += inccij) {
 
 	if (side == blas_left_side)
-	  dgemm_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	  dge_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
 	else
-	  dgemm_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	  dge_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
 
 	/* copy the real b_vec into complex bb_vec, so that 
 	   pure complex test case generator can be called. */
@@ -3670,19 +3669,19 @@ void BLAS_chemm_c_s_testgen(int norm, enum blas_order_type order,
     }
 
     if (alpha_flag == 0) {
-      ((float *) alpha_i)[0] = (float) drand48();
-      ((float *) alpha_i)[1] = (float) drand48();
+      alpha_i[0] = xrand(seed);
+      alpha_i[1] = xrand(seed);
     }
     if (beta_flag == 0) {
-      ((float *) beta_i)[0] = (float) drand48();
-      ((float *) beta_i)[1] = (float) drand48();
+      beta_i[0] = xrand(seed);
+      beta_i[1] = xrand(seed);
     }
 
     /* Fill in matrix A -- Hermitian. */
     for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < m_i; j++, aij += incaij) {
-	((float *) a_elem)[0] = (float) drand48();
-	((float *) a_elem)[1] = (float) drand48();
+	a_elem[0] = xrand(seed);
+	a_elem[1] = xrand(seed);
 	a_i[aij] = a_elem[0];
 	a_i[aij + 1] = a_elem[1];
 	if (i == j)
@@ -3693,19 +3692,19 @@ void BLAS_chemm_c_s_testgen(int norm, enum blas_order_type order,
     /* Fill in matrix B */
     for (i = 0, bi = 0; i < m_i; i++, bi += incbi) {
       for (j = 0, bij = bi; j < n_i; j++, bij += incbij) {
-	b_elem = (float) drand48();
+	b_elem = xrand(seed);
 	b_i[bij] = b_elem;
       }
     }
 
     for (i = 0, ci = 0; i < m_i; i++, ci += incci) {
-      chemm_copy_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      che_copy_row(order, uplo, side, m_i, a, lda, a_vec, i);
       for (j = 0, cij = ci; j < n_i; j++, cij += inccij) {
 
 	if (side == blas_left_side)
-	  sgemm_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	  sge_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
 	else
-	  sgemm_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	  sge_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
 
 	/* copy the real b_vec into complex bb_vec, so that 
 	   pure complex test case generator can be called. */
@@ -3800,9 +3799,9 @@ void BLAS_sskew_testgen(int norm, enum blas_order_type order,
 
 
   if (side == blas_left_side)
-    sgemm_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, 0);
+    sge_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, 0);
   else
-    sgemm_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, 0);
+    sge_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, 0);
 
   /* Fill in matrix A */
   cij = 0;
@@ -3895,9 +3894,9 @@ void BLAS_dskew_testgen(int norm, enum blas_order_type order,
 
 
   if (side == blas_left_side)
-    dgemm_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, 0);
+    dge_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, 0);
   else
-    dgemm_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, 0);
+    dge_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, 0);
 
   /* Fill in matrix A */
   cij = 0;
@@ -3990,9 +3989,9 @@ void BLAS_dskew_d_s_testgen(int norm, enum blas_order_type order,
 
 
   if (side == blas_left_side)
-    sgemm_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, 0);
+    sge_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, 0);
   else
-    sgemm_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, 0);
+    sge_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, 0);
 
   /* Fill in matrix A */
   cij = 0;
@@ -4085,9 +4084,9 @@ void BLAS_dskew_s_d_testgen(int norm, enum blas_order_type order,
 
 
   if (side == blas_left_side)
-    dgemm_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, 0);
+    dge_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, 0);
   else
-    dgemm_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, 0);
+    dge_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, 0);
 
   /* Fill in matrix A */
   cij = 0;
@@ -4180,9 +4179,9 @@ void BLAS_dskew_s_s_testgen(int norm, enum blas_order_type order,
 
 
   if (side == blas_left_side)
-    sgemm_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, 0);
+    sge_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, 0);
   else
-    sgemm_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, 0);
+    sge_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, 0);
 
   /* Fill in matrix A */
   cij = 0;

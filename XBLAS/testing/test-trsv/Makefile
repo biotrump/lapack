@@ -14,7 +14,9 @@ TEST_DOT_OBJS = $(TEST_DOT_PATH)/testgen_BLAS_sdot.o \
 		$(TEST_DOT_PATH)/testgen_BLAS_zdot.o \
 		$(TEST_DOT_PATH)/testgen_aux.o \
 		$(TEST_DOT_PATH)/test_dot.o \
-		$(TEST_DOT_PATH)/BLAS_dot_testgen.o
+		$(TEST_DOT_PATH)/BLAS_dot_testgen.o \
+		$(TEST_DOT_PATH)/print_vector.o \
+		$(TEST_DOT_PATH)/copy_vector.o
 
 TEST_SRCS = do_test_trsv.c BLAS_trsv_testgen.c trsv-support.c \
 	BLAS_dot_testgen_trsv.c testgen_BLAS_sdot_x.c

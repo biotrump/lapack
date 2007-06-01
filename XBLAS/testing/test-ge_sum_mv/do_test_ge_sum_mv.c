@@ -156,44 +156,25 @@ void do_test_dge_sum_mv_d_s
   if (4 * m_i > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * m_i * incy; i += incy) {
-    y[i] = 0.0;
-  }
-
   a = (double *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(double));
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
   }
   a_use = (double *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(double));
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a_use[i] = 0.0;
-  }
   B = (double *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(double));
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B[i] = 0.0;
   }
   B_use = (double *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(double));
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B_use[i] = 0.0;
-  }
   x = (float *) blas_malloc(4 * n_i * sizeof(float));
   if (4 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
   }
 
   inca_veci = 1;
@@ -202,17 +183,10 @@ void do_test_dge_sum_mv_d_s
   if (2 * n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * inca_veci; i += inca_veci) {
-    a_vec[i] = 0.0;
-  }
   x_vec = (float *) blas_malloc(2 * n_i * sizeof(float));
   if (2 * n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(m_i * sizeof(double));
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double));
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -327,7 +301,7 @@ void do_test_dge_sum_mv_d_s
 		    if (0 == incx)
 		      continue;
 
-		    ssymv_copy_vector(n_i, x, incx, x_vec, 1);
+		    scopy_vector(x_vec, n_i, 1, x, incx);
 
 		    /* vary incy = 1, 2 */
 		    for (incy_val = INCY_START; incy_val <= INCY_END;
@@ -363,10 +337,9 @@ void do_test_dge_sum_mv_d_s
 			y_starti = 0;
 		      }
 		      /* make two copies of x into x_vec. redundant */
-		      ssymv_copy_vector(n_i, x_vec, 1, x, incx);
-		      ssymv_copy_vector(n_i,
-					(x_vec + (n_i * incx_veci)), 1, x,
-					incx);
+		      scopy_vector(x, n_i, incx, x_vec, 1);
+		      scopy_vector(x, n_i, incx, (x_vec + (n_i * incx_veci)),
+				   1);
 		      for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			   i++, yi += incyi, ri += incri) {
 			dge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
@@ -420,33 +393,30 @@ void do_test_dge_sum_mv_d_s
 			  printf("randomize %d\n", randomize_val);
 
 			  /* print out info */
-			  printf("alpha=%.16e", alpha);;
+			  printf("alpha = ");
+			  printf("%24.16e", alpha);;
 			  printf("   ");
-			  printf("beta=%.16e", beta);;
+			  printf("beta = ");
+			  printf("%24.16e", beta);;
 			  printf("\n");
-			  printf("alpha_use=%.16e", alpha_use);;
+			  printf("alpha_use = ");
+			  printf("%24.16e", alpha_use);;
 			  printf("\n");
 
-			  printf("a\n");
-			  dprint_matrix(a, m_i, n_i, lda, order_type);
-			  printf("B\n");
-			  dprint_matrix(B, m_i, n_i, ldb, order_type);
-			  printf("x\t");
-			  sprint_vector(x, n_i, incx);
+			  dge_print_matrix(a, m_i, n_i, lda, order_type, "A");
+			  dge_print_matrix(B, m_i, n_i, ldb, order_type, "B");
+			  sprint_vector(x, n_i, incx, "x");
 
-			  printf("y\t");
-			  dprint_vector(y, m_i, incy);
+			  dprint_vector(y, m_i, incy, "y");
 
-			  printf("head_r_true\t");
-			  dprint_vector(head_r_true, m_i, 1);
+			  dprint_vector(head_r_true, m_i, 1, "head_r_true");
 
-			  printf("a_use : before scaling\n");
-			  dprint_matrix(a_use, m_i, n_i, lda, order_type);
-			  printf("B_use : before scaling\n");
-			  dprint_matrix(B_use, m_i, n_i, ldb, order_type);
+			  dge_print_matrix(a_use, m_i, n_i, lda, order_type,
+					   "A_use");
+			  dge_print_matrix(B_use, m_i, n_i, ldb, order_type,
+					   "B_use");
 
-			  printf("ratios :\t");
-			  dprint_vector(ratios, m_i, 1);
+			  dprint_vector(ratios, m_i, 1, "ratios");
 			  printf("ratio = %g\n", ratio);
 			  fflush(stdout);
 			}
@@ -618,44 +588,25 @@ void do_test_dge_sum_mv_s_d
   if (4 * m_i > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * m_i * incy; i += incy) {
-    y[i] = 0.0;
-  }
-
   a = (float *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(float));
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
   }
   a_use = (float *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(float));
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a_use[i] = 0.0;
-  }
   B = (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float));
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B[i] = 0.0;
   }
   B_use = (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float));
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B_use[i] = 0.0;
-  }
   x = (double *) blas_malloc(4 * n_i * sizeof(double));
   if (4 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
   }
 
   inca_veci = 1;
@@ -664,17 +615,10 @@ void do_test_dge_sum_mv_s_d
   if (2 * n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * inca_veci; i += inca_veci) {
-    a_vec[i] = 0.0;
-  }
   x_vec = (double *) blas_malloc(2 * n_i * sizeof(double));
   if (2 * n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(m_i * sizeof(double));
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double));
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -789,7 +733,7 @@ void do_test_dge_sum_mv_s_d
 		    if (0 == incx)
 		      continue;
 
-		    dsymv_copy_vector(n_i, x, incx, x_vec, 1);
+		    dcopy_vector(x_vec, n_i, 1, x, incx);
 
 		    /* vary incy = 1, 2 */
 		    for (incy_val = INCY_START; incy_val <= INCY_END;
@@ -825,10 +769,9 @@ void do_test_dge_sum_mv_s_d
 			y_starti = 0;
 		      }
 		      /* make two copies of x into x_vec. redundant */
-		      dsymv_copy_vector(n_i, x_vec, 1, x, incx);
-		      dsymv_copy_vector(n_i,
-					(x_vec + (n_i * incx_veci)), 1, x,
-					incx);
+		      dcopy_vector(x, n_i, incx, x_vec, 1);
+		      dcopy_vector(x, n_i, incx, (x_vec + (n_i * incx_veci)),
+				   1);
 		      for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			   i++, yi += incyi, ri += incri) {
 			sge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
@@ -882,33 +825,30 @@ void do_test_dge_sum_mv_s_d
 			  printf("randomize %d\n", randomize_val);
 
 			  /* print out info */
-			  printf("alpha=%.16e", alpha);;
+			  printf("alpha = ");
+			  printf("%24.16e", alpha);;
 			  printf("   ");
-			  printf("beta=%.16e", beta);;
+			  printf("beta = ");
+			  printf("%24.16e", beta);;
 			  printf("\n");
-			  printf("alpha_use=%.16e", alpha_use);;
+			  printf("alpha_use = ");
+			  printf("%24.16e", alpha_use);;
 			  printf("\n");
 
-			  printf("a\n");
-			  sprint_matrix(a, m_i, n_i, lda, order_type);
-			  printf("B\n");
-			  sprint_matrix(B, m_i, n_i, ldb, order_type);
-			  printf("x\t");
-			  dprint_vector(x, n_i, incx);
+			  sge_print_matrix(a, m_i, n_i, lda, order_type, "A");
+			  sge_print_matrix(B, m_i, n_i, ldb, order_type, "B");
+			  dprint_vector(x, n_i, incx, "x");
 
-			  printf("y\t");
-			  dprint_vector(y, m_i, incy);
+			  dprint_vector(y, m_i, incy, "y");
 
-			  printf("head_r_true\t");
-			  dprint_vector(head_r_true, m_i, 1);
+			  dprint_vector(head_r_true, m_i, 1, "head_r_true");
 
-			  printf("a_use : before scaling\n");
-			  sprint_matrix(a_use, m_i, n_i, lda, order_type);
-			  printf("B_use : before scaling\n");
-			  sprint_matrix(B_use, m_i, n_i, ldb, order_type);
+			  sge_print_matrix(a_use, m_i, n_i, lda, order_type,
+					   "A_use");
+			  sge_print_matrix(B_use, m_i, n_i, ldb, order_type,
+					   "B_use");
 
-			  printf("ratios :\t");
-			  dprint_vector(ratios, m_i, 1);
+			  dprint_vector(ratios, m_i, 1, "ratios");
 			  printf("ratio = %g\n", ratio);
 			  fflush(stdout);
 			}
@@ -1080,44 +1020,25 @@ void do_test_dge_sum_mv_s_s
   if (4 * m_i > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * m_i * incy; i += incy) {
-    y[i] = 0.0;
-  }
-
   a = (float *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(float));
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
   }
   a_use = (float *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(float));
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a_use[i] = 0.0;
-  }
   B = (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float));
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B[i] = 0.0;
   }
   B_use = (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float));
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B_use[i] = 0.0;
-  }
   x = (float *) blas_malloc(4 * n_i * sizeof(float));
   if (4 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
   }
 
   inca_veci = 1;
@@ -1126,17 +1047,10 @@ void do_test_dge_sum_mv_s_s
   if (2 * n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * inca_veci; i += inca_veci) {
-    a_vec[i] = 0.0;
-  }
   x_vec = (float *) blas_malloc(2 * n_i * sizeof(float));
   if (2 * n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(m_i * sizeof(double));
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double));
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -1251,7 +1165,7 @@ void do_test_dge_sum_mv_s_s
 		    if (0 == incx)
 		      continue;
 
-		    ssymv_copy_vector(n_i, x, incx, x_vec, 1);
+		    scopy_vector(x_vec, n_i, 1, x, incx);
 
 		    /* vary incy = 1, 2 */
 		    for (incy_val = INCY_START; incy_val <= INCY_END;
@@ -1287,10 +1201,9 @@ void do_test_dge_sum_mv_s_s
 			y_starti = 0;
 		      }
 		      /* make two copies of x into x_vec. redundant */
-		      ssymv_copy_vector(n_i, x_vec, 1, x, incx);
-		      ssymv_copy_vector(n_i,
-					(x_vec + (n_i * incx_veci)), 1, x,
-					incx);
+		      scopy_vector(x, n_i, incx, x_vec, 1);
+		      scopy_vector(x, n_i, incx, (x_vec + (n_i * incx_veci)),
+				   1);
 		      for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			   i++, yi += incyi, ri += incri) {
 			sge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
@@ -1344,33 +1257,30 @@ void do_test_dge_sum_mv_s_s
 			  printf("randomize %d\n", randomize_val);
 
 			  /* print out info */
-			  printf("alpha=%.16e", alpha);;
+			  printf("alpha = ");
+			  printf("%24.16e", alpha);;
 			  printf("   ");
-			  printf("beta=%.16e", beta);;
+			  printf("beta = ");
+			  printf("%24.16e", beta);;
 			  printf("\n");
-			  printf("alpha_use=%.16e", alpha_use);;
+			  printf("alpha_use = ");
+			  printf("%24.16e", alpha_use);;
 			  printf("\n");
 
-			  printf("a\n");
-			  sprint_matrix(a, m_i, n_i, lda, order_type);
-			  printf("B\n");
-			  sprint_matrix(B, m_i, n_i, ldb, order_type);
-			  printf("x\t");
-			  sprint_vector(x, n_i, incx);
+			  sge_print_matrix(a, m_i, n_i, lda, order_type, "A");
+			  sge_print_matrix(B, m_i, n_i, ldb, order_type, "B");
+			  sprint_vector(x, n_i, incx, "x");
 
-			  printf("y\t");
-			  dprint_vector(y, m_i, incy);
+			  dprint_vector(y, m_i, incy, "y");
 
-			  printf("head_r_true\t");
-			  dprint_vector(head_r_true, m_i, 1);
+			  dprint_vector(head_r_true, m_i, 1, "head_r_true");
 
-			  printf("a_use : before scaling\n");
-			  sprint_matrix(a_use, m_i, n_i, lda, order_type);
-			  printf("B_use : before scaling\n");
-			  sprint_matrix(B_use, m_i, n_i, ldb, order_type);
+			  sge_print_matrix(a_use, m_i, n_i, lda, order_type,
+					   "A_use");
+			  sge_print_matrix(B_use, m_i, n_i, ldb, order_type,
+					   "B_use");
 
-			  printf("ratios :\t");
-			  dprint_vector(ratios, m_i, 1);
+			  dprint_vector(ratios, m_i, 1, "ratios");
 			  printf("ratio = %g\n", ratio);
 			  fflush(stdout);
 			}
@@ -1543,52 +1453,27 @@ void do_test_zge_sum_mv_z_c
   if (4 * m_i > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * m_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-  }
-
   a = (double *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(double) * 2);
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   a_use =
     (double *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(double) * 2);
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a_use[i] = 0.0;
-    a_use[i + 1] = 0.0;
-  }
   B = (double *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(double) * 2);
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B[i] = 0.0;
-    B[i + 1] = 0.0;
   }
   B_use =
     (double *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(double) * 2);
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B_use[i] = 0.0;
-    B_use[i + 1] = 0.0;
-  }
   x = (float *) blas_malloc(4 * n_i * sizeof(float) * 2);
   if (4 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
   }
 
   inca_veci = 1;
@@ -1597,19 +1482,10 @@ void do_test_zge_sum_mv_z_c
   if (2 * n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * inca_veci; i += inca_veci) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
-  }
   x_vec = (float *) blas_malloc(2 * n_i * sizeof(float) * 2);
   if (2 * n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-    x_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -1726,7 +1602,7 @@ void do_test_zge_sum_mv_z_c
 		    if (0 == incx)
 		      continue;
 
-		    csymv_copy_vector(n_i, x, incx, x_vec, 1);
+		    ccopy_vector(x_vec, n_i, 1, x, incx);
 
 		    /* vary incy = 1, 2 */
 		    for (incy_val = INCY_START; incy_val <= INCY_END;
@@ -1762,10 +1638,9 @@ void do_test_zge_sum_mv_z_c
 			y_starti = 0;
 		      }
 		      /* make two copies of x into x_vec. redundant */
-		      csymv_copy_vector(n_i, x_vec, 1, x, incx);
-		      csymv_copy_vector(n_i,
-					(x_vec + (n_i * incx_veci)), 1, x,
-					incx);
+		      ccopy_vector(x, n_i, incx, x_vec, 1);
+		      ccopy_vector(x, n_i, incx, (x_vec + (n_i * incx_veci)),
+				   1);
 		      for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			   i++, yi += incyi, ri += incri) {
 			zge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
@@ -1822,36 +1697,31 @@ void do_test_zge_sum_mv_z_c
 			  printf("randomize %d\n", randomize_val);
 
 			  /* print out info */
-			  printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				 alpha[1]);;
+			  printf("alpha = ");
+			  printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);;
 			  printf("   ");
-			  printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				 beta[1]);;
+			  printf("beta = ");
+			  printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			  printf("\n");
-			  printf("alpha_use[0]=%.16e, alpha_use[1]=%.16e",
-				 alpha_use[0], alpha_use[1]);;
+			  printf("alpha_use = ");
+			  printf("(%24.16e, %24.16e)", alpha_use[0],
+				 alpha_use[1]);;
 			  printf("\n");
 
-			  printf("a\n");
-			  zprint_matrix(a, m_i, n_i, lda, order_type);
-			  printf("B\n");
-			  zprint_matrix(B, m_i, n_i, ldb, order_type);
-			  printf("x\t");
-			  cprint_vector(x, n_i, incx);
+			  zge_print_matrix(a, m_i, n_i, lda, order_type, "A");
+			  zge_print_matrix(B, m_i, n_i, ldb, order_type, "B");
+			  cprint_vector(x, n_i, incx, "x");
 
-			  printf("y\t");
-			  zprint_vector(y, m_i, incy);
+			  zprint_vector(y, m_i, incy, "y");
 
-			  printf("head_r_true\t");
-			  zprint_vector(head_r_true, m_i, 1);
+			  zprint_vector(head_r_true, m_i, 1, "head_r_true");
 
-			  printf("a_use : before scaling\n");
-			  zprint_matrix(a_use, m_i, n_i, lda, order_type);
-			  printf("B_use : before scaling\n");
-			  zprint_matrix(B_use, m_i, n_i, ldb, order_type);
+			  zge_print_matrix(a_use, m_i, n_i, lda, order_type,
+					   "A_use");
+			  zge_print_matrix(B_use, m_i, n_i, ldb, order_type,
+					   "B_use");
 
-			  printf("ratios :\t");
-			  dprint_vector(ratios, m_i, 1);
+			  dprint_vector(ratios, m_i, 1, "ratios");
 			  printf("ratio = %g\n", ratio);
 			  fflush(stdout);
 			}
@@ -2024,52 +1894,27 @@ void do_test_zge_sum_mv_c_z
   if (4 * m_i > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * m_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-  }
-
   a = (float *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(float) * 2);
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   a_use =
     (float *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(float) * 2);
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a_use[i] = 0.0;
-    a_use[i + 1] = 0.0;
-  }
   B = (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float) * 2);
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B[i] = 0.0;
-    B[i + 1] = 0.0;
   }
   B_use =
     (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float) * 2);
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B_use[i] = 0.0;
-    B_use[i + 1] = 0.0;
-  }
   x = (double *) blas_malloc(4 * n_i * sizeof(double) * 2);
   if (4 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
   }
 
   inca_veci = 1;
@@ -2078,19 +1923,10 @@ void do_test_zge_sum_mv_c_z
   if (2 * n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * inca_veci; i += inca_veci) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
-  }
   x_vec = (double *) blas_malloc(2 * n_i * sizeof(double) * 2);
   if (2 * n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-    x_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -2207,7 +2043,7 @@ void do_test_zge_sum_mv_c_z
 		    if (0 == incx)
 		      continue;
 
-		    zsymv_copy_vector(n_i, x, incx, x_vec, 1);
+		    zcopy_vector(x_vec, n_i, 1, x, incx);
 
 		    /* vary incy = 1, 2 */
 		    for (incy_val = INCY_START; incy_val <= INCY_END;
@@ -2243,10 +2079,9 @@ void do_test_zge_sum_mv_c_z
 			y_starti = 0;
 		      }
 		      /* make two copies of x into x_vec. redundant */
-		      zsymv_copy_vector(n_i, x_vec, 1, x, incx);
-		      zsymv_copy_vector(n_i,
-					(x_vec + (n_i * incx_veci)), 1, x,
-					incx);
+		      zcopy_vector(x, n_i, incx, x_vec, 1);
+		      zcopy_vector(x, n_i, incx, (x_vec + (n_i * incx_veci)),
+				   1);
 		      for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			   i++, yi += incyi, ri += incri) {
 			cge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
@@ -2303,36 +2138,31 @@ void do_test_zge_sum_mv_c_z
 			  printf("randomize %d\n", randomize_val);
 
 			  /* print out info */
-			  printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				 alpha[1]);;
+			  printf("alpha = ");
+			  printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);;
 			  printf("   ");
-			  printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				 beta[1]);;
+			  printf("beta = ");
+			  printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			  printf("\n");
-			  printf("alpha_use[0]=%.16e, alpha_use[1]=%.16e",
-				 alpha_use[0], alpha_use[1]);;
+			  printf("alpha_use = ");
+			  printf("(%24.16e, %24.16e)", alpha_use[0],
+				 alpha_use[1]);;
 			  printf("\n");
 
-			  printf("a\n");
-			  cprint_matrix(a, m_i, n_i, lda, order_type);
-			  printf("B\n");
-			  cprint_matrix(B, m_i, n_i, ldb, order_type);
-			  printf("x\t");
-			  zprint_vector(x, n_i, incx);
+			  cge_print_matrix(a, m_i, n_i, lda, order_type, "A");
+			  cge_print_matrix(B, m_i, n_i, ldb, order_type, "B");
+			  zprint_vector(x, n_i, incx, "x");
 
-			  printf("y\t");
-			  zprint_vector(y, m_i, incy);
+			  zprint_vector(y, m_i, incy, "y");
 
-			  printf("head_r_true\t");
-			  zprint_vector(head_r_true, m_i, 1);
+			  zprint_vector(head_r_true, m_i, 1, "head_r_true");
 
-			  printf("a_use : before scaling\n");
-			  cprint_matrix(a_use, m_i, n_i, lda, order_type);
-			  printf("B_use : before scaling\n");
-			  cprint_matrix(B_use, m_i, n_i, ldb, order_type);
+			  cge_print_matrix(a_use, m_i, n_i, lda, order_type,
+					   "A_use");
+			  cge_print_matrix(B_use, m_i, n_i, ldb, order_type,
+					   "B_use");
 
-			  printf("ratios :\t");
-			  dprint_vector(ratios, m_i, 1);
+			  dprint_vector(ratios, m_i, 1, "ratios");
 			  printf("ratio = %g\n", ratio);
 			  fflush(stdout);
 			}
@@ -2505,52 +2335,27 @@ void do_test_zge_sum_mv_c_c
   if (4 * m_i > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * m_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-  }
-
   a = (float *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(float) * 2);
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   a_use =
     (float *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(float) * 2);
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a_use[i] = 0.0;
-    a_use[i + 1] = 0.0;
-  }
   B = (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float) * 2);
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B[i] = 0.0;
-    B[i + 1] = 0.0;
   }
   B_use =
     (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float) * 2);
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B_use[i] = 0.0;
-    B_use[i + 1] = 0.0;
-  }
   x = (float *) blas_malloc(4 * n_i * sizeof(float) * 2);
   if (4 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
   }
 
   inca_veci = 1;
@@ -2559,19 +2364,10 @@ void do_test_zge_sum_mv_c_c
   if (2 * n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * inca_veci; i += inca_veci) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
-  }
   x_vec = (float *) blas_malloc(2 * n_i * sizeof(float) * 2);
   if (2 * n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-    x_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -2688,7 +2484,7 @@ void do_test_zge_sum_mv_c_c
 		    if (0 == incx)
 		      continue;
 
-		    csymv_copy_vector(n_i, x, incx, x_vec, 1);
+		    ccopy_vector(x_vec, n_i, 1, x, incx);
 
 		    /* vary incy = 1, 2 */
 		    for (incy_val = INCY_START; incy_val <= INCY_END;
@@ -2724,10 +2520,9 @@ void do_test_zge_sum_mv_c_c
 			y_starti = 0;
 		      }
 		      /* make two copies of x into x_vec. redundant */
-		      csymv_copy_vector(n_i, x_vec, 1, x, incx);
-		      csymv_copy_vector(n_i,
-					(x_vec + (n_i * incx_veci)), 1, x,
-					incx);
+		      ccopy_vector(x, n_i, incx, x_vec, 1);
+		      ccopy_vector(x, n_i, incx, (x_vec + (n_i * incx_veci)),
+				   1);
 		      for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			   i++, yi += incyi, ri += incri) {
 			cge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
@@ -2784,36 +2579,31 @@ void do_test_zge_sum_mv_c_c
 			  printf("randomize %d\n", randomize_val);
 
 			  /* print out info */
-			  printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				 alpha[1]);;
+			  printf("alpha = ");
+			  printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);;
 			  printf("   ");
-			  printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				 beta[1]);;
+			  printf("beta = ");
+			  printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			  printf("\n");
-			  printf("alpha_use[0]=%.16e, alpha_use[1]=%.16e",
-				 alpha_use[0], alpha_use[1]);;
+			  printf("alpha_use = ");
+			  printf("(%24.16e, %24.16e)", alpha_use[0],
+				 alpha_use[1]);;
 			  printf("\n");
 
-			  printf("a\n");
-			  cprint_matrix(a, m_i, n_i, lda, order_type);
-			  printf("B\n");
-			  cprint_matrix(B, m_i, n_i, ldb, order_type);
-			  printf("x\t");
-			  cprint_vector(x, n_i, incx);
+			  cge_print_matrix(a, m_i, n_i, lda, order_type, "A");
+			  cge_print_matrix(B, m_i, n_i, ldb, order_type, "B");
+			  cprint_vector(x, n_i, incx, "x");
 
-			  printf("y\t");
-			  zprint_vector(y, m_i, incy);
+			  zprint_vector(y, m_i, incy, "y");
 
-			  printf("head_r_true\t");
-			  zprint_vector(head_r_true, m_i, 1);
+			  zprint_vector(head_r_true, m_i, 1, "head_r_true");
 
-			  printf("a_use : before scaling\n");
-			  cprint_matrix(a_use, m_i, n_i, lda, order_type);
-			  printf("B_use : before scaling\n");
-			  cprint_matrix(B_use, m_i, n_i, ldb, order_type);
+			  cge_print_matrix(a_use, m_i, n_i, lda, order_type,
+					   "A_use");
+			  cge_print_matrix(B_use, m_i, n_i, ldb, order_type,
+					   "B_use");
 
-			  printf("ratios :\t");
-			  dprint_vector(ratios, m_i, 1);
+			  dprint_vector(ratios, m_i, 1, "ratios");
 			  printf("ratio = %g\n", ratio);
 			  fflush(stdout);
 			}
@@ -2986,51 +2776,27 @@ void do_test_cge_sum_mv_c_s
   if (4 * m_i > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * m_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-  }
-
   a = (float *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(float) * 2);
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   a_use =
     (float *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(float) * 2);
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a_use[i] = 0.0;
-    a_use[i + 1] = 0.0;
-  }
   B = (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float) * 2);
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B[i] = 0.0;
-    B[i + 1] = 0.0;
   }
   B_use =
     (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float) * 2);
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B_use[i] = 0.0;
-    B_use[i + 1] = 0.0;
-  }
   x = (float *) blas_malloc(4 * n_i * sizeof(float));
   if (4 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
   }
 
   inca_veci = 1;
@@ -3039,18 +2805,10 @@ void do_test_cge_sum_mv_c_s
   if (2 * n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * inca_veci; i += inca_veci) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
-  }
   x_vec = (float *) blas_malloc(2 * n_i * sizeof(float));
   if (2 * n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -3167,7 +2925,7 @@ void do_test_cge_sum_mv_c_s
 		    if (0 == incx)
 		      continue;
 
-		    ssymv_copy_vector(n_i, x, incx, x_vec, 1);
+		    scopy_vector(x_vec, n_i, 1, x, incx);
 
 		    /* vary incy = 1, 2 */
 		    for (incy_val = INCY_START; incy_val <= INCY_END;
@@ -3203,10 +2961,9 @@ void do_test_cge_sum_mv_c_s
 			y_starti = 0;
 		      }
 		      /* make two copies of x into x_vec. redundant */
-		      ssymv_copy_vector(n_i, x_vec, 1, x, incx);
-		      ssymv_copy_vector(n_i,
-					(x_vec + (n_i * incx_veci)), 1, x,
-					incx);
+		      scopy_vector(x, n_i, incx, x_vec, 1);
+		      scopy_vector(x, n_i, incx, (x_vec + (n_i * incx_veci)),
+				   1);
 		      for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			   i++, yi += incyi, ri += incri) {
 			cge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
@@ -3263,36 +3020,31 @@ void do_test_cge_sum_mv_c_s
 			  printf("randomize %d\n", randomize_val);
 
 			  /* print out info */
-			  printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-				 alpha[1]);;
+			  printf("alpha = ");
+			  printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);;
 			  printf("   ");
-			  printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
-				 beta[1]);;
+			  printf("beta = ");
+			  printf("(%16.8e, %16.8e)", beta[0], beta[1]);;
 			  printf("\n");
-			  printf("alpha_use[0]=%.8e, alpha_use[1]=%.8e",
-				 alpha_use[0], alpha_use[1]);;
+			  printf("alpha_use = ");
+			  printf("(%16.8e, %16.8e)", alpha_use[0],
+				 alpha_use[1]);;
 			  printf("\n");
 
-			  printf("a\n");
-			  cprint_matrix(a, m_i, n_i, lda, order_type);
-			  printf("B\n");
-			  cprint_matrix(B, m_i, n_i, ldb, order_type);
-			  printf("x\t");
-			  sprint_vector(x, n_i, incx);
+			  cge_print_matrix(a, m_i, n_i, lda, order_type, "A");
+			  cge_print_matrix(B, m_i, n_i, ldb, order_type, "B");
+			  sprint_vector(x, n_i, incx, "x");
 
-			  printf("y\t");
-			  cprint_vector(y, m_i, incy);
+			  cprint_vector(y, m_i, incy, "y");
 
-			  printf("head_r_true\t");
-			  zprint_vector(head_r_true, m_i, 1);
+			  zprint_vector(head_r_true, m_i, 1, "head_r_true");
 
-			  printf("a_use : before scaling\n");
-			  cprint_matrix(a_use, m_i, n_i, lda, order_type);
-			  printf("B_use : before scaling\n");
-			  cprint_matrix(B_use, m_i, n_i, ldb, order_type);
+			  cge_print_matrix(a_use, m_i, n_i, lda, order_type,
+					   "A_use");
+			  cge_print_matrix(B_use, m_i, n_i, ldb, order_type,
+					   "B_use");
 
-			  printf("ratios :\t");
-			  dprint_vector(ratios, m_i, 1);
+			  dprint_vector(ratios, m_i, 1, "ratios");
 			  printf("ratio = %g\n", ratio);
 			  fflush(stdout);
 			}
@@ -3465,46 +3217,25 @@ void do_test_cge_sum_mv_s_c
   if (4 * m_i > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * m_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-  }
-
   a = (float *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(float));
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
   }
   a_use = (float *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(float));
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a_use[i] = 0.0;
-  }
   B = (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float));
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B[i] = 0.0;
   }
   B_use = (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float));
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B_use[i] = 0.0;
-  }
   x = (float *) blas_malloc(4 * n_i * sizeof(float) * 2);
   if (4 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
   }
 
   inca_veci = 1;
@@ -3513,18 +3244,10 @@ void do_test_cge_sum_mv_s_c
   if (2 * n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * inca_veci; i += inca_veci) {
-    a_vec[i] = 0.0;
-  }
   x_vec = (float *) blas_malloc(2 * n_i * sizeof(float) * 2);
   if (2 * n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-    x_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -3641,7 +3364,7 @@ void do_test_cge_sum_mv_s_c
 		    if (0 == incx)
 		      continue;
 
-		    csymv_copy_vector(n_i, x, incx, x_vec, 1);
+		    ccopy_vector(x_vec, n_i, 1, x, incx);
 
 		    /* vary incy = 1, 2 */
 		    for (incy_val = INCY_START; incy_val <= INCY_END;
@@ -3677,10 +3400,9 @@ void do_test_cge_sum_mv_s_c
 			y_starti = 0;
 		      }
 		      /* make two copies of x into x_vec. redundant */
-		      csymv_copy_vector(n_i, x_vec, 1, x, incx);
-		      csymv_copy_vector(n_i,
-					(x_vec + (n_i * incx_veci)), 1, x,
-					incx);
+		      ccopy_vector(x, n_i, incx, x_vec, 1);
+		      ccopy_vector(x, n_i, incx, (x_vec + (n_i * incx_veci)),
+				   1);
 		      for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			   i++, yi += incyi, ri += incri) {
 			sge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
@@ -3737,36 +3459,31 @@ void do_test_cge_sum_mv_s_c
 			  printf("randomize %d\n", randomize_val);
 
 			  /* print out info */
-			  printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-				 alpha[1]);;
+			  printf("alpha = ");
+			  printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);;
 			  printf("   ");
-			  printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
-				 beta[1]);;
+			  printf("beta = ");
+			  printf("(%16.8e, %16.8e)", beta[0], beta[1]);;
 			  printf("\n");
-			  printf("alpha_use[0]=%.8e, alpha_use[1]=%.8e",
-				 alpha_use[0], alpha_use[1]);;
+			  printf("alpha_use = ");
+			  printf("(%16.8e, %16.8e)", alpha_use[0],
+				 alpha_use[1]);;
 			  printf("\n");
 
-			  printf("a\n");
-			  sprint_matrix(a, m_i, n_i, lda, order_type);
-			  printf("B\n");
-			  sprint_matrix(B, m_i, n_i, ldb, order_type);
-			  printf("x\t");
-			  cprint_vector(x, n_i, incx);
+			  sge_print_matrix(a, m_i, n_i, lda, order_type, "A");
+			  sge_print_matrix(B, m_i, n_i, ldb, order_type, "B");
+			  cprint_vector(x, n_i, incx, "x");
 
-			  printf("y\t");
-			  cprint_vector(y, m_i, incy);
+			  cprint_vector(y, m_i, incy, "y");
 
-			  printf("head_r_true\t");
-			  zprint_vector(head_r_true, m_i, 1);
+			  zprint_vector(head_r_true, m_i, 1, "head_r_true");
 
-			  printf("a_use : before scaling\n");
-			  sprint_matrix(a_use, m_i, n_i, lda, order_type);
-			  printf("B_use : before scaling\n");
-			  sprint_matrix(B_use, m_i, n_i, ldb, order_type);
+			  sge_print_matrix(a_use, m_i, n_i, lda, order_type,
+					   "A_use");
+			  sge_print_matrix(B_use, m_i, n_i, ldb, order_type,
+					   "B_use");
 
-			  printf("ratios :\t");
-			  dprint_vector(ratios, m_i, 1);
+			  dprint_vector(ratios, m_i, 1, "ratios");
 			  printf("ratio = %g\n", ratio);
 			  fflush(stdout);
 			}
@@ -3939,45 +3656,25 @@ void do_test_cge_sum_mv_s_s
   if (4 * m_i > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * m_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-  }
-
   a = (float *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(float));
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
   }
   a_use = (float *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(float));
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a_use[i] = 0.0;
-  }
   B = (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float));
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B[i] = 0.0;
   }
   B_use = (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float));
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B_use[i] = 0.0;
-  }
   x = (float *) blas_malloc(4 * n_i * sizeof(float));
   if (4 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
   }
 
   inca_veci = 1;
@@ -3986,17 +3683,10 @@ void do_test_cge_sum_mv_s_s
   if (2 * n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * inca_veci; i += inca_veci) {
-    a_vec[i] = 0.0;
-  }
   x_vec = (float *) blas_malloc(2 * n_i * sizeof(float));
   if (2 * n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -4113,7 +3803,7 @@ void do_test_cge_sum_mv_s_s
 		    if (0 == incx)
 		      continue;
 
-		    ssymv_copy_vector(n_i, x, incx, x_vec, 1);
+		    scopy_vector(x_vec, n_i, 1, x, incx);
 
 		    /* vary incy = 1, 2 */
 		    for (incy_val = INCY_START; incy_val <= INCY_END;
@@ -4149,10 +3839,9 @@ void do_test_cge_sum_mv_s_s
 			y_starti = 0;
 		      }
 		      /* make two copies of x into x_vec. redundant */
-		      ssymv_copy_vector(n_i, x_vec, 1, x, incx);
-		      ssymv_copy_vector(n_i,
-					(x_vec + (n_i * incx_veci)), 1, x,
-					incx);
+		      scopy_vector(x, n_i, incx, x_vec, 1);
+		      scopy_vector(x, n_i, incx, (x_vec + (n_i * incx_veci)),
+				   1);
 		      for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			   i++, yi += incyi, ri += incri) {
 			sge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
@@ -4209,36 +3898,31 @@ void do_test_cge_sum_mv_s_s
 			  printf("randomize %d\n", randomize_val);
 
 			  /* print out info */
-			  printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-				 alpha[1]);;
+			  printf("alpha = ");
+			  printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);;
 			  printf("   ");
-			  printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
-				 beta[1]);;
+			  printf("beta = ");
+			  printf("(%16.8e, %16.8e)", beta[0], beta[1]);;
 			  printf("\n");
-			  printf("alpha_use[0]=%.8e, alpha_use[1]=%.8e",
-				 alpha_use[0], alpha_use[1]);;
+			  printf("alpha_use = ");
+			  printf("(%16.8e, %16.8e)", alpha_use[0],
+				 alpha_use[1]);;
 			  printf("\n");
 
-			  printf("a\n");
-			  sprint_matrix(a, m_i, n_i, lda, order_type);
-			  printf("B\n");
-			  sprint_matrix(B, m_i, n_i, ldb, order_type);
-			  printf("x\t");
-			  sprint_vector(x, n_i, incx);
+			  sge_print_matrix(a, m_i, n_i, lda, order_type, "A");
+			  sge_print_matrix(B, m_i, n_i, ldb, order_type, "B");
+			  sprint_vector(x, n_i, incx, "x");
 
-			  printf("y\t");
-			  cprint_vector(y, m_i, incy);
+			  cprint_vector(y, m_i, incy, "y");
 
-			  printf("head_r_true\t");
-			  zprint_vector(head_r_true, m_i, 1);
+			  zprint_vector(head_r_true, m_i, 1, "head_r_true");
 
-			  printf("a_use : before scaling\n");
-			  sprint_matrix(a_use, m_i, n_i, lda, order_type);
-			  printf("B_use : before scaling\n");
-			  sprint_matrix(B_use, m_i, n_i, ldb, order_type);
+			  sge_print_matrix(a_use, m_i, n_i, lda, order_type,
+					   "A_use");
+			  sge_print_matrix(B_use, m_i, n_i, ldb, order_type,
+					   "B_use");
 
-			  printf("ratios :\t");
-			  dprint_vector(ratios, m_i, 1);
+			  dprint_vector(ratios, m_i, 1, "ratios");
 			  printf("ratio = %g\n", ratio);
 			  fflush(stdout);
 			}
@@ -4411,51 +4095,27 @@ void do_test_zge_sum_mv_z_d
   if (4 * m_i > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * m_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-  }
-
   a = (double *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(double) * 2);
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   a_use =
     (double *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(double) * 2);
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a_use[i] = 0.0;
-    a_use[i + 1] = 0.0;
-  }
   B = (double *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(double) * 2);
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B[i] = 0.0;
-    B[i + 1] = 0.0;
   }
   B_use =
     (double *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(double) * 2);
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B_use[i] = 0.0;
-    B_use[i + 1] = 0.0;
-  }
   x = (double *) blas_malloc(4 * n_i * sizeof(double));
   if (4 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
   }
 
   inca_veci = 1;
@@ -4464,18 +4124,10 @@ void do_test_zge_sum_mv_z_d
   if (2 * n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * inca_veci; i += inca_veci) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
-  }
   x_vec = (double *) blas_malloc(2 * n_i * sizeof(double));
   if (2 * n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -4592,7 +4244,7 @@ void do_test_zge_sum_mv_z_d
 		    if (0 == incx)
 		      continue;
 
-		    dsymv_copy_vector(n_i, x, incx, x_vec, 1);
+		    dcopy_vector(x_vec, n_i, 1, x, incx);
 
 		    /* vary incy = 1, 2 */
 		    for (incy_val = INCY_START; incy_val <= INCY_END;
@@ -4628,10 +4280,9 @@ void do_test_zge_sum_mv_z_d
 			y_starti = 0;
 		      }
 		      /* make two copies of x into x_vec. redundant */
-		      dsymv_copy_vector(n_i, x_vec, 1, x, incx);
-		      dsymv_copy_vector(n_i,
-					(x_vec + (n_i * incx_veci)), 1, x,
-					incx);
+		      dcopy_vector(x, n_i, incx, x_vec, 1);
+		      dcopy_vector(x, n_i, incx, (x_vec + (n_i * incx_veci)),
+				   1);
 		      for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			   i++, yi += incyi, ri += incri) {
 			zge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
@@ -4688,36 +4339,31 @@ void do_test_zge_sum_mv_z_d
 			  printf("randomize %d\n", randomize_val);
 
 			  /* print out info */
-			  printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				 alpha[1]);;
+			  printf("alpha = ");
+			  printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);;
 			  printf("   ");
-			  printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				 beta[1]);;
+			  printf("beta = ");
+			  printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			  printf("\n");
-			  printf("alpha_use[0]=%.16e, alpha_use[1]=%.16e",
-				 alpha_use[0], alpha_use[1]);;
+			  printf("alpha_use = ");
+			  printf("(%24.16e, %24.16e)", alpha_use[0],
+				 alpha_use[1]);;
 			  printf("\n");
 
-			  printf("a\n");
-			  zprint_matrix(a, m_i, n_i, lda, order_type);
-			  printf("B\n");
-			  zprint_matrix(B, m_i, n_i, ldb, order_type);
-			  printf("x\t");
-			  dprint_vector(x, n_i, incx);
+			  zge_print_matrix(a, m_i, n_i, lda, order_type, "A");
+			  zge_print_matrix(B, m_i, n_i, ldb, order_type, "B");
+			  dprint_vector(x, n_i, incx, "x");
 
-			  printf("y\t");
-			  zprint_vector(y, m_i, incy);
+			  zprint_vector(y, m_i, incy, "y");
 
-			  printf("head_r_true\t");
-			  zprint_vector(head_r_true, m_i, 1);
+			  zprint_vector(head_r_true, m_i, 1, "head_r_true");
 
-			  printf("a_use : before scaling\n");
-			  zprint_matrix(a_use, m_i, n_i, lda, order_type);
-			  printf("B_use : before scaling\n");
-			  zprint_matrix(B_use, m_i, n_i, ldb, order_type);
+			  zge_print_matrix(a_use, m_i, n_i, lda, order_type,
+					   "A_use");
+			  zge_print_matrix(B_use, m_i, n_i, ldb, order_type,
+					   "B_use");
 
-			  printf("ratios :\t");
-			  dprint_vector(ratios, m_i, 1);
+			  dprint_vector(ratios, m_i, 1, "ratios");
 			  printf("ratio = %g\n", ratio);
 			  fflush(stdout);
 			}
@@ -4890,46 +4536,25 @@ void do_test_zge_sum_mv_d_z
   if (4 * m_i > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * m_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-  }
-
   a = (double *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(double));
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
   }
   a_use = (double *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(double));
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a_use[i] = 0.0;
-  }
   B = (double *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(double));
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B[i] = 0.0;
   }
   B_use = (double *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(double));
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B_use[i] = 0.0;
-  }
   x = (double *) blas_malloc(4 * n_i * sizeof(double) * 2);
   if (4 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
   }
 
   inca_veci = 1;
@@ -4938,18 +4563,10 @@ void do_test_zge_sum_mv_d_z
   if (2 * n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * inca_veci; i += inca_veci) {
-    a_vec[i] = 0.0;
-  }
   x_vec = (double *) blas_malloc(2 * n_i * sizeof(double) * 2);
   if (2 * n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-    x_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -5066,7 +4683,7 @@ void do_test_zge_sum_mv_d_z
 		    if (0 == incx)
 		      continue;
 
-		    zsymv_copy_vector(n_i, x, incx, x_vec, 1);
+		    zcopy_vector(x_vec, n_i, 1, x, incx);
 
 		    /* vary incy = 1, 2 */
 		    for (incy_val = INCY_START; incy_val <= INCY_END;
@@ -5102,10 +4719,9 @@ void do_test_zge_sum_mv_d_z
 			y_starti = 0;
 		      }
 		      /* make two copies of x into x_vec. redundant */
-		      zsymv_copy_vector(n_i, x_vec, 1, x, incx);
-		      zsymv_copy_vector(n_i,
-					(x_vec + (n_i * incx_veci)), 1, x,
-					incx);
+		      zcopy_vector(x, n_i, incx, x_vec, 1);
+		      zcopy_vector(x, n_i, incx, (x_vec + (n_i * incx_veci)),
+				   1);
 		      for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			   i++, yi += incyi, ri += incri) {
 			dge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
@@ -5162,36 +4778,31 @@ void do_test_zge_sum_mv_d_z
 			  printf("randomize %d\n", randomize_val);
 
 			  /* print out info */
-			  printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				 alpha[1]);;
+			  printf("alpha = ");
+			  printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);;
 			  printf("   ");
-			  printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				 beta[1]);;
+			  printf("beta = ");
+			  printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			  printf("\n");
-			  printf("alpha_use[0]=%.16e, alpha_use[1]=%.16e",
-				 alpha_use[0], alpha_use[1]);;
+			  printf("alpha_use = ");
+			  printf("(%24.16e, %24.16e)", alpha_use[0],
+				 alpha_use[1]);;
 			  printf("\n");
 
-			  printf("a\n");
-			  dprint_matrix(a, m_i, n_i, lda, order_type);
-			  printf("B\n");
-			  dprint_matrix(B, m_i, n_i, ldb, order_type);
-			  printf("x\t");
-			  zprint_vector(x, n_i, incx);
+			  dge_print_matrix(a, m_i, n_i, lda, order_type, "A");
+			  dge_print_matrix(B, m_i, n_i, ldb, order_type, "B");
+			  zprint_vector(x, n_i, incx, "x");
 
-			  printf("y\t");
-			  zprint_vector(y, m_i, incy);
+			  zprint_vector(y, m_i, incy, "y");
 
-			  printf("head_r_true\t");
-			  zprint_vector(head_r_true, m_i, 1);
+			  zprint_vector(head_r_true, m_i, 1, "head_r_true");
 
-			  printf("a_use : before scaling\n");
-			  dprint_matrix(a_use, m_i, n_i, lda, order_type);
-			  printf("B_use : before scaling\n");
-			  dprint_matrix(B_use, m_i, n_i, ldb, order_type);
+			  dge_print_matrix(a_use, m_i, n_i, lda, order_type,
+					   "A_use");
+			  dge_print_matrix(B_use, m_i, n_i, ldb, order_type,
+					   "B_use");
 
-			  printf("ratios :\t");
-			  dprint_vector(ratios, m_i, 1);
+			  dprint_vector(ratios, m_i, 1, "ratios");
 			  printf("ratio = %g\n", ratio);
 			  fflush(stdout);
 			}
@@ -5364,45 +4975,25 @@ void do_test_zge_sum_mv_d_d
   if (4 * m_i > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * m_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-  }
-
   a = (double *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(double));
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
   }
   a_use = (double *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(double));
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a_use[i] = 0.0;
-  }
   B = (double *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(double));
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B[i] = 0.0;
   }
   B_use = (double *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(double));
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B_use[i] = 0.0;
-  }
   x = (double *) blas_malloc(4 * n_i * sizeof(double));
   if (4 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
   }
 
   inca_veci = 1;
@@ -5411,17 +5002,10 @@ void do_test_zge_sum_mv_d_d
   if (2 * n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * inca_veci; i += inca_veci) {
-    a_vec[i] = 0.0;
-  }
   x_vec = (double *) blas_malloc(2 * n_i * sizeof(double));
   if (2 * n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -5538,7 +5122,7 @@ void do_test_zge_sum_mv_d_d
 		    if (0 == incx)
 		      continue;
 
-		    dsymv_copy_vector(n_i, x, incx, x_vec, 1);
+		    dcopy_vector(x_vec, n_i, 1, x, incx);
 
 		    /* vary incy = 1, 2 */
 		    for (incy_val = INCY_START; incy_val <= INCY_END;
@@ -5574,10 +5158,9 @@ void do_test_zge_sum_mv_d_d
 			y_starti = 0;
 		      }
 		      /* make two copies of x into x_vec. redundant */
-		      dsymv_copy_vector(n_i, x_vec, 1, x, incx);
-		      dsymv_copy_vector(n_i,
-					(x_vec + (n_i * incx_veci)), 1, x,
-					incx);
+		      dcopy_vector(x, n_i, incx, x_vec, 1);
+		      dcopy_vector(x, n_i, incx, (x_vec + (n_i * incx_veci)),
+				   1);
 		      for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			   i++, yi += incyi, ri += incri) {
 			dge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
@@ -5634,36 +5217,31 @@ void do_test_zge_sum_mv_d_d
 			  printf("randomize %d\n", randomize_val);
 
 			  /* print out info */
-			  printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				 alpha[1]);;
+			  printf("alpha = ");
+			  printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);;
 			  printf("   ");
-			  printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				 beta[1]);;
+			  printf("beta = ");
+			  printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			  printf("\n");
-			  printf("alpha_use[0]=%.16e, alpha_use[1]=%.16e",
-				 alpha_use[0], alpha_use[1]);;
+			  printf("alpha_use = ");
+			  printf("(%24.16e, %24.16e)", alpha_use[0],
+				 alpha_use[1]);;
 			  printf("\n");
 
-			  printf("a\n");
-			  dprint_matrix(a, m_i, n_i, lda, order_type);
-			  printf("B\n");
-			  dprint_matrix(B, m_i, n_i, ldb, order_type);
-			  printf("x\t");
-			  dprint_vector(x, n_i, incx);
+			  dge_print_matrix(a, m_i, n_i, lda, order_type, "A");
+			  dge_print_matrix(B, m_i, n_i, ldb, order_type, "B");
+			  dprint_vector(x, n_i, incx, "x");
 
-			  printf("y\t");
-			  zprint_vector(y, m_i, incy);
+			  zprint_vector(y, m_i, incy, "y");
 
-			  printf("head_r_true\t");
-			  zprint_vector(head_r_true, m_i, 1);
+			  zprint_vector(head_r_true, m_i, 1, "head_r_true");
 
-			  printf("a_use : before scaling\n");
-			  dprint_matrix(a_use, m_i, n_i, lda, order_type);
-			  printf("B_use : before scaling\n");
-			  dprint_matrix(B_use, m_i, n_i, ldb, order_type);
+			  dge_print_matrix(a_use, m_i, n_i, lda, order_type,
+					   "A_use");
+			  dge_print_matrix(B_use, m_i, n_i, ldb, order_type,
+					   "B_use");
 
-			  printf("ratios :\t");
-			  dprint_vector(ratios, m_i, 1);
+			  dprint_vector(ratios, m_i, 1, "ratios");
 			  printf("ratio = %g\n", ratio);
 			  fflush(stdout);
 			}
@@ -5835,44 +5413,25 @@ void do_test_sge_sum_mv_x
   if (4 * m_i > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * m_i * incy; i += incy) {
-    y[i] = 0.0;
-  }
-
   a = (float *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(float));
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
   }
   a_use = (float *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(float));
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a_use[i] = 0.0;
-  }
   B = (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float));
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B[i] = 0.0;
   }
   B_use = (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float));
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B_use[i] = 0.0;
-  }
   x = (float *) blas_malloc(4 * n_i * sizeof(float));
   if (4 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
   }
 
   inca_veci = 1;
@@ -5881,17 +5440,10 @@ void do_test_sge_sum_mv_x
   if (2 * n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * inca_veci; i += inca_veci) {
-    a_vec[i] = 0.0;
-  }
   x_vec = (float *) blas_malloc(2 * n_i * sizeof(float));
   if (2 * n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(m_i * sizeof(double));
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double));
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -6026,7 +5578,7 @@ void do_test_sge_sum_mv_x
 		      if (0 == incx)
 			continue;
 
-		      ssymv_copy_vector(n_i, x, incx, x_vec, 1);
+		      scopy_vector(x_vec, n_i, 1, x, incx);
 
 		      /* vary incy = 1, 2 */
 		      for (incy_val = INCY_START; incy_val <= INCY_END;
@@ -6062,10 +5614,9 @@ void do_test_sge_sum_mv_x
 			  y_starti = 0;
 			}
 			/* make two copies of x into x_vec. redundant */
-			ssymv_copy_vector(n_i, x_vec, 1, x, incx);
-			ssymv_copy_vector(n_i,
-					  (x_vec + (n_i * incx_veci)), 1, x,
-					  incx);
+			scopy_vector(x, n_i, incx, x_vec, 1);
+			scopy_vector(x, n_i, incx,
+				     (x_vec + (n_i * incx_veci)), 1);
 			for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			     i++, yi += incyi, ri += incri) {
 			  sge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
@@ -6119,33 +5670,32 @@ void do_test_sge_sum_mv_x
 			    printf("randomize %d\n", randomize_val);
 
 			    /* print out info */
-			    printf("alpha=%.8e", alpha);;
+			    printf("alpha = ");
+			    printf("%16.8e", alpha);;
 			    printf("   ");
-			    printf("beta=%.8e", beta);;
+			    printf("beta = ");
+			    printf("%16.8e", beta);;
 			    printf("\n");
-			    printf("alpha_use=%.8e", alpha_use);;
+			    printf("alpha_use = ");
+			    printf("%16.8e", alpha_use);;
 			    printf("\n");
 
-			    printf("a\n");
-			    sprint_matrix(a, m_i, n_i, lda, order_type);
-			    printf("B\n");
-			    sprint_matrix(B, m_i, n_i, ldb, order_type);
-			    printf("x\t");
-			    sprint_vector(x, n_i, incx);
+			    sge_print_matrix(a, m_i, n_i, lda, order_type,
+					     "A");
+			    sge_print_matrix(B, m_i, n_i, ldb, order_type,
+					     "B");
+			    sprint_vector(x, n_i, incx, "x");
 
-			    printf("y\t");
-			    sprint_vector(y, m_i, incy);
+			    sprint_vector(y, m_i, incy, "y");
 
-			    printf("head_r_true\t");
-			    dprint_vector(head_r_true, m_i, 1);
+			    dprint_vector(head_r_true, m_i, 1, "head_r_true");
 
-			    printf("a_use : before scaling\n");
-			    sprint_matrix(a_use, m_i, n_i, lda, order_type);
-			    printf("B_use : before scaling\n");
-			    sprint_matrix(B_use, m_i, n_i, ldb, order_type);
+			    sge_print_matrix(a_use, m_i, n_i, lda, order_type,
+					     "A_use");
+			    sge_print_matrix(B_use, m_i, n_i, ldb, order_type,
+					     "B_use");
 
-			    printf("ratios :\t");
-			    dprint_vector(ratios, m_i, 1);
+			    dprint_vector(ratios, m_i, 1, "ratios");
 			    printf("ratio = %g\n", ratio);
 			    fflush(stdout);
 			  }
@@ -6318,44 +5868,25 @@ void do_test_dge_sum_mv_x
   if (4 * m_i > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * m_i * incy; i += incy) {
-    y[i] = 0.0;
-  }
-
   a = (double *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(double));
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
   }
   a_use = (double *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(double));
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a_use[i] = 0.0;
-  }
   B = (double *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(double));
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B[i] = 0.0;
   }
   B_use = (double *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(double));
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B_use[i] = 0.0;
-  }
   x = (double *) blas_malloc(4 * n_i * sizeof(double));
   if (4 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
   }
 
   inca_veci = 1;
@@ -6364,17 +5895,10 @@ void do_test_dge_sum_mv_x
   if (2 * n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * inca_veci; i += inca_veci) {
-    a_vec[i] = 0.0;
-  }
   x_vec = (double *) blas_malloc(2 * n_i * sizeof(double));
   if (2 * n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(m_i * sizeof(double));
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double));
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -6509,7 +6033,7 @@ void do_test_dge_sum_mv_x
 		      if (0 == incx)
 			continue;
 
-		      dsymv_copy_vector(n_i, x, incx, x_vec, 1);
+		      dcopy_vector(x_vec, n_i, 1, x, incx);
 
 		      /* vary incy = 1, 2 */
 		      for (incy_val = INCY_START; incy_val <= INCY_END;
@@ -6545,10 +6069,9 @@ void do_test_dge_sum_mv_x
 			  y_starti = 0;
 			}
 			/* make two copies of x into x_vec. redundant */
-			dsymv_copy_vector(n_i, x_vec, 1, x, incx);
-			dsymv_copy_vector(n_i,
-					  (x_vec + (n_i * incx_veci)), 1, x,
-					  incx);
+			dcopy_vector(x, n_i, incx, x_vec, 1);
+			dcopy_vector(x, n_i, incx,
+				     (x_vec + (n_i * incx_veci)), 1);
 			for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			     i++, yi += incyi, ri += incri) {
 			  dge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
@@ -6602,33 +6125,32 @@ void do_test_dge_sum_mv_x
 			    printf("randomize %d\n", randomize_val);
 
 			    /* print out info */
-			    printf("alpha=%.16e", alpha);;
+			    printf("alpha = ");
+			    printf("%24.16e", alpha);;
 			    printf("   ");
-			    printf("beta=%.16e", beta);;
+			    printf("beta = ");
+			    printf("%24.16e", beta);;
 			    printf("\n");
-			    printf("alpha_use=%.16e", alpha_use);;
+			    printf("alpha_use = ");
+			    printf("%24.16e", alpha_use);;
 			    printf("\n");
 
-			    printf("a\n");
-			    dprint_matrix(a, m_i, n_i, lda, order_type);
-			    printf("B\n");
-			    dprint_matrix(B, m_i, n_i, ldb, order_type);
-			    printf("x\t");
-			    dprint_vector(x, n_i, incx);
+			    dge_print_matrix(a, m_i, n_i, lda, order_type,
+					     "A");
+			    dge_print_matrix(B, m_i, n_i, ldb, order_type,
+					     "B");
+			    dprint_vector(x, n_i, incx, "x");
 
-			    printf("y\t");
-			    dprint_vector(y, m_i, incy);
+			    dprint_vector(y, m_i, incy, "y");
 
-			    printf("head_r_true\t");
-			    dprint_vector(head_r_true, m_i, 1);
+			    dprint_vector(head_r_true, m_i, 1, "head_r_true");
 
-			    printf("a_use : before scaling\n");
-			    dprint_matrix(a_use, m_i, n_i, lda, order_type);
-			    printf("B_use : before scaling\n");
-			    dprint_matrix(B_use, m_i, n_i, ldb, order_type);
+			    dge_print_matrix(a_use, m_i, n_i, lda, order_type,
+					     "A_use");
+			    dge_print_matrix(B_use, m_i, n_i, ldb, order_type,
+					     "B_use");
 
-			    printf("ratios :\t");
-			    dprint_vector(ratios, m_i, 1);
+			    dprint_vector(ratios, m_i, 1, "ratios");
 			    printf("ratio = %g\n", ratio);
 			    fflush(stdout);
 			  }
@@ -6802,52 +6324,27 @@ void do_test_cge_sum_mv_x
   if (4 * m_i > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * m_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-  }
-
   a = (float *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(float) * 2);
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   a_use =
     (float *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(float) * 2);
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a_use[i] = 0.0;
-    a_use[i + 1] = 0.0;
-  }
   B = (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float) * 2);
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B[i] = 0.0;
-    B[i + 1] = 0.0;
   }
   B_use =
     (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float) * 2);
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B_use[i] = 0.0;
-    B_use[i + 1] = 0.0;
-  }
   x = (float *) blas_malloc(4 * n_i * sizeof(float) * 2);
   if (4 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
   }
 
   inca_veci = 1;
@@ -6856,19 +6353,10 @@ void do_test_cge_sum_mv_x
   if (2 * n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * inca_veci; i += inca_veci) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
-  }
   x_vec = (float *) blas_malloc(2 * n_i * sizeof(float) * 2);
   if (2 * n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-    x_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -7005,7 +6493,7 @@ void do_test_cge_sum_mv_x
 		      if (0 == incx)
 			continue;
 
-		      csymv_copy_vector(n_i, x, incx, x_vec, 1);
+		      ccopy_vector(x_vec, n_i, 1, x, incx);
 
 		      /* vary incy = 1, 2 */
 		      for (incy_val = INCY_START; incy_val <= INCY_END;
@@ -7041,10 +6529,9 @@ void do_test_cge_sum_mv_x
 			  y_starti = 0;
 			}
 			/* make two copies of x into x_vec. redundant */
-			csymv_copy_vector(n_i, x_vec, 1, x, incx);
-			csymv_copy_vector(n_i,
-					  (x_vec + (n_i * incx_veci)), 1, x,
-					  incx);
+			ccopy_vector(x, n_i, incx, x_vec, 1);
+			ccopy_vector(x, n_i, incx,
+				     (x_vec + (n_i * incx_veci)), 1);
 			for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			     i++, yi += incyi, ri += incri) {
 			  cge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
@@ -7101,36 +6588,33 @@ void do_test_cge_sum_mv_x
 			    printf("randomize %d\n", randomize_val);
 
 			    /* print out info */
-			    printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-				   alpha[1]);;
+			    printf("alpha = ");
+			    printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);;
 			    printf("   ");
-			    printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
-				   beta[1]);;
+			    printf("beta = ");
+			    printf("(%16.8e, %16.8e)", beta[0], beta[1]);;
 			    printf("\n");
-			    printf("alpha_use[0]=%.8e, alpha_use[1]=%.8e",
-				   alpha_use[0], alpha_use[1]);;
+			    printf("alpha_use = ");
+			    printf("(%16.8e, %16.8e)", alpha_use[0],
+				   alpha_use[1]);;
 			    printf("\n");
 
-			    printf("a\n");
-			    cprint_matrix(a, m_i, n_i, lda, order_type);
-			    printf("B\n");
-			    cprint_matrix(B, m_i, n_i, ldb, order_type);
-			    printf("x\t");
-			    cprint_vector(x, n_i, incx);
+			    cge_print_matrix(a, m_i, n_i, lda, order_type,
+					     "A");
+			    cge_print_matrix(B, m_i, n_i, ldb, order_type,
+					     "B");
+			    cprint_vector(x, n_i, incx, "x");
 
-			    printf("y\t");
-			    cprint_vector(y, m_i, incy);
+			    cprint_vector(y, m_i, incy, "y");
 
-			    printf("head_r_true\t");
-			    zprint_vector(head_r_true, m_i, 1);
+			    zprint_vector(head_r_true, m_i, 1, "head_r_true");
 
-			    printf("a_use : before scaling\n");
-			    cprint_matrix(a_use, m_i, n_i, lda, order_type);
-			    printf("B_use : before scaling\n");
-			    cprint_matrix(B_use, m_i, n_i, ldb, order_type);
+			    cge_print_matrix(a_use, m_i, n_i, lda, order_type,
+					     "A_use");
+			    cge_print_matrix(B_use, m_i, n_i, ldb, order_type,
+					     "B_use");
 
-			    printf("ratios :\t");
-			    dprint_vector(ratios, m_i, 1);
+			    dprint_vector(ratios, m_i, 1, "ratios");
 			    printf("ratio = %g\n", ratio);
 			    fflush(stdout);
 			  }
@@ -7304,52 +6788,27 @@ void do_test_zge_sum_mv_x
   if (4 * m_i > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * m_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-  }
-
   a = (double *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(double) * 2);
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   a_use =
     (double *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(double) * 2);
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a_use[i] = 0.0;
-    a_use[i + 1] = 0.0;
-  }
   B = (double *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(double) * 2);
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B[i] = 0.0;
-    B[i + 1] = 0.0;
   }
   B_use =
     (double *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(double) * 2);
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B_use[i] = 0.0;
-    B_use[i + 1] = 0.0;
-  }
   x = (double *) blas_malloc(4 * n_i * sizeof(double) * 2);
   if (4 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
   }
 
   inca_veci = 1;
@@ -7358,19 +6817,10 @@ void do_test_zge_sum_mv_x
   if (2 * n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * inca_veci; i += inca_veci) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
-  }
   x_vec = (double *) blas_malloc(2 * n_i * sizeof(double) * 2);
   if (2 * n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-    x_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -7507,7 +6957,7 @@ void do_test_zge_sum_mv_x
 		      if (0 == incx)
 			continue;
 
-		      zsymv_copy_vector(n_i, x, incx, x_vec, 1);
+		      zcopy_vector(x_vec, n_i, 1, x, incx);
 
 		      /* vary incy = 1, 2 */
 		      for (incy_val = INCY_START; incy_val <= INCY_END;
@@ -7543,10 +6993,9 @@ void do_test_zge_sum_mv_x
 			  y_starti = 0;
 			}
 			/* make two copies of x into x_vec. redundant */
-			zsymv_copy_vector(n_i, x_vec, 1, x, incx);
-			zsymv_copy_vector(n_i,
-					  (x_vec + (n_i * incx_veci)), 1, x,
-					  incx);
+			zcopy_vector(x, n_i, incx, x_vec, 1);
+			zcopy_vector(x, n_i, incx,
+				     (x_vec + (n_i * incx_veci)), 1);
 			for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			     i++, yi += incyi, ri += incri) {
 			  zge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
@@ -7603,36 +7052,33 @@ void do_test_zge_sum_mv_x
 			    printf("randomize %d\n", randomize_val);
 
 			    /* print out info */
-			    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				   alpha[1]);;
+			    printf("alpha = ");
+			    printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);;
 			    printf("   ");
-			    printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				   beta[1]);;
+			    printf("beta = ");
+			    printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			    printf("\n");
-			    printf("alpha_use[0]=%.16e, alpha_use[1]=%.16e",
-				   alpha_use[0], alpha_use[1]);;
+			    printf("alpha_use = ");
+			    printf("(%24.16e, %24.16e)", alpha_use[0],
+				   alpha_use[1]);;
 			    printf("\n");
 
-			    printf("a\n");
-			    zprint_matrix(a, m_i, n_i, lda, order_type);
-			    printf("B\n");
-			    zprint_matrix(B, m_i, n_i, ldb, order_type);
-			    printf("x\t");
-			    zprint_vector(x, n_i, incx);
+			    zge_print_matrix(a, m_i, n_i, lda, order_type,
+					     "A");
+			    zge_print_matrix(B, m_i, n_i, ldb, order_type,
+					     "B");
+			    zprint_vector(x, n_i, incx, "x");
 
-			    printf("y\t");
-			    zprint_vector(y, m_i, incy);
+			    zprint_vector(y, m_i, incy, "y");
 
-			    printf("head_r_true\t");
-			    zprint_vector(head_r_true, m_i, 1);
+			    zprint_vector(head_r_true, m_i, 1, "head_r_true");
 
-			    printf("a_use : before scaling\n");
-			    zprint_matrix(a_use, m_i, n_i, lda, order_type);
-			    printf("B_use : before scaling\n");
-			    zprint_matrix(B_use, m_i, n_i, ldb, order_type);
+			    zge_print_matrix(a_use, m_i, n_i, lda, order_type,
+					     "A_use");
+			    zge_print_matrix(B_use, m_i, n_i, ldb, order_type,
+					     "B_use");
 
-			    printf("ratios :\t");
-			    dprint_vector(ratios, m_i, 1);
+			    dprint_vector(ratios, m_i, 1, "ratios");
 			    printf("ratio = %g\n", ratio);
 			    fflush(stdout);
 			  }
@@ -7805,44 +7251,25 @@ void do_test_dge_sum_mv_d_s_x
   if (4 * m_i > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * m_i * incy; i += incy) {
-    y[i] = 0.0;
-  }
-
   a = (double *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(double));
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
   }
   a_use = (double *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(double));
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a_use[i] = 0.0;
-  }
   B = (double *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(double));
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B[i] = 0.0;
   }
   B_use = (double *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(double));
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B_use[i] = 0.0;
-  }
   x = (float *) blas_malloc(4 * n_i * sizeof(float));
   if (4 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
   }
 
   inca_veci = 1;
@@ -7851,17 +7278,10 @@ void do_test_dge_sum_mv_d_s_x
   if (2 * n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * inca_veci; i += inca_veci) {
-    a_vec[i] = 0.0;
-  }
   x_vec = (float *) blas_malloc(2 * n_i * sizeof(float));
   if (2 * n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(m_i * sizeof(double));
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double));
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -7997,7 +7417,7 @@ void do_test_dge_sum_mv_d_s_x
 		      if (0 == incx)
 			continue;
 
-		      ssymv_copy_vector(n_i, x, incx, x_vec, 1);
+		      scopy_vector(x_vec, n_i, 1, x, incx);
 
 		      /* vary incy = 1, 2 */
 		      for (incy_val = INCY_START; incy_val <= INCY_END;
@@ -8033,10 +7453,9 @@ void do_test_dge_sum_mv_d_s_x
 			  y_starti = 0;
 			}
 			/* make two copies of x into x_vec. redundant */
-			ssymv_copy_vector(n_i, x_vec, 1, x, incx);
-			ssymv_copy_vector(n_i,
-					  (x_vec + (n_i * incx_veci)), 1, x,
-					  incx);
+			scopy_vector(x, n_i, incx, x_vec, 1);
+			scopy_vector(x, n_i, incx,
+				     (x_vec + (n_i * incx_veci)), 1);
 			for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			     i++, yi += incyi, ri += incri) {
 			  dge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
@@ -8091,33 +7510,32 @@ void do_test_dge_sum_mv_d_s_x
 			    printf("randomize %d\n", randomize_val);
 
 			    /* print out info */
-			    printf("alpha=%.16e", alpha);;
+			    printf("alpha = ");
+			    printf("%24.16e", alpha);;
 			    printf("   ");
-			    printf("beta=%.16e", beta);;
+			    printf("beta = ");
+			    printf("%24.16e", beta);;
 			    printf("\n");
-			    printf("alpha_use=%.16e", alpha_use);;
+			    printf("alpha_use = ");
+			    printf("%24.16e", alpha_use);;
 			    printf("\n");
 
-			    printf("a\n");
-			    dprint_matrix(a, m_i, n_i, lda, order_type);
-			    printf("B\n");
-			    dprint_matrix(B, m_i, n_i, ldb, order_type);
-			    printf("x\t");
-			    sprint_vector(x, n_i, incx);
+			    dge_print_matrix(a, m_i, n_i, lda, order_type,
+					     "A");
+			    dge_print_matrix(B, m_i, n_i, ldb, order_type,
+					     "B");
+			    sprint_vector(x, n_i, incx, "x");
 
-			    printf("y\t");
-			    dprint_vector(y, m_i, incy);
+			    dprint_vector(y, m_i, incy, "y");
 
-			    printf("head_r_true\t");
-			    dprint_vector(head_r_true, m_i, 1);
+			    dprint_vector(head_r_true, m_i, 1, "head_r_true");
 
-			    printf("a_use : before scaling\n");
-			    dprint_matrix(a_use, m_i, n_i, lda, order_type);
-			    printf("B_use : before scaling\n");
-			    dprint_matrix(B_use, m_i, n_i, ldb, order_type);
+			    dge_print_matrix(a_use, m_i, n_i, lda, order_type,
+					     "A_use");
+			    dge_print_matrix(B_use, m_i, n_i, ldb, order_type,
+					     "B_use");
 
-			    printf("ratios :\t");
-			    dprint_vector(ratios, m_i, 1);
+			    dprint_vector(ratios, m_i, 1, "ratios");
 			    printf("ratio = %g\n", ratio);
 			    fflush(stdout);
 			  }
@@ -8290,44 +7708,25 @@ void do_test_dge_sum_mv_s_d_x
   if (4 * m_i > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * m_i * incy; i += incy) {
-    y[i] = 0.0;
-  }
-
   a = (float *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(float));
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
   }
   a_use = (float *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(float));
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a_use[i] = 0.0;
-  }
   B = (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float));
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B[i] = 0.0;
   }
   B_use = (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float));
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B_use[i] = 0.0;
-  }
   x = (double *) blas_malloc(4 * n_i * sizeof(double));
   if (4 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
   }
 
   inca_veci = 1;
@@ -8336,17 +7735,10 @@ void do_test_dge_sum_mv_s_d_x
   if (2 * n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * inca_veci; i += inca_veci) {
-    a_vec[i] = 0.0;
-  }
   x_vec = (double *) blas_malloc(2 * n_i * sizeof(double));
   if (2 * n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(m_i * sizeof(double));
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double));
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -8482,7 +7874,7 @@ void do_test_dge_sum_mv_s_d_x
 		      if (0 == incx)
 			continue;
 
-		      dsymv_copy_vector(n_i, x, incx, x_vec, 1);
+		      dcopy_vector(x_vec, n_i, 1, x, incx);
 
 		      /* vary incy = 1, 2 */
 		      for (incy_val = INCY_START; incy_val <= INCY_END;
@@ -8518,10 +7910,9 @@ void do_test_dge_sum_mv_s_d_x
 			  y_starti = 0;
 			}
 			/* make two copies of x into x_vec. redundant */
-			dsymv_copy_vector(n_i, x_vec, 1, x, incx);
-			dsymv_copy_vector(n_i,
-					  (x_vec + (n_i * incx_veci)), 1, x,
-					  incx);
+			dcopy_vector(x, n_i, incx, x_vec, 1);
+			dcopy_vector(x, n_i, incx,
+				     (x_vec + (n_i * incx_veci)), 1);
 			for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			     i++, yi += incyi, ri += incri) {
 			  sge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
@@ -8576,33 +7967,32 @@ void do_test_dge_sum_mv_s_d_x
 			    printf("randomize %d\n", randomize_val);
 
 			    /* print out info */
-			    printf("alpha=%.16e", alpha);;
+			    printf("alpha = ");
+			    printf("%24.16e", alpha);;
 			    printf("   ");
-			    printf("beta=%.16e", beta);;
+			    printf("beta = ");
+			    printf("%24.16e", beta);;
 			    printf("\n");
-			    printf("alpha_use=%.16e", alpha_use);;
+			    printf("alpha_use = ");
+			    printf("%24.16e", alpha_use);;
 			    printf("\n");
 
-			    printf("a\n");
-			    sprint_matrix(a, m_i, n_i, lda, order_type);
-			    printf("B\n");
-			    sprint_matrix(B, m_i, n_i, ldb, order_type);
-			    printf("x\t");
-			    dprint_vector(x, n_i, incx);
+			    sge_print_matrix(a, m_i, n_i, lda, order_type,
+					     "A");
+			    sge_print_matrix(B, m_i, n_i, ldb, order_type,
+					     "B");
+			    dprint_vector(x, n_i, incx, "x");
 
-			    printf("y\t");
-			    dprint_vector(y, m_i, incy);
+			    dprint_vector(y, m_i, incy, "y");
 
-			    printf("head_r_true\t");
-			    dprint_vector(head_r_true, m_i, 1);
+			    dprint_vector(head_r_true, m_i, 1, "head_r_true");
 
-			    printf("a_use : before scaling\n");
-			    sprint_matrix(a_use, m_i, n_i, lda, order_type);
-			    printf("B_use : before scaling\n");
-			    sprint_matrix(B_use, m_i, n_i, ldb, order_type);
+			    sge_print_matrix(a_use, m_i, n_i, lda, order_type,
+					     "A_use");
+			    sge_print_matrix(B_use, m_i, n_i, ldb, order_type,
+					     "B_use");
 
-			    printf("ratios :\t");
-			    dprint_vector(ratios, m_i, 1);
+			    dprint_vector(ratios, m_i, 1, "ratios");
 			    printf("ratio = %g\n", ratio);
 			    fflush(stdout);
 			  }
@@ -8775,44 +8165,25 @@ void do_test_dge_sum_mv_s_s_x
   if (4 * m_i > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * m_i * incy; i += incy) {
-    y[i] = 0.0;
-  }
-
   a = (float *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(float));
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
   }
   a_use = (float *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(float));
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a_use[i] = 0.0;
-  }
   B = (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float));
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B[i] = 0.0;
   }
   B_use = (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float));
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B_use[i] = 0.0;
-  }
   x = (float *) blas_malloc(4 * n_i * sizeof(float));
   if (4 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
   }
 
   inca_veci = 1;
@@ -8821,17 +8192,10 @@ void do_test_dge_sum_mv_s_s_x
   if (2 * n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * inca_veci; i += inca_veci) {
-    a_vec[i] = 0.0;
-  }
   x_vec = (float *) blas_malloc(2 * n_i * sizeof(float));
   if (2 * n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(m_i * sizeof(double));
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double));
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -8967,7 +8331,7 @@ void do_test_dge_sum_mv_s_s_x
 		      if (0 == incx)
 			continue;
 
-		      ssymv_copy_vector(n_i, x, incx, x_vec, 1);
+		      scopy_vector(x_vec, n_i, 1, x, incx);
 
 		      /* vary incy = 1, 2 */
 		      for (incy_val = INCY_START; incy_val <= INCY_END;
@@ -9003,10 +8367,9 @@ void do_test_dge_sum_mv_s_s_x
 			  y_starti = 0;
 			}
 			/* make two copies of x into x_vec. redundant */
-			ssymv_copy_vector(n_i, x_vec, 1, x, incx);
-			ssymv_copy_vector(n_i,
-					  (x_vec + (n_i * incx_veci)), 1, x,
-					  incx);
+			scopy_vector(x, n_i, incx, x_vec, 1);
+			scopy_vector(x, n_i, incx,
+				     (x_vec + (n_i * incx_veci)), 1);
 			for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			     i++, yi += incyi, ri += incri) {
 			  sge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
@@ -9061,33 +8424,32 @@ void do_test_dge_sum_mv_s_s_x
 			    printf("randomize %d\n", randomize_val);
 
 			    /* print out info */
-			    printf("alpha=%.16e", alpha);;
+			    printf("alpha = ");
+			    printf("%24.16e", alpha);;
 			    printf("   ");
-			    printf("beta=%.16e", beta);;
+			    printf("beta = ");
+			    printf("%24.16e", beta);;
 			    printf("\n");
-			    printf("alpha_use=%.16e", alpha_use);;
+			    printf("alpha_use = ");
+			    printf("%24.16e", alpha_use);;
 			    printf("\n");
 
-			    printf("a\n");
-			    sprint_matrix(a, m_i, n_i, lda, order_type);
-			    printf("B\n");
-			    sprint_matrix(B, m_i, n_i, ldb, order_type);
-			    printf("x\t");
-			    sprint_vector(x, n_i, incx);
+			    sge_print_matrix(a, m_i, n_i, lda, order_type,
+					     "A");
+			    sge_print_matrix(B, m_i, n_i, ldb, order_type,
+					     "B");
+			    sprint_vector(x, n_i, incx, "x");
 
-			    printf("y\t");
-			    dprint_vector(y, m_i, incy);
+			    dprint_vector(y, m_i, incy, "y");
 
-			    printf("head_r_true\t");
-			    dprint_vector(head_r_true, m_i, 1);
+			    dprint_vector(head_r_true, m_i, 1, "head_r_true");
 
-			    printf("a_use : before scaling\n");
-			    sprint_matrix(a_use, m_i, n_i, lda, order_type);
-			    printf("B_use : before scaling\n");
-			    sprint_matrix(B_use, m_i, n_i, ldb, order_type);
+			    sge_print_matrix(a_use, m_i, n_i, lda, order_type,
+					     "A_use");
+			    sge_print_matrix(B_use, m_i, n_i, ldb, order_type,
+					     "B_use");
 
-			    printf("ratios :\t");
-			    dprint_vector(ratios, m_i, 1);
+			    dprint_vector(ratios, m_i, 1, "ratios");
 			    printf("ratio = %g\n", ratio);
 			    fflush(stdout);
 			  }
@@ -9261,52 +8623,27 @@ void do_test_zge_sum_mv_z_c_x
   if (4 * m_i > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * m_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-  }
-
   a = (double *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(double) * 2);
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   a_use =
     (double *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(double) * 2);
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a_use[i] = 0.0;
-    a_use[i + 1] = 0.0;
-  }
   B = (double *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(double) * 2);
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B[i] = 0.0;
-    B[i + 1] = 0.0;
   }
   B_use =
     (double *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(double) * 2);
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B_use[i] = 0.0;
-    B_use[i + 1] = 0.0;
-  }
   x = (float *) blas_malloc(4 * n_i * sizeof(float) * 2);
   if (4 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
   }
 
   inca_veci = 1;
@@ -9315,19 +8652,10 @@ void do_test_zge_sum_mv_z_c_x
   if (2 * n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * inca_veci; i += inca_veci) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
-  }
   x_vec = (float *) blas_malloc(2 * n_i * sizeof(float) * 2);
   if (2 * n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-    x_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -9465,7 +8793,7 @@ void do_test_zge_sum_mv_z_c_x
 		      if (0 == incx)
 			continue;
 
-		      csymv_copy_vector(n_i, x, incx, x_vec, 1);
+		      ccopy_vector(x_vec, n_i, 1, x, incx);
 
 		      /* vary incy = 1, 2 */
 		      for (incy_val = INCY_START; incy_val <= INCY_END;
@@ -9501,10 +8829,9 @@ void do_test_zge_sum_mv_z_c_x
 			  y_starti = 0;
 			}
 			/* make two copies of x into x_vec. redundant */
-			csymv_copy_vector(n_i, x_vec, 1, x, incx);
-			csymv_copy_vector(n_i,
-					  (x_vec + (n_i * incx_veci)), 1, x,
-					  incx);
+			ccopy_vector(x, n_i, incx, x_vec, 1);
+			ccopy_vector(x, n_i, incx,
+				     (x_vec + (n_i * incx_veci)), 1);
 			for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			     i++, yi += incyi, ri += incri) {
 			  zge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
@@ -9562,36 +8889,33 @@ void do_test_zge_sum_mv_z_c_x
 			    printf("randomize %d\n", randomize_val);
 
 			    /* print out info */
-			    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				   alpha[1]);;
+			    printf("alpha = ");
+			    printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);;
 			    printf("   ");
-			    printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				   beta[1]);;
+			    printf("beta = ");
+			    printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			    printf("\n");
-			    printf("alpha_use[0]=%.16e, alpha_use[1]=%.16e",
-				   alpha_use[0], alpha_use[1]);;
+			    printf("alpha_use = ");
+			    printf("(%24.16e, %24.16e)", alpha_use[0],
+				   alpha_use[1]);;
 			    printf("\n");
 
-			    printf("a\n");
-			    zprint_matrix(a, m_i, n_i, lda, order_type);
-			    printf("B\n");
-			    zprint_matrix(B, m_i, n_i, ldb, order_type);
-			    printf("x\t");
-			    cprint_vector(x, n_i, incx);
+			    zge_print_matrix(a, m_i, n_i, lda, order_type,
+					     "A");
+			    zge_print_matrix(B, m_i, n_i, ldb, order_type,
+					     "B");
+			    cprint_vector(x, n_i, incx, "x");
 
-			    printf("y\t");
-			    zprint_vector(y, m_i, incy);
+			    zprint_vector(y, m_i, incy, "y");
 
-			    printf("head_r_true\t");
-			    zprint_vector(head_r_true, m_i, 1);
+			    zprint_vector(head_r_true, m_i, 1, "head_r_true");
 
-			    printf("a_use : before scaling\n");
-			    zprint_matrix(a_use, m_i, n_i, lda, order_type);
-			    printf("B_use : before scaling\n");
-			    zprint_matrix(B_use, m_i, n_i, ldb, order_type);
+			    zge_print_matrix(a_use, m_i, n_i, lda, order_type,
+					     "A_use");
+			    zge_print_matrix(B_use, m_i, n_i, ldb, order_type,
+					     "B_use");
 
-			    printf("ratios :\t");
-			    dprint_vector(ratios, m_i, 1);
+			    dprint_vector(ratios, m_i, 1, "ratios");
 			    printf("ratio = %g\n", ratio);
 			    fflush(stdout);
 			  }
@@ -9765,52 +9089,27 @@ void do_test_zge_sum_mv_c_z_x
   if (4 * m_i > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * m_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-  }
-
   a = (float *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(float) * 2);
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   a_use =
     (float *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(float) * 2);
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a_use[i] = 0.0;
-    a_use[i + 1] = 0.0;
-  }
   B = (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float) * 2);
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B[i] = 0.0;
-    B[i + 1] = 0.0;
   }
   B_use =
     (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float) * 2);
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B_use[i] = 0.0;
-    B_use[i + 1] = 0.0;
-  }
   x = (double *) blas_malloc(4 * n_i * sizeof(double) * 2);
   if (4 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
   }
 
   inca_veci = 1;
@@ -9819,19 +9118,10 @@ void do_test_zge_sum_mv_c_z_x
   if (2 * n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * inca_veci; i += inca_veci) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
-  }
   x_vec = (double *) blas_malloc(2 * n_i * sizeof(double) * 2);
   if (2 * n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-    x_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -9969,7 +9259,7 @@ void do_test_zge_sum_mv_c_z_x
 		      if (0 == incx)
 			continue;
 
-		      zsymv_copy_vector(n_i, x, incx, x_vec, 1);
+		      zcopy_vector(x_vec, n_i, 1, x, incx);
 
 		      /* vary incy = 1, 2 */
 		      for (incy_val = INCY_START; incy_val <= INCY_END;
@@ -10005,10 +9295,9 @@ void do_test_zge_sum_mv_c_z_x
 			  y_starti = 0;
 			}
 			/* make two copies of x into x_vec. redundant */
-			zsymv_copy_vector(n_i, x_vec, 1, x, incx);
-			zsymv_copy_vector(n_i,
-					  (x_vec + (n_i * incx_veci)), 1, x,
-					  incx);
+			zcopy_vector(x, n_i, incx, x_vec, 1);
+			zcopy_vector(x, n_i, incx,
+				     (x_vec + (n_i * incx_veci)), 1);
 			for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			     i++, yi += incyi, ri += incri) {
 			  cge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
@@ -10066,36 +9355,33 @@ void do_test_zge_sum_mv_c_z_x
 			    printf("randomize %d\n", randomize_val);
 
 			    /* print out info */
-			    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				   alpha[1]);;
+			    printf("alpha = ");
+			    printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);;
 			    printf("   ");
-			    printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				   beta[1]);;
+			    printf("beta = ");
+			    printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			    printf("\n");
-			    printf("alpha_use[0]=%.16e, alpha_use[1]=%.16e",
-				   alpha_use[0], alpha_use[1]);;
+			    printf("alpha_use = ");
+			    printf("(%24.16e, %24.16e)", alpha_use[0],
+				   alpha_use[1]);;
 			    printf("\n");
 
-			    printf("a\n");
-			    cprint_matrix(a, m_i, n_i, lda, order_type);
-			    printf("B\n");
-			    cprint_matrix(B, m_i, n_i, ldb, order_type);
-			    printf("x\t");
-			    zprint_vector(x, n_i, incx);
+			    cge_print_matrix(a, m_i, n_i, lda, order_type,
+					     "A");
+			    cge_print_matrix(B, m_i, n_i, ldb, order_type,
+					     "B");
+			    zprint_vector(x, n_i, incx, "x");
 
-			    printf("y\t");
-			    zprint_vector(y, m_i, incy);
+			    zprint_vector(y, m_i, incy, "y");
 
-			    printf("head_r_true\t");
-			    zprint_vector(head_r_true, m_i, 1);
+			    zprint_vector(head_r_true, m_i, 1, "head_r_true");
 
-			    printf("a_use : before scaling\n");
-			    cprint_matrix(a_use, m_i, n_i, lda, order_type);
-			    printf("B_use : before scaling\n");
-			    cprint_matrix(B_use, m_i, n_i, ldb, order_type);
+			    cge_print_matrix(a_use, m_i, n_i, lda, order_type,
+					     "A_use");
+			    cge_print_matrix(B_use, m_i, n_i, ldb, order_type,
+					     "B_use");
 
-			    printf("ratios :\t");
-			    dprint_vector(ratios, m_i, 1);
+			    dprint_vector(ratios, m_i, 1, "ratios");
 			    printf("ratio = %g\n", ratio);
 			    fflush(stdout);
 			  }
@@ -10269,52 +9555,27 @@ void do_test_zge_sum_mv_c_c_x
   if (4 * m_i > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * m_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-  }
-
   a = (float *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(float) * 2);
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   a_use =
     (float *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(float) * 2);
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a_use[i] = 0.0;
-    a_use[i + 1] = 0.0;
-  }
   B = (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float) * 2);
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B[i] = 0.0;
-    B[i + 1] = 0.0;
   }
   B_use =
     (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float) * 2);
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B_use[i] = 0.0;
-    B_use[i + 1] = 0.0;
-  }
   x = (float *) blas_malloc(4 * n_i * sizeof(float) * 2);
   if (4 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
   }
 
   inca_veci = 1;
@@ -10323,19 +9584,10 @@ void do_test_zge_sum_mv_c_c_x
   if (2 * n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * inca_veci; i += inca_veci) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
-  }
   x_vec = (float *) blas_malloc(2 * n_i * sizeof(float) * 2);
   if (2 * n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-    x_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -10473,7 +9725,7 @@ void do_test_zge_sum_mv_c_c_x
 		      if (0 == incx)
 			continue;
 
-		      csymv_copy_vector(n_i, x, incx, x_vec, 1);
+		      ccopy_vector(x_vec, n_i, 1, x, incx);
 
 		      /* vary incy = 1, 2 */
 		      for (incy_val = INCY_START; incy_val <= INCY_END;
@@ -10509,10 +9761,9 @@ void do_test_zge_sum_mv_c_c_x
 			  y_starti = 0;
 			}
 			/* make two copies of x into x_vec. redundant */
-			csymv_copy_vector(n_i, x_vec, 1, x, incx);
-			csymv_copy_vector(n_i,
-					  (x_vec + (n_i * incx_veci)), 1, x,
-					  incx);
+			ccopy_vector(x, n_i, incx, x_vec, 1);
+			ccopy_vector(x, n_i, incx,
+				     (x_vec + (n_i * incx_veci)), 1);
 			for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			     i++, yi += incyi, ri += incri) {
 			  cge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
@@ -10570,36 +9821,33 @@ void do_test_zge_sum_mv_c_c_x
 			    printf("randomize %d\n", randomize_val);
 
 			    /* print out info */
-			    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				   alpha[1]);;
+			    printf("alpha = ");
+			    printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);;
 			    printf("   ");
-			    printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				   beta[1]);;
+			    printf("beta = ");
+			    printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			    printf("\n");
-			    printf("alpha_use[0]=%.16e, alpha_use[1]=%.16e",
-				   alpha_use[0], alpha_use[1]);;
+			    printf("alpha_use = ");
+			    printf("(%24.16e, %24.16e)", alpha_use[0],
+				   alpha_use[1]);;
 			    printf("\n");
 
-			    printf("a\n");
-			    cprint_matrix(a, m_i, n_i, lda, order_type);
-			    printf("B\n");
-			    cprint_matrix(B, m_i, n_i, ldb, order_type);
-			    printf("x\t");
-			    cprint_vector(x, n_i, incx);
+			    cge_print_matrix(a, m_i, n_i, lda, order_type,
+					     "A");
+			    cge_print_matrix(B, m_i, n_i, ldb, order_type,
+					     "B");
+			    cprint_vector(x, n_i, incx, "x");
 
-			    printf("y\t");
-			    zprint_vector(y, m_i, incy);
+			    zprint_vector(y, m_i, incy, "y");
 
-			    printf("head_r_true\t");
-			    zprint_vector(head_r_true, m_i, 1);
+			    zprint_vector(head_r_true, m_i, 1, "head_r_true");
 
-			    printf("a_use : before scaling\n");
-			    cprint_matrix(a_use, m_i, n_i, lda, order_type);
-			    printf("B_use : before scaling\n");
-			    cprint_matrix(B_use, m_i, n_i, ldb, order_type);
+			    cge_print_matrix(a_use, m_i, n_i, lda, order_type,
+					     "A_use");
+			    cge_print_matrix(B_use, m_i, n_i, ldb, order_type,
+					     "B_use");
 
-			    printf("ratios :\t");
-			    dprint_vector(ratios, m_i, 1);
+			    dprint_vector(ratios, m_i, 1, "ratios");
 			    printf("ratio = %g\n", ratio);
 			    fflush(stdout);
 			  }
@@ -10773,51 +10021,27 @@ void do_test_cge_sum_mv_c_s_x
   if (4 * m_i > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * m_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-  }
-
   a = (float *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(float) * 2);
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   a_use =
     (float *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(float) * 2);
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a_use[i] = 0.0;
-    a_use[i + 1] = 0.0;
-  }
   B = (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float) * 2);
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B[i] = 0.0;
-    B[i + 1] = 0.0;
   }
   B_use =
     (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float) * 2);
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B_use[i] = 0.0;
-    B_use[i + 1] = 0.0;
-  }
   x = (float *) blas_malloc(4 * n_i * sizeof(float));
   if (4 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
   }
 
   inca_veci = 1;
@@ -10826,18 +10050,10 @@ void do_test_cge_sum_mv_c_s_x
   if (2 * n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * inca_veci; i += inca_veci) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
-  }
   x_vec = (float *) blas_malloc(2 * n_i * sizeof(float));
   if (2 * n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -10975,7 +10191,7 @@ void do_test_cge_sum_mv_c_s_x
 		      if (0 == incx)
 			continue;
 
-		      ssymv_copy_vector(n_i, x, incx, x_vec, 1);
+		      scopy_vector(x_vec, n_i, 1, x, incx);
 
 		      /* vary incy = 1, 2 */
 		      for (incy_val = INCY_START; incy_val <= INCY_END;
@@ -11011,10 +10227,9 @@ void do_test_cge_sum_mv_c_s_x
 			  y_starti = 0;
 			}
 			/* make two copies of x into x_vec. redundant */
-			ssymv_copy_vector(n_i, x_vec, 1, x, incx);
-			ssymv_copy_vector(n_i,
-					  (x_vec + (n_i * incx_veci)), 1, x,
-					  incx);
+			scopy_vector(x, n_i, incx, x_vec, 1);
+			scopy_vector(x, n_i, incx,
+				     (x_vec + (n_i * incx_veci)), 1);
 			for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			     i++, yi += incyi, ri += incri) {
 			  cge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
@@ -11072,36 +10287,33 @@ void do_test_cge_sum_mv_c_s_x
 			    printf("randomize %d\n", randomize_val);
 
 			    /* print out info */
-			    printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-				   alpha[1]);;
+			    printf("alpha = ");
+			    printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);;
 			    printf("   ");
-			    printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
-				   beta[1]);;
+			    printf("beta = ");
+			    printf("(%16.8e, %16.8e)", beta[0], beta[1]);;
 			    printf("\n");
-			    printf("alpha_use[0]=%.8e, alpha_use[1]=%.8e",
-				   alpha_use[0], alpha_use[1]);;
+			    printf("alpha_use = ");
+			    printf("(%16.8e, %16.8e)", alpha_use[0],
+				   alpha_use[1]);;
 			    printf("\n");
 
-			    printf("a\n");
-			    cprint_matrix(a, m_i, n_i, lda, order_type);
-			    printf("B\n");
-			    cprint_matrix(B, m_i, n_i, ldb, order_type);
-			    printf("x\t");
-			    sprint_vector(x, n_i, incx);
+			    cge_print_matrix(a, m_i, n_i, lda, order_type,
+					     "A");
+			    cge_print_matrix(B, m_i, n_i, ldb, order_type,
+					     "B");
+			    sprint_vector(x, n_i, incx, "x");
 
-			    printf("y\t");
-			    cprint_vector(y, m_i, incy);
+			    cprint_vector(y, m_i, incy, "y");
 
-			    printf("head_r_true\t");
-			    zprint_vector(head_r_true, m_i, 1);
+			    zprint_vector(head_r_true, m_i, 1, "head_r_true");
 
-			    printf("a_use : before scaling\n");
-			    cprint_matrix(a_use, m_i, n_i, lda, order_type);
-			    printf("B_use : before scaling\n");
-			    cprint_matrix(B_use, m_i, n_i, ldb, order_type);
+			    cge_print_matrix(a_use, m_i, n_i, lda, order_type,
+					     "A_use");
+			    cge_print_matrix(B_use, m_i, n_i, ldb, order_type,
+					     "B_use");
 
-			    printf("ratios :\t");
-			    dprint_vector(ratios, m_i, 1);
+			    dprint_vector(ratios, m_i, 1, "ratios");
 			    printf("ratio = %g\n", ratio);
 			    fflush(stdout);
 			  }
@@ -11275,46 +10487,25 @@ void do_test_cge_sum_mv_s_c_x
   if (4 * m_i > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * m_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-  }
-
   a = (float *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(float));
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
   }
   a_use = (float *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(float));
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a_use[i] = 0.0;
-  }
   B = (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float));
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B[i] = 0.0;
   }
   B_use = (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float));
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B_use[i] = 0.0;
-  }
   x = (float *) blas_malloc(4 * n_i * sizeof(float) * 2);
   if (4 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
   }
 
   inca_veci = 1;
@@ -11323,18 +10514,10 @@ void do_test_cge_sum_mv_s_c_x
   if (2 * n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * inca_veci; i += inca_veci) {
-    a_vec[i] = 0.0;
-  }
   x_vec = (float *) blas_malloc(2 * n_i * sizeof(float) * 2);
   if (2 * n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-    x_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -11472,7 +10655,7 @@ void do_test_cge_sum_mv_s_c_x
 		      if (0 == incx)
 			continue;
 
-		      csymv_copy_vector(n_i, x, incx, x_vec, 1);
+		      ccopy_vector(x_vec, n_i, 1, x, incx);
 
 		      /* vary incy = 1, 2 */
 		      for (incy_val = INCY_START; incy_val <= INCY_END;
@@ -11508,10 +10691,9 @@ void do_test_cge_sum_mv_s_c_x
 			  y_starti = 0;
 			}
 			/* make two copies of x into x_vec. redundant */
-			csymv_copy_vector(n_i, x_vec, 1, x, incx);
-			csymv_copy_vector(n_i,
-					  (x_vec + (n_i * incx_veci)), 1, x,
-					  incx);
+			ccopy_vector(x, n_i, incx, x_vec, 1);
+			ccopy_vector(x, n_i, incx,
+				     (x_vec + (n_i * incx_veci)), 1);
 			for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			     i++, yi += incyi, ri += incri) {
 			  sge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
@@ -11569,36 +10751,33 @@ void do_test_cge_sum_mv_s_c_x
 			    printf("randomize %d\n", randomize_val);
 
 			    /* print out info */
-			    printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-				   alpha[1]);;
+			    printf("alpha = ");
+			    printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);;
 			    printf("   ");
-			    printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
-				   beta[1]);;
+			    printf("beta = ");
+			    printf("(%16.8e, %16.8e)", beta[0], beta[1]);;
 			    printf("\n");
-			    printf("alpha_use[0]=%.8e, alpha_use[1]=%.8e",
-				   alpha_use[0], alpha_use[1]);;
+			    printf("alpha_use = ");
+			    printf("(%16.8e, %16.8e)", alpha_use[0],
+				   alpha_use[1]);;
 			    printf("\n");
 
-			    printf("a\n");
-			    sprint_matrix(a, m_i, n_i, lda, order_type);
-			    printf("B\n");
-			    sprint_matrix(B, m_i, n_i, ldb, order_type);
-			    printf("x\t");
-			    cprint_vector(x, n_i, incx);
+			    sge_print_matrix(a, m_i, n_i, lda, order_type,
+					     "A");
+			    sge_print_matrix(B, m_i, n_i, ldb, order_type,
+					     "B");
+			    cprint_vector(x, n_i, incx, "x");
 
-			    printf("y\t");
-			    cprint_vector(y, m_i, incy);
+			    cprint_vector(y, m_i, incy, "y");
 
-			    printf("head_r_true\t");
-			    zprint_vector(head_r_true, m_i, 1);
+			    zprint_vector(head_r_true, m_i, 1, "head_r_true");
 
-			    printf("a_use : before scaling\n");
-			    sprint_matrix(a_use, m_i, n_i, lda, order_type);
-			    printf("B_use : before scaling\n");
-			    sprint_matrix(B_use, m_i, n_i, ldb, order_type);
+			    sge_print_matrix(a_use, m_i, n_i, lda, order_type,
+					     "A_use");
+			    sge_print_matrix(B_use, m_i, n_i, ldb, order_type,
+					     "B_use");
 
-			    printf("ratios :\t");
-			    dprint_vector(ratios, m_i, 1);
+			    dprint_vector(ratios, m_i, 1, "ratios");
 			    printf("ratio = %g\n", ratio);
 			    fflush(stdout);
 			  }
@@ -11772,45 +10951,25 @@ void do_test_cge_sum_mv_s_s_x
   if (4 * m_i > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * m_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-  }
-
   a = (float *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(float));
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
   }
   a_use = (float *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(float));
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a_use[i] = 0.0;
-  }
   B = (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float));
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B[i] = 0.0;
   }
   B_use = (float *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(float));
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B_use[i] = 0.0;
-  }
   x = (float *) blas_malloc(4 * n_i * sizeof(float));
   if (4 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
   }
 
   inca_veci = 1;
@@ -11819,17 +10978,10 @@ void do_test_cge_sum_mv_s_s_x
   if (2 * n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * inca_veci; i += inca_veci) {
-    a_vec[i] = 0.0;
-  }
   x_vec = (float *) blas_malloc(2 * n_i * sizeof(float));
   if (2 * n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -11967,7 +11119,7 @@ void do_test_cge_sum_mv_s_s_x
 		      if (0 == incx)
 			continue;
 
-		      ssymv_copy_vector(n_i, x, incx, x_vec, 1);
+		      scopy_vector(x_vec, n_i, 1, x, incx);
 
 		      /* vary incy = 1, 2 */
 		      for (incy_val = INCY_START; incy_val <= INCY_END;
@@ -12003,10 +11155,9 @@ void do_test_cge_sum_mv_s_s_x
 			  y_starti = 0;
 			}
 			/* make two copies of x into x_vec. redundant */
-			ssymv_copy_vector(n_i, x_vec, 1, x, incx);
-			ssymv_copy_vector(n_i,
-					  (x_vec + (n_i * incx_veci)), 1, x,
-					  incx);
+			scopy_vector(x, n_i, incx, x_vec, 1);
+			scopy_vector(x, n_i, incx,
+				     (x_vec + (n_i * incx_veci)), 1);
 			for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			     i++, yi += incyi, ri += incri) {
 			  sge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
@@ -12064,36 +11215,33 @@ void do_test_cge_sum_mv_s_s_x
 			    printf("randomize %d\n", randomize_val);
 
 			    /* print out info */
-			    printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-				   alpha[1]);;
+			    printf("alpha = ");
+			    printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);;
 			    printf("   ");
-			    printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
-				   beta[1]);;
+			    printf("beta = ");
+			    printf("(%16.8e, %16.8e)", beta[0], beta[1]);;
 			    printf("\n");
-			    printf("alpha_use[0]=%.8e, alpha_use[1]=%.8e",
-				   alpha_use[0], alpha_use[1]);;
+			    printf("alpha_use = ");
+			    printf("(%16.8e, %16.8e)", alpha_use[0],
+				   alpha_use[1]);;
 			    printf("\n");
 
-			    printf("a\n");
-			    sprint_matrix(a, m_i, n_i, lda, order_type);
-			    printf("B\n");
-			    sprint_matrix(B, m_i, n_i, ldb, order_type);
-			    printf("x\t");
-			    sprint_vector(x, n_i, incx);
+			    sge_print_matrix(a, m_i, n_i, lda, order_type,
+					     "A");
+			    sge_print_matrix(B, m_i, n_i, ldb, order_type,
+					     "B");
+			    sprint_vector(x, n_i, incx, "x");
 
-			    printf("y\t");
-			    cprint_vector(y, m_i, incy);
+			    cprint_vector(y, m_i, incy, "y");
 
-			    printf("head_r_true\t");
-			    zprint_vector(head_r_true, m_i, 1);
+			    zprint_vector(head_r_true, m_i, 1, "head_r_true");
 
-			    printf("a_use : before scaling\n");
-			    sprint_matrix(a_use, m_i, n_i, lda, order_type);
-			    printf("B_use : before scaling\n");
-			    sprint_matrix(B_use, m_i, n_i, ldb, order_type);
+			    sge_print_matrix(a_use, m_i, n_i, lda, order_type,
+					     "A_use");
+			    sge_print_matrix(B_use, m_i, n_i, ldb, order_type,
+					     "B_use");
 
-			    printf("ratios :\t");
-			    dprint_vector(ratios, m_i, 1);
+			    dprint_vector(ratios, m_i, 1, "ratios");
 			    printf("ratio = %g\n", ratio);
 			    fflush(stdout);
 			  }
@@ -12267,51 +11415,27 @@ void do_test_zge_sum_mv_z_d_x
   if (4 * m_i > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * m_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-  }
-
   a = (double *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(double) * 2);
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   a_use =
     (double *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(double) * 2);
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a_use[i] = 0.0;
-    a_use[i + 1] = 0.0;
-  }
   B = (double *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(double) * 2);
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B[i] = 0.0;
-    B[i + 1] = 0.0;
   }
   B_use =
     (double *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(double) * 2);
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B_use[i] = 0.0;
-    B_use[i + 1] = 0.0;
-  }
   x = (double *) blas_malloc(4 * n_i * sizeof(double));
   if (4 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
   }
 
   inca_veci = 1;
@@ -12320,18 +11444,10 @@ void do_test_zge_sum_mv_z_d_x
   if (2 * n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * inca_veci; i += inca_veci) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
-  }
   x_vec = (double *) blas_malloc(2 * n_i * sizeof(double));
   if (2 * n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -12469,7 +11585,7 @@ void do_test_zge_sum_mv_z_d_x
 		      if (0 == incx)
 			continue;
 
-		      dsymv_copy_vector(n_i, x, incx, x_vec, 1);
+		      dcopy_vector(x_vec, n_i, 1, x, incx);
 
 		      /* vary incy = 1, 2 */
 		      for (incy_val = INCY_START; incy_val <= INCY_END;
@@ -12505,10 +11621,9 @@ void do_test_zge_sum_mv_z_d_x
 			  y_starti = 0;
 			}
 			/* make two copies of x into x_vec. redundant */
-			dsymv_copy_vector(n_i, x_vec, 1, x, incx);
-			dsymv_copy_vector(n_i,
-					  (x_vec + (n_i * incx_veci)), 1, x,
-					  incx);
+			dcopy_vector(x, n_i, incx, x_vec, 1);
+			dcopy_vector(x, n_i, incx,
+				     (x_vec + (n_i * incx_veci)), 1);
 			for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			     i++, yi += incyi, ri += incri) {
 			  zge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
@@ -12566,36 +11681,33 @@ void do_test_zge_sum_mv_z_d_x
 			    printf("randomize %d\n", randomize_val);
 
 			    /* print out info */
-			    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				   alpha[1]);;
+			    printf("alpha = ");
+			    printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);;
 			    printf("   ");
-			    printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				   beta[1]);;
+			    printf("beta = ");
+			    printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			    printf("\n");
-			    printf("alpha_use[0]=%.16e, alpha_use[1]=%.16e",
-				   alpha_use[0], alpha_use[1]);;
+			    printf("alpha_use = ");
+			    printf("(%24.16e, %24.16e)", alpha_use[0],
+				   alpha_use[1]);;
 			    printf("\n");
 
-			    printf("a\n");
-			    zprint_matrix(a, m_i, n_i, lda, order_type);
-			    printf("B\n");
-			    zprint_matrix(B, m_i, n_i, ldb, order_type);
-			    printf("x\t");
-			    dprint_vector(x, n_i, incx);
+			    zge_print_matrix(a, m_i, n_i, lda, order_type,
+					     "A");
+			    zge_print_matrix(B, m_i, n_i, ldb, order_type,
+					     "B");
+			    dprint_vector(x, n_i, incx, "x");
 
-			    printf("y\t");
-			    zprint_vector(y, m_i, incy);
+			    zprint_vector(y, m_i, incy, "y");
 
-			    printf("head_r_true\t");
-			    zprint_vector(head_r_true, m_i, 1);
+			    zprint_vector(head_r_true, m_i, 1, "head_r_true");
 
-			    printf("a_use : before scaling\n");
-			    zprint_matrix(a_use, m_i, n_i, lda, order_type);
-			    printf("B_use : before scaling\n");
-			    zprint_matrix(B_use, m_i, n_i, ldb, order_type);
+			    zge_print_matrix(a_use, m_i, n_i, lda, order_type,
+					     "A_use");
+			    zge_print_matrix(B_use, m_i, n_i, ldb, order_type,
+					     "B_use");
 
-			    printf("ratios :\t");
-			    dprint_vector(ratios, m_i, 1);
+			    dprint_vector(ratios, m_i, 1, "ratios");
 			    printf("ratio = %g\n", ratio);
 			    fflush(stdout);
 			  }
@@ -12769,46 +11881,25 @@ void do_test_zge_sum_mv_d_z_x
   if (4 * m_i > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * m_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-  }
-
   a = (double *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(double));
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
   }
   a_use = (double *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(double));
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a_use[i] = 0.0;
-  }
   B = (double *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(double));
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B[i] = 0.0;
   }
   B_use = (double *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(double));
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B_use[i] = 0.0;
-  }
   x = (double *) blas_malloc(4 * n_i * sizeof(double) * 2);
   if (4 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
   }
 
   inca_veci = 1;
@@ -12817,18 +11908,10 @@ void do_test_zge_sum_mv_d_z_x
   if (2 * n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * inca_veci; i += inca_veci) {
-    a_vec[i] = 0.0;
-  }
   x_vec = (double *) blas_malloc(2 * n_i * sizeof(double) * 2);
   if (2 * n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-    x_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -12966,7 +12049,7 @@ void do_test_zge_sum_mv_d_z_x
 		      if (0 == incx)
 			continue;
 
-		      zsymv_copy_vector(n_i, x, incx, x_vec, 1);
+		      zcopy_vector(x_vec, n_i, 1, x, incx);
 
 		      /* vary incy = 1, 2 */
 		      for (incy_val = INCY_START; incy_val <= INCY_END;
@@ -13002,10 +12085,9 @@ void do_test_zge_sum_mv_d_z_x
 			  y_starti = 0;
 			}
 			/* make two copies of x into x_vec. redundant */
-			zsymv_copy_vector(n_i, x_vec, 1, x, incx);
-			zsymv_copy_vector(n_i,
-					  (x_vec + (n_i * incx_veci)), 1, x,
-					  incx);
+			zcopy_vector(x, n_i, incx, x_vec, 1);
+			zcopy_vector(x, n_i, incx,
+				     (x_vec + (n_i * incx_veci)), 1);
 			for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			     i++, yi += incyi, ri += incri) {
 			  dge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
@@ -13063,36 +12145,33 @@ void do_test_zge_sum_mv_d_z_x
 			    printf("randomize %d\n", randomize_val);
 
 			    /* print out info */
-			    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				   alpha[1]);;
+			    printf("alpha = ");
+			    printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);;
 			    printf("   ");
-			    printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				   beta[1]);;
+			    printf("beta = ");
+			    printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			    printf("\n");
-			    printf("alpha_use[0]=%.16e, alpha_use[1]=%.16e",
-				   alpha_use[0], alpha_use[1]);;
+			    printf("alpha_use = ");
+			    printf("(%24.16e, %24.16e)", alpha_use[0],
+				   alpha_use[1]);;
 			    printf("\n");
 
-			    printf("a\n");
-			    dprint_matrix(a, m_i, n_i, lda, order_type);
-			    printf("B\n");
-			    dprint_matrix(B, m_i, n_i, ldb, order_type);
-			    printf("x\t");
-			    zprint_vector(x, n_i, incx);
+			    dge_print_matrix(a, m_i, n_i, lda, order_type,
+					     "A");
+			    dge_print_matrix(B, m_i, n_i, ldb, order_type,
+					     "B");
+			    zprint_vector(x, n_i, incx, "x");
 
-			    printf("y\t");
-			    zprint_vector(y, m_i, incy);
+			    zprint_vector(y, m_i, incy, "y");
 
-			    printf("head_r_true\t");
-			    zprint_vector(head_r_true, m_i, 1);
+			    zprint_vector(head_r_true, m_i, 1, "head_r_true");
 
-			    printf("a_use : before scaling\n");
-			    dprint_matrix(a_use, m_i, n_i, lda, order_type);
-			    printf("B_use : before scaling\n");
-			    dprint_matrix(B_use, m_i, n_i, ldb, order_type);
+			    dge_print_matrix(a_use, m_i, n_i, lda, order_type,
+					     "A_use");
+			    dge_print_matrix(B_use, m_i, n_i, ldb, order_type,
+					     "B_use");
 
-			    printf("ratios :\t");
-			    dprint_vector(ratios, m_i, 1);
+			    dprint_vector(ratios, m_i, 1, "ratios");
 			    printf("ratio = %g\n", ratio);
 			    fflush(stdout);
 			  }
@@ -13266,45 +12345,25 @@ void do_test_zge_sum_mv_d_d_x
   if (4 * m_i > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * m_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-  }
-
   a = (double *) blas_malloc(2 * n_i * m_i * m_i * n_i * sizeof(double));
   if (2 * n_i * m_i * m_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
   }
   a_use = (double *) blas_malloc(2 * m_i * n_i * m_i * n_i * sizeof(double));
   if (2 * m_i * n_i * m_i * n_i > 0 && a_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i * inca; i += inca) {
-    a_use[i] = 0.0;
-  }
   B = (double *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(double));
   if (2 * n_i * n_i * m_i * m_i > 0 && B == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B[i] = 0.0;
   }
   B_use = (double *) blas_malloc(2 * n_i * n_i * m_i * m_i * sizeof(double));
   if (2 * n_i * n_i * m_i * m_i > 0 && B_use == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * m_i * n_i; i += 1) {
-    B_use[i] = 0.0;
-  }
   x = (double *) blas_malloc(4 * n_i * sizeof(double));
   if (4 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
   }
 
   inca_veci = 1;
@@ -13313,17 +12372,10 @@ void do_test_zge_sum_mv_d_d_x
   if (2 * n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * inca_veci; i += inca_veci) {
-    a_vec[i] = 0.0;
-  }
   x_vec = (double *) blas_malloc(2 * n_i * sizeof(double));
   if (2 * n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(m_i * sizeof(double) * 2);
   if (m_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -13461,7 +12513,7 @@ void do_test_zge_sum_mv_d_d_x
 		      if (0 == incx)
 			continue;
 
-		      dsymv_copy_vector(n_i, x, incx, x_vec, 1);
+		      dcopy_vector(x_vec, n_i, 1, x, incx);
 
 		      /* vary incy = 1, 2 */
 		      for (incy_val = INCY_START; incy_val <= INCY_END;
@@ -13497,10 +12549,9 @@ void do_test_zge_sum_mv_d_d_x
 			  y_starti = 0;
 			}
 			/* make two copies of x into x_vec. redundant */
-			dsymv_copy_vector(n_i, x_vec, 1, x, incx);
-			dsymv_copy_vector(n_i,
-					  (x_vec + (n_i * incx_veci)), 1, x,
-					  incx);
+			dcopy_vector(x, n_i, incx, x_vec, 1);
+			dcopy_vector(x, n_i, incx,
+				     (x_vec + (n_i * incx_veci)), 1);
 			for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			     i++, yi += incyi, ri += incri) {
 			  dge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
@@ -13558,36 +12609,33 @@ void do_test_zge_sum_mv_d_d_x
 			    printf("randomize %d\n", randomize_val);
 
 			    /* print out info */
-			    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				   alpha[1]);;
+			    printf("alpha = ");
+			    printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);;
 			    printf("   ");
-			    printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				   beta[1]);;
+			    printf("beta = ");
+			    printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			    printf("\n");
-			    printf("alpha_use[0]=%.16e, alpha_use[1]=%.16e",
-				   alpha_use[0], alpha_use[1]);;
+			    printf("alpha_use = ");
+			    printf("(%24.16e, %24.16e)", alpha_use[0],
+				   alpha_use[1]);;
 			    printf("\n");
 
-			    printf("a\n");
-			    dprint_matrix(a, m_i, n_i, lda, order_type);
-			    printf("B\n");
-			    dprint_matrix(B, m_i, n_i, ldb, order_type);
-			    printf("x\t");
-			    dprint_vector(x, n_i, incx);
+			    dge_print_matrix(a, m_i, n_i, lda, order_type,
+					     "A");
+			    dge_print_matrix(B, m_i, n_i, ldb, order_type,
+					     "B");
+			    dprint_vector(x, n_i, incx, "x");
 
-			    printf("y\t");
-			    zprint_vector(y, m_i, incy);
+			    zprint_vector(y, m_i, incy, "y");
 
-			    printf("head_r_true\t");
-			    zprint_vector(head_r_true, m_i, 1);
+			    zprint_vector(head_r_true, m_i, 1, "head_r_true");
 
-			    printf("a_use : before scaling\n");
-			    dprint_matrix(a_use, m_i, n_i, lda, order_type);
-			    printf("B_use : before scaling\n");
-			    dprint_matrix(B_use, m_i, n_i, ldb, order_type);
+			    dge_print_matrix(a_use, m_i, n_i, lda, order_type,
+					     "A_use");
+			    dge_print_matrix(B_use, m_i, n_i, ldb, order_type,
+					     "B_use");
 
-			    printf("ratios :\t");
-			    dprint_vector(ratios, m_i, 1);
+			    dprint_vector(ratios, m_i, 1, "ratios");
 			    printf("ratio = %g\n", ratio);
 			    fflush(stdout);
 			  }

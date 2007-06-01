@@ -13,8 +13,7 @@ HEADER_PATH = -I../../src -I..
 DOT_OBJS = $(DOT_PATH)/BLAS_sdot_x.o $(DOT_PATH)/BLAS_ddot_x.o
 GEMV_OBJS = $(TEST_GEMV_PATH)/gemv-support.o \
 	$(TEST_GEMV_PATH)/BLAS_gemv_testgen.o
-GEMM_OBJS = $(TEST_GEMM_PATH)/gemm-support.o \
-	$(TEST_GEMM_PATH)/BLAS_gemm_testgen.o
+GEMM_OBJS = $(TEST_GEMM_PATH)/BLAS_gemm_testgen.o
 SYMV_OBJS = $(TEST_SYMV_PATH)/symv-support.o
 
 TEST_DOT_OBJS = $(TEST_DOT_PATH)/testgen_BLAS_sdot.o \
@@ -23,7 +22,9 @@ TEST_DOT_OBJS = $(TEST_DOT_PATH)/testgen_BLAS_sdot.o \
 		$(TEST_DOT_PATH)/testgen_BLAS_zdot.o \
 		$(TEST_DOT_PATH)/testgen_aux.o \
 		$(TEST_DOT_PATH)/test_dot.o \
-		$(TEST_DOT_PATH)/BLAS_dot_testgen.o
+		$(TEST_DOT_PATH)/BLAS_dot_testgen.o \
+		$(TEST_DOT_PATH)/print_vector.o \
+		$(TEST_DOT_PATH)/copy_vector.o
 
 TEST_SRCS = do_test_ge_sum_mv.c ge_sum_mv-support.c BLAS_ge_sum_mv_testgen.c 
 TEST_OBJS = $(TEST_SRCS:.c=.o)

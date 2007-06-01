@@ -81,11 +81,10 @@ double do_test_dtrmv_s(int n, int ntests, int *seed,
   /* Variables in the "x_val" form are loop vars for corresponding
      variables */
   int i;			/* iterate through the repeating tests */
-  int j, k;			/* multipurpose counters */
+  int j;			/* multipurpose counters */
   int ix;			/* use to index x and y respectively */
   int lda_val, lda;		/* for testing different values for lda */
   int incx_val, incx;		/* for testing different inc values */
-  int incT;			/* 1 if real, 2 if complex */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
   int p_count;			/* counter for the number of debug lines printed */
@@ -147,8 +146,7 @@ double do_test_dtrmv_s(int n, int ntests, int *seed,
   FPU_FIX_START;
 
   bad_ratios = 0;
-  incx = incT = 1;
-
+  incx = 1;
 
 
 
@@ -457,11 +455,7 @@ double do_test_dtrmv_s(int n, int ntests, int *seed,
 
 			    if (j > 0)
 			      printf("        ");
-			    for (k = 0; k < n * incT; k += incT) {
-			      printf("%.16e", temp[k]);
-			      printf("  ");
-			    }
-			    printf("\n");
+			    sprint_vector(temp, n, 1, NULL);
 			  }
 
 			  ix = 0;
@@ -470,18 +464,18 @@ double do_test_dtrmv_s(int n, int ntests, int *seed,
 
 			  for (j = 0; j < n; j++) {
 			    printf("      ");
-			    printf("x[%d]=", ix);
-			    printf("%.16e", x_gen[j]);
+			    printf("x[%d] = ", j);
+			    printf("%24.16e", x_gen[j]);
 			    printf("; ");
-			    printf("x_final[%d]=", ix);
-			    printf("%.16e", x[ix]);
+			    printf("x_final[%d] = ", ix);
+			    printf("%24.16e", x[ix]);
 			    printf("\n");
-
 			    ix += incx;
 			  }
 
 			  printf("      ");
-			  printf("alpha=%.16e", alpha);
+			  printf("alpha = ");
+			  printf("%24.16e", alpha);
 			  printf("; ");
 			  printf("\n");
 			  for (j = 0; j < n; j++) {
@@ -489,9 +483,8 @@ double do_test_dtrmv_s(int n, int ntests, int *seed,
 			      printf("    =>");
 			    else
 			      printf("      ");
-			    printf
-			      ("head_r_true[%d]=%.16e, tail_r_true[%d]=%.16e",
-			       j, head_r_true[j], j, tail_r_true[j]);
+			    printf("[%24.16e, %24.16e]", head_r_true[j],
+				   tail_r_true[j]);
 			    printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 			  }
 
@@ -623,11 +616,10 @@ double do_test_ztrmv_c(int n, int ntests, int *seed,
   /* Variables in the "x_val" form are loop vars for corresponding
      variables */
   int i;			/* iterate through the repeating tests */
-  int j, k;			/* multipurpose counters */
+  int j;			/* multipurpose counters */
   int ix;			/* use to index x and y respectively */
   int lda_val, lda;		/* for testing different values for lda */
   int incx_val, incx;		/* for testing different inc values */
-  int incT;			/* 1 if real, 2 if complex */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
   int p_count;			/* counter for the number of debug lines printed */
@@ -690,9 +682,8 @@ double do_test_ztrmv_c(int n, int ntests, int *seed,
   FPU_FIX_START;
 
   bad_ratios = 0;
-  incx = incT = 1;
+  incx = 1;
   incx *= 2;
-  incT *= 2;
   inc_xgen *= 2;
 
   /* get space for calculation */
@@ -1002,11 +993,7 @@ double do_test_ztrmv_c(int n, int ntests, int *seed,
 
 			    if (j > 0)
 			      printf("        ");
-			    for (k = 0; k < n * incT; k += incT) {
-			      printf("(%.8e+ %.8ei)", temp[k], temp[k + 1]);
-			      printf("  ");
-			    }
-			    printf("\n");
+			    cprint_vector(temp, n, 1, NULL);
 			  }
 
 			  ix = 0;
@@ -1015,19 +1002,19 @@ double do_test_ztrmv_c(int n, int ntests, int *seed,
 
 			  for (j = 0; j < n; j++) {
 			    printf("      ");
-			    printf("x[%d]=", ix);
-			    printf("(%.16e+ %.16ei)", x_gen[j], x_gen[j + 1]);
+			    printf("x[%d] = ", j);
+			    printf("(%24.16e, %24.16e)", x_gen[j],
+				   x_gen[j + 1]);
 			    printf("; ");
-			    printf("x_final[%d]=", ix);
-			    printf("(%.16e+ %.16ei)", x[ix], x[ix + 1]);
+			    printf("x_final[%d] = ", ix);
+			    printf("(%24.16e, %24.16e)", x[ix], x[ix + 1]);
 			    printf("\n");
-
 			    ix += incx;
 			  }
 
 			  printf("      ");
-			  printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				 alpha[1]);
+			  printf("alpha = ");
+			  printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);
 			  printf("; ");
 			  printf("\n");
 			  for (j = 0; j < n; j++) {
@@ -1035,7 +1022,9 @@ double do_test_ztrmv_c(int n, int ntests, int *seed,
 			      printf("    =>");
 			    else
 			      printf("      ");
-
+			    printf("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				   head_r_true[j], tail_r_true[j],
+				   head_r_true[j + 1], tail_r_true[j + 1]);
 			    printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 			  }
 
@@ -1167,11 +1156,10 @@ double do_test_ctrmv_s(int n, int ntests, int *seed,
   /* Variables in the "x_val" form are loop vars for corresponding
      variables */
   int i;			/* iterate through the repeating tests */
-  int j, k;			/* multipurpose counters */
+  int j;			/* multipurpose counters */
   int ix;			/* use to index x and y respectively */
   int lda_val, lda;		/* for testing different values for lda */
   int incx_val, incx;		/* for testing different inc values */
-  int incT;			/* 1 if real, 2 if complex */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
   int p_count;			/* counter for the number of debug lines printed */
@@ -1234,9 +1222,8 @@ double do_test_ctrmv_s(int n, int ntests, int *seed,
   FPU_FIX_START;
 
   bad_ratios = 0;
-  incx = incT = 1;
+  incx = 1;
   incx *= 2;
-
   inc_xgen *= 2;
 
   /* get space for calculation */
@@ -1546,11 +1533,7 @@ double do_test_ctrmv_s(int n, int ntests, int *seed,
 
 			    if (j > 0)
 			      printf("        ");
-			    for (k = 0; k < n * incT; k += incT) {
-			      printf("%.16e", temp[k]);
-			      printf("  ");
-			    }
-			    printf("\n");
+			    sprint_vector(temp, n, 1, NULL);
 			  }
 
 			  ix = 0;
@@ -1559,19 +1542,19 @@ double do_test_ctrmv_s(int n, int ntests, int *seed,
 
 			  for (j = 0; j < n; j++) {
 			    printf("      ");
-			    printf("x[%d]=", ix);
-			    printf("(%.8e+ %.8ei)", x_gen[j], x_gen[j + 1]);
+			    printf("x[%d] = ", j);
+			    printf("(%16.8e, %16.8e)", x_gen[j],
+				   x_gen[j + 1]);
 			    printf("; ");
-			    printf("x_final[%d]=", ix);
-			    printf("(%.8e+ %.8ei)", x[ix], x[ix + 1]);
+			    printf("x_final[%d] = ", ix);
+			    printf("(%16.8e, %16.8e)", x[ix], x[ix + 1]);
 			    printf("\n");
-
 			    ix += incx;
 			  }
 
 			  printf("      ");
-			  printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-				 alpha[1]);
+			  printf("alpha = ");
+			  printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);
 			  printf("; ");
 			  printf("\n");
 			  for (j = 0; j < n; j++) {
@@ -1579,7 +1562,9 @@ double do_test_ctrmv_s(int n, int ntests, int *seed,
 			      printf("    =>");
 			    else
 			      printf("      ");
-
+			    printf("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				   head_r_true[j], tail_r_true[j],
+				   head_r_true[j + 1], tail_r_true[j + 1]);
 			    printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 			  }
 
@@ -1711,11 +1696,10 @@ double do_test_ztrmv_d(int n, int ntests, int *seed,
   /* Variables in the "x_val" form are loop vars for corresponding
      variables */
   int i;			/* iterate through the repeating tests */
-  int j, k;			/* multipurpose counters */
+  int j;			/* multipurpose counters */
   int ix;			/* use to index x and y respectively */
   int lda_val, lda;		/* for testing different values for lda */
   int incx_val, incx;		/* for testing different inc values */
-  int incT;			/* 1 if real, 2 if complex */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
   int p_count;			/* counter for the number of debug lines printed */
@@ -1778,9 +1762,8 @@ double do_test_ztrmv_d(int n, int ntests, int *seed,
   FPU_FIX_START;
 
   bad_ratios = 0;
-  incx = incT = 1;
+  incx = 1;
   incx *= 2;
-
   inc_xgen *= 2;
 
   /* get space for calculation */
@@ -2090,11 +2073,7 @@ double do_test_ztrmv_d(int n, int ntests, int *seed,
 
 			    if (j > 0)
 			      printf("        ");
-			    for (k = 0; k < n * incT; k += incT) {
-			      printf("%.16e", temp[k]);
-			      printf("  ");
-			    }
-			    printf("\n");
+			    dprint_vector(temp, n, 1, NULL);
 			  }
 
 			  ix = 0;
@@ -2103,19 +2082,19 @@ double do_test_ztrmv_d(int n, int ntests, int *seed,
 
 			  for (j = 0; j < n; j++) {
 			    printf("      ");
-			    printf("x[%d]=", ix);
-			    printf("(%.16e+ %.16ei)", x_gen[j], x_gen[j + 1]);
+			    printf("x[%d] = ", j);
+			    printf("(%24.16e, %24.16e)", x_gen[j],
+				   x_gen[j + 1]);
 			    printf("; ");
-			    printf("x_final[%d]=", ix);
-			    printf("(%.16e+ %.16ei)", x[ix], x[ix + 1]);
+			    printf("x_final[%d] = ", ix);
+			    printf("(%24.16e, %24.16e)", x[ix], x[ix + 1]);
 			    printf("\n");
-
 			    ix += incx;
 			  }
 
 			  printf("      ");
-			  printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				 alpha[1]);
+			  printf("alpha = ");
+			  printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);
 			  printf("; ");
 			  printf("\n");
 			  for (j = 0; j < n; j++) {
@@ -2123,7 +2102,9 @@ double do_test_ztrmv_d(int n, int ntests, int *seed,
 			      printf("    =>");
 			    else
 			      printf("      ");
-
+			    printf("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				   head_r_true[j], tail_r_true[j],
+				   head_r_true[j + 1], tail_r_true[j + 1]);
 			    printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 			  }
 
@@ -2255,11 +2236,10 @@ double do_test_strmv_x(int n, int ntests, int *seed,
   /* Variables in the "x_val" form are loop vars for corresponding
      variables */
   int i;			/* iterate through the repeating tests */
-  int j, k;			/* multipurpose counters */
+  int j;			/* multipurpose counters */
   int ix;			/* use to index x and y respectively */
   int lda_val, lda;		/* for testing different values for lda */
   int incx_val, incx;		/* for testing different inc values */
-  int incT;			/* 1 if real, 2 if complex */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
   int p_count;			/* counter for the number of debug lines printed */
@@ -2321,8 +2301,7 @@ double do_test_strmv_x(int n, int ntests, int *seed,
   FPU_FIX_START;
 
   bad_ratios = 0;
-  incx = incT = 1;
-
+  incx = 1;
 
 
 
@@ -2651,11 +2630,7 @@ double do_test_strmv_x(int n, int ntests, int *seed,
 
 			      if (j > 0)
 				printf("        ");
-			      for (k = 0; k < n * incT; k += incT) {
-				printf("%.16e", temp[k]);
-				printf("  ");
-			      }
-			      printf("\n");
+			      sprint_vector(temp, n, 1, NULL);
 			    }
 
 			    ix = 0;
@@ -2664,18 +2639,18 @@ double do_test_strmv_x(int n, int ntests, int *seed,
 
 			    for (j = 0; j < n; j++) {
 			      printf("      ");
-			      printf("x[%d]=", ix);
-			      printf("%.16e", x_gen[j]);
+			      printf("x[%d] = ", j);
+			      printf("%16.8e", x_gen[j]);
 			      printf("; ");
-			      printf("x_final[%d]=", ix);
-			      printf("%.16e", x[ix]);
+			      printf("x_final[%d] = ", ix);
+			      printf("%16.8e", x[ix]);
 			      printf("\n");
-
 			      ix += incx;
 			    }
 
 			    printf("      ");
-			    printf("alpha=%.8e", alpha);
+			    printf("alpha = ");
+			    printf("%16.8e", alpha);
 			    printf("; ");
 			    printf("\n");
 			    for (j = 0; j < n; j++) {
@@ -2683,9 +2658,8 @@ double do_test_strmv_x(int n, int ntests, int *seed,
 				printf("    =>");
 			      else
 				printf("      ");
-			      printf
-				("head_r_true[%d]=%.16e, tail_r_true[%d]=%.16e",
-				 j, head_r_true[j], j, tail_r_true[j]);
+			      printf("[%24.16e, %24.16e]", head_r_true[j],
+				     tail_r_true[j]);
 			      printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 			    }
 
@@ -2817,11 +2791,10 @@ double do_test_dtrmv_x(int n, int ntests, int *seed,
   /* Variables in the "x_val" form are loop vars for corresponding
      variables */
   int i;			/* iterate through the repeating tests */
-  int j, k;			/* multipurpose counters */
+  int j;			/* multipurpose counters */
   int ix;			/* use to index x and y respectively */
   int lda_val, lda;		/* for testing different values for lda */
   int incx_val, incx;		/* for testing different inc values */
-  int incT;			/* 1 if real, 2 if complex */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
   int p_count;			/* counter for the number of debug lines printed */
@@ -2883,8 +2856,7 @@ double do_test_dtrmv_x(int n, int ntests, int *seed,
   FPU_FIX_START;
 
   bad_ratios = 0;
-  incx = incT = 1;
-
+  incx = 1;
 
 
 
@@ -3213,11 +3185,7 @@ double do_test_dtrmv_x(int n, int ntests, int *seed,
 
 			      if (j > 0)
 				printf("        ");
-			      for (k = 0; k < n * incT; k += incT) {
-				printf("%.16e", temp[k]);
-				printf("  ");
-			      }
-			      printf("\n");
+			      dprint_vector(temp, n, 1, NULL);
 			    }
 
 			    ix = 0;
@@ -3226,18 +3194,18 @@ double do_test_dtrmv_x(int n, int ntests, int *seed,
 
 			    for (j = 0; j < n; j++) {
 			      printf("      ");
-			      printf("x[%d]=", ix);
-			      printf("%.16e", x_gen[j]);
+			      printf("x[%d] = ", j);
+			      printf("%24.16e", x_gen[j]);
 			      printf("; ");
-			      printf("x_final[%d]=", ix);
-			      printf("%.16e", x[ix]);
+			      printf("x_final[%d] = ", ix);
+			      printf("%24.16e", x[ix]);
 			      printf("\n");
-
 			      ix += incx;
 			    }
 
 			    printf("      ");
-			    printf("alpha=%.16e", alpha);
+			    printf("alpha = ");
+			    printf("%24.16e", alpha);
 			    printf("; ");
 			    printf("\n");
 			    for (j = 0; j < n; j++) {
@@ -3245,9 +3213,8 @@ double do_test_dtrmv_x(int n, int ntests, int *seed,
 				printf("    =>");
 			      else
 				printf("      ");
-			      printf
-				("head_r_true[%d]=%.16e, tail_r_true[%d]=%.16e",
-				 j, head_r_true[j], j, tail_r_true[j]);
+			      printf("[%24.16e, %24.16e]", head_r_true[j],
+				     tail_r_true[j]);
 			      printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 			    }
 
@@ -3379,11 +3346,10 @@ double do_test_ctrmv_x(int n, int ntests, int *seed,
   /* Variables in the "x_val" form are loop vars for corresponding
      variables */
   int i;			/* iterate through the repeating tests */
-  int j, k;			/* multipurpose counters */
+  int j;			/* multipurpose counters */
   int ix;			/* use to index x and y respectively */
   int lda_val, lda;		/* for testing different values for lda */
   int incx_val, incx;		/* for testing different inc values */
-  int incT;			/* 1 if real, 2 if complex */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
   int p_count;			/* counter for the number of debug lines printed */
@@ -3446,9 +3412,8 @@ double do_test_ctrmv_x(int n, int ntests, int *seed,
   FPU_FIX_START;
 
   bad_ratios = 0;
-  incx = incT = 1;
+  incx = 1;
   incx *= 2;
-  incT *= 2;
   inc_xgen *= 2;
 
   /* get space for calculation */
@@ -3778,11 +3743,7 @@ double do_test_ctrmv_x(int n, int ntests, int *seed,
 
 			      if (j > 0)
 				printf("        ");
-			      for (k = 0; k < n * incT; k += incT) {
-				printf("(%.8e+ %.8ei)", temp[k], temp[k + 1]);
-				printf("  ");
-			      }
-			      printf("\n");
+			      cprint_vector(temp, n, 1, NULL);
 			    }
 
 			    ix = 0;
@@ -3791,19 +3752,19 @@ double do_test_ctrmv_x(int n, int ntests, int *seed,
 
 			    for (j = 0; j < n; j++) {
 			      printf("      ");
-			      printf("x[%d]=", ix);
-			      printf("(%.8e+ %.8ei)", x_gen[j], x_gen[j + 1]);
+			      printf("x[%d] = ", j);
+			      printf("(%16.8e, %16.8e)", x_gen[j],
+				     x_gen[j + 1]);
 			      printf("; ");
-			      printf("x_final[%d]=", ix);
-			      printf("(%.8e+ %.8ei)", x[ix], x[ix + 1]);
+			      printf("x_final[%d] = ", ix);
+			      printf("(%16.8e, %16.8e)", x[ix], x[ix + 1]);
 			      printf("\n");
-
 			      ix += incx;
 			    }
 
 			    printf("      ");
-			    printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-				   alpha[1]);
+			    printf("alpha = ");
+			    printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);
 			    printf("; ");
 			    printf("\n");
 			    for (j = 0; j < n; j++) {
@@ -3811,7 +3772,10 @@ double do_test_ctrmv_x(int n, int ntests, int *seed,
 				printf("    =>");
 			      else
 				printf("      ");
-
+			      printf
+				("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				 head_r_true[j], tail_r_true[j],
+				 head_r_true[j + 1], tail_r_true[j + 1]);
 			      printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 			    }
 
@@ -3943,11 +3907,10 @@ double do_test_ztrmv_x(int n, int ntests, int *seed,
   /* Variables in the "x_val" form are loop vars for corresponding
      variables */
   int i;			/* iterate through the repeating tests */
-  int j, k;			/* multipurpose counters */
+  int j;			/* multipurpose counters */
   int ix;			/* use to index x and y respectively */
   int lda_val, lda;		/* for testing different values for lda */
   int incx_val, incx;		/* for testing different inc values */
-  int incT;			/* 1 if real, 2 if complex */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
   int p_count;			/* counter for the number of debug lines printed */
@@ -4010,9 +3973,8 @@ double do_test_ztrmv_x(int n, int ntests, int *seed,
   FPU_FIX_START;
 
   bad_ratios = 0;
-  incx = incT = 1;
+  incx = 1;
   incx *= 2;
-  incT *= 2;
   inc_xgen *= 2;
 
   /* get space for calculation */
@@ -4342,12 +4304,7 @@ double do_test_ztrmv_x(int n, int ntests, int *seed,
 
 			      if (j > 0)
 				printf("        ");
-			      for (k = 0; k < n * incT; k += incT) {
-				printf("(%.16e+ %.16ei)", temp[k],
-				       temp[k + 1]);
-				printf("  ");
-			      }
-			      printf("\n");
+			      zprint_vector(temp, n, 1, NULL);
 			    }
 
 			    ix = 0;
@@ -4356,20 +4313,19 @@ double do_test_ztrmv_x(int n, int ntests, int *seed,
 
 			    for (j = 0; j < n; j++) {
 			      printf("      ");
-			      printf("x[%d]=", ix);
-			      printf("(%.16e+ %.16ei)", x_gen[j],
+			      printf("x[%d] = ", j);
+			      printf("(%24.16e, %24.16e)", x_gen[j],
 				     x_gen[j + 1]);
 			      printf("; ");
-			      printf("x_final[%d]=", ix);
-			      printf("(%.16e+ %.16ei)", x[ix], x[ix + 1]);
+			      printf("x_final[%d] = ", ix);
+			      printf("(%24.16e, %24.16e)", x[ix], x[ix + 1]);
 			      printf("\n");
-
 			      ix += incx;
 			    }
 
 			    printf("      ");
-			    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				   alpha[1]);
+			    printf("alpha = ");
+			    printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);
 			    printf("; ");
 			    printf("\n");
 			    for (j = 0; j < n; j++) {
@@ -4377,7 +4333,10 @@ double do_test_ztrmv_x(int n, int ntests, int *seed,
 				printf("    =>");
 			      else
 				printf("      ");
-
+			      printf
+				("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				 head_r_true[j], tail_r_true[j],
+				 head_r_true[j + 1], tail_r_true[j + 1]);
 			      printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 			    }
 
@@ -4510,11 +4469,10 @@ double do_test_dtrmv_s_x(int n, int ntests, int *seed,
   /* Variables in the "x_val" form are loop vars for corresponding
      variables */
   int i;			/* iterate through the repeating tests */
-  int j, k;			/* multipurpose counters */
+  int j;			/* multipurpose counters */
   int ix;			/* use to index x and y respectively */
   int lda_val, lda;		/* for testing different values for lda */
   int incx_val, incx;		/* for testing different inc values */
-  int incT;			/* 1 if real, 2 if complex */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
   int p_count;			/* counter for the number of debug lines printed */
@@ -4576,8 +4534,7 @@ double do_test_dtrmv_s_x(int n, int ntests, int *seed,
   FPU_FIX_START;
 
   bad_ratios = 0;
-  incx = incT = 1;
-
+  incx = 1;
 
 
 
@@ -4906,11 +4863,7 @@ double do_test_dtrmv_s_x(int n, int ntests, int *seed,
 
 			      if (j > 0)
 				printf("        ");
-			      for (k = 0; k < n * incT; k += incT) {
-				printf("%.16e", temp[k]);
-				printf("  ");
-			      }
-			      printf("\n");
+			      sprint_vector(temp, n, 1, NULL);
 			    }
 
 			    ix = 0;
@@ -4919,18 +4872,18 @@ double do_test_dtrmv_s_x(int n, int ntests, int *seed,
 
 			    for (j = 0; j < n; j++) {
 			      printf("      ");
-			      printf("x[%d]=", ix);
-			      printf("%.16e", x_gen[j]);
+			      printf("x[%d] = ", j);
+			      printf("%24.16e", x_gen[j]);
 			      printf("; ");
-			      printf("x_final[%d]=", ix);
-			      printf("%.16e", x[ix]);
+			      printf("x_final[%d] = ", ix);
+			      printf("%24.16e", x[ix]);
 			      printf("\n");
-
 			      ix += incx;
 			    }
 
 			    printf("      ");
-			    printf("alpha=%.16e", alpha);
+			    printf("alpha = ");
+			    printf("%24.16e", alpha);
 			    printf("; ");
 			    printf("\n");
 			    for (j = 0; j < n; j++) {
@@ -4938,9 +4891,8 @@ double do_test_dtrmv_s_x(int n, int ntests, int *seed,
 				printf("    =>");
 			      else
 				printf("      ");
-			      printf
-				("head_r_true[%d]=%.16e, tail_r_true[%d]=%.16e",
-				 j, head_r_true[j], j, tail_r_true[j]);
+			      printf("[%24.16e, %24.16e]", head_r_true[j],
+				     tail_r_true[j]);
 			      printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 			    }
 
@@ -5073,11 +5025,10 @@ double do_test_ztrmv_c_x(int n, int ntests, int *seed,
   /* Variables in the "x_val" form are loop vars for corresponding
      variables */
   int i;			/* iterate through the repeating tests */
-  int j, k;			/* multipurpose counters */
+  int j;			/* multipurpose counters */
   int ix;			/* use to index x and y respectively */
   int lda_val, lda;		/* for testing different values for lda */
   int incx_val, incx;		/* for testing different inc values */
-  int incT;			/* 1 if real, 2 if complex */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
   int p_count;			/* counter for the number of debug lines printed */
@@ -5140,9 +5091,8 @@ double do_test_ztrmv_c_x(int n, int ntests, int *seed,
   FPU_FIX_START;
 
   bad_ratios = 0;
-  incx = incT = 1;
+  incx = 1;
   incx *= 2;
-  incT *= 2;
   inc_xgen *= 2;
 
   /* get space for calculation */
@@ -5472,11 +5422,7 @@ double do_test_ztrmv_c_x(int n, int ntests, int *seed,
 
 			      if (j > 0)
 				printf("        ");
-			      for (k = 0; k < n * incT; k += incT) {
-				printf("(%.8e+ %.8ei)", temp[k], temp[k + 1]);
-				printf("  ");
-			      }
-			      printf("\n");
+			      cprint_vector(temp, n, 1, NULL);
 			    }
 
 			    ix = 0;
@@ -5485,20 +5431,19 @@ double do_test_ztrmv_c_x(int n, int ntests, int *seed,
 
 			    for (j = 0; j < n; j++) {
 			      printf("      ");
-			      printf("x[%d]=", ix);
-			      printf("(%.16e+ %.16ei)", x_gen[j],
+			      printf("x[%d] = ", j);
+			      printf("(%24.16e, %24.16e)", x_gen[j],
 				     x_gen[j + 1]);
 			      printf("; ");
-			      printf("x_final[%d]=", ix);
-			      printf("(%.16e+ %.16ei)", x[ix], x[ix + 1]);
+			      printf("x_final[%d] = ", ix);
+			      printf("(%24.16e, %24.16e)", x[ix], x[ix + 1]);
 			      printf("\n");
-
 			      ix += incx;
 			    }
 
 			    printf("      ");
-			    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				   alpha[1]);
+			    printf("alpha = ");
+			    printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);
 			    printf("; ");
 			    printf("\n");
 			    for (j = 0; j < n; j++) {
@@ -5506,7 +5451,10 @@ double do_test_ztrmv_c_x(int n, int ntests, int *seed,
 				printf("    =>");
 			      else
 				printf("      ");
-
+			      printf
+				("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				 head_r_true[j], tail_r_true[j],
+				 head_r_true[j + 1], tail_r_true[j + 1]);
 			      printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 			    }
 
@@ -5639,11 +5587,10 @@ double do_test_ctrmv_s_x(int n, int ntests, int *seed,
   /* Variables in the "x_val" form are loop vars for corresponding
      variables */
   int i;			/* iterate through the repeating tests */
-  int j, k;			/* multipurpose counters */
+  int j;			/* multipurpose counters */
   int ix;			/* use to index x and y respectively */
   int lda_val, lda;		/* for testing different values for lda */
   int incx_val, incx;		/* for testing different inc values */
-  int incT;			/* 1 if real, 2 if complex */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
   int p_count;			/* counter for the number of debug lines printed */
@@ -5706,9 +5653,8 @@ double do_test_ctrmv_s_x(int n, int ntests, int *seed,
   FPU_FIX_START;
 
   bad_ratios = 0;
-  incx = incT = 1;
+  incx = 1;
   incx *= 2;
-
   inc_xgen *= 2;
 
   /* get space for calculation */
@@ -6038,11 +5984,7 @@ double do_test_ctrmv_s_x(int n, int ntests, int *seed,
 
 			      if (j > 0)
 				printf("        ");
-			      for (k = 0; k < n * incT; k += incT) {
-				printf("%.16e", temp[k]);
-				printf("  ");
-			      }
-			      printf("\n");
+			      sprint_vector(temp, n, 1, NULL);
 			    }
 
 			    ix = 0;
@@ -6051,19 +5993,19 @@ double do_test_ctrmv_s_x(int n, int ntests, int *seed,
 
 			    for (j = 0; j < n; j++) {
 			      printf("      ");
-			      printf("x[%d]=", ix);
-			      printf("(%.8e+ %.8ei)", x_gen[j], x_gen[j + 1]);
+			      printf("x[%d] = ", j);
+			      printf("(%16.8e, %16.8e)", x_gen[j],
+				     x_gen[j + 1]);
 			      printf("; ");
-			      printf("x_final[%d]=", ix);
-			      printf("(%.8e+ %.8ei)", x[ix], x[ix + 1]);
+			      printf("x_final[%d] = ", ix);
+			      printf("(%16.8e, %16.8e)", x[ix], x[ix + 1]);
 			      printf("\n");
-
 			      ix += incx;
 			    }
 
 			    printf("      ");
-			    printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-				   alpha[1]);
+			    printf("alpha = ");
+			    printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);
 			    printf("; ");
 			    printf("\n");
 			    for (j = 0; j < n; j++) {
@@ -6071,7 +6013,10 @@ double do_test_ctrmv_s_x(int n, int ntests, int *seed,
 				printf("    =>");
 			      else
 				printf("      ");
-
+			      printf
+				("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				 head_r_true[j], tail_r_true[j],
+				 head_r_true[j + 1], tail_r_true[j + 1]);
 			      printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 			    }
 
@@ -6204,11 +6149,10 @@ double do_test_ztrmv_d_x(int n, int ntests, int *seed,
   /* Variables in the "x_val" form are loop vars for corresponding
      variables */
   int i;			/* iterate through the repeating tests */
-  int j, k;			/* multipurpose counters */
+  int j;			/* multipurpose counters */
   int ix;			/* use to index x and y respectively */
   int lda_val, lda;		/* for testing different values for lda */
   int incx_val, incx;		/* for testing different inc values */
-  int incT;			/* 1 if real, 2 if complex */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
   int p_count;			/* counter for the number of debug lines printed */
@@ -6271,9 +6215,8 @@ double do_test_ztrmv_d_x(int n, int ntests, int *seed,
   FPU_FIX_START;
 
   bad_ratios = 0;
-  incx = incT = 1;
+  incx = 1;
   incx *= 2;
-
   inc_xgen *= 2;
 
   /* get space for calculation */
@@ -6603,11 +6546,7 @@ double do_test_ztrmv_d_x(int n, int ntests, int *seed,
 
 			      if (j > 0)
 				printf("        ");
-			      for (k = 0; k < n * incT; k += incT) {
-				printf("%.16e", temp[k]);
-				printf("  ");
-			      }
-			      printf("\n");
+			      dprint_vector(temp, n, 1, NULL);
 			    }
 
 			    ix = 0;
@@ -6616,20 +6555,19 @@ double do_test_ztrmv_d_x(int n, int ntests, int *seed,
 
 			    for (j = 0; j < n; j++) {
 			      printf("      ");
-			      printf("x[%d]=", ix);
-			      printf("(%.16e+ %.16ei)", x_gen[j],
+			      printf("x[%d] = ", j);
+			      printf("(%24.16e, %24.16e)", x_gen[j],
 				     x_gen[j + 1]);
 			      printf("; ");
-			      printf("x_final[%d]=", ix);
-			      printf("(%.16e+ %.16ei)", x[ix], x[ix + 1]);
+			      printf("x_final[%d] = ", ix);
+			      printf("(%24.16e, %24.16e)", x[ix], x[ix + 1]);
 			      printf("\n");
-
 			      ix += incx;
 			    }
 
 			    printf("      ");
-			    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				   alpha[1]);
+			    printf("alpha = ");
+			    printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);
 			    printf("; ");
 			    printf("\n");
 			    for (j = 0; j < n; j++) {
@@ -6637,7 +6575,10 @@ double do_test_ztrmv_d_x(int n, int ntests, int *seed,
 				printf("    =>");
 			      else
 				printf("      ");
-
+			      printf
+				("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				 head_r_true[j], tail_r_true[j],
+				 head_r_true[j + 1], tail_r_true[j + 1]);
 			      printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 			    }
 

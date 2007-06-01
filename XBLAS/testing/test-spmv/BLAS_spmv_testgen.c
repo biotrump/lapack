@@ -13,8 +13,6 @@
 
 
 
-
-
 void BLAS_sspmv_testgen(int norm, enum blas_order_type order,
 			enum blas_uplo_type uplo,
 			int n, int randomize,

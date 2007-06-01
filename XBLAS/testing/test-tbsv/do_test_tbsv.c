@@ -165,29 +165,17 @@ double do_test_dtbsv_s(int n,
   if (n * 4 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2 * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-  }
   x_gen = (double *) blas_malloc(n * 2 * sizeof(double));
   if (n * 2 > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
   }
   T = (float *) blas_malloc(16 * n * n * sizeof(float));
   if (16 * n * n > 0 && T == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 4 * n * n * incT; i += incT) {
-    T[i] = 0.0;
-  }
   temp = (float *) blas_malloc(n * sizeof(float));
   if (n > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n * incT; i += incT) {
-    temp[i] = 0.0;
   }
   head_r_true = (double *) blas_malloc(n * sizeof(double));
   tail_r_true = (double *) blas_malloc(n * sizeof(double));
@@ -351,19 +339,14 @@ double do_test_dtbsv_s(int n,
 			  incx = incx_unadj = incx_val;
 
 
-			  /* zero out x */
-			  for (j = 0; j < n * 2 * incx_gen_unadj; j++) {
-			    x[j] = 0.0;
-			  }
-
 			  /* set x starting index */
 			  ix = 0;
 			  if (incx < 0)
 			    ix = -(n - 1) * incx;
 
 			  /* copy x_gen to x */
-			  dsymv_copy_vector(n, x, incx_unadj,
-					    x_gen, incx_gen_unadj);
+			  dcopy_vector(x_gen, n, incx_gen_unadj, x,
+				       incx_unadj);
 
 			  /* call BLAS_dtbsv_s */
 			  FPU_FIX_STOP;
@@ -512,28 +495,26 @@ double do_test_dtbsv_s(int n,
 			      sprint_tbsv_matrix(T, n, k, ldt,
 						 order_type,
 						 uplo_type, trans_type);
-			      printf("      T=");
-			      sprint_vector(T, n * ldt, 1);
+			      sprint_vector(T, n * ldt, 1, "T");
 
 			      ix = 0;
 			      if (incx < 0)
 				ix = -(n - 1) * incx;
-			      printf("x:");
-			      dprint_vector(x_gen, n, incx_gen_unadj);
+			      dprint_vector(x_gen, n, incx_gen_unadj, "x");
 			      for (j = 0; j < n; j++) {
 				printf("      ");
-				printf("x[%d]=", ix);
-				printf("%.16e", x_gen[j * incx_gen]);
+				printf("x[%d] = ", j * incx_gen);
+				printf("%24.16e", x_gen[j * incx_gen]);
 				printf("; ");
-				printf("x_final[%d]=", ix);
-				printf("%.16e", x[ix]);
+				printf("x_final[%d] = ", ix);
+				printf("%24.16e", x[ix]);
 				printf("\n");
-
 				ix += incx;
 			      }
 
 			      printf("      ");
-			      printf("alpha=%.16e", alpha);
+			      printf("alpha = ");
+			      printf("%24.16e", alpha);
 			      printf("; ");
 			      printf("\n");
 			      for (j = 0; j < n; j++) {
@@ -541,10 +522,9 @@ double do_test_dtbsv_s(int n,
 				  printf("    =>");
 				else
 				  printf("      ");
-				printf
-				  ("head_r_true[%d]=%.16e, tail_r_true[%d]=%.16e",
-				   j * incx_gen, head_r_true[j * incx_gen],
-				   j * incx_gen, tail_r_true[j * incx_gen]);
+				printf("[%24.16e, %24.16e]",
+				       head_r_true[j * incx_gen],
+				       tail_r_true[j * incx_gen]);
 				printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 			      }
 			      printf("      ratio=%.4e\n", ratio);
@@ -770,33 +750,17 @@ double do_test_ztbsv_c(int n,
   if (n * 4 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2 * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
   x_gen = (double *) blas_malloc(n * 2 * sizeof(double) * 2);
   if (n * 2 > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
   }
   T = (float *) blas_malloc(16 * n * n * sizeof(float) * 2);
   if (16 * n * n > 0 && T == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 4 * n * n * incT; i += incT) {
-    T[i] = 0.0;
-    T[i + 1] = 0.0;
-  }
   temp = (float *) blas_malloc(n * sizeof(float) * 2);
   if (n > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n * incT; i += incT) {
-    temp[i] = 0.0;
-    temp[i + 1] = 0.0;
   }
   head_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
@@ -961,19 +925,14 @@ double do_test_ztbsv_c(int n,
 			  incx = incx_unadj = incx_val;
 			  incx *= 2;
 
-			  /* zero out x */
-			  for (j = 0; j < n * 2 * incx_gen_unadj; j++) {
-			    x[j] = 0.0;
-			  }
-
 			  /* set x starting index */
 			  ix = 0;
 			  if (incx < 0)
 			    ix = -(n - 1) * incx;
 
 			  /* copy x_gen to x */
-			  zsymv_copy_vector(n, x, incx_unadj,
-					    x_gen, incx_gen_unadj);
+			  zcopy_vector(x_gen, n, incx_gen_unadj, x,
+				       incx_unadj);
 
 			  /* call BLAS_ztbsv_c */
 			  FPU_FIX_STOP;
@@ -1150,30 +1109,30 @@ double do_test_ztbsv_c(int n,
 			      cprint_tbsv_matrix(T, n, k, ldt,
 						 order_type,
 						 uplo_type, trans_type);
-			      printf("      T=");
-			      cprint_vector(T, n * ldt, 1);
+			      cprint_vector(T, n * ldt, 1, "T");
 
 			      ix = 0;
 			      if (incx < 0)
 				ix = -(n - 1) * incx;
-			      printf("x:");
-			      zprint_vector(x_gen, n, incx_gen_unadj);
+			      zprint_vector(x_gen, n, incx_gen_unadj, "x");
 			      for (j = 0; j < n; j++) {
 				printf("      ");
-				printf("x[%d]=", ix);
-				printf("(%.16e, %.16e)", x_gen[j * incx_gen],
+				printf("x[%d] = ", j * incx_gen);
+				printf("(%24.16e, %24.16e)",
+				       x_gen[j * incx_gen],
 				       x_gen[j * incx_gen + 1]);
 				printf("; ");
-				printf("x_final[%d]=", ix);
-				printf("(%.16e, %.16e)", x[ix], x[ix + 1]);
+				printf("x_final[%d] = ", ix);
+				printf("(%24.16e, %24.16e)", x[ix],
+				       x[ix + 1]);
 				printf("\n");
-
 				ix += incx;
 			      }
 
 			      printf("      ");
-			      printf("alpha[0]=%.16e, alpha[1]=%.16e",
-				     alpha[0], alpha[1]);
+			      printf("alpha = ");
+			      printf("(%24.16e, %24.16e)", alpha[0],
+				     alpha[1]);
 			      printf("; ");
 			      printf("\n");
 			      for (j = 0; j < n; j++) {
@@ -1181,7 +1140,12 @@ double do_test_ztbsv_c(int n,
 				  printf("    =>");
 				else
 				  printf("      ");
-
+				printf
+				  ("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				   head_r_true[j * incx_gen],
+				   tail_r_true[j * incx_gen],
+				   head_r_true[j * incx_gen + 1],
+				   tail_r_true[j * incx_gen + 1]);
 				printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 			      }
 			      printf("      ratio=%.4e\n", ratio);
@@ -1407,31 +1371,17 @@ double do_test_ctbsv_s(int n,
   if (n * 4 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2 * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
   x_gen = (float *) blas_malloc(n * 2 * sizeof(float) * 2);
   if (n * 2 > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
   }
   T = (float *) blas_malloc(16 * n * n * sizeof(float));
   if (16 * n * n > 0 && T == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 4 * n * n * incT; i += incT) {
-    T[i] = 0.0;
-  }
   temp = (float *) blas_malloc(n * sizeof(float));
   if (n > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n * incT; i += incT) {
-    temp[i] = 0.0;
   }
   head_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
@@ -1596,19 +1546,14 @@ double do_test_ctbsv_s(int n,
 			  incx = incx_unadj = incx_val;
 			  incx *= 2;
 
-			  /* zero out x */
-			  for (j = 0; j < n * 2 * incx_gen_unadj; j++) {
-			    x[j] = 0.0;
-			  }
-
 			  /* set x starting index */
 			  ix = 0;
 			  if (incx < 0)
 			    ix = -(n - 1) * incx;
 
 			  /* copy x_gen to x */
-			  csymv_copy_vector(n, x, incx_unadj,
-					    x_gen, incx_gen_unadj);
+			  ccopy_vector(x_gen, n, incx_gen_unadj, x,
+				       incx_unadj);
 
 			  /* call BLAS_ctbsv_s */
 			  FPU_FIX_STOP;
@@ -1783,30 +1728,28 @@ double do_test_ctbsv_s(int n,
 			      sprint_tbsv_matrix(T, n, k, ldt,
 						 order_type,
 						 uplo_type, trans_type);
-			      printf("      T=");
-			      sprint_vector(T, n * ldt, 1);
+			      sprint_vector(T, n * ldt, 1, "T");
 
 			      ix = 0;
 			      if (incx < 0)
 				ix = -(n - 1) * incx;
-			      printf("x:");
-			      cprint_vector(x_gen, n, incx_gen_unadj);
+			      cprint_vector(x_gen, n, incx_gen_unadj, "x");
 			      for (j = 0; j < n; j++) {
 				printf("      ");
-				printf("x[%d]=", ix);
-				printf("(%.8e, %.8e)", x_gen[j * incx_gen],
+				printf("x[%d] = ", j * incx_gen);
+				printf("(%16.8e, %16.8e)",
+				       x_gen[j * incx_gen],
 				       x_gen[j * incx_gen + 1]);
 				printf("; ");
-				printf("x_final[%d]=", ix);
-				printf("(%.8e, %.8e)", x[ix], x[ix + 1]);
+				printf("x_final[%d] = ", ix);
+				printf("(%16.8e, %16.8e)", x[ix], x[ix + 1]);
 				printf("\n");
-
 				ix += incx;
 			      }
 
 			      printf("      ");
-			      printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-				     alpha[1]);
+			      printf("alpha = ");
+			      printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);
 			      printf("; ");
 			      printf("\n");
 			      for (j = 0; j < n; j++) {
@@ -1814,7 +1757,12 @@ double do_test_ctbsv_s(int n,
 				  printf("    =>");
 				else
 				  printf("      ");
-
+				printf
+				  ("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				   head_r_true[j * incx_gen],
+				   tail_r_true[j * incx_gen],
+				   head_r_true[j * incx_gen + 1],
+				   tail_r_true[j * incx_gen + 1]);
 				printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 			      }
 			      printf("      ratio=%.4e\n", ratio);
@@ -2040,31 +1988,17 @@ double do_test_ztbsv_d(int n,
   if (n * 4 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2 * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
   x_gen = (double *) blas_malloc(n * 2 * sizeof(double) * 2);
   if (n * 2 > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
   }
   T = (double *) blas_malloc(16 * n * n * sizeof(double));
   if (16 * n * n > 0 && T == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 4 * n * n * incT; i += incT) {
-    T[i] = 0.0;
-  }
   temp = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n * incT; i += incT) {
-    temp[i] = 0.0;
   }
   head_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
@@ -2229,19 +2163,14 @@ double do_test_ztbsv_d(int n,
 			  incx = incx_unadj = incx_val;
 			  incx *= 2;
 
-			  /* zero out x */
-			  for (j = 0; j < n * 2 * incx_gen_unadj; j++) {
-			    x[j] = 0.0;
-			  }
-
 			  /* set x starting index */
 			  ix = 0;
 			  if (incx < 0)
 			    ix = -(n - 1) * incx;
 
 			  /* copy x_gen to x */
-			  zsymv_copy_vector(n, x, incx_unadj,
-					    x_gen, incx_gen_unadj);
+			  zcopy_vector(x_gen, n, incx_gen_unadj, x,
+				       incx_unadj);
 
 			  /* call BLAS_ztbsv_d */
 			  FPU_FIX_STOP;
@@ -2416,30 +2345,30 @@ double do_test_ztbsv_d(int n,
 			      dprint_tbsv_matrix(T, n, k, ldt,
 						 order_type,
 						 uplo_type, trans_type);
-			      printf("      T=");
-			      dprint_vector(T, n * ldt, 1);
+			      dprint_vector(T, n * ldt, 1, "T");
 
 			      ix = 0;
 			      if (incx < 0)
 				ix = -(n - 1) * incx;
-			      printf("x:");
-			      zprint_vector(x_gen, n, incx_gen_unadj);
+			      zprint_vector(x_gen, n, incx_gen_unadj, "x");
 			      for (j = 0; j < n; j++) {
 				printf("      ");
-				printf("x[%d]=", ix);
-				printf("(%.16e, %.16e)", x_gen[j * incx_gen],
+				printf("x[%d] = ", j * incx_gen);
+				printf("(%24.16e, %24.16e)",
+				       x_gen[j * incx_gen],
 				       x_gen[j * incx_gen + 1]);
 				printf("; ");
-				printf("x_final[%d]=", ix);
-				printf("(%.16e, %.16e)", x[ix], x[ix + 1]);
+				printf("x_final[%d] = ", ix);
+				printf("(%24.16e, %24.16e)", x[ix],
+				       x[ix + 1]);
 				printf("\n");
-
 				ix += incx;
 			      }
 
 			      printf("      ");
-			      printf("alpha[0]=%.16e, alpha[1]=%.16e",
-				     alpha[0], alpha[1]);
+			      printf("alpha = ");
+			      printf("(%24.16e, %24.16e)", alpha[0],
+				     alpha[1]);
 			      printf("; ");
 			      printf("\n");
 			      for (j = 0; j < n; j++) {
@@ -2447,7 +2376,12 @@ double do_test_ztbsv_d(int n,
 				  printf("    =>");
 				else
 				  printf("      ");
-
+				printf
+				  ("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				   head_r_true[j * incx_gen],
+				   tail_r_true[j * incx_gen],
+				   head_r_true[j * incx_gen + 1],
+				   tail_r_true[j * incx_gen + 1]);
 				printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 			      }
 			      printf("      ratio=%.4e\n", ratio);
@@ -2672,29 +2606,17 @@ double do_test_stbsv_x(int n,
   if (n * 4 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2 * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-  }
   x_gen = (float *) blas_malloc(n * 2 * sizeof(float));
   if (n * 2 > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
   }
   T = (float *) blas_malloc(16 * n * n * sizeof(float));
   if (16 * n * n > 0 && T == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 4 * n * n * incT; i += incT) {
-    T[i] = 0.0;
-  }
   temp = (float *) blas_malloc(n * sizeof(float));
   if (n > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n * incT; i += incT) {
-    temp[i] = 0.0;
   }
   head_r_true = (double *) blas_malloc(n * sizeof(double));
   tail_r_true = (double *) blas_malloc(n * sizeof(double));
@@ -2877,19 +2799,14 @@ double do_test_stbsv_x(int n,
 			    incx = incx_unadj = incx_val;
 
 
-			    /* zero out x */
-			    for (j = 0; j < n * 2 * incx_gen_unadj; j++) {
-			      x[j] = 0.0;
-			    }
-
 			    /* set x starting index */
 			    ix = 0;
 			    if (incx < 0)
 			      ix = -(n - 1) * incx;
 
 			    /* copy x_gen to x */
-			    ssymv_copy_vector(n, x, incx_unadj,
-					      x_gen, incx_gen_unadj);
+			    scopy_vector(x_gen, n, incx_gen_unadj, x,
+					 incx_unadj);
 
 			    /* call BLAS_stbsv_x */
 			    FPU_FIX_STOP;
@@ -3038,28 +2955,26 @@ double do_test_stbsv_x(int n,
 				sprint_tbsv_matrix(T, n, k, ldt,
 						   order_type,
 						   uplo_type, trans_type);
-				printf("      T=");
-				sprint_vector(T, n * ldt, 1);
+				sprint_vector(T, n * ldt, 1, "T");
 
 				ix = 0;
 				if (incx < 0)
 				  ix = -(n - 1) * incx;
-				printf("x:");
-				sprint_vector(x_gen, n, incx_gen_unadj);
+				sprint_vector(x_gen, n, incx_gen_unadj, "x");
 				for (j = 0; j < n; j++) {
 				  printf("      ");
-				  printf("x[%d]=", ix);
-				  printf("%.8e", x_gen[j * incx_gen]);
+				  printf("x[%d] = ", j * incx_gen);
+				  printf("%16.8e", x_gen[j * incx_gen]);
 				  printf("; ");
-				  printf("x_final[%d]=", ix);
-				  printf("%.8e", x[ix]);
+				  printf("x_final[%d] = ", ix);
+				  printf("%16.8e", x[ix]);
 				  printf("\n");
-
 				  ix += incx;
 				}
 
 				printf("      ");
-				printf("alpha=%.8e", alpha);
+				printf("alpha = ");
+				printf("%16.8e", alpha);
 				printf("; ");
 				printf("\n");
 				for (j = 0; j < n; j++) {
@@ -3067,10 +2982,9 @@ double do_test_stbsv_x(int n,
 				    printf("    =>");
 				  else
 				    printf("      ");
-				  printf
-				    ("head_r_true[%d]=%.16e, tail_r_true[%d]=%.16e",
-				     j * incx_gen, head_r_true[j * incx_gen],
-				     j * incx_gen, tail_r_true[j * incx_gen]);
+				  printf("[%24.16e, %24.16e]",
+					 head_r_true[j * incx_gen],
+					 tail_r_true[j * incx_gen]);
 				  printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 				}
 				printf("      ratio=%.4e\n", ratio);
@@ -3295,29 +3209,17 @@ double do_test_dtbsv_x(int n,
   if (n * 4 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2 * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-  }
   x_gen = (double *) blas_malloc(n * 2 * sizeof(double));
   if (n * 2 > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
   }
   T = (double *) blas_malloc(16 * n * n * sizeof(double));
   if (16 * n * n > 0 && T == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 4 * n * n * incT; i += incT) {
-    T[i] = 0.0;
-  }
   temp = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n * incT; i += incT) {
-    temp[i] = 0.0;
   }
   head_r_true = (double *) blas_malloc(n * sizeof(double));
   tail_r_true = (double *) blas_malloc(n * sizeof(double));
@@ -3500,19 +3402,14 @@ double do_test_dtbsv_x(int n,
 			    incx = incx_unadj = incx_val;
 
 
-			    /* zero out x */
-			    for (j = 0; j < n * 2 * incx_gen_unadj; j++) {
-			      x[j] = 0.0;
-			    }
-
 			    /* set x starting index */
 			    ix = 0;
 			    if (incx < 0)
 			      ix = -(n - 1) * incx;
 
 			    /* copy x_gen to x */
-			    dsymv_copy_vector(n, x, incx_unadj,
-					      x_gen, incx_gen_unadj);
+			    dcopy_vector(x_gen, n, incx_gen_unadj, x,
+					 incx_unadj);
 
 			    /* call BLAS_dtbsv_x */
 			    FPU_FIX_STOP;
@@ -3661,28 +3558,26 @@ double do_test_dtbsv_x(int n,
 				dprint_tbsv_matrix(T, n, k, ldt,
 						   order_type,
 						   uplo_type, trans_type);
-				printf("      T=");
-				dprint_vector(T, n * ldt, 1);
+				dprint_vector(T, n * ldt, 1, "T");
 
 				ix = 0;
 				if (incx < 0)
 				  ix = -(n - 1) * incx;
-				printf("x:");
-				dprint_vector(x_gen, n, incx_gen_unadj);
+				dprint_vector(x_gen, n, incx_gen_unadj, "x");
 				for (j = 0; j < n; j++) {
 				  printf("      ");
-				  printf("x[%d]=", ix);
-				  printf("%.16e", x_gen[j * incx_gen]);
+				  printf("x[%d] = ", j * incx_gen);
+				  printf("%24.16e", x_gen[j * incx_gen]);
 				  printf("; ");
-				  printf("x_final[%d]=", ix);
-				  printf("%.16e", x[ix]);
+				  printf("x_final[%d] = ", ix);
+				  printf("%24.16e", x[ix]);
 				  printf("\n");
-
 				  ix += incx;
 				}
 
 				printf("      ");
-				printf("alpha=%.16e", alpha);
+				printf("alpha = ");
+				printf("%24.16e", alpha);
 				printf("; ");
 				printf("\n");
 				for (j = 0; j < n; j++) {
@@ -3690,10 +3585,9 @@ double do_test_dtbsv_x(int n,
 				    printf("    =>");
 				  else
 				    printf("      ");
-				  printf
-				    ("head_r_true[%d]=%.16e, tail_r_true[%d]=%.16e",
-				     j * incx_gen, head_r_true[j * incx_gen],
-				     j * incx_gen, tail_r_true[j * incx_gen]);
+				  printf("[%24.16e, %24.16e]",
+					 head_r_true[j * incx_gen],
+					 tail_r_true[j * incx_gen]);
 				  printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 				}
 				printf("      ratio=%.4e\n", ratio);
@@ -3919,29 +3813,17 @@ double do_test_dtbsv_s_x(int n,
   if (n * 4 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2 * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-  }
   x_gen = (double *) blas_malloc(n * 2 * sizeof(double));
   if (n * 2 > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
   }
   T = (float *) blas_malloc(16 * n * n * sizeof(float));
   if (16 * n * n > 0 && T == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 4 * n * n * incT; i += incT) {
-    T[i] = 0.0;
-  }
   temp = (float *) blas_malloc(n * sizeof(float));
   if (n > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n * incT; i += incT) {
-    temp[i] = 0.0;
   }
   head_r_true = (double *) blas_malloc(n * sizeof(double));
   tail_r_true = (double *) blas_malloc(n * sizeof(double));
@@ -4124,19 +4006,14 @@ double do_test_dtbsv_s_x(int n,
 			    incx = incx_unadj = incx_val;
 
 
-			    /* zero out x */
-			    for (j = 0; j < n * 2 * incx_gen_unadj; j++) {
-			      x[j] = 0.0;
-			    }
-
 			    /* set x starting index */
 			    ix = 0;
 			    if (incx < 0)
 			      ix = -(n - 1) * incx;
 
 			    /* copy x_gen to x */
-			    dsymv_copy_vector(n, x, incx_unadj,
-					      x_gen, incx_gen_unadj);
+			    dcopy_vector(x_gen, n, incx_gen_unadj, x,
+					 incx_unadj);
 
 			    /* call BLAS_dtbsv_s_x */
 			    FPU_FIX_STOP;
@@ -4286,28 +4163,26 @@ double do_test_dtbsv_s_x(int n,
 				sprint_tbsv_matrix(T, n, k, ldt,
 						   order_type,
 						   uplo_type, trans_type);
-				printf("      T=");
-				sprint_vector(T, n * ldt, 1);
+				sprint_vector(T, n * ldt, 1, "T");
 
 				ix = 0;
 				if (incx < 0)
 				  ix = -(n - 1) * incx;
-				printf("x:");
-				dprint_vector(x_gen, n, incx_gen_unadj);
+				dprint_vector(x_gen, n, incx_gen_unadj, "x");
 				for (j = 0; j < n; j++) {
 				  printf("      ");
-				  printf("x[%d]=", ix);
-				  printf("%.16e", x_gen[j * incx_gen]);
+				  printf("x[%d] = ", j * incx_gen);
+				  printf("%24.16e", x_gen[j * incx_gen]);
 				  printf("; ");
-				  printf("x_final[%d]=", ix);
-				  printf("%.16e", x[ix]);
+				  printf("x_final[%d] = ", ix);
+				  printf("%24.16e", x[ix]);
 				  printf("\n");
-
 				  ix += incx;
 				}
 
 				printf("      ");
-				printf("alpha=%.16e", alpha);
+				printf("alpha = ");
+				printf("%24.16e", alpha);
 				printf("; ");
 				printf("\n");
 				for (j = 0; j < n; j++) {
@@ -4315,10 +4190,9 @@ double do_test_dtbsv_s_x(int n,
 				    printf("    =>");
 				  else
 				    printf("      ");
-				  printf
-				    ("head_r_true[%d]=%.16e, tail_r_true[%d]=%.16e",
-				     j * incx_gen, head_r_true[j * incx_gen],
-				     j * incx_gen, tail_r_true[j * incx_gen]);
+				  printf("[%24.16e, %24.16e]",
+					 head_r_true[j * incx_gen],
+					 tail_r_true[j * incx_gen]);
 				  printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 				}
 				printf("      ratio=%.4e\n", ratio);
@@ -4544,33 +4418,17 @@ double do_test_ctbsv_x(int n,
   if (n * 4 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2 * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
   x_gen = (float *) blas_malloc(n * 2 * sizeof(float) * 2);
   if (n * 2 > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
   }
   T = (float *) blas_malloc(16 * n * n * sizeof(float) * 2);
   if (16 * n * n > 0 && T == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 4 * n * n * incT; i += incT) {
-    T[i] = 0.0;
-    T[i + 1] = 0.0;
-  }
   temp = (float *) blas_malloc(n * sizeof(float) * 2);
   if (n > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n * incT; i += incT) {
-    temp[i] = 0.0;
-    temp[i + 1] = 0.0;
   }
   head_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
@@ -4754,19 +4612,14 @@ double do_test_ctbsv_x(int n,
 			    incx = incx_unadj = incx_val;
 			    incx *= 2;
 
-			    /* zero out x */
-			    for (j = 0; j < n * 2 * incx_gen_unadj; j++) {
-			      x[j] = 0.0;
-			    }
-
 			    /* set x starting index */
 			    ix = 0;
 			    if (incx < 0)
 			      ix = -(n - 1) * incx;
 
 			    /* copy x_gen to x */
-			    csymv_copy_vector(n, x, incx_unadj,
-					      x_gen, incx_gen_unadj);
+			    ccopy_vector(x_gen, n, incx_gen_unadj, x,
+					 incx_unadj);
 
 			    /* call BLAS_ctbsv_x */
 			    FPU_FIX_STOP;
@@ -4944,30 +4797,30 @@ double do_test_ctbsv_x(int n,
 				cprint_tbsv_matrix(T, n, k, ldt,
 						   order_type,
 						   uplo_type, trans_type);
-				printf("      T=");
-				cprint_vector(T, n * ldt, 1);
+				cprint_vector(T, n * ldt, 1, "T");
 
 				ix = 0;
 				if (incx < 0)
 				  ix = -(n - 1) * incx;
-				printf("x:");
-				cprint_vector(x_gen, n, incx_gen_unadj);
+				cprint_vector(x_gen, n, incx_gen_unadj, "x");
 				for (j = 0; j < n; j++) {
 				  printf("      ");
-				  printf("x[%d]=", ix);
-				  printf("(%.8e, %.8e)", x_gen[j * incx_gen],
+				  printf("x[%d] = ", j * incx_gen);
+				  printf("(%16.8e, %16.8e)",
+					 x_gen[j * incx_gen],
 					 x_gen[j * incx_gen + 1]);
 				  printf("; ");
-				  printf("x_final[%d]=", ix);
-				  printf("(%.8e, %.8e)", x[ix], x[ix + 1]);
+				  printf("x_final[%d] = ", ix);
+				  printf("(%16.8e, %16.8e)", x[ix],
+					 x[ix + 1]);
 				  printf("\n");
-
 				  ix += incx;
 				}
 
 				printf("      ");
-				printf("alpha[0]=%.8e, alpha[1]=%.8e",
-				       alpha[0], alpha[1]);
+				printf("alpha = ");
+				printf("(%16.8e, %16.8e)", alpha[0],
+				       alpha[1]);
 				printf("; ");
 				printf("\n");
 				for (j = 0; j < n; j++) {
@@ -4975,7 +4828,12 @@ double do_test_ctbsv_x(int n,
 				    printf("    =>");
 				  else
 				    printf("      ");
-
+				  printf
+				    ("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				     head_r_true[j * incx_gen],
+				     tail_r_true[j * incx_gen],
+				     head_r_true[j * incx_gen + 1],
+				     tail_r_true[j * incx_gen + 1]);
 				  printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 				}
 				printf("      ratio=%.4e\n", ratio);
@@ -5201,33 +5059,17 @@ double do_test_ztbsv_x(int n,
   if (n * 4 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2 * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
   x_gen = (double *) blas_malloc(n * 2 * sizeof(double) * 2);
   if (n * 2 > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
   }
   T = (double *) blas_malloc(16 * n * n * sizeof(double) * 2);
   if (16 * n * n > 0 && T == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 4 * n * n * incT; i += incT) {
-    T[i] = 0.0;
-    T[i + 1] = 0.0;
-  }
   temp = (double *) blas_malloc(n * sizeof(double) * 2);
   if (n > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n * incT; i += incT) {
-    temp[i] = 0.0;
-    temp[i + 1] = 0.0;
   }
   head_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
@@ -5411,19 +5253,14 @@ double do_test_ztbsv_x(int n,
 			    incx = incx_unadj = incx_val;
 			    incx *= 2;
 
-			    /* zero out x */
-			    for (j = 0; j < n * 2 * incx_gen_unadj; j++) {
-			      x[j] = 0.0;
-			    }
-
 			    /* set x starting index */
 			    ix = 0;
 			    if (incx < 0)
 			      ix = -(n - 1) * incx;
 
 			    /* copy x_gen to x */
-			    zsymv_copy_vector(n, x, incx_unadj,
-					      x_gen, incx_gen_unadj);
+			    zcopy_vector(x_gen, n, incx_gen_unadj, x,
+					 incx_unadj);
 
 			    /* call BLAS_ztbsv_x */
 			    FPU_FIX_STOP;
@@ -5601,31 +5438,30 @@ double do_test_ztbsv_x(int n,
 				zprint_tbsv_matrix(T, n, k, ldt,
 						   order_type,
 						   uplo_type, trans_type);
-				printf("      T=");
-				zprint_vector(T, n * ldt, 1);
+				zprint_vector(T, n * ldt, 1, "T");
 
 				ix = 0;
 				if (incx < 0)
 				  ix = -(n - 1) * incx;
-				printf("x:");
-				zprint_vector(x_gen, n, incx_gen_unadj);
+				zprint_vector(x_gen, n, incx_gen_unadj, "x");
 				for (j = 0; j < n; j++) {
 				  printf("      ");
-				  printf("x[%d]=", ix);
-				  printf("(%.16e, %.16e)",
+				  printf("x[%d] = ", j * incx_gen);
+				  printf("(%24.16e, %24.16e)",
 					 x_gen[j * incx_gen],
 					 x_gen[j * incx_gen + 1]);
 				  printf("; ");
-				  printf("x_final[%d]=", ix);
-				  printf("(%.16e, %.16e)", x[ix], x[ix + 1]);
+				  printf("x_final[%d] = ", ix);
+				  printf("(%24.16e, %24.16e)", x[ix],
+					 x[ix + 1]);
 				  printf("\n");
-
 				  ix += incx;
 				}
 
 				printf("      ");
-				printf("alpha[0]=%.16e, alpha[1]=%.16e",
-				       alpha[0], alpha[1]);
+				printf("alpha = ");
+				printf("(%24.16e, %24.16e)", alpha[0],
+				       alpha[1]);
 				printf("; ");
 				printf("\n");
 				for (j = 0; j < n; j++) {
@@ -5633,7 +5469,12 @@ double do_test_ztbsv_x(int n,
 				    printf("    =>");
 				  else
 				    printf("      ");
-
+				  printf
+				    ("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				     head_r_true[j * incx_gen],
+				     tail_r_true[j * incx_gen],
+				     head_r_true[j * incx_gen + 1],
+				     tail_r_true[j * incx_gen + 1]);
 				  printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 				}
 				printf("      ratio=%.4e\n", ratio);
@@ -5860,33 +5701,17 @@ double do_test_ztbsv_c_x(int n,
   if (n * 4 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2 * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
   x_gen = (double *) blas_malloc(n * 2 * sizeof(double) * 2);
   if (n * 2 > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
   }
   T = (float *) blas_malloc(16 * n * n * sizeof(float) * 2);
   if (16 * n * n > 0 && T == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 4 * n * n * incT; i += incT) {
-    T[i] = 0.0;
-    T[i + 1] = 0.0;
-  }
   temp = (float *) blas_malloc(n * sizeof(float) * 2);
   if (n > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n * incT; i += incT) {
-    temp[i] = 0.0;
-    temp[i + 1] = 0.0;
   }
   head_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
@@ -6070,19 +5895,14 @@ double do_test_ztbsv_c_x(int n,
 			    incx = incx_unadj = incx_val;
 			    incx *= 2;
 
-			    /* zero out x */
-			    for (j = 0; j < n * 2 * incx_gen_unadj; j++) {
-			      x[j] = 0.0;
-			    }
-
 			    /* set x starting index */
 			    ix = 0;
 			    if (incx < 0)
 			      ix = -(n - 1) * incx;
 
 			    /* copy x_gen to x */
-			    zsymv_copy_vector(n, x, incx_unadj,
-					      x_gen, incx_gen_unadj);
+			    zcopy_vector(x_gen, n, incx_gen_unadj, x,
+					 incx_unadj);
 
 			    /* call BLAS_ztbsv_c_x */
 			    FPU_FIX_STOP;
@@ -6262,31 +6082,30 @@ double do_test_ztbsv_c_x(int n,
 				cprint_tbsv_matrix(T, n, k, ldt,
 						   order_type,
 						   uplo_type, trans_type);
-				printf("      T=");
-				cprint_vector(T, n * ldt, 1);
+				cprint_vector(T, n * ldt, 1, "T");
 
 				ix = 0;
 				if (incx < 0)
 				  ix = -(n - 1) * incx;
-				printf("x:");
-				zprint_vector(x_gen, n, incx_gen_unadj);
+				zprint_vector(x_gen, n, incx_gen_unadj, "x");
 				for (j = 0; j < n; j++) {
 				  printf("      ");
-				  printf("x[%d]=", ix);
-				  printf("(%.16e, %.16e)",
+				  printf("x[%d] = ", j * incx_gen);
+				  printf("(%24.16e, %24.16e)",
 					 x_gen[j * incx_gen],
 					 x_gen[j * incx_gen + 1]);
 				  printf("; ");
-				  printf("x_final[%d]=", ix);
-				  printf("(%.16e, %.16e)", x[ix], x[ix + 1]);
+				  printf("x_final[%d] = ", ix);
+				  printf("(%24.16e, %24.16e)", x[ix],
+					 x[ix + 1]);
 				  printf("\n");
-
 				  ix += incx;
 				}
 
 				printf("      ");
-				printf("alpha[0]=%.16e, alpha[1]=%.16e",
-				       alpha[0], alpha[1]);
+				printf("alpha = ");
+				printf("(%24.16e, %24.16e)", alpha[0],
+				       alpha[1]);
 				printf("; ");
 				printf("\n");
 				for (j = 0; j < n; j++) {
@@ -6294,7 +6113,12 @@ double do_test_ztbsv_c_x(int n,
 				    printf("    =>");
 				  else
 				    printf("      ");
-
+				  printf
+				    ("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				     head_r_true[j * incx_gen],
+				     tail_r_true[j * incx_gen],
+				     head_r_true[j * incx_gen + 1],
+				     tail_r_true[j * incx_gen + 1]);
 				  printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 				}
 				printf("      ratio=%.4e\n", ratio);
@@ -6521,31 +6345,17 @@ double do_test_ctbsv_s_x(int n,
   if (n * 4 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2 * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
   x_gen = (float *) blas_malloc(n * 2 * sizeof(float) * 2);
   if (n * 2 > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
   }
   T = (float *) blas_malloc(16 * n * n * sizeof(float));
   if (16 * n * n > 0 && T == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 4 * n * n * incT; i += incT) {
-    T[i] = 0.0;
-  }
   temp = (float *) blas_malloc(n * sizeof(float));
   if (n > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n * incT; i += incT) {
-    temp[i] = 0.0;
   }
   head_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
@@ -6729,19 +6539,14 @@ double do_test_ctbsv_s_x(int n,
 			    incx = incx_unadj = incx_val;
 			    incx *= 2;
 
-			    /* zero out x */
-			    for (j = 0; j < n * 2 * incx_gen_unadj; j++) {
-			      x[j] = 0.0;
-			    }
-
 			    /* set x starting index */
 			    ix = 0;
 			    if (incx < 0)
 			      ix = -(n - 1) * incx;
 
 			    /* copy x_gen to x */
-			    csymv_copy_vector(n, x, incx_unadj,
-					      x_gen, incx_gen_unadj);
+			    ccopy_vector(x_gen, n, incx_gen_unadj, x,
+					 incx_unadj);
 
 			    /* call BLAS_ctbsv_s_x */
 			    FPU_FIX_STOP;
@@ -6919,30 +6724,30 @@ double do_test_ctbsv_s_x(int n,
 				sprint_tbsv_matrix(T, n, k, ldt,
 						   order_type,
 						   uplo_type, trans_type);
-				printf("      T=");
-				sprint_vector(T, n * ldt, 1);
+				sprint_vector(T, n * ldt, 1, "T");
 
 				ix = 0;
 				if (incx < 0)
 				  ix = -(n - 1) * incx;
-				printf("x:");
-				cprint_vector(x_gen, n, incx_gen_unadj);
+				cprint_vector(x_gen, n, incx_gen_unadj, "x");
 				for (j = 0; j < n; j++) {
 				  printf("      ");
-				  printf("x[%d]=", ix);
-				  printf("(%.8e, %.8e)", x_gen[j * incx_gen],
+				  printf("x[%d] = ", j * incx_gen);
+				  printf("(%16.8e, %16.8e)",
+					 x_gen[j * incx_gen],
 					 x_gen[j * incx_gen + 1]);
 				  printf("; ");
-				  printf("x_final[%d]=", ix);
-				  printf("(%.8e, %.8e)", x[ix], x[ix + 1]);
+				  printf("x_final[%d] = ", ix);
+				  printf("(%16.8e, %16.8e)", x[ix],
+					 x[ix + 1]);
 				  printf("\n");
-
 				  ix += incx;
 				}
 
 				printf("      ");
-				printf("alpha[0]=%.8e, alpha[1]=%.8e",
-				       alpha[0], alpha[1]);
+				printf("alpha = ");
+				printf("(%16.8e, %16.8e)", alpha[0],
+				       alpha[1]);
 				printf("; ");
 				printf("\n");
 				for (j = 0; j < n; j++) {
@@ -6950,7 +6755,12 @@ double do_test_ctbsv_s_x(int n,
 				    printf("    =>");
 				  else
 				    printf("      ");
-
+				  printf
+				    ("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				     head_r_true[j * incx_gen],
+				     tail_r_true[j * incx_gen],
+				     head_r_true[j * incx_gen + 1],
+				     tail_r_true[j * incx_gen + 1]);
 				  printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 				}
 				printf("      ratio=%.4e\n", ratio);
@@ -7177,31 +6987,17 @@ double do_test_ztbsv_d_x(int n,
   if (n * 4 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2 * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
   x_gen = (double *) blas_malloc(n * 2 * sizeof(double) * 2);
   if (n * 2 > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
   }
   T = (double *) blas_malloc(16 * n * n * sizeof(double));
   if (16 * n * n > 0 && T == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 4 * n * n * incT; i += incT) {
-    T[i] = 0.0;
-  }
   temp = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n * incT; i += incT) {
-    temp[i] = 0.0;
   }
   head_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
@@ -7385,19 +7181,14 @@ double do_test_ztbsv_d_x(int n,
 			    incx = incx_unadj = incx_val;
 			    incx *= 2;
 
-			    /* zero out x */
-			    for (j = 0; j < n * 2 * incx_gen_unadj; j++) {
-			      x[j] = 0.0;
-			    }
-
 			    /* set x starting index */
 			    ix = 0;
 			    if (incx < 0)
 			      ix = -(n - 1) * incx;
 
 			    /* copy x_gen to x */
-			    zsymv_copy_vector(n, x, incx_unadj,
-					      x_gen, incx_gen_unadj);
+			    zcopy_vector(x_gen, n, incx_gen_unadj, x,
+					 incx_unadj);
 
 			    /* call BLAS_ztbsv_d_x */
 			    FPU_FIX_STOP;
@@ -7575,31 +7366,30 @@ double do_test_ztbsv_d_x(int n,
 				dprint_tbsv_matrix(T, n, k, ldt,
 						   order_type,
 						   uplo_type, trans_type);
-				printf("      T=");
-				dprint_vector(T, n * ldt, 1);
+				dprint_vector(T, n * ldt, 1, "T");
 
 				ix = 0;
 				if (incx < 0)
 				  ix = -(n - 1) * incx;
-				printf("x:");
-				zprint_vector(x_gen, n, incx_gen_unadj);
+				zprint_vector(x_gen, n, incx_gen_unadj, "x");
 				for (j = 0; j < n; j++) {
 				  printf("      ");
-				  printf("x[%d]=", ix);
-				  printf("(%.16e, %.16e)",
+				  printf("x[%d] = ", j * incx_gen);
+				  printf("(%24.16e, %24.16e)",
 					 x_gen[j * incx_gen],
 					 x_gen[j * incx_gen + 1]);
 				  printf("; ");
-				  printf("x_final[%d]=", ix);
-				  printf("(%.16e, %.16e)", x[ix], x[ix + 1]);
+				  printf("x_final[%d] = ", ix);
+				  printf("(%24.16e, %24.16e)", x[ix],
+					 x[ix + 1]);
 				  printf("\n");
-
 				  ix += incx;
 				}
 
 				printf("      ");
-				printf("alpha[0]=%.16e, alpha[1]=%.16e",
-				       alpha[0], alpha[1]);
+				printf("alpha = ");
+				printf("(%24.16e, %24.16e)", alpha[0],
+				       alpha[1]);
 				printf("; ");
 				printf("\n");
 				for (j = 0; j < n; j++) {
@@ -7607,7 +7397,12 @@ double do_test_ztbsv_d_x(int n,
 				    printf("    =>");
 				  else
 				    printf("      ");
-
+				  printf
+				    ("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				     head_r_true[j * incx_gen],
+				     tail_r_true[j * incx_gen],
+				     head_r_true[j * incx_gen + 1],
+				     tail_r_true[j * incx_gen + 1]);
 				  printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 				}
 				printf("      ratio=%.4e\n", ratio);

@@ -22,10 +22,6 @@
 
 
 
-
-
-
-
 void BLAS_sskew_testgen_hbmv(int norm, enum blas_order_type order,
 			     enum blas_uplo_type uplo,
 			     int n, int randomize,
@@ -138,7 +134,7 @@ void BLAS_sskew_testgen_hbmv(int norm, enum blas_order_type order,
   if (2 * n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  ssymv_copy_vector(n_i, x_vec, 1, x_i, incx);
+  scopy_vector(x_i, n_i, incx, x_vec, 1);
 
   incyi = incy;
 
@@ -304,7 +300,7 @@ void BLAS_dskew_testgen_hbmv(int norm, enum blas_order_type order,
   if (2 * n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  dsymv_copy_vector(n_i, x_vec, 1, x_i, incx);
+  dcopy_vector(x_i, n_i, incx, x_vec, 1);
 
   incyi = incy;
 
@@ -470,7 +466,7 @@ void BLAS_dskew_testgen_hbmv_d_s(int norm, enum blas_order_type order,
   if (2 * n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  ssymv_copy_vector(n_i, x_vec, 1, x_i, incx);
+  scopy_vector(x_i, n_i, incx, x_vec, 1);
 
   incyi = incy;
 
@@ -636,7 +632,7 @@ void BLAS_dskew_testgen_hbmv_s_d(int norm, enum blas_order_type order,
   if (2 * n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  dsymv_copy_vector(n_i, x_vec, 1, x_i, incx);
+  dcopy_vector(x_i, n_i, incx, x_vec, 1);
 
   incyi = incy;
 
@@ -802,7 +798,7 @@ void BLAS_dskew_testgen_hbmv_s_s(int norm, enum blas_order_type order,
   if (2 * n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  ssymv_copy_vector(n_i, x_vec, 1, x_i, incx);
+  scopy_vector(x_i, n_i, incx, x_vec, 1);
 
   incyi = incy;
 
@@ -1349,12 +1345,12 @@ void BLAS_chbmv_testgen(int norm, enum blas_order_type order,
 
 
       if (alpha_flag == 0) {
-	((float *) alpha_i)[0] = (float) drand48();
-	((float *) alpha_i)[1] = (float) drand48();
+	alpha_i[0] = xrand(seed);
+	alpha_i[1] = xrand(seed);
       }
       if (beta_flag == 0) {
-	((float *) beta_i)[0] = (float) drand48();
-	((float *) beta_i)[1] = (float) drand48();
+	beta_i[0] = xrand(seed);
+	beta_i[1] = xrand(seed);
       }
 
       /* Fill in matrix A -- Hermitian. */
@@ -1364,8 +1360,8 @@ void BLAS_chbmv_testgen(int norm, enum blas_order_type order,
 	j = a_veci = MAX(0, i - k);
 	a_veci *= 2;
 	for (; j < MIN(n_i, i + k + 1); j++, a_veci += inca_vec) {
-	  ((float *) a_elem)[0] = (float) drand48();
-	  ((float *) a_elem)[1] = (float) drand48();
+	  a_elem[0] = xrand(seed);
+	  a_elem[1] = xrand(seed);
 	  if (j == i) {
 	    a_elem[1] = 0.0;
 	  }
@@ -1378,13 +1374,13 @@ void BLAS_chbmv_testgen(int norm, enum blas_order_type order,
 
       /* Fill in vector x */
       for (i = 0, xi = x_starti; i < n_i; i++, xi += incxi) {
-	((float *) x_elem)[0] = (float) drand48();
-	((float *) x_elem)[1] = (float) drand48();
+	x_elem[0] = xrand(seed);
+	x_elem[1] = xrand(seed);
 	x_i[xi] = x_elem[0];
 	x_i[xi + 1] = x_elem[1];
       }
 
-      csymv_copy_vector(n_i, x_vec, 1, x_i, incx);
+      ccopy_vector(x_i, n_i, incx, x_vec, 1);
 
 
       for (i = 0, yi = y_starti, ri = 0; i < n_i; i++, yi += incyi,
@@ -1905,12 +1901,12 @@ void BLAS_zhbmv_testgen(int norm, enum blas_order_type order,
 
 
       if (alpha_flag == 0) {
-	((double *) alpha_i)[0] = (float) drand48();
-	((double *) alpha_i)[1] = (float) drand48();
+	alpha_i[0] = xrand(seed);
+	alpha_i[1] = xrand(seed);
       }
       if (beta_flag == 0) {
-	((double *) beta_i)[0] = (float) drand48();
-	((double *) beta_i)[1] = (float) drand48();
+	beta_i[0] = xrand(seed);
+	beta_i[1] = xrand(seed);
       }
 
       /* Fill in matrix A -- Hermitian. */
@@ -1920,8 +1916,8 @@ void BLAS_zhbmv_testgen(int norm, enum blas_order_type order,
 	j = a_veci = MAX(0, i - k);
 	a_veci *= 2;
 	for (; j < MIN(n_i, i + k + 1); j++, a_veci += inca_vec) {
-	  ((double *) a_elem)[0] = (float) drand48();
-	  ((double *) a_elem)[1] = (float) drand48();
+	  a_elem[0] = xrand(seed);
+	  a_elem[1] = xrand(seed);
 	  if (j == i) {
 	    a_elem[1] = 0.0;
 	  }
@@ -1934,13 +1930,13 @@ void BLAS_zhbmv_testgen(int norm, enum blas_order_type order,
 
       /* Fill in vector x */
       for (i = 0, xi = x_starti; i < n_i; i++, xi += incxi) {
-	((double *) x_elem)[0] = (float) drand48();
-	((double *) x_elem)[1] = (float) drand48();
+	x_elem[0] = xrand(seed);
+	x_elem[1] = xrand(seed);
 	x_i[xi] = x_elem[0];
 	x_i[xi + 1] = x_elem[1];
       }
 
-      zsymv_copy_vector(n_i, x_vec, 1, x_i, incx);
+      zcopy_vector(x_i, n_i, incx, x_vec, 1);
 
 
       for (i = 0, yi = y_starti, ri = 0; i < n_i; i++, yi += incyi,
@@ -2461,12 +2457,12 @@ void BLAS_zhbmv_c_z_testgen(int norm, enum blas_order_type order,
 
 
       if (alpha_flag == 0) {
-	((double *) alpha_i)[0] = (float) drand48();
-	((double *) alpha_i)[1] = (float) drand48();
+	alpha_i[0] = (float) xrand(seed);
+	alpha_i[1] = (float) xrand(seed);
       }
       if (beta_flag == 0) {
-	((double *) beta_i)[0] = (float) drand48();
-	((double *) beta_i)[1] = (float) drand48();
+	beta_i[0] = (float) xrand(seed);
+	beta_i[1] = (float) xrand(seed);
       }
 
       /* Fill in matrix A -- Hermitian. */
@@ -2476,8 +2472,8 @@ void BLAS_zhbmv_c_z_testgen(int norm, enum blas_order_type order,
 	j = a_veci = MAX(0, i - k);
 	a_veci *= 2;
 	for (; j < MIN(n_i, i + k + 1); j++, a_veci += inca_vec) {
-	  ((float *) a_elem)[0] = (float) drand48();
-	  ((float *) a_elem)[1] = (float) drand48();
+	  a_elem[0] = (float) xrand(seed);
+	  a_elem[1] = (float) xrand(seed);
 	  if (j == i) {
 	    a_elem[1] = 0.0;
 	  }
@@ -2490,13 +2486,13 @@ void BLAS_zhbmv_c_z_testgen(int norm, enum blas_order_type order,
 
       /* Fill in vector x */
       for (i = 0, xi = x_starti; i < n_i; i++, xi += incxi) {
-	((double *) x_elem)[0] = (float) drand48();
-	((double *) x_elem)[1] = (float) drand48();
+	x_elem[0] = (float) xrand(seed);
+	x_elem[1] = (float) xrand(seed);
 	x_i[xi] = x_elem[0];
 	x_i[xi + 1] = x_elem[1];
       }
 
-      zsymv_copy_vector(n_i, x_vec, 1, x_i, incx);
+      zcopy_vector(x_i, n_i, incx, x_vec, 1);
 
 
       for (i = 0, yi = y_starti, ri = 0; i < n_i; i++, yi += incyi,
@@ -3017,12 +3013,12 @@ void BLAS_zhbmv_z_c_testgen(int norm, enum blas_order_type order,
 
 
       if (alpha_flag == 0) {
-	((double *) alpha_i)[0] = (float) drand48();
-	((double *) alpha_i)[1] = (float) drand48();
+	alpha_i[0] = (float) xrand(seed);
+	alpha_i[1] = (float) xrand(seed);
       }
       if (beta_flag == 0) {
-	((double *) beta_i)[0] = (float) drand48();
-	((double *) beta_i)[1] = (float) drand48();
+	beta_i[0] = (float) xrand(seed);
+	beta_i[1] = (float) xrand(seed);
       }
 
       /* Fill in matrix A -- Hermitian. */
@@ -3032,8 +3028,8 @@ void BLAS_zhbmv_z_c_testgen(int norm, enum blas_order_type order,
 	j = a_veci = MAX(0, i - k);
 	a_veci *= 2;
 	for (; j < MIN(n_i, i + k + 1); j++, a_veci += inca_vec) {
-	  ((double *) a_elem)[0] = (float) drand48();
-	  ((double *) a_elem)[1] = (float) drand48();
+	  a_elem[0] = (float) xrand(seed);
+	  a_elem[1] = (float) xrand(seed);
 	  if (j == i) {
 	    a_elem[1] = 0.0;
 	  }
@@ -3046,13 +3042,13 @@ void BLAS_zhbmv_z_c_testgen(int norm, enum blas_order_type order,
 
       /* Fill in vector x */
       for (i = 0, xi = x_starti; i < n_i; i++, xi += incxi) {
-	((float *) x_elem)[0] = (float) drand48();
-	((float *) x_elem)[1] = (float) drand48();
+	x_elem[0] = (float) xrand(seed);
+	x_elem[1] = (float) xrand(seed);
 	x_i[xi] = x_elem[0];
 	x_i[xi + 1] = x_elem[1];
       }
 
-      csymv_copy_vector(n_i, x_vec, 1, x_i, incx);
+      ccopy_vector(x_i, n_i, incx, x_vec, 1);
 
 
       for (i = 0, yi = y_starti, ri = 0; i < n_i; i++, yi += incyi,
@@ -3573,12 +3569,12 @@ void BLAS_zhbmv_c_c_testgen(int norm, enum blas_order_type order,
 
 
       if (alpha_flag == 0) {
-	((double *) alpha_i)[0] = (float) drand48();
-	((double *) alpha_i)[1] = (float) drand48();
+	alpha_i[0] = (float) xrand(seed);
+	alpha_i[1] = (float) xrand(seed);
       }
       if (beta_flag == 0) {
-	((double *) beta_i)[0] = (float) drand48();
-	((double *) beta_i)[1] = (float) drand48();
+	beta_i[0] = (float) xrand(seed);
+	beta_i[1] = (float) xrand(seed);
       }
 
       /* Fill in matrix A -- Hermitian. */
@@ -3588,8 +3584,8 @@ void BLAS_zhbmv_c_c_testgen(int norm, enum blas_order_type order,
 	j = a_veci = MAX(0, i - k);
 	a_veci *= 2;
 	for (; j < MIN(n_i, i + k + 1); j++, a_veci += inca_vec) {
-	  ((float *) a_elem)[0] = (float) drand48();
-	  ((float *) a_elem)[1] = (float) drand48();
+	  a_elem[0] = (float) xrand(seed);
+	  a_elem[1] = (float) xrand(seed);
 	  if (j == i) {
 	    a_elem[1] = 0.0;
 	  }
@@ -3602,13 +3598,13 @@ void BLAS_zhbmv_c_c_testgen(int norm, enum blas_order_type order,
 
       /* Fill in vector x */
       for (i = 0, xi = x_starti; i < n_i; i++, xi += incxi) {
-	((float *) x_elem)[0] = (float) drand48();
-	((float *) x_elem)[1] = (float) drand48();
+	x_elem[0] = (float) xrand(seed);
+	x_elem[1] = (float) xrand(seed);
 	x_i[xi] = x_elem[0];
 	x_i[xi + 1] = x_elem[1];
       }
 
-      csymv_copy_vector(n_i, x_vec, 1, x_i, incx);
+      ccopy_vector(x_i, n_i, incx, x_vec, 1);
 
 
       for (i = 0, yi = y_starti, ri = 0; i < n_i; i++, yi += incyi,
@@ -4071,12 +4067,12 @@ void BLAS_zhbmv_z_d_testgen(int norm, enum blas_order_type order,
 
 
       if (alpha_flag == 0) {
-	((double *) alpha_i)[0] = (float) drand48();
-	((double *) alpha_i)[1] = (float) drand48();
+	alpha_i[0] = xrand(seed);
+	alpha_i[1] = xrand(seed);
       }
       if (beta_flag == 0) {
-	((double *) beta_i)[0] = (float) drand48();
-	((double *) beta_i)[1] = (float) drand48();
+	beta_i[0] = xrand(seed);
+	beta_i[1] = xrand(seed);
       }
 
       /* Fill in matrix A -- Hermitian. */
@@ -4086,8 +4082,8 @@ void BLAS_zhbmv_z_d_testgen(int norm, enum blas_order_type order,
 	j = a_veci = MAX(0, i - k);
 	a_veci *= 2;
 	for (; j < MIN(n_i, i + k + 1); j++, a_veci += inca_vec) {
-	  ((double *) a_elem)[0] = (float) drand48();
-	  ((double *) a_elem)[1] = (float) drand48();
+	  a_elem[0] = xrand(seed);
+	  a_elem[1] = xrand(seed);
 	  if (j == i) {
 	    a_elem[1] = 0.0;
 	  }
@@ -4100,11 +4096,11 @@ void BLAS_zhbmv_z_d_testgen(int norm, enum blas_order_type order,
 
       /* Fill in vector x */
       for (i = 0, xi = x_starti; i < n_i; i++, xi += incxi) {
-	x_elem = (float) drand48();
+	x_elem = xrand(seed);
 	x_i[xi] = x_elem;
       }
 
-      dsymv_copy_vector(n_i, x_vec, 1, x_i, incx);
+      dcopy_vector(x_i, n_i, incx, x_vec, 1);
 
       /* copy the real x_vec into complex xx_vec, so that 
          pure complex test case generator can be called. */
@@ -4576,12 +4572,12 @@ void BLAS_chbmv_c_s_testgen(int norm, enum blas_order_type order,
 
 
       if (alpha_flag == 0) {
-	((float *) alpha_i)[0] = (float) drand48();
-	((float *) alpha_i)[1] = (float) drand48();
+	alpha_i[0] = xrand(seed);
+	alpha_i[1] = xrand(seed);
       }
       if (beta_flag == 0) {
-	((float *) beta_i)[0] = (float) drand48();
-	((float *) beta_i)[1] = (float) drand48();
+	beta_i[0] = xrand(seed);
+	beta_i[1] = xrand(seed);
       }
 
       /* Fill in matrix A -- Hermitian. */
@@ -4591,8 +4587,8 @@ void BLAS_chbmv_c_s_testgen(int norm, enum blas_order_type order,
 	j = a_veci = MAX(0, i - k);
 	a_veci *= 2;
 	for (; j < MIN(n_i, i + k + 1); j++, a_veci += inca_vec) {
-	  ((float *) a_elem)[0] = (float) drand48();
-	  ((float *) a_elem)[1] = (float) drand48();
+	  a_elem[0] = xrand(seed);
+	  a_elem[1] = xrand(seed);
 	  if (j == i) {
 	    a_elem[1] = 0.0;
 	  }
@@ -4605,11 +4601,11 @@ void BLAS_chbmv_c_s_testgen(int norm, enum blas_order_type order,
 
       /* Fill in vector x */
       for (i = 0, xi = x_starti; i < n_i; i++, xi += incxi) {
-	x_elem = (float) drand48();
+	x_elem = xrand(seed);
 	x_i[xi] = x_elem;
       }
 
-      ssymv_copy_vector(n_i, x_vec, 1, x_i, incx);
+      scopy_vector(x_i, n_i, incx, x_vec, 1);
 
       /* copy the real x_vec into complex xx_vec, so that 
          pure complex test case generator can be called. */

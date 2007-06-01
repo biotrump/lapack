@@ -24,8 +24,6 @@
 
 
 
-
-
 void BLAS_sge_sum_mv_testgen(int norm, enum blas_order_type order,
 			     int m, int n, int randomize,
 			     float *alpha, int alpha_flag, float *beta,
@@ -286,13 +284,13 @@ void BLAS_sge_sum_mv_testgen(int norm, enum blas_order_type order,
 
   if (which_free == ALPHA_USE_IS_BETA) {
     if (!beta_flag) {
-      y_elem = (float) drand48();
+      y_elem = xrand(seed);
       beta_i[0] = y_elem;
     }
     alpha_use = (*beta_i);
   } else {
     if (!alpha_flag) {
-      y_elem = (float) drand48();
+      y_elem = xrand(seed);
       alpha_i[0] = y_elem;
     }
     alpha_use = (*alpha_i);
@@ -304,12 +302,12 @@ void BLAS_sge_sum_mv_testgen(int norm, enum blas_order_type order,
 
     /*first pick x randomly */
     for (i = 0, xi = x_starti; i < n_i; i++, xi++) {
-      x_elem = (float) drand48();
+      x_elem = xrand(seed);
       x_i[xi * incxi] = x_elem;
     }
     /*copy new x into x_vec (twice) */
-    ssymv_copy_vector(n_i, x_vec, 1, x, incx);
-    ssymv_copy_vector(n_i, (x_vec + incx_veci * n_i), 1, x, incx);
+    scopy_vector(x, n_i, incx, x_vec, 1);
+    scopy_vector(x, n_i, incx, (x_vec + incx_veci * n_i), 1);
 
     if (case_type == 2) {
       /* degenerate case - similar to gemv */
@@ -347,7 +345,7 @@ void BLAS_sge_sum_mv_testgen(int norm, enum blas_order_type order,
 
 	for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	  for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	    a_elem = (float) drand48();
+	    a_elem = (float) xrand(seed);
 	    b_i[aij] = a_elem;
 	  }
 	}
@@ -388,7 +386,7 @@ void BLAS_sge_sum_mv_testgen(int norm, enum blas_order_type order,
 	}
 	(*alpha_use_ptr_i) = alpha_use;
 	(*alpha_i) = alpha_use;
-	ssymv_copy_vector(n_i, x, incx, x_vec, 1);
+	scopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 	return;
@@ -425,7 +423,7 @@ void BLAS_sge_sum_mv_testgen(int norm, enum blas_order_type order,
 
 	for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	  for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	    a_elem = (float) drand48();
+	    a_elem = (float) xrand(seed);
 	    a_i[aij] = a_elem;
 	  }
 	}
@@ -466,7 +464,7 @@ void BLAS_sge_sum_mv_testgen(int norm, enum blas_order_type order,
 	}
 	(*alpha_use_ptr_i) = alpha_use;
 	(*beta_i) = alpha_use;
-	ssymv_copy_vector(n_i, x, incx, x_vec, 1);
+	scopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 	return;
@@ -505,7 +503,7 @@ void BLAS_sge_sum_mv_testgen(int norm, enum blas_order_type order,
 
     /*first pick x randomly */
     for (i = 0, xi = x_starti; i < n_i; i++, xi++) {
-      x_elem = (float) drand48();
+      x_elem = xrand(seed);
       x_i[xi * incxi] = x_elem;
     }
 
@@ -523,7 +521,7 @@ void BLAS_sge_sum_mv_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	a_elem = (float) drand48();
+	a_elem = (float) xrand(seed);
 	a_i[aij] = a_elem;
       }
     }
@@ -541,7 +539,7 @@ void BLAS_sge_sum_mv_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	a_elem = (float) drand48();
+	a_elem = (float) xrand(seed);
 	b_i[aij] = a_elem;
       }
     }
@@ -550,8 +548,8 @@ void BLAS_sge_sum_mv_testgen(int norm, enum blas_order_type order,
 
     /* get x */
     /*copy new x into x_vec (twice) */
-    ssymv_copy_vector(n_i, x_vec, 1, x, incx);
-    ssymv_copy_vector(n_i, (x_vec + incx_veci * n_i), 1, x, incx);
+    scopy_vector(x, n_i, incx, x_vec, 1);
+    scopy_vector(x, n_i, incx, (x_vec + incx_veci * n_i), 1);
 
 
     if (case_type == 2) {
@@ -609,7 +607,7 @@ void BLAS_sge_sum_mv_testgen(int norm, enum blas_order_type order,
 	  }
 	}
 	(*alpha_use_ptr_i) = alpha_use;
-	ssymv_copy_vector(n_i, x, incx, x_vec, 1);
+	scopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 
@@ -670,7 +668,7 @@ void BLAS_sge_sum_mv_testgen(int norm, enum blas_order_type order,
 	  }
 	}
 	(*alpha_use_ptr_i) = alpha_use;
-	ssymv_copy_vector(n_i, x, incx, x_vec, 1);
+	scopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 
@@ -830,7 +828,7 @@ void BLAS_sge_sum_mv_testgen(int norm, enum blas_order_type order,
 
   /*copy x_vec into x : it is possible that the generator
      changed x_vec, even though none were free */
-  ssymv_copy_vector(n_i, x, incx, x_vec, 1);
+  scopy_vector(x_vec, n_i, 1, x, incx);
   blas_free(a_vec);
   blas_free(x_vec);
 }
@@ -1094,13 +1092,13 @@ void BLAS_dge_sum_mv_testgen(int norm, enum blas_order_type order,
 
   if (which_free == ALPHA_USE_IS_BETA) {
     if (!beta_flag) {
-      y_elem = (float) drand48();
+      y_elem = xrand(seed);
       beta_i[0] = y_elem;
     }
     alpha_use = (*beta_i);
   } else {
     if (!alpha_flag) {
-      y_elem = (float) drand48();
+      y_elem = xrand(seed);
       alpha_i[0] = y_elem;
     }
     alpha_use = (*alpha_i);
@@ -1112,12 +1110,12 @@ void BLAS_dge_sum_mv_testgen(int norm, enum blas_order_type order,
 
     /*first pick x randomly */
     for (i = 0, xi = x_starti; i < n_i; i++, xi++) {
-      x_elem = (float) drand48();
+      x_elem = xrand(seed);
       x_i[xi * incxi] = x_elem;
     }
     /*copy new x into x_vec (twice) */
-    dsymv_copy_vector(n_i, x_vec, 1, x, incx);
-    dsymv_copy_vector(n_i, (x_vec + incx_veci * n_i), 1, x, incx);
+    dcopy_vector(x, n_i, incx, x_vec, 1);
+    dcopy_vector(x, n_i, incx, (x_vec + incx_veci * n_i), 1);
 
     if (case_type == 2) {
       /* degenerate case - similar to gemv */
@@ -1155,7 +1153,7 @@ void BLAS_dge_sum_mv_testgen(int norm, enum blas_order_type order,
 
 	for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	  for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	    a_elem = (float) drand48();
+	    a_elem = (float) xrand(seed);
 	    b_i[aij] = a_elem;
 	  }
 	}
@@ -1196,7 +1194,7 @@ void BLAS_dge_sum_mv_testgen(int norm, enum blas_order_type order,
 	}
 	(*alpha_use_ptr_i) = alpha_use;
 	(*alpha_i) = alpha_use;
-	dsymv_copy_vector(n_i, x, incx, x_vec, 1);
+	dcopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 	return;
@@ -1233,7 +1231,7 @@ void BLAS_dge_sum_mv_testgen(int norm, enum blas_order_type order,
 
 	for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	  for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	    a_elem = (float) drand48();
+	    a_elem = (float) xrand(seed);
 	    a_i[aij] = a_elem;
 	  }
 	}
@@ -1274,7 +1272,7 @@ void BLAS_dge_sum_mv_testgen(int norm, enum blas_order_type order,
 	}
 	(*alpha_use_ptr_i) = alpha_use;
 	(*beta_i) = alpha_use;
-	dsymv_copy_vector(n_i, x, incx, x_vec, 1);
+	dcopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 	return;
@@ -1313,7 +1311,7 @@ void BLAS_dge_sum_mv_testgen(int norm, enum blas_order_type order,
 
     /*first pick x randomly */
     for (i = 0, xi = x_starti; i < n_i; i++, xi++) {
-      x_elem = (float) drand48();
+      x_elem = xrand(seed);
       x_i[xi * incxi] = x_elem;
     }
 
@@ -1331,7 +1329,7 @@ void BLAS_dge_sum_mv_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	a_elem = (float) drand48();
+	a_elem = (float) xrand(seed);
 	a_i[aij] = a_elem;
       }
     }
@@ -1349,7 +1347,7 @@ void BLAS_dge_sum_mv_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	a_elem = (float) drand48();
+	a_elem = (float) xrand(seed);
 	b_i[aij] = a_elem;
       }
     }
@@ -1358,8 +1356,8 @@ void BLAS_dge_sum_mv_testgen(int norm, enum blas_order_type order,
 
     /* get x */
     /*copy new x into x_vec (twice) */
-    dsymv_copy_vector(n_i, x_vec, 1, x, incx);
-    dsymv_copy_vector(n_i, (x_vec + incx_veci * n_i), 1, x, incx);
+    dcopy_vector(x, n_i, incx, x_vec, 1);
+    dcopy_vector(x, n_i, incx, (x_vec + incx_veci * n_i), 1);
 
 
     if (case_type == 2) {
@@ -1417,7 +1415,7 @@ void BLAS_dge_sum_mv_testgen(int norm, enum blas_order_type order,
 	  }
 	}
 	(*alpha_use_ptr_i) = alpha_use;
-	dsymv_copy_vector(n_i, x, incx, x_vec, 1);
+	dcopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 
@@ -1478,7 +1476,7 @@ void BLAS_dge_sum_mv_testgen(int norm, enum blas_order_type order,
 	  }
 	}
 	(*alpha_use_ptr_i) = alpha_use;
-	dsymv_copy_vector(n_i, x, incx, x_vec, 1);
+	dcopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 
@@ -1638,7 +1636,7 @@ void BLAS_dge_sum_mv_testgen(int norm, enum blas_order_type order,
 
   /*copy x_vec into x : it is possible that the generator
      changed x_vec, even though none were free */
-  dsymv_copy_vector(n_i, x, incx, x_vec, 1);
+  dcopy_vector(x_vec, n_i, 1, x, incx);
   blas_free(a_vec);
   blas_free(x_vec);
 }
@@ -1902,13 +1900,13 @@ void BLAS_dge_sum_mv_d_s_testgen(int norm, enum blas_order_type order,
 
   if (which_free == ALPHA_USE_IS_BETA) {
     if (!beta_flag) {
-      y_elem = (float) drand48();
+      y_elem = (float) xrand(seed);
       beta_i[0] = y_elem;
     }
     alpha_use = (*beta_i);
   } else {
     if (!alpha_flag) {
-      y_elem = (float) drand48();
+      y_elem = (float) xrand(seed);
       alpha_i[0] = y_elem;
     }
     alpha_use = (*alpha_i);
@@ -1920,12 +1918,12 @@ void BLAS_dge_sum_mv_d_s_testgen(int norm, enum blas_order_type order,
 
     /*first pick x randomly */
     for (i = 0, xi = x_starti; i < n_i; i++, xi++) {
-      x_elem = (float) drand48();
+      x_elem = (float) xrand(seed);
       x_i[xi * incxi] = x_elem;
     }
     /*copy new x into x_vec (twice) */
-    ssymv_copy_vector(n_i, x_vec, 1, x, incx);
-    ssymv_copy_vector(n_i, (x_vec + incx_veci * n_i), 1, x, incx);
+    scopy_vector(x, n_i, incx, x_vec, 1);
+    scopy_vector(x, n_i, incx, (x_vec + incx_veci * n_i), 1);
 
     if (case_type == 2) {
       /* degenerate case - similar to gemv */
@@ -1964,7 +1962,7 @@ void BLAS_dge_sum_mv_d_s_testgen(int norm, enum blas_order_type order,
 
 	for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	  for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	    a_elem = (float) drand48();
+	    a_elem = (float) xrand(seed);
 	    b_i[aij] = a_elem;
 	  }
 	}
@@ -2005,7 +2003,7 @@ void BLAS_dge_sum_mv_d_s_testgen(int norm, enum blas_order_type order,
 	}
 	(*alpha_use_ptr_i) = alpha_use;
 	(*alpha_i) = alpha_use;
-	ssymv_copy_vector(n_i, x, incx, x_vec, 1);
+	scopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 	return;
@@ -2043,7 +2041,7 @@ void BLAS_dge_sum_mv_d_s_testgen(int norm, enum blas_order_type order,
 
 	for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	  for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	    a_elem = (float) drand48();
+	    a_elem = (float) xrand(seed);
 	    a_i[aij] = a_elem;
 	  }
 	}
@@ -2084,7 +2082,7 @@ void BLAS_dge_sum_mv_d_s_testgen(int norm, enum blas_order_type order,
 	}
 	(*alpha_use_ptr_i) = alpha_use;
 	(*beta_i) = alpha_use;
-	ssymv_copy_vector(n_i, x, incx, x_vec, 1);
+	scopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 	return;
@@ -2123,7 +2121,7 @@ void BLAS_dge_sum_mv_d_s_testgen(int norm, enum blas_order_type order,
 
     /*first pick x randomly */
     for (i = 0, xi = x_starti; i < n_i; i++, xi++) {
-      x_elem = (float) drand48();
+      x_elem = (float) xrand(seed);
       x_i[xi * incxi] = x_elem;
     }
 
@@ -2141,7 +2139,7 @@ void BLAS_dge_sum_mv_d_s_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	a_elem = (float) drand48();
+	a_elem = (float) xrand(seed);
 	a_i[aij] = a_elem;
       }
     }
@@ -2159,7 +2157,7 @@ void BLAS_dge_sum_mv_d_s_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	a_elem = (float) drand48();
+	a_elem = (float) xrand(seed);
 	b_i[aij] = a_elem;
       }
     }
@@ -2168,8 +2166,8 @@ void BLAS_dge_sum_mv_d_s_testgen(int norm, enum blas_order_type order,
 
     /* get x */
     /*copy new x into x_vec (twice) */
-    ssymv_copy_vector(n_i, x_vec, 1, x, incx);
-    ssymv_copy_vector(n_i, (x_vec + incx_veci * n_i), 1, x, incx);
+    scopy_vector(x, n_i, incx, x_vec, 1);
+    scopy_vector(x, n_i, incx, (x_vec + incx_veci * n_i), 1);
 
 
     if (case_type == 2) {
@@ -2228,7 +2226,7 @@ void BLAS_dge_sum_mv_d_s_testgen(int norm, enum blas_order_type order,
 	  }
 	}
 	(*alpha_use_ptr_i) = alpha_use;
-	ssymv_copy_vector(n_i, x, incx, x_vec, 1);
+	scopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 
@@ -2290,7 +2288,7 @@ void BLAS_dge_sum_mv_d_s_testgen(int norm, enum blas_order_type order,
 	  }
 	}
 	(*alpha_use_ptr_i) = alpha_use;
-	ssymv_copy_vector(n_i, x, incx, x_vec, 1);
+	scopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 
@@ -2450,7 +2448,7 @@ void BLAS_dge_sum_mv_d_s_testgen(int norm, enum blas_order_type order,
 
   /*copy x_vec into x : it is possible that the generator
      changed x_vec, even though none were free */
-  ssymv_copy_vector(n_i, x, incx, x_vec, 1);
+  scopy_vector(x_vec, n_i, 1, x, incx);
   blas_free(a_vec);
   blas_free(x_vec);
 }
@@ -2714,13 +2712,13 @@ void BLAS_dge_sum_mv_s_d_testgen(int norm, enum blas_order_type order,
 
   if (which_free == ALPHA_USE_IS_BETA) {
     if (!beta_flag) {
-      y_elem = (float) drand48();
+      y_elem = (float) xrand(seed);
       beta_i[0] = y_elem;
     }
     alpha_use = (*beta_i);
   } else {
     if (!alpha_flag) {
-      y_elem = (float) drand48();
+      y_elem = (float) xrand(seed);
       alpha_i[0] = y_elem;
     }
     alpha_use = (*alpha_i);
@@ -2732,12 +2730,12 @@ void BLAS_dge_sum_mv_s_d_testgen(int norm, enum blas_order_type order,
 
     /*first pick x randomly */
     for (i = 0, xi = x_starti; i < n_i; i++, xi++) {
-      x_elem = (float) drand48();
+      x_elem = (float) xrand(seed);
       x_i[xi * incxi] = x_elem;
     }
     /*copy new x into x_vec (twice) */
-    dsymv_copy_vector(n_i, x_vec, 1, x, incx);
-    dsymv_copy_vector(n_i, (x_vec + incx_veci * n_i), 1, x, incx);
+    dcopy_vector(x, n_i, incx, x_vec, 1);
+    dcopy_vector(x, n_i, incx, (x_vec + incx_veci * n_i), 1);
 
     if (case_type == 2) {
       /* degenerate case - similar to gemv */
@@ -2776,7 +2774,7 @@ void BLAS_dge_sum_mv_s_d_testgen(int norm, enum blas_order_type order,
 
 	for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	  for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	    a_elem = (float) drand48();
+	    a_elem = (float) xrand(seed);
 	    b_i[aij] = a_elem;
 	  }
 	}
@@ -2817,7 +2815,7 @@ void BLAS_dge_sum_mv_s_d_testgen(int norm, enum blas_order_type order,
 	}
 	(*alpha_use_ptr_i) = alpha_use;
 	(*alpha_i) = alpha_use;
-	dsymv_copy_vector(n_i, x, incx, x_vec, 1);
+	dcopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 	return;
@@ -2855,7 +2853,7 @@ void BLAS_dge_sum_mv_s_d_testgen(int norm, enum blas_order_type order,
 
 	for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	  for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	    a_elem = (float) drand48();
+	    a_elem = (float) xrand(seed);
 	    a_i[aij] = a_elem;
 	  }
 	}
@@ -2896,7 +2894,7 @@ void BLAS_dge_sum_mv_s_d_testgen(int norm, enum blas_order_type order,
 	}
 	(*alpha_use_ptr_i) = alpha_use;
 	(*beta_i) = alpha_use;
-	dsymv_copy_vector(n_i, x, incx, x_vec, 1);
+	dcopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 	return;
@@ -2935,7 +2933,7 @@ void BLAS_dge_sum_mv_s_d_testgen(int norm, enum blas_order_type order,
 
     /*first pick x randomly */
     for (i = 0, xi = x_starti; i < n_i; i++, xi++) {
-      x_elem = (float) drand48();
+      x_elem = (float) xrand(seed);
       x_i[xi * incxi] = x_elem;
     }
 
@@ -2953,7 +2951,7 @@ void BLAS_dge_sum_mv_s_d_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	a_elem = (float) drand48();
+	a_elem = (float) xrand(seed);
 	a_i[aij] = a_elem;
       }
     }
@@ -2971,7 +2969,7 @@ void BLAS_dge_sum_mv_s_d_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	a_elem = (float) drand48();
+	a_elem = (float) xrand(seed);
 	b_i[aij] = a_elem;
       }
     }
@@ -2980,8 +2978,8 @@ void BLAS_dge_sum_mv_s_d_testgen(int norm, enum blas_order_type order,
 
     /* get x */
     /*copy new x into x_vec (twice) */
-    dsymv_copy_vector(n_i, x_vec, 1, x, incx);
-    dsymv_copy_vector(n_i, (x_vec + incx_veci * n_i), 1, x, incx);
+    dcopy_vector(x, n_i, incx, x_vec, 1);
+    dcopy_vector(x, n_i, incx, (x_vec + incx_veci * n_i), 1);
 
 
     if (case_type == 2) {
@@ -3040,7 +3038,7 @@ void BLAS_dge_sum_mv_s_d_testgen(int norm, enum blas_order_type order,
 	  }
 	}
 	(*alpha_use_ptr_i) = alpha_use;
-	dsymv_copy_vector(n_i, x, incx, x_vec, 1);
+	dcopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 
@@ -3102,7 +3100,7 @@ void BLAS_dge_sum_mv_s_d_testgen(int norm, enum blas_order_type order,
 	  }
 	}
 	(*alpha_use_ptr_i) = alpha_use;
-	dsymv_copy_vector(n_i, x, incx, x_vec, 1);
+	dcopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 
@@ -3262,7 +3260,7 @@ void BLAS_dge_sum_mv_s_d_testgen(int norm, enum blas_order_type order,
 
   /*copy x_vec into x : it is possible that the generator
      changed x_vec, even though none were free */
-  dsymv_copy_vector(n_i, x, incx, x_vec, 1);
+  dcopy_vector(x_vec, n_i, 1, x, incx);
   blas_free(a_vec);
   blas_free(x_vec);
 }
@@ -3526,13 +3524,13 @@ void BLAS_dge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 
   if (which_free == ALPHA_USE_IS_BETA) {
     if (!beta_flag) {
-      y_elem = (float) drand48();
+      y_elem = (float) xrand(seed);
       beta_i[0] = y_elem;
     }
     alpha_use = (*beta_i);
   } else {
     if (!alpha_flag) {
-      y_elem = (float) drand48();
+      y_elem = (float) xrand(seed);
       alpha_i[0] = y_elem;
     }
     alpha_use = (*alpha_i);
@@ -3544,12 +3542,12 @@ void BLAS_dge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 
     /*first pick x randomly */
     for (i = 0, xi = x_starti; i < n_i; i++, xi++) {
-      x_elem = (float) drand48();
+      x_elem = (float) xrand(seed);
       x_i[xi * incxi] = x_elem;
     }
     /*copy new x into x_vec (twice) */
-    ssymv_copy_vector(n_i, x_vec, 1, x, incx);
-    ssymv_copy_vector(n_i, (x_vec + incx_veci * n_i), 1, x, incx);
+    scopy_vector(x, n_i, incx, x_vec, 1);
+    scopy_vector(x, n_i, incx, (x_vec + incx_veci * n_i), 1);
 
     if (case_type == 2) {
       /* degenerate case - similar to gemv */
@@ -3588,7 +3586,7 @@ void BLAS_dge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 
 	for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	  for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	    a_elem = (float) drand48();
+	    a_elem = (float) xrand(seed);
 	    b_i[aij] = a_elem;
 	  }
 	}
@@ -3629,7 +3627,7 @@ void BLAS_dge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 	}
 	(*alpha_use_ptr_i) = alpha_use;
 	(*alpha_i) = alpha_use;
-	ssymv_copy_vector(n_i, x, incx, x_vec, 1);
+	scopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 	return;
@@ -3667,7 +3665,7 @@ void BLAS_dge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 
 	for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	  for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	    a_elem = (float) drand48();
+	    a_elem = (float) xrand(seed);
 	    a_i[aij] = a_elem;
 	  }
 	}
@@ -3708,7 +3706,7 @@ void BLAS_dge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 	}
 	(*alpha_use_ptr_i) = alpha_use;
 	(*beta_i) = alpha_use;
-	ssymv_copy_vector(n_i, x, incx, x_vec, 1);
+	scopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 	return;
@@ -3747,7 +3745,7 @@ void BLAS_dge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 
     /*first pick x randomly */
     for (i = 0, xi = x_starti; i < n_i; i++, xi++) {
-      x_elem = (float) drand48();
+      x_elem = (float) xrand(seed);
       x_i[xi * incxi] = x_elem;
     }
 
@@ -3765,7 +3763,7 @@ void BLAS_dge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	a_elem = (float) drand48();
+	a_elem = (float) xrand(seed);
 	a_i[aij] = a_elem;
       }
     }
@@ -3783,7 +3781,7 @@ void BLAS_dge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	a_elem = (float) drand48();
+	a_elem = (float) xrand(seed);
 	b_i[aij] = a_elem;
       }
     }
@@ -3792,8 +3790,8 @@ void BLAS_dge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 
     /* get x */
     /*copy new x into x_vec (twice) */
-    ssymv_copy_vector(n_i, x_vec, 1, x, incx);
-    ssymv_copy_vector(n_i, (x_vec + incx_veci * n_i), 1, x, incx);
+    scopy_vector(x, n_i, incx, x_vec, 1);
+    scopy_vector(x, n_i, incx, (x_vec + incx_veci * n_i), 1);
 
 
     if (case_type == 2) {
@@ -3852,7 +3850,7 @@ void BLAS_dge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 	  }
 	}
 	(*alpha_use_ptr_i) = alpha_use;
-	ssymv_copy_vector(n_i, x, incx, x_vec, 1);
+	scopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 
@@ -3914,7 +3912,7 @@ void BLAS_dge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 	  }
 	}
 	(*alpha_use_ptr_i) = alpha_use;
-	ssymv_copy_vector(n_i, x, incx, x_vec, 1);
+	scopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 
@@ -4074,7 +4072,7 @@ void BLAS_dge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 
   /*copy x_vec into x : it is possible that the generator
      changed x_vec, even though none were free */
-  ssymv_copy_vector(n_i, x, incx, x_vec, 1);
+  scopy_vector(x_vec, n_i, 1, x, incx);
   blas_free(a_vec);
   blas_free(x_vec);
 }
@@ -4350,8 +4348,8 @@ void BLAS_cge_sum_mv_testgen(int norm, enum blas_order_type order,
 
   if (which_free == ALPHA_USE_IS_BETA) {
     if (!beta_flag) {
-      ((float *) y_elem)[0] = (float) drand48();
-      ((float *) y_elem)[1] = (float) drand48();
+      y_elem[0] = xrand(seed);
+      y_elem[1] = xrand(seed);
       beta_i[0] = y_elem[0];
       beta_i[0 + 1] = y_elem[1];
     }
@@ -4359,8 +4357,8 @@ void BLAS_cge_sum_mv_testgen(int norm, enum blas_order_type order,
     alpha_use[1] = beta_i[1];
   } else {
     if (!alpha_flag) {
-      ((float *) y_elem)[0] = (float) drand48();
-      ((float *) y_elem)[1] = (float) drand48();
+      y_elem[0] = xrand(seed);
+      y_elem[1] = xrand(seed);
       alpha_i[0] = y_elem[0];
       alpha_i[0 + 1] = y_elem[1];
     }
@@ -4375,14 +4373,14 @@ void BLAS_cge_sum_mv_testgen(int norm, enum blas_order_type order,
 
     /*first pick x randomly */
     for (i = 0, xi = x_starti; i < n_i; i++, xi++) {
-      ((float *) x_elem)[0] = (float) drand48();
-      ((float *) x_elem)[1] = (float) drand48();
+      x_elem[0] = xrand(seed);
+      x_elem[1] = xrand(seed);
       x_i[xi * incxi] = x_elem[0];
       x_i[xi * incxi + 1] = x_elem[1];
     }
     /*copy new x into x_vec (twice) */
-    csymv_copy_vector(n_i, x_vec, 1, x, incx);
-    csymv_copy_vector(n_i, (x_vec + incx_veci * n_i), 1, x, incx);
+    ccopy_vector(x, n_i, incx, x_vec, 1);
+    ccopy_vector(x, n_i, incx, (x_vec + incx_veci * n_i), 1);
 
     if (case_type == 2) {
       /* degenerate case - similar to gemv */
@@ -4422,8 +4420,8 @@ void BLAS_cge_sum_mv_testgen(int norm, enum blas_order_type order,
 
 	for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	  for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	    ((float *) a_elem)[0] = (float) drand48();
-	    ((float *) a_elem)[1] = (float) drand48();
+	    a_elem[0] = (float) xrand(seed);
+	    a_elem[1] = (float) xrand(seed);
 	    b_i[aij] = a_elem[0];
 	    b_i[aij + 1] = a_elem[1];
 	  }
@@ -4470,7 +4468,7 @@ void BLAS_cge_sum_mv_testgen(int norm, enum blas_order_type order,
 	alpha_use_ptr_i[1] = alpha_use[1];
 	alpha_i[0] = alpha_use[0];
 	alpha_i[1] = alpha_use[1];
-	csymv_copy_vector(n_i, x, incx, x_vec, 1);
+	ccopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 	return;
@@ -4509,8 +4507,8 @@ void BLAS_cge_sum_mv_testgen(int norm, enum blas_order_type order,
 
 	for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	  for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	    ((float *) a_elem)[0] = (float) drand48();
-	    ((float *) a_elem)[1] = (float) drand48();
+	    a_elem[0] = (float) xrand(seed);
+	    a_elem[1] = (float) xrand(seed);
 	    a_i[aij] = a_elem[0];
 	    a_i[aij + 1] = a_elem[1];
 	  }
@@ -4557,7 +4555,7 @@ void BLAS_cge_sum_mv_testgen(int norm, enum blas_order_type order,
 	alpha_use_ptr_i[1] = alpha_use[1];
 	beta_i[0] = alpha_use[0];
 	beta_i[1] = alpha_use[1];
-	csymv_copy_vector(n_i, x, incx, x_vec, 1);
+	ccopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 	return;
@@ -4585,15 +4583,15 @@ void BLAS_cge_sum_mv_testgen(int norm, enum blas_order_type order,
 
       /*first pick x randomly, but real */
       for (i = 0, xi = x_starti; i < n_i; i++, xi += incxi) {
-	((float *) x_elem)[0] = (float) drand48();
-	((float *) x_elem)[1] = (float) drand48();
+	x_elem[0] = xrand(seed);
+	x_elem[1] = xrand(seed);
 	x_elem[1] = 0.0;
 	x_i[xi] = x_elem[0];
 	x_i[xi + 1] = x_elem[1];
       }
       /*copy new x into x_vec_2 (twice) */
-      ssymv_copy_vector(n_i, x_vec_2, 1, x, 2 * incx);
-      ssymv_copy_vector(n_i, (x_vec_2 + n_i), 1, x_vec_2, 1);
+      scopy_vector(x, n_i, 2 * incx, x_vec_2, 1);
+      scopy_vector(x_vec_2, n_i, 1, (x_vec_2 + n_i), 1);
 
       /* Now Fill in matrix A, B real */
       /*since we have case 3, we know alpha_use == 1.0+0i,
@@ -4671,8 +4669,8 @@ void BLAS_cge_sum_mv_testgen(int norm, enum blas_order_type order,
 
     /*first pick x randomly */
     for (i = 0, xi = x_starti; i < n_i; i++, xi++) {
-      ((float *) x_elem)[0] = (float) drand48();
-      ((float *) x_elem)[1] = (float) drand48();
+      x_elem[0] = xrand(seed);
+      x_elem[1] = xrand(seed);
       x_i[xi * incxi] = x_elem[0];
       x_i[xi * incxi + 1] = x_elem[1];
     }
@@ -4691,8 +4689,8 @@ void BLAS_cge_sum_mv_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	((float *) a_elem)[0] = (float) drand48();
-	((float *) a_elem)[1] = (float) drand48();
+	a_elem[0] = (float) xrand(seed);
+	a_elem[1] = (float) xrand(seed);
 	a_i[aij] = a_elem[0];
 	a_i[aij + 1] = a_elem[1];
       }
@@ -4711,8 +4709,8 @@ void BLAS_cge_sum_mv_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	((float *) a_elem)[0] = (float) drand48();
-	((float *) a_elem)[1] = (float) drand48();
+	a_elem[0] = (float) xrand(seed);
+	a_elem[1] = (float) xrand(seed);
 	b_i[aij] = a_elem[0];
 	b_i[aij + 1] = a_elem[1];
       }
@@ -4722,8 +4720,8 @@ void BLAS_cge_sum_mv_testgen(int norm, enum blas_order_type order,
 
     /* get x */
     /*copy new x into x_vec (twice) */
-    csymv_copy_vector(n_i, x_vec, 1, x, incx);
-    csymv_copy_vector(n_i, (x_vec + incx_veci * n_i), 1, x, incx);
+    ccopy_vector(x, n_i, incx, x_vec, 1);
+    ccopy_vector(x, n_i, incx, (x_vec + incx_veci * n_i), 1);
 
 
     if (case_type == 2) {
@@ -4787,7 +4785,7 @@ void BLAS_cge_sum_mv_testgen(int norm, enum blas_order_type order,
 	}
 	alpha_use_ptr_i[0] = alpha_use[0];
 	alpha_use_ptr_i[1] = alpha_use[1];
-	csymv_copy_vector(n_i, x, incx, x_vec, 1);
+	ccopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 
@@ -4854,7 +4852,7 @@ void BLAS_cge_sum_mv_testgen(int norm, enum blas_order_type order,
 	}
 	alpha_use_ptr_i[0] = alpha_use[0];
 	alpha_use_ptr_i[1] = alpha_use[1];
-	csymv_copy_vector(n_i, x, incx, x_vec, 1);
+	ccopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 
@@ -5435,7 +5433,7 @@ void BLAS_cge_sum_mv_testgen(int norm, enum blas_order_type order,
 
   /*copy x_vec into x : it is possible that the generator
      changed x_vec, even though none were free */
-  csymv_copy_vector(n_i, x, incx, x_vec, 1);
+  ccopy_vector(x_vec, n_i, 1, x, incx);
   blas_free(a_vec);
   blas_free(x_vec);
 }
@@ -5710,8 +5708,8 @@ void BLAS_zge_sum_mv_testgen(int norm, enum blas_order_type order,
 
   if (which_free == ALPHA_USE_IS_BETA) {
     if (!beta_flag) {
-      ((double *) y_elem)[0] = (float) drand48();
-      ((double *) y_elem)[1] = (float) drand48();
+      y_elem[0] = xrand(seed);
+      y_elem[1] = xrand(seed);
       beta_i[0] = y_elem[0];
       beta_i[0 + 1] = y_elem[1];
     }
@@ -5719,8 +5717,8 @@ void BLAS_zge_sum_mv_testgen(int norm, enum blas_order_type order,
     alpha_use[1] = beta_i[1];
   } else {
     if (!alpha_flag) {
-      ((double *) y_elem)[0] = (float) drand48();
-      ((double *) y_elem)[1] = (float) drand48();
+      y_elem[0] = xrand(seed);
+      y_elem[1] = xrand(seed);
       alpha_i[0] = y_elem[0];
       alpha_i[0 + 1] = y_elem[1];
     }
@@ -5735,14 +5733,14 @@ void BLAS_zge_sum_mv_testgen(int norm, enum blas_order_type order,
 
     /*first pick x randomly */
     for (i = 0, xi = x_starti; i < n_i; i++, xi++) {
-      ((double *) x_elem)[0] = (float) drand48();
-      ((double *) x_elem)[1] = (float) drand48();
+      x_elem[0] = xrand(seed);
+      x_elem[1] = xrand(seed);
       x_i[xi * incxi] = x_elem[0];
       x_i[xi * incxi + 1] = x_elem[1];
     }
     /*copy new x into x_vec (twice) */
-    zsymv_copy_vector(n_i, x_vec, 1, x, incx);
-    zsymv_copy_vector(n_i, (x_vec + incx_veci * n_i), 1, x, incx);
+    zcopy_vector(x, n_i, incx, x_vec, 1);
+    zcopy_vector(x, n_i, incx, (x_vec + incx_veci * n_i), 1);
 
     if (case_type == 2) {
       /* degenerate case - similar to gemv */
@@ -5782,8 +5780,8 @@ void BLAS_zge_sum_mv_testgen(int norm, enum blas_order_type order,
 
 	for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	  for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	    ((double *) a_elem)[0] = (float) drand48();
-	    ((double *) a_elem)[1] = (float) drand48();
+	    a_elem[0] = (float) xrand(seed);
+	    a_elem[1] = (float) xrand(seed);
 	    b_i[aij] = a_elem[0];
 	    b_i[aij + 1] = a_elem[1];
 	  }
@@ -5830,7 +5828,7 @@ void BLAS_zge_sum_mv_testgen(int norm, enum blas_order_type order,
 	alpha_use_ptr_i[1] = alpha_use[1];
 	alpha_i[0] = alpha_use[0];
 	alpha_i[1] = alpha_use[1];
-	zsymv_copy_vector(n_i, x, incx, x_vec, 1);
+	zcopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 	return;
@@ -5869,8 +5867,8 @@ void BLAS_zge_sum_mv_testgen(int norm, enum blas_order_type order,
 
 	for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	  for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	    ((double *) a_elem)[0] = (float) drand48();
-	    ((double *) a_elem)[1] = (float) drand48();
+	    a_elem[0] = (float) xrand(seed);
+	    a_elem[1] = (float) xrand(seed);
 	    a_i[aij] = a_elem[0];
 	    a_i[aij + 1] = a_elem[1];
 	  }
@@ -5917,7 +5915,7 @@ void BLAS_zge_sum_mv_testgen(int norm, enum blas_order_type order,
 	alpha_use_ptr_i[1] = alpha_use[1];
 	beta_i[0] = alpha_use[0];
 	beta_i[1] = alpha_use[1];
-	zsymv_copy_vector(n_i, x, incx, x_vec, 1);
+	zcopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 	return;
@@ -5945,15 +5943,15 @@ void BLAS_zge_sum_mv_testgen(int norm, enum blas_order_type order,
 
       /*first pick x randomly, but real */
       for (i = 0, xi = x_starti; i < n_i; i++, xi += incxi) {
-	((double *) x_elem)[0] = (float) drand48();
-	((double *) x_elem)[1] = (float) drand48();
+	x_elem[0] = xrand(seed);
+	x_elem[1] = xrand(seed);
 	x_elem[1] = 0.0;
 	x_i[xi] = x_elem[0];
 	x_i[xi + 1] = x_elem[1];
       }
       /*copy new x into x_vec_2 (twice) */
-      dsymv_copy_vector(n_i, x_vec_2, 1, x, 2 * incx);
-      dsymv_copy_vector(n_i, (x_vec_2 + n_i), 1, x_vec_2, 1);
+      dcopy_vector(x, n_i, 2 * incx, x_vec_2, 1);
+      dcopy_vector(x_vec_2, n_i, 1, (x_vec_2 + n_i), 1);
 
       /* Now Fill in matrix A, B real */
       /*since we have case 3, we know alpha_use == 1.0+0i,
@@ -6031,8 +6029,8 @@ void BLAS_zge_sum_mv_testgen(int norm, enum blas_order_type order,
 
     /*first pick x randomly */
     for (i = 0, xi = x_starti; i < n_i; i++, xi++) {
-      ((double *) x_elem)[0] = (float) drand48();
-      ((double *) x_elem)[1] = (float) drand48();
+      x_elem[0] = xrand(seed);
+      x_elem[1] = xrand(seed);
       x_i[xi * incxi] = x_elem[0];
       x_i[xi * incxi + 1] = x_elem[1];
     }
@@ -6051,7 +6049,7 @@ void BLAS_zge_sum_mv_testgen(int norm, enum blas_order_type order,
 
       for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	  a_elem[0] = (float) drand48();
+	  a_elem[0] = (float) xrand(seed);
 	  a_elem[1] = 0.0;
 	  a_i[aij] = a_elem[0];
 	  a_i[aij + 1] = a_elem[1];
@@ -6071,7 +6069,7 @@ void BLAS_zge_sum_mv_testgen(int norm, enum blas_order_type order,
 
       for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	  a_elem[0] = (float) drand48();
+	  a_elem[0] = (float) xrand(seed);
 	  a_elem[1] = 0.0;
 	  b_i[aij] = a_elem[0];
 	  b_i[aij + 1] = a_elem[1];
@@ -6092,8 +6090,8 @@ void BLAS_zge_sum_mv_testgen(int norm, enum blas_order_type order,
 
       for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	  ((double *) a_elem)[0] = (float) drand48();
-	  ((double *) a_elem)[1] = (float) drand48();
+	  a_elem[0] = (float) xrand(seed);
+	  a_elem[1] = (float) xrand(seed);
 	  a_i[aij] = a_elem[0];
 	  a_i[aij + 1] = a_elem[1];
 	}
@@ -6112,8 +6110,8 @@ void BLAS_zge_sum_mv_testgen(int norm, enum blas_order_type order,
 
       for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	  ((double *) a_elem)[0] = (float) drand48();
-	  ((double *) a_elem)[1] = (float) drand48();
+	  a_elem[0] = (float) xrand(seed);
+	  a_elem[1] = (float) xrand(seed);
 	  b_i[aij] = a_elem[0];
 	  b_i[aij + 1] = a_elem[1];
 	}
@@ -6124,8 +6122,8 @@ void BLAS_zge_sum_mv_testgen(int norm, enum blas_order_type order,
 
     /* get x */
     /*copy new x into x_vec (twice) */
-    zsymv_copy_vector(n_i, x_vec, 1, x, incx);
-    zsymv_copy_vector(n_i, (x_vec + incx_veci * n_i), 1, x, incx);
+    zcopy_vector(x, n_i, incx, x_vec, 1);
+    zcopy_vector(x, n_i, incx, (x_vec + incx_veci * n_i), 1);
 
 
     if (case_type == 2) {
@@ -6189,7 +6187,7 @@ void BLAS_zge_sum_mv_testgen(int norm, enum blas_order_type order,
 	}
 	alpha_use_ptr_i[0] = alpha_use[0];
 	alpha_use_ptr_i[1] = alpha_use[1];
-	zsymv_copy_vector(n_i, x, incx, x_vec, 1);
+	zcopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 
@@ -6256,7 +6254,7 @@ void BLAS_zge_sum_mv_testgen(int norm, enum blas_order_type order,
 	}
 	alpha_use_ptr_i[0] = alpha_use[0];
 	alpha_use_ptr_i[1] = alpha_use[1];
-	zsymv_copy_vector(n_i, x, incx, x_vec, 1);
+	zcopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 
@@ -6893,7 +6891,7 @@ void BLAS_zge_sum_mv_testgen(int norm, enum blas_order_type order,
 
   /*copy x_vec into x : it is possible that the generator
      changed x_vec, even though none were free */
-  zsymv_copy_vector(n_i, x, incx, x_vec, 1);
+  zcopy_vector(x_vec, n_i, 1, x, incx);
   blas_free(a_vec);
   blas_free(x_vec);
 }
@@ -7169,8 +7167,8 @@ void BLAS_zge_sum_mv_c_z_testgen(int norm, enum blas_order_type order,
 
   if (which_free == ALPHA_USE_IS_BETA) {
     if (!beta_flag) {
-      ((double *) y_elem)[0] = (float) drand48();
-      ((double *) y_elem)[1] = (float) drand48();
+      y_elem[0] = (float) xrand(seed);
+      y_elem[1] = (float) xrand(seed);
       beta_i[0] = y_elem[0];
       beta_i[0 + 1] = y_elem[1];
     }
@@ -7178,8 +7176,8 @@ void BLAS_zge_sum_mv_c_z_testgen(int norm, enum blas_order_type order,
     alpha_use[1] = beta_i[1];
   } else {
     if (!alpha_flag) {
-      ((double *) y_elem)[0] = (float) drand48();
-      ((double *) y_elem)[1] = (float) drand48();
+      y_elem[0] = (float) xrand(seed);
+      y_elem[1] = (float) xrand(seed);
       alpha_i[0] = y_elem[0];
       alpha_i[0 + 1] = y_elem[1];
     }
@@ -7194,14 +7192,14 @@ void BLAS_zge_sum_mv_c_z_testgen(int norm, enum blas_order_type order,
 
     /*first pick x randomly */
     for (i = 0, xi = x_starti; i < n_i; i++, xi++) {
-      ((double *) x_elem)[0] = (float) drand48();
-      ((double *) x_elem)[1] = (float) drand48();
+      x_elem[0] = (float) xrand(seed);
+      x_elem[1] = (float) xrand(seed);
       x_i[xi * incxi] = x_elem[0];
       x_i[xi * incxi + 1] = x_elem[1];
     }
     /*copy new x into x_vec (twice) */
-    zsymv_copy_vector(n_i, x_vec, 1, x, incx);
-    zsymv_copy_vector(n_i, (x_vec + incx_veci * n_i), 1, x, incx);
+    zcopy_vector(x, n_i, incx, x_vec, 1);
+    zcopy_vector(x, n_i, incx, (x_vec + incx_veci * n_i), 1);
 
     if (case_type == 2) {
       /* degenerate case - similar to gemv */
@@ -7241,8 +7239,8 @@ void BLAS_zge_sum_mv_c_z_testgen(int norm, enum blas_order_type order,
 
 	for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	  for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	    ((float *) a_elem)[0] = (float) drand48();
-	    ((float *) a_elem)[1] = (float) drand48();
+	    a_elem[0] = (float) xrand(seed);
+	    a_elem[1] = (float) xrand(seed);
 	    b_i[aij] = a_elem[0];
 	    b_i[aij + 1] = a_elem[1];
 	  }
@@ -7289,7 +7287,7 @@ void BLAS_zge_sum_mv_c_z_testgen(int norm, enum blas_order_type order,
 	alpha_use_ptr_i[1] = alpha_use[1];
 	alpha_i[0] = alpha_use[0];
 	alpha_i[1] = alpha_use[1];
-	zsymv_copy_vector(n_i, x, incx, x_vec, 1);
+	zcopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 	return;
@@ -7328,8 +7326,8 @@ void BLAS_zge_sum_mv_c_z_testgen(int norm, enum blas_order_type order,
 
 	for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	  for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	    ((float *) a_elem)[0] = (float) drand48();
-	    ((float *) a_elem)[1] = (float) drand48();
+	    a_elem[0] = (float) xrand(seed);
+	    a_elem[1] = (float) xrand(seed);
 	    a_i[aij] = a_elem[0];
 	    a_i[aij + 1] = a_elem[1];
 	  }
@@ -7376,7 +7374,7 @@ void BLAS_zge_sum_mv_c_z_testgen(int norm, enum blas_order_type order,
 	alpha_use_ptr_i[1] = alpha_use[1];
 	beta_i[0] = alpha_use[0];
 	beta_i[1] = alpha_use[1];
-	zsymv_copy_vector(n_i, x, incx, x_vec, 1);
+	zcopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 	return;
@@ -7404,15 +7402,15 @@ void BLAS_zge_sum_mv_c_z_testgen(int norm, enum blas_order_type order,
 
       /*first pick x randomly, but real */
       for (i = 0, xi = x_starti; i < n_i; i++, xi += incxi) {
-	((double *) x_elem)[0] = (float) drand48();
-	((double *) x_elem)[1] = (float) drand48();
+	x_elem[0] = (float) xrand(seed);
+	x_elem[1] = (float) xrand(seed);
 	x_elem[1] = 0.0;
 	x_i[xi] = x_elem[0];
 	x_i[xi + 1] = x_elem[1];
       }
       /*copy new x into x_vec_2 (twice) */
-      dsymv_copy_vector(n_i, x_vec_2, 1, x, 2 * incx);
-      dsymv_copy_vector(n_i, (x_vec_2 + n_i), 1, x_vec_2, 1);
+      dcopy_vector(x, n_i, 2 * incx, x_vec_2, 1);
+      dcopy_vector(x_vec_2, n_i, 1, (x_vec_2 + n_i), 1);
 
       /* Now Fill in matrix A, B real */
       /*since we have case 3, we know alpha_use == 1.0+0i,
@@ -7490,8 +7488,8 @@ void BLAS_zge_sum_mv_c_z_testgen(int norm, enum blas_order_type order,
 
     /*first pick x randomly */
     for (i = 0, xi = x_starti; i < n_i; i++, xi++) {
-      ((double *) x_elem)[0] = (float) drand48();
-      ((double *) x_elem)[1] = (float) drand48();
+      x_elem[0] = (float) xrand(seed);
+      x_elem[1] = (float) xrand(seed);
       x_i[xi * incxi] = x_elem[0];
       x_i[xi * incxi + 1] = x_elem[1];
     }
@@ -7510,7 +7508,7 @@ void BLAS_zge_sum_mv_c_z_testgen(int norm, enum blas_order_type order,
 
       for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	  a_elem[0] = (float) drand48();
+	  a_elem[0] = (float) xrand(seed);
 	  a_elem[1] = 0.0;
 	  a_i[aij] = a_elem[0];
 	  a_i[aij + 1] = a_elem[1];
@@ -7530,7 +7528,7 @@ void BLAS_zge_sum_mv_c_z_testgen(int norm, enum blas_order_type order,
 
       for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	  a_elem[0] = (float) drand48();
+	  a_elem[0] = (float) xrand(seed);
 	  a_elem[1] = 0.0;
 	  b_i[aij] = a_elem[0];
 	  b_i[aij + 1] = a_elem[1];
@@ -7551,8 +7549,8 @@ void BLAS_zge_sum_mv_c_z_testgen(int norm, enum blas_order_type order,
 
       for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	  ((float *) a_elem)[0] = (float) drand48();
-	  ((float *) a_elem)[1] = (float) drand48();
+	  a_elem[0] = (float) xrand(seed);
+	  a_elem[1] = (float) xrand(seed);
 	  a_i[aij] = a_elem[0];
 	  a_i[aij + 1] = a_elem[1];
 	}
@@ -7571,8 +7569,8 @@ void BLAS_zge_sum_mv_c_z_testgen(int norm, enum blas_order_type order,
 
       for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	  ((float *) a_elem)[0] = (float) drand48();
-	  ((float *) a_elem)[1] = (float) drand48();
+	  a_elem[0] = (float) xrand(seed);
+	  a_elem[1] = (float) xrand(seed);
 	  b_i[aij] = a_elem[0];
 	  b_i[aij + 1] = a_elem[1];
 	}
@@ -7583,8 +7581,8 @@ void BLAS_zge_sum_mv_c_z_testgen(int norm, enum blas_order_type order,
 
     /* get x */
     /*copy new x into x_vec (twice) */
-    zsymv_copy_vector(n_i, x_vec, 1, x, incx);
-    zsymv_copy_vector(n_i, (x_vec + incx_veci * n_i), 1, x, incx);
+    zcopy_vector(x, n_i, incx, x_vec, 1);
+    zcopy_vector(x, n_i, incx, (x_vec + incx_veci * n_i), 1);
 
 
     if (case_type == 2) {
@@ -7648,7 +7646,7 @@ void BLAS_zge_sum_mv_c_z_testgen(int norm, enum blas_order_type order,
 	}
 	alpha_use_ptr_i[0] = alpha_use[0];
 	alpha_use_ptr_i[1] = alpha_use[1];
-	zsymv_copy_vector(n_i, x, incx, x_vec, 1);
+	zcopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 
@@ -7715,7 +7713,7 @@ void BLAS_zge_sum_mv_c_z_testgen(int norm, enum blas_order_type order,
 	}
 	alpha_use_ptr_i[0] = alpha_use[0];
 	alpha_use_ptr_i[1] = alpha_use[1];
-	zsymv_copy_vector(n_i, x, incx, x_vec, 1);
+	zcopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 
@@ -8296,7 +8294,7 @@ void BLAS_zge_sum_mv_c_z_testgen(int norm, enum blas_order_type order,
 
   /*copy x_vec into x : it is possible that the generator
      changed x_vec, even though none were free */
-  zsymv_copy_vector(n_i, x, incx, x_vec, 1);
+  zcopy_vector(x_vec, n_i, 1, x, incx);
   blas_free(a_vec);
   blas_free(x_vec);
 }
@@ -8572,8 +8570,8 @@ void BLAS_zge_sum_mv_z_c_testgen(int norm, enum blas_order_type order,
 
   if (which_free == ALPHA_USE_IS_BETA) {
     if (!beta_flag) {
-      ((double *) y_elem)[0] = (float) drand48();
-      ((double *) y_elem)[1] = (float) drand48();
+      y_elem[0] = (float) xrand(seed);
+      y_elem[1] = (float) xrand(seed);
       beta_i[0] = y_elem[0];
       beta_i[0 + 1] = y_elem[1];
     }
@@ -8581,8 +8579,8 @@ void BLAS_zge_sum_mv_z_c_testgen(int norm, enum blas_order_type order,
     alpha_use[1] = beta_i[1];
   } else {
     if (!alpha_flag) {
-      ((double *) y_elem)[0] = (float) drand48();
-      ((double *) y_elem)[1] = (float) drand48();
+      y_elem[0] = (float) xrand(seed);
+      y_elem[1] = (float) xrand(seed);
       alpha_i[0] = y_elem[0];
       alpha_i[0 + 1] = y_elem[1];
     }
@@ -8597,14 +8595,14 @@ void BLAS_zge_sum_mv_z_c_testgen(int norm, enum blas_order_type order,
 
     /*first pick x randomly */
     for (i = 0, xi = x_starti; i < n_i; i++, xi++) {
-      ((float *) x_elem)[0] = (float) drand48();
-      ((float *) x_elem)[1] = (float) drand48();
+      x_elem[0] = (float) xrand(seed);
+      x_elem[1] = (float) xrand(seed);
       x_i[xi * incxi] = x_elem[0];
       x_i[xi * incxi + 1] = x_elem[1];
     }
     /*copy new x into x_vec (twice) */
-    csymv_copy_vector(n_i, x_vec, 1, x, incx);
-    csymv_copy_vector(n_i, (x_vec + incx_veci * n_i), 1, x, incx);
+    ccopy_vector(x, n_i, incx, x_vec, 1);
+    ccopy_vector(x, n_i, incx, (x_vec + incx_veci * n_i), 1);
 
     if (case_type == 2) {
       /* degenerate case - similar to gemv */
@@ -8644,8 +8642,8 @@ void BLAS_zge_sum_mv_z_c_testgen(int norm, enum blas_order_type order,
 
 	for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	  for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	    ((double *) a_elem)[0] = (float) drand48();
-	    ((double *) a_elem)[1] = (float) drand48();
+	    a_elem[0] = (float) xrand(seed);
+	    a_elem[1] = (float) xrand(seed);
 	    b_i[aij] = a_elem[0];
 	    b_i[aij + 1] = a_elem[1];
 	  }
@@ -8692,7 +8690,7 @@ void BLAS_zge_sum_mv_z_c_testgen(int norm, enum blas_order_type order,
 	alpha_use_ptr_i[1] = alpha_use[1];
 	alpha_i[0] = alpha_use[0];
 	alpha_i[1] = alpha_use[1];
-	csymv_copy_vector(n_i, x, incx, x_vec, 1);
+	ccopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 	return;
@@ -8731,8 +8729,8 @@ void BLAS_zge_sum_mv_z_c_testgen(int norm, enum blas_order_type order,
 
 	for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	  for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	    ((double *) a_elem)[0] = (float) drand48();
-	    ((double *) a_elem)[1] = (float) drand48();
+	    a_elem[0] = (float) xrand(seed);
+	    a_elem[1] = (float) xrand(seed);
 	    a_i[aij] = a_elem[0];
 	    a_i[aij + 1] = a_elem[1];
 	  }
@@ -8779,7 +8777,7 @@ void BLAS_zge_sum_mv_z_c_testgen(int norm, enum blas_order_type order,
 	alpha_use_ptr_i[1] = alpha_use[1];
 	beta_i[0] = alpha_use[0];
 	beta_i[1] = alpha_use[1];
-	csymv_copy_vector(n_i, x, incx, x_vec, 1);
+	ccopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 	return;
@@ -8807,15 +8805,15 @@ void BLAS_zge_sum_mv_z_c_testgen(int norm, enum blas_order_type order,
 
       /*first pick x randomly, but real */
       for (i = 0, xi = x_starti; i < n_i; i++, xi += incxi) {
-	((float *) x_elem)[0] = (float) drand48();
-	((float *) x_elem)[1] = (float) drand48();
+	x_elem[0] = (float) xrand(seed);
+	x_elem[1] = (float) xrand(seed);
 	x_elem[1] = 0.0;
 	x_i[xi] = x_elem[0];
 	x_i[xi + 1] = x_elem[1];
       }
       /*copy new x into x_vec_2 (twice) */
-      ssymv_copy_vector(n_i, x_vec_2, 1, x, 2 * incx);
-      ssymv_copy_vector(n_i, (x_vec_2 + n_i), 1, x_vec_2, 1);
+      scopy_vector(x, n_i, 2 * incx, x_vec_2, 1);
+      scopy_vector(x_vec_2, n_i, 1, (x_vec_2 + n_i), 1);
 
       /* Now Fill in matrix A, B real */
       /*since we have case 3, we know alpha_use == 1.0+0i,
@@ -8893,8 +8891,8 @@ void BLAS_zge_sum_mv_z_c_testgen(int norm, enum blas_order_type order,
 
     /*first pick x randomly */
     for (i = 0, xi = x_starti; i < n_i; i++, xi++) {
-      ((float *) x_elem)[0] = (float) drand48();
-      ((float *) x_elem)[1] = (float) drand48();
+      x_elem[0] = (float) xrand(seed);
+      x_elem[1] = (float) xrand(seed);
       x_i[xi * incxi] = x_elem[0];
       x_i[xi * incxi + 1] = x_elem[1];
     }
@@ -8913,7 +8911,7 @@ void BLAS_zge_sum_mv_z_c_testgen(int norm, enum blas_order_type order,
 
       for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	  a_elem[0] = (float) drand48();
+	  a_elem[0] = (float) xrand(seed);
 	  a_elem[1] = 0.0;
 	  a_i[aij] = a_elem[0];
 	  a_i[aij + 1] = a_elem[1];
@@ -8933,7 +8931,7 @@ void BLAS_zge_sum_mv_z_c_testgen(int norm, enum blas_order_type order,
 
       for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	  a_elem[0] = (float) drand48();
+	  a_elem[0] = (float) xrand(seed);
 	  a_elem[1] = 0.0;
 	  b_i[aij] = a_elem[0];
 	  b_i[aij + 1] = a_elem[1];
@@ -8954,8 +8952,8 @@ void BLAS_zge_sum_mv_z_c_testgen(int norm, enum blas_order_type order,
 
       for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	  ((double *) a_elem)[0] = (float) drand48();
-	  ((double *) a_elem)[1] = (float) drand48();
+	  a_elem[0] = (float) xrand(seed);
+	  a_elem[1] = (float) xrand(seed);
 	  a_i[aij] = a_elem[0];
 	  a_i[aij + 1] = a_elem[1];
 	}
@@ -8974,8 +8972,8 @@ void BLAS_zge_sum_mv_z_c_testgen(int norm, enum blas_order_type order,
 
       for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	  ((double *) a_elem)[0] = (float) drand48();
-	  ((double *) a_elem)[1] = (float) drand48();
+	  a_elem[0] = (float) xrand(seed);
+	  a_elem[1] = (float) xrand(seed);
 	  b_i[aij] = a_elem[0];
 	  b_i[aij + 1] = a_elem[1];
 	}
@@ -8986,8 +8984,8 @@ void BLAS_zge_sum_mv_z_c_testgen(int norm, enum blas_order_type order,
 
     /* get x */
     /*copy new x into x_vec (twice) */
-    csymv_copy_vector(n_i, x_vec, 1, x, incx);
-    csymv_copy_vector(n_i, (x_vec + incx_veci * n_i), 1, x, incx);
+    ccopy_vector(x, n_i, incx, x_vec, 1);
+    ccopy_vector(x, n_i, incx, (x_vec + incx_veci * n_i), 1);
 
 
     if (case_type == 2) {
@@ -9051,7 +9049,7 @@ void BLAS_zge_sum_mv_z_c_testgen(int norm, enum blas_order_type order,
 	}
 	alpha_use_ptr_i[0] = alpha_use[0];
 	alpha_use_ptr_i[1] = alpha_use[1];
-	csymv_copy_vector(n_i, x, incx, x_vec, 1);
+	ccopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 
@@ -9118,7 +9116,7 @@ void BLAS_zge_sum_mv_z_c_testgen(int norm, enum blas_order_type order,
 	}
 	alpha_use_ptr_i[0] = alpha_use[0];
 	alpha_use_ptr_i[1] = alpha_use[1];
-	csymv_copy_vector(n_i, x, incx, x_vec, 1);
+	ccopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 
@@ -9755,7 +9753,7 @@ void BLAS_zge_sum_mv_z_c_testgen(int norm, enum blas_order_type order,
 
   /*copy x_vec into x : it is possible that the generator
      changed x_vec, even though none were free */
-  csymv_copy_vector(n_i, x, incx, x_vec, 1);
+  ccopy_vector(x_vec, n_i, 1, x, incx);
   blas_free(a_vec);
   blas_free(x_vec);
 }
@@ -10031,8 +10029,8 @@ void BLAS_zge_sum_mv_c_c_testgen(int norm, enum blas_order_type order,
 
   if (which_free == ALPHA_USE_IS_BETA) {
     if (!beta_flag) {
-      ((double *) y_elem)[0] = (float) drand48();
-      ((double *) y_elem)[1] = (float) drand48();
+      y_elem[0] = (float) xrand(seed);
+      y_elem[1] = (float) xrand(seed);
       beta_i[0] = y_elem[0];
       beta_i[0 + 1] = y_elem[1];
     }
@@ -10040,8 +10038,8 @@ void BLAS_zge_sum_mv_c_c_testgen(int norm, enum blas_order_type order,
     alpha_use[1] = beta_i[1];
   } else {
     if (!alpha_flag) {
-      ((double *) y_elem)[0] = (float) drand48();
-      ((double *) y_elem)[1] = (float) drand48();
+      y_elem[0] = (float) xrand(seed);
+      y_elem[1] = (float) xrand(seed);
       alpha_i[0] = y_elem[0];
       alpha_i[0 + 1] = y_elem[1];
     }
@@ -10056,14 +10054,14 @@ void BLAS_zge_sum_mv_c_c_testgen(int norm, enum blas_order_type order,
 
     /*first pick x randomly */
     for (i = 0, xi = x_starti; i < n_i; i++, xi++) {
-      ((float *) x_elem)[0] = (float) drand48();
-      ((float *) x_elem)[1] = (float) drand48();
+      x_elem[0] = (float) xrand(seed);
+      x_elem[1] = (float) xrand(seed);
       x_i[xi * incxi] = x_elem[0];
       x_i[xi * incxi + 1] = x_elem[1];
     }
     /*copy new x into x_vec (twice) */
-    csymv_copy_vector(n_i, x_vec, 1, x, incx);
-    csymv_copy_vector(n_i, (x_vec + incx_veci * n_i), 1, x, incx);
+    ccopy_vector(x, n_i, incx, x_vec, 1);
+    ccopy_vector(x, n_i, incx, (x_vec + incx_veci * n_i), 1);
 
     if (case_type == 2) {
       /* degenerate case - similar to gemv */
@@ -10103,8 +10101,8 @@ void BLAS_zge_sum_mv_c_c_testgen(int norm, enum blas_order_type order,
 
 	for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	  for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	    ((float *) a_elem)[0] = (float) drand48();
-	    ((float *) a_elem)[1] = (float) drand48();
+	    a_elem[0] = (float) xrand(seed);
+	    a_elem[1] = (float) xrand(seed);
 	    b_i[aij] = a_elem[0];
 	    b_i[aij + 1] = a_elem[1];
 	  }
@@ -10151,7 +10149,7 @@ void BLAS_zge_sum_mv_c_c_testgen(int norm, enum blas_order_type order,
 	alpha_use_ptr_i[1] = alpha_use[1];
 	alpha_i[0] = alpha_use[0];
 	alpha_i[1] = alpha_use[1];
-	csymv_copy_vector(n_i, x, incx, x_vec, 1);
+	ccopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 	return;
@@ -10190,8 +10188,8 @@ void BLAS_zge_sum_mv_c_c_testgen(int norm, enum blas_order_type order,
 
 	for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	  for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	    ((float *) a_elem)[0] = (float) drand48();
-	    ((float *) a_elem)[1] = (float) drand48();
+	    a_elem[0] = (float) xrand(seed);
+	    a_elem[1] = (float) xrand(seed);
 	    a_i[aij] = a_elem[0];
 	    a_i[aij + 1] = a_elem[1];
 	  }
@@ -10238,7 +10236,7 @@ void BLAS_zge_sum_mv_c_c_testgen(int norm, enum blas_order_type order,
 	alpha_use_ptr_i[1] = alpha_use[1];
 	beta_i[0] = alpha_use[0];
 	beta_i[1] = alpha_use[1];
-	csymv_copy_vector(n_i, x, incx, x_vec, 1);
+	ccopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 	return;
@@ -10266,15 +10264,15 @@ void BLAS_zge_sum_mv_c_c_testgen(int norm, enum blas_order_type order,
 
       /*first pick x randomly, but real */
       for (i = 0, xi = x_starti; i < n_i; i++, xi += incxi) {
-	((float *) x_elem)[0] = (float) drand48();
-	((float *) x_elem)[1] = (float) drand48();
+	x_elem[0] = (float) xrand(seed);
+	x_elem[1] = (float) xrand(seed);
 	x_elem[1] = 0.0;
 	x_i[xi] = x_elem[0];
 	x_i[xi + 1] = x_elem[1];
       }
       /*copy new x into x_vec_2 (twice) */
-      ssymv_copy_vector(n_i, x_vec_2, 1, x, 2 * incx);
-      ssymv_copy_vector(n_i, (x_vec_2 + n_i), 1, x_vec_2, 1);
+      scopy_vector(x, n_i, 2 * incx, x_vec_2, 1);
+      scopy_vector(x_vec_2, n_i, 1, (x_vec_2 + n_i), 1);
 
       /* Now Fill in matrix A, B real */
       /*since we have case 3, we know alpha_use == 1.0+0i,
@@ -10352,8 +10350,8 @@ void BLAS_zge_sum_mv_c_c_testgen(int norm, enum blas_order_type order,
 
     /*first pick x randomly */
     for (i = 0, xi = x_starti; i < n_i; i++, xi++) {
-      ((float *) x_elem)[0] = (float) drand48();
-      ((float *) x_elem)[1] = (float) drand48();
+      x_elem[0] = (float) xrand(seed);
+      x_elem[1] = (float) xrand(seed);
       x_i[xi * incxi] = x_elem[0];
       x_i[xi * incxi + 1] = x_elem[1];
     }
@@ -10372,7 +10370,7 @@ void BLAS_zge_sum_mv_c_c_testgen(int norm, enum blas_order_type order,
 
       for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	  a_elem[0] = (float) drand48();
+	  a_elem[0] = (float) xrand(seed);
 	  a_elem[1] = 0.0;
 	  a_i[aij] = a_elem[0];
 	  a_i[aij + 1] = a_elem[1];
@@ -10392,7 +10390,7 @@ void BLAS_zge_sum_mv_c_c_testgen(int norm, enum blas_order_type order,
 
       for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	  a_elem[0] = (float) drand48();
+	  a_elem[0] = (float) xrand(seed);
 	  a_elem[1] = 0.0;
 	  b_i[aij] = a_elem[0];
 	  b_i[aij + 1] = a_elem[1];
@@ -10413,8 +10411,8 @@ void BLAS_zge_sum_mv_c_c_testgen(int norm, enum blas_order_type order,
 
       for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	  ((float *) a_elem)[0] = (float) drand48();
-	  ((float *) a_elem)[1] = (float) drand48();
+	  a_elem[0] = (float) xrand(seed);
+	  a_elem[1] = (float) xrand(seed);
 	  a_i[aij] = a_elem[0];
 	  a_i[aij + 1] = a_elem[1];
 	}
@@ -10433,8 +10431,8 @@ void BLAS_zge_sum_mv_c_c_testgen(int norm, enum blas_order_type order,
 
       for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	  ((float *) a_elem)[0] = (float) drand48();
-	  ((float *) a_elem)[1] = (float) drand48();
+	  a_elem[0] = (float) xrand(seed);
+	  a_elem[1] = (float) xrand(seed);
 	  b_i[aij] = a_elem[0];
 	  b_i[aij + 1] = a_elem[1];
 	}
@@ -10445,8 +10443,8 @@ void BLAS_zge_sum_mv_c_c_testgen(int norm, enum blas_order_type order,
 
     /* get x */
     /*copy new x into x_vec (twice) */
-    csymv_copy_vector(n_i, x_vec, 1, x, incx);
-    csymv_copy_vector(n_i, (x_vec + incx_veci * n_i), 1, x, incx);
+    ccopy_vector(x, n_i, incx, x_vec, 1);
+    ccopy_vector(x, n_i, incx, (x_vec + incx_veci * n_i), 1);
 
 
     if (case_type == 2) {
@@ -10510,7 +10508,7 @@ void BLAS_zge_sum_mv_c_c_testgen(int norm, enum blas_order_type order,
 	}
 	alpha_use_ptr_i[0] = alpha_use[0];
 	alpha_use_ptr_i[1] = alpha_use[1];
-	csymv_copy_vector(n_i, x, incx, x_vec, 1);
+	ccopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 
@@ -10577,7 +10575,7 @@ void BLAS_zge_sum_mv_c_c_testgen(int norm, enum blas_order_type order,
 	}
 	alpha_use_ptr_i[0] = alpha_use[0];
 	alpha_use_ptr_i[1] = alpha_use[1];
-	csymv_copy_vector(n_i, x, incx, x_vec, 1);
+	ccopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 
@@ -11158,7 +11156,7 @@ void BLAS_zge_sum_mv_c_c_testgen(int norm, enum blas_order_type order,
 
   /*copy x_vec into x : it is possible that the generator
      changed x_vec, even though none were free */
-  csymv_copy_vector(n_i, x, incx, x_vec, 1);
+  ccopy_vector(x_vec, n_i, 1, x, incx);
   blas_free(a_vec);
   blas_free(x_vec);
 }
@@ -11434,8 +11432,8 @@ void BLAS_zge_sum_mv_z_d_testgen(int norm, enum blas_order_type order,
 
   if (which_free == ALPHA_USE_IS_BETA) {
     if (!beta_flag) {
-      ((double *) y_elem)[0] = (float) drand48();
-      ((double *) y_elem)[1] = (float) drand48();
+      y_elem[0] = xrand(seed);
+      y_elem[1] = xrand(seed);
       beta_i[0] = y_elem[0];
       beta_i[0 + 1] = y_elem[1];
     }
@@ -11443,8 +11441,8 @@ void BLAS_zge_sum_mv_z_d_testgen(int norm, enum blas_order_type order,
     alpha_use[1] = beta_i[1];
   } else {
     if (!alpha_flag) {
-      ((double *) y_elem)[0] = (float) drand48();
-      ((double *) y_elem)[1] = (float) drand48();
+      y_elem[0] = xrand(seed);
+      y_elem[1] = xrand(seed);
       alpha_i[0] = y_elem[0];
       alpha_i[0 + 1] = y_elem[1];
     }
@@ -11459,12 +11457,12 @@ void BLAS_zge_sum_mv_z_d_testgen(int norm, enum blas_order_type order,
 
     /*first pick x randomly */
     for (i = 0, xi = x_starti; i < n_i; i++, xi++) {
-      x_elem = (float) drand48();
+      x_elem = xrand(seed);
       x_i[xi * incxi] = x_elem;
     }
     /*copy new x into x_vec (twice) */
-    dsymv_copy_vector(n_i, x_vec, 1, x, incx);
-    dsymv_copy_vector(n_i, (x_vec + incx_veci * n_i), 1, x, incx);
+    dcopy_vector(x, n_i, incx, x_vec, 1);
+    dcopy_vector(x, n_i, incx, (x_vec + incx_veci * n_i), 1);
 
     if (case_type == 2) {
       /* degenerate case - similar to gemv */
@@ -11504,8 +11502,8 @@ void BLAS_zge_sum_mv_z_d_testgen(int norm, enum blas_order_type order,
 
 	for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	  for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	    ((double *) a_elem)[0] = (float) drand48();
-	    ((double *) a_elem)[1] = (float) drand48();
+	    a_elem[0] = (float) xrand(seed);
+	    a_elem[1] = (float) xrand(seed);
 	    b_i[aij] = a_elem[0];
 	    b_i[aij + 1] = a_elem[1];
 	  }
@@ -11552,7 +11550,7 @@ void BLAS_zge_sum_mv_z_d_testgen(int norm, enum blas_order_type order,
 	alpha_use_ptr_i[1] = alpha_use[1];
 	alpha_i[0] = alpha_use[0];
 	alpha_i[1] = alpha_use[1];
-	dsymv_copy_vector(n_i, x, incx, x_vec, 1);
+	dcopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 	return;
@@ -11591,8 +11589,8 @@ void BLAS_zge_sum_mv_z_d_testgen(int norm, enum blas_order_type order,
 
 	for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	  for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	    ((double *) a_elem)[0] = (float) drand48();
-	    ((double *) a_elem)[1] = (float) drand48();
+	    a_elem[0] = (float) xrand(seed);
+	    a_elem[1] = (float) xrand(seed);
 	    a_i[aij] = a_elem[0];
 	    a_i[aij + 1] = a_elem[1];
 	  }
@@ -11639,7 +11637,7 @@ void BLAS_zge_sum_mv_z_d_testgen(int norm, enum blas_order_type order,
 	alpha_use_ptr_i[1] = alpha_use[1];
 	beta_i[0] = alpha_use[0];
 	beta_i[1] = alpha_use[1];
-	dsymv_copy_vector(n_i, x, incx, x_vec, 1);
+	dcopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 	return;
@@ -11667,13 +11665,13 @@ void BLAS_zge_sum_mv_z_d_testgen(int norm, enum blas_order_type order,
 
       /*first pick x randomly, but real */
       for (i = 0, xi = x_starti; i < n_i; i++, xi += incxi) {
-	x_elem = (float) drand48();
+	x_elem = xrand(seed);
 
 	x_i[xi] = x_elem;
       }
       /*copy new x into x_vec_2 (twice) */
-      dsymv_copy_vector(n_i, x_vec_2, 1, x, 2 * incx);
-      dsymv_copy_vector(n_i, (x_vec_2 + n_i), 1, x_vec_2, 1);
+      dcopy_vector(x, n_i, 2 * incx, x_vec_2, 1);
+      dcopy_vector(x_vec_2, n_i, 1, (x_vec_2 + n_i), 1);
 
       /* Now Fill in matrix A, B real */
       /*since we have case 3, we know alpha_use == 1.0+0i,
@@ -11747,7 +11745,7 @@ void BLAS_zge_sum_mv_z_d_testgen(int norm, enum blas_order_type order,
 
     /*first pick x randomly */
     for (i = 0, xi = x_starti; i < n_i; i++, xi++) {
-      x_elem = (float) drand48();
+      x_elem = xrand(seed);
       x_i[xi * incxi] = x_elem;
     }
     if (case_type == 3) {
@@ -11765,7 +11763,7 @@ void BLAS_zge_sum_mv_z_d_testgen(int norm, enum blas_order_type order,
 
       for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	  a_elem[0] = (float) drand48();
+	  a_elem[0] = (float) xrand(seed);
 	  a_elem[1] = 0.0;
 	  a_i[aij] = a_elem[0];
 	  a_i[aij + 1] = a_elem[1];
@@ -11785,7 +11783,7 @@ void BLAS_zge_sum_mv_z_d_testgen(int norm, enum blas_order_type order,
 
       for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	  a_elem[0] = (float) drand48();
+	  a_elem[0] = (float) xrand(seed);
 	  a_elem[1] = 0.0;
 	  b_i[aij] = a_elem[0];
 	  b_i[aij + 1] = a_elem[1];
@@ -11806,8 +11804,8 @@ void BLAS_zge_sum_mv_z_d_testgen(int norm, enum blas_order_type order,
 
       for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	  ((double *) a_elem)[0] = (float) drand48();
-	  ((double *) a_elem)[1] = (float) drand48();
+	  a_elem[0] = (float) xrand(seed);
+	  a_elem[1] = (float) xrand(seed);
 	  a_i[aij] = a_elem[0];
 	  a_i[aij + 1] = a_elem[1];
 	}
@@ -11826,8 +11824,8 @@ void BLAS_zge_sum_mv_z_d_testgen(int norm, enum blas_order_type order,
 
       for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	  ((double *) a_elem)[0] = (float) drand48();
-	  ((double *) a_elem)[1] = (float) drand48();
+	  a_elem[0] = (float) xrand(seed);
+	  a_elem[1] = (float) xrand(seed);
 	  b_i[aij] = a_elem[0];
 	  b_i[aij + 1] = a_elem[1];
 	}
@@ -11838,8 +11836,8 @@ void BLAS_zge_sum_mv_z_d_testgen(int norm, enum blas_order_type order,
 
     /* get x */
     /*copy new x into x_vec (twice) */
-    dsymv_copy_vector(n_i, x_vec, 1, x, incx);
-    dsymv_copy_vector(n_i, (x_vec + incx_veci * n_i), 1, x, incx);
+    dcopy_vector(x, n_i, incx, x_vec, 1);
+    dcopy_vector(x, n_i, incx, (x_vec + incx_veci * n_i), 1);
     {
       /* promote to complex */
       int r;
@@ -11911,7 +11909,7 @@ void BLAS_zge_sum_mv_z_d_testgen(int norm, enum blas_order_type order,
 	}
 	alpha_use_ptr_i[0] = alpha_use[0];
 	alpha_use_ptr_i[1] = alpha_use[1];
-	dsymv_copy_vector(n_i, x, incx, x_vec, 1);
+	dcopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 
@@ -11981,7 +11979,7 @@ void BLAS_zge_sum_mv_z_d_testgen(int norm, enum blas_order_type order,
 	}
 	alpha_use_ptr_i[0] = alpha_use[0];
 	alpha_use_ptr_i[1] = alpha_use[1];
-	dsymv_copy_vector(n_i, x, incx, x_vec, 1);
+	dcopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 
@@ -12623,7 +12621,7 @@ void BLAS_zge_sum_mv_z_d_testgen(int norm, enum blas_order_type order,
 
   /*copy x_vec into x : it is possible that the generator
      changed x_vec, even though none were free */
-  dsymv_copy_vector(n_i, x, incx, x_vec, 1);
+  dcopy_vector(x_vec, n_i, 1, x, incx);
   blas_free(a_vec);
   blas_free(x_vec);
 }
@@ -12893,8 +12891,8 @@ void BLAS_zge_sum_mv_d_z_testgen(int norm, enum blas_order_type order,
 
   if (which_free == ALPHA_USE_IS_BETA) {
     if (!beta_flag) {
-      ((double *) y_elem)[0] = (float) drand48();
-      ((double *) y_elem)[1] = (float) drand48();
+      y_elem[0] = (float) xrand(seed);
+      y_elem[1] = (float) xrand(seed);
       beta_i[0] = y_elem[0];
       beta_i[0 + 1] = y_elem[1];
     }
@@ -12902,8 +12900,8 @@ void BLAS_zge_sum_mv_d_z_testgen(int norm, enum blas_order_type order,
     alpha_use[1] = beta_i[1];
   } else {
     if (!alpha_flag) {
-      ((double *) y_elem)[0] = (float) drand48();
-      ((double *) y_elem)[1] = (float) drand48();
+      y_elem[0] = (float) xrand(seed);
+      y_elem[1] = (float) xrand(seed);
       alpha_i[0] = y_elem[0];
       alpha_i[0 + 1] = y_elem[1];
     }
@@ -12918,14 +12916,14 @@ void BLAS_zge_sum_mv_d_z_testgen(int norm, enum blas_order_type order,
 
     /*first pick x randomly */
     for (i = 0, xi = x_starti; i < n_i; i++, xi++) {
-      ((double *) x_elem)[0] = (float) drand48();
-      ((double *) x_elem)[1] = (float) drand48();
+      x_elem[0] = (float) xrand(seed);
+      x_elem[1] = (float) xrand(seed);
       x_i[xi * incxi] = x_elem[0];
       x_i[xi * incxi + 1] = x_elem[1];
     }
     /*copy new x into x_vec (twice) */
-    zsymv_copy_vector(n_i, x_vec, 1, x, incx);
-    zsymv_copy_vector(n_i, (x_vec + incx_veci * n_i), 1, x, incx);
+    zcopy_vector(x, n_i, incx, x_vec, 1);
+    zcopy_vector(x, n_i, incx, (x_vec + incx_veci * n_i), 1);
 
     if (case_type == 2) {
       /* degenerate case - similar to gemv */
@@ -12965,7 +12963,7 @@ void BLAS_zge_sum_mv_d_z_testgen(int norm, enum blas_order_type order,
 
 	for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	  for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	    a_elem = (float) drand48();
+	    a_elem = (float) xrand(seed);
 	    b_i[aij] = a_elem;
 	  }
 	}
@@ -13008,7 +13006,7 @@ void BLAS_zge_sum_mv_d_z_testgen(int norm, enum blas_order_type order,
 	alpha_use_ptr_i[1] = alpha_use[1];
 	alpha_i[0] = alpha_use[0];
 	alpha_i[1] = alpha_use[1];
-	zsymv_copy_vector(n_i, x, incx, x_vec, 1);
+	zcopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 	return;
@@ -13047,7 +13045,7 @@ void BLAS_zge_sum_mv_d_z_testgen(int norm, enum blas_order_type order,
 
 	for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	  for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	    a_elem = (float) drand48();
+	    a_elem = (float) xrand(seed);
 	    a_i[aij] = a_elem;
 	  }
 	}
@@ -13090,7 +13088,7 @@ void BLAS_zge_sum_mv_d_z_testgen(int norm, enum blas_order_type order,
 	alpha_use_ptr_i[1] = alpha_use[1];
 	beta_i[0] = alpha_use[0];
 	beta_i[1] = alpha_use[1];
-	zsymv_copy_vector(n_i, x, incx, x_vec, 1);
+	zcopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 	return;
@@ -13144,8 +13142,8 @@ void BLAS_zge_sum_mv_d_z_testgen(int norm, enum blas_order_type order,
 
     /*first pick x randomly */
     for (i = 0, xi = x_starti; i < n_i; i++, xi++) {
-      ((double *) x_elem)[0] = (float) drand48();
-      ((double *) x_elem)[1] = (float) drand48();
+      x_elem[0] = (float) xrand(seed);
+      x_elem[1] = (float) xrand(seed);
       x_i[xi * incxi] = x_elem[0];
       x_i[xi * incxi + 1] = x_elem[1];
     }
@@ -13164,7 +13162,7 @@ void BLAS_zge_sum_mv_d_z_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	a_elem = (float) drand48();
+	a_elem = (float) xrand(seed);
 	a_i[aij] = a_elem;
       }
     }
@@ -13182,7 +13180,7 @@ void BLAS_zge_sum_mv_d_z_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	a_elem = (float) drand48();
+	a_elem = (float) xrand(seed);
 	b_i[aij] = a_elem;
       }
     }
@@ -13191,8 +13189,8 @@ void BLAS_zge_sum_mv_d_z_testgen(int norm, enum blas_order_type order,
 
     /* get x */
     /*copy new x into x_vec (twice) */
-    zsymv_copy_vector(n_i, x_vec, 1, x, incx);
-    zsymv_copy_vector(n_i, (x_vec + incx_veci * n_i), 1, x, incx);
+    zcopy_vector(x, n_i, incx, x_vec, 1);
+    zcopy_vector(x, n_i, incx, (x_vec + incx_veci * n_i), 1);
 
 
     if (case_type == 2) {
@@ -13261,7 +13259,7 @@ void BLAS_zge_sum_mv_d_z_testgen(int norm, enum blas_order_type order,
 	}
 	alpha_use_ptr_i[0] = alpha_use[0];
 	alpha_use_ptr_i[1] = alpha_use[1];
-	zsymv_copy_vector(n_i, x, incx, x_vec, 1);
+	zcopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 
@@ -13335,7 +13333,7 @@ void BLAS_zge_sum_mv_d_z_testgen(int norm, enum blas_order_type order,
 	}
 	alpha_use_ptr_i[0] = alpha_use[0];
 	alpha_use_ptr_i[1] = alpha_use[1];
-	zsymv_copy_vector(n_i, x, incx, x_vec, 1);
+	zcopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 
@@ -13544,7 +13542,7 @@ void BLAS_zge_sum_mv_d_z_testgen(int norm, enum blas_order_type order,
 
   /*copy x_vec into x : it is possible that the generator
      changed x_vec, even though none were free */
-  zsymv_copy_vector(n_i, x, incx, x_vec, 1);
+  zcopy_vector(x_vec, n_i, 1, x, incx);
   blas_free(a_vec);
   blas_free(x_vec);
 }
@@ -13813,8 +13811,8 @@ void BLAS_zge_sum_mv_d_d_testgen(int norm, enum blas_order_type order,
 
   if (which_free == ALPHA_USE_IS_BETA) {
     if (!beta_flag) {
-      ((double *) y_elem)[0] = (float) drand48();
-      ((double *) y_elem)[1] = (float) drand48();
+      y_elem[0] = (float) xrand(seed);
+      y_elem[1] = (float) xrand(seed);
       beta_i[0] = y_elem[0];
       beta_i[0 + 1] = y_elem[1];
     }
@@ -13822,8 +13820,8 @@ void BLAS_zge_sum_mv_d_d_testgen(int norm, enum blas_order_type order,
     alpha_use[1] = beta_i[1];
   } else {
     if (!alpha_flag) {
-      ((double *) y_elem)[0] = (float) drand48();
-      ((double *) y_elem)[1] = (float) drand48();
+      y_elem[0] = (float) xrand(seed);
+      y_elem[1] = (float) xrand(seed);
       alpha_i[0] = y_elem[0];
       alpha_i[0 + 1] = y_elem[1];
     }
@@ -13838,12 +13836,12 @@ void BLAS_zge_sum_mv_d_d_testgen(int norm, enum blas_order_type order,
 
     /*first pick x randomly */
     for (i = 0, xi = x_starti; i < n_i; i++, xi++) {
-      x_elem = (float) drand48();
+      x_elem = (float) xrand(seed);
       x_i[xi * incxi] = x_elem;
     }
     /*copy new x into x_vec (twice) */
-    dsymv_copy_vector(n_i, x_vec, 1, x, incx);
-    dsymv_copy_vector(n_i, (x_vec + incx_veci * n_i), 1, x, incx);
+    dcopy_vector(x, n_i, incx, x_vec, 1);
+    dcopy_vector(x, n_i, incx, (x_vec + incx_veci * n_i), 1);
 
     if (case_type == 2) {
       /* degenerate case - similar to gemv */
@@ -13883,7 +13881,7 @@ void BLAS_zge_sum_mv_d_d_testgen(int norm, enum blas_order_type order,
 
 	for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	  for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	    a_elem = (float) drand48();
+	    a_elem = (float) xrand(seed);
 	    b_i[aij] = a_elem;
 	  }
 	}
@@ -13926,7 +13924,7 @@ void BLAS_zge_sum_mv_d_d_testgen(int norm, enum blas_order_type order,
 	alpha_use_ptr_i[1] = alpha_use[1];
 	alpha_i[0] = alpha_use[0];
 	alpha_i[1] = alpha_use[1];
-	dsymv_copy_vector(n_i, x, incx, x_vec, 1);
+	dcopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 	return;
@@ -13965,7 +13963,7 @@ void BLAS_zge_sum_mv_d_d_testgen(int norm, enum blas_order_type order,
 
 	for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	  for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	    a_elem = (float) drand48();
+	    a_elem = (float) xrand(seed);
 	    a_i[aij] = a_elem;
 	  }
 	}
@@ -14008,7 +14006,7 @@ void BLAS_zge_sum_mv_d_d_testgen(int norm, enum blas_order_type order,
 	alpha_use_ptr_i[1] = alpha_use[1];
 	beta_i[0] = alpha_use[0];
 	beta_i[1] = alpha_use[1];
-	dsymv_copy_vector(n_i, x, incx, x_vec, 1);
+	dcopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 	return;
@@ -14065,7 +14063,7 @@ void BLAS_zge_sum_mv_d_d_testgen(int norm, enum blas_order_type order,
 
     /*first pick x randomly */
     for (i = 0, xi = x_starti; i < n_i; i++, xi++) {
-      x_elem = (float) drand48();
+      x_elem = (float) xrand(seed);
       x_i[xi * incxi] = x_elem;
     }
 
@@ -14083,7 +14081,7 @@ void BLAS_zge_sum_mv_d_d_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	a_elem = (float) drand48();
+	a_elem = (float) xrand(seed);
 	a_i[aij] = a_elem;
       }
     }
@@ -14101,7 +14099,7 @@ void BLAS_zge_sum_mv_d_d_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	a_elem = (float) drand48();
+	a_elem = (float) xrand(seed);
 	b_i[aij] = a_elem;
       }
     }
@@ -14110,8 +14108,8 @@ void BLAS_zge_sum_mv_d_d_testgen(int norm, enum blas_order_type order,
 
     /* get x */
     /*copy new x into x_vec (twice) */
-    dsymv_copy_vector(n_i, x_vec, 1, x, incx);
-    dsymv_copy_vector(n_i, (x_vec + incx_veci * n_i), 1, x, incx);
+    dcopy_vector(x, n_i, incx, x_vec, 1);
+    dcopy_vector(x, n_i, incx, (x_vec + incx_veci * n_i), 1);
     {
       /* promote to complex */
       int r;
@@ -14187,7 +14185,7 @@ void BLAS_zge_sum_mv_d_d_testgen(int norm, enum blas_order_type order,
 	}
 	alpha_use_ptr_i[0] = alpha_use[0];
 	alpha_use_ptr_i[1] = alpha_use[1];
-	dsymv_copy_vector(n_i, x, incx, x_vec, 1);
+	dcopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 
@@ -14263,7 +14261,7 @@ void BLAS_zge_sum_mv_d_d_testgen(int norm, enum blas_order_type order,
 	}
 	alpha_use_ptr_i[0] = alpha_use[0];
 	alpha_use_ptr_i[1] = alpha_use[1];
-	dsymv_copy_vector(n_i, x, incx, x_vec, 1);
+	dcopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 
@@ -14476,7 +14474,7 @@ void BLAS_zge_sum_mv_d_d_testgen(int norm, enum blas_order_type order,
 
   /*copy x_vec into x : it is possible that the generator
      changed x_vec, even though none were free */
-  dsymv_copy_vector(n_i, x, incx, x_vec, 1);
+  dcopy_vector(x_vec, n_i, 1, x, incx);
   blas_free(a_vec);
   blas_free(x_vec);
 }
@@ -14752,8 +14750,8 @@ void BLAS_cge_sum_mv_c_s_testgen(int norm, enum blas_order_type order,
 
   if (which_free == ALPHA_USE_IS_BETA) {
     if (!beta_flag) {
-      ((float *) y_elem)[0] = (float) drand48();
-      ((float *) y_elem)[1] = (float) drand48();
+      y_elem[0] = xrand(seed);
+      y_elem[1] = xrand(seed);
       beta_i[0] = y_elem[0];
       beta_i[0 + 1] = y_elem[1];
     }
@@ -14761,8 +14759,8 @@ void BLAS_cge_sum_mv_c_s_testgen(int norm, enum blas_order_type order,
     alpha_use[1] = beta_i[1];
   } else {
     if (!alpha_flag) {
-      ((float *) y_elem)[0] = (float) drand48();
-      ((float *) y_elem)[1] = (float) drand48();
+      y_elem[0] = xrand(seed);
+      y_elem[1] = xrand(seed);
       alpha_i[0] = y_elem[0];
       alpha_i[0 + 1] = y_elem[1];
     }
@@ -14777,12 +14775,12 @@ void BLAS_cge_sum_mv_c_s_testgen(int norm, enum blas_order_type order,
 
     /*first pick x randomly */
     for (i = 0, xi = x_starti; i < n_i; i++, xi++) {
-      x_elem = (float) drand48();
+      x_elem = xrand(seed);
       x_i[xi * incxi] = x_elem;
     }
     /*copy new x into x_vec (twice) */
-    ssymv_copy_vector(n_i, x_vec, 1, x, incx);
-    ssymv_copy_vector(n_i, (x_vec + incx_veci * n_i), 1, x, incx);
+    scopy_vector(x, n_i, incx, x_vec, 1);
+    scopy_vector(x, n_i, incx, (x_vec + incx_veci * n_i), 1);
 
     if (case_type == 2) {
       /* degenerate case - similar to gemv */
@@ -14822,8 +14820,8 @@ void BLAS_cge_sum_mv_c_s_testgen(int norm, enum blas_order_type order,
 
 	for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	  for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	    ((float *) a_elem)[0] = (float) drand48();
-	    ((float *) a_elem)[1] = (float) drand48();
+	    a_elem[0] = (float) xrand(seed);
+	    a_elem[1] = (float) xrand(seed);
 	    b_i[aij] = a_elem[0];
 	    b_i[aij + 1] = a_elem[1];
 	  }
@@ -14870,7 +14868,7 @@ void BLAS_cge_sum_mv_c_s_testgen(int norm, enum blas_order_type order,
 	alpha_use_ptr_i[1] = alpha_use[1];
 	alpha_i[0] = alpha_use[0];
 	alpha_i[1] = alpha_use[1];
-	ssymv_copy_vector(n_i, x, incx, x_vec, 1);
+	scopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 	return;
@@ -14909,8 +14907,8 @@ void BLAS_cge_sum_mv_c_s_testgen(int norm, enum blas_order_type order,
 
 	for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	  for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	    ((float *) a_elem)[0] = (float) drand48();
-	    ((float *) a_elem)[1] = (float) drand48();
+	    a_elem[0] = (float) xrand(seed);
+	    a_elem[1] = (float) xrand(seed);
 	    a_i[aij] = a_elem[0];
 	    a_i[aij + 1] = a_elem[1];
 	  }
@@ -14957,7 +14955,7 @@ void BLAS_cge_sum_mv_c_s_testgen(int norm, enum blas_order_type order,
 	alpha_use_ptr_i[1] = alpha_use[1];
 	beta_i[0] = alpha_use[0];
 	beta_i[1] = alpha_use[1];
-	ssymv_copy_vector(n_i, x, incx, x_vec, 1);
+	scopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 	return;
@@ -14985,13 +14983,13 @@ void BLAS_cge_sum_mv_c_s_testgen(int norm, enum blas_order_type order,
 
       /*first pick x randomly, but real */
       for (i = 0, xi = x_starti; i < n_i; i++, xi += incxi) {
-	x_elem = (float) drand48();
+	x_elem = xrand(seed);
 
 	x_i[xi] = x_elem;
       }
       /*copy new x into x_vec_2 (twice) */
-      ssymv_copy_vector(n_i, x_vec_2, 1, x, 2 * incx);
-      ssymv_copy_vector(n_i, (x_vec_2 + n_i), 1, x_vec_2, 1);
+      scopy_vector(x, n_i, 2 * incx, x_vec_2, 1);
+      scopy_vector(x_vec_2, n_i, 1, (x_vec_2 + n_i), 1);
 
       /* Now Fill in matrix A, B real */
       /*since we have case 3, we know alpha_use == 1.0+0i,
@@ -15065,7 +15063,7 @@ void BLAS_cge_sum_mv_c_s_testgen(int norm, enum blas_order_type order,
 
     /*first pick x randomly */
     for (i = 0, xi = x_starti; i < n_i; i++, xi++) {
-      x_elem = (float) drand48();
+      x_elem = xrand(seed);
       x_i[xi * incxi] = x_elem;
     }
 
@@ -15083,8 +15081,8 @@ void BLAS_cge_sum_mv_c_s_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	((float *) a_elem)[0] = (float) drand48();
-	((float *) a_elem)[1] = (float) drand48();
+	a_elem[0] = (float) xrand(seed);
+	a_elem[1] = (float) xrand(seed);
 	a_i[aij] = a_elem[0];
 	a_i[aij + 1] = a_elem[1];
       }
@@ -15103,8 +15101,8 @@ void BLAS_cge_sum_mv_c_s_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	((float *) a_elem)[0] = (float) drand48();
-	((float *) a_elem)[1] = (float) drand48();
+	a_elem[0] = (float) xrand(seed);
+	a_elem[1] = (float) xrand(seed);
 	b_i[aij] = a_elem[0];
 	b_i[aij + 1] = a_elem[1];
       }
@@ -15114,8 +15112,8 @@ void BLAS_cge_sum_mv_c_s_testgen(int norm, enum blas_order_type order,
 
     /* get x */
     /*copy new x into x_vec (twice) */
-    ssymv_copy_vector(n_i, x_vec, 1, x, incx);
-    ssymv_copy_vector(n_i, (x_vec + incx_veci * n_i), 1, x, incx);
+    scopy_vector(x, n_i, incx, x_vec, 1);
+    scopy_vector(x, n_i, incx, (x_vec + incx_veci * n_i), 1);
     {
       /* promote to complex */
       int r;
@@ -15187,7 +15185,7 @@ void BLAS_cge_sum_mv_c_s_testgen(int norm, enum blas_order_type order,
 	}
 	alpha_use_ptr_i[0] = alpha_use[0];
 	alpha_use_ptr_i[1] = alpha_use[1];
-	ssymv_copy_vector(n_i, x, incx, x_vec, 1);
+	scopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 
@@ -15257,7 +15255,7 @@ void BLAS_cge_sum_mv_c_s_testgen(int norm, enum blas_order_type order,
 	}
 	alpha_use_ptr_i[0] = alpha_use[0];
 	alpha_use_ptr_i[1] = alpha_use[1];
-	ssymv_copy_vector(n_i, x, incx, x_vec, 1);
+	scopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 
@@ -15843,7 +15841,7 @@ void BLAS_cge_sum_mv_c_s_testgen(int norm, enum blas_order_type order,
 
   /*copy x_vec into x : it is possible that the generator
      changed x_vec, even though none were free */
-  ssymv_copy_vector(n_i, x, incx, x_vec, 1);
+  scopy_vector(x_vec, n_i, 1, x, incx);
   blas_free(a_vec);
   blas_free(x_vec);
 }
@@ -16113,8 +16111,8 @@ void BLAS_cge_sum_mv_s_c_testgen(int norm, enum blas_order_type order,
 
   if (which_free == ALPHA_USE_IS_BETA) {
     if (!beta_flag) {
-      ((float *) y_elem)[0] = (float) drand48();
-      ((float *) y_elem)[1] = (float) drand48();
+      y_elem[0] = (float) xrand(seed);
+      y_elem[1] = (float) xrand(seed);
       beta_i[0] = y_elem[0];
       beta_i[0 + 1] = y_elem[1];
     }
@@ -16122,8 +16120,8 @@ void BLAS_cge_sum_mv_s_c_testgen(int norm, enum blas_order_type order,
     alpha_use[1] = beta_i[1];
   } else {
     if (!alpha_flag) {
-      ((float *) y_elem)[0] = (float) drand48();
-      ((float *) y_elem)[1] = (float) drand48();
+      y_elem[0] = (float) xrand(seed);
+      y_elem[1] = (float) xrand(seed);
       alpha_i[0] = y_elem[0];
       alpha_i[0 + 1] = y_elem[1];
     }
@@ -16138,14 +16136,14 @@ void BLAS_cge_sum_mv_s_c_testgen(int norm, enum blas_order_type order,
 
     /*first pick x randomly */
     for (i = 0, xi = x_starti; i < n_i; i++, xi++) {
-      ((float *) x_elem)[0] = (float) drand48();
-      ((float *) x_elem)[1] = (float) drand48();
+      x_elem[0] = (float) xrand(seed);
+      x_elem[1] = (float) xrand(seed);
       x_i[xi * incxi] = x_elem[0];
       x_i[xi * incxi + 1] = x_elem[1];
     }
     /*copy new x into x_vec (twice) */
-    csymv_copy_vector(n_i, x_vec, 1, x, incx);
-    csymv_copy_vector(n_i, (x_vec + incx_veci * n_i), 1, x, incx);
+    ccopy_vector(x, n_i, incx, x_vec, 1);
+    ccopy_vector(x, n_i, incx, (x_vec + incx_veci * n_i), 1);
 
     if (case_type == 2) {
       /* degenerate case - similar to gemv */
@@ -16185,7 +16183,7 @@ void BLAS_cge_sum_mv_s_c_testgen(int norm, enum blas_order_type order,
 
 	for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	  for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	    a_elem = (float) drand48();
+	    a_elem = (float) xrand(seed);
 	    b_i[aij] = a_elem;
 	  }
 	}
@@ -16228,7 +16226,7 @@ void BLAS_cge_sum_mv_s_c_testgen(int norm, enum blas_order_type order,
 	alpha_use_ptr_i[1] = alpha_use[1];
 	alpha_i[0] = alpha_use[0];
 	alpha_i[1] = alpha_use[1];
-	csymv_copy_vector(n_i, x, incx, x_vec, 1);
+	ccopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 	return;
@@ -16267,7 +16265,7 @@ void BLAS_cge_sum_mv_s_c_testgen(int norm, enum blas_order_type order,
 
 	for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	  for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	    a_elem = (float) drand48();
+	    a_elem = (float) xrand(seed);
 	    a_i[aij] = a_elem;
 	  }
 	}
@@ -16310,7 +16308,7 @@ void BLAS_cge_sum_mv_s_c_testgen(int norm, enum blas_order_type order,
 	alpha_use_ptr_i[1] = alpha_use[1];
 	beta_i[0] = alpha_use[0];
 	beta_i[1] = alpha_use[1];
-	csymv_copy_vector(n_i, x, incx, x_vec, 1);
+	ccopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 	return;
@@ -16364,8 +16362,8 @@ void BLAS_cge_sum_mv_s_c_testgen(int norm, enum blas_order_type order,
 
     /*first pick x randomly */
     for (i = 0, xi = x_starti; i < n_i; i++, xi++) {
-      ((float *) x_elem)[0] = (float) drand48();
-      ((float *) x_elem)[1] = (float) drand48();
+      x_elem[0] = (float) xrand(seed);
+      x_elem[1] = (float) xrand(seed);
       x_i[xi * incxi] = x_elem[0];
       x_i[xi * incxi + 1] = x_elem[1];
     }
@@ -16384,7 +16382,7 @@ void BLAS_cge_sum_mv_s_c_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	a_elem = (float) drand48();
+	a_elem = (float) xrand(seed);
 	a_i[aij] = a_elem;
       }
     }
@@ -16402,7 +16400,7 @@ void BLAS_cge_sum_mv_s_c_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	a_elem = (float) drand48();
+	a_elem = (float) xrand(seed);
 	b_i[aij] = a_elem;
       }
     }
@@ -16411,8 +16409,8 @@ void BLAS_cge_sum_mv_s_c_testgen(int norm, enum blas_order_type order,
 
     /* get x */
     /*copy new x into x_vec (twice) */
-    csymv_copy_vector(n_i, x_vec, 1, x, incx);
-    csymv_copy_vector(n_i, (x_vec + incx_veci * n_i), 1, x, incx);
+    ccopy_vector(x, n_i, incx, x_vec, 1);
+    ccopy_vector(x, n_i, incx, (x_vec + incx_veci * n_i), 1);
 
 
     if (case_type == 2) {
@@ -16481,7 +16479,7 @@ void BLAS_cge_sum_mv_s_c_testgen(int norm, enum blas_order_type order,
 	}
 	alpha_use_ptr_i[0] = alpha_use[0];
 	alpha_use_ptr_i[1] = alpha_use[1];
-	csymv_copy_vector(n_i, x, incx, x_vec, 1);
+	ccopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 
@@ -16555,7 +16553,7 @@ void BLAS_cge_sum_mv_s_c_testgen(int norm, enum blas_order_type order,
 	}
 	alpha_use_ptr_i[0] = alpha_use[0];
 	alpha_use_ptr_i[1] = alpha_use[1];
-	csymv_copy_vector(n_i, x, incx, x_vec, 1);
+	ccopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 
@@ -16764,7 +16762,7 @@ void BLAS_cge_sum_mv_s_c_testgen(int norm, enum blas_order_type order,
 
   /*copy x_vec into x : it is possible that the generator
      changed x_vec, even though none were free */
-  csymv_copy_vector(n_i, x, incx, x_vec, 1);
+  ccopy_vector(x_vec, n_i, 1, x, incx);
   blas_free(a_vec);
   blas_free(x_vec);
 }
@@ -17033,8 +17031,8 @@ void BLAS_cge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 
   if (which_free == ALPHA_USE_IS_BETA) {
     if (!beta_flag) {
-      ((float *) y_elem)[0] = (float) drand48();
-      ((float *) y_elem)[1] = (float) drand48();
+      y_elem[0] = (float) xrand(seed);
+      y_elem[1] = (float) xrand(seed);
       beta_i[0] = y_elem[0];
       beta_i[0 + 1] = y_elem[1];
     }
@@ -17042,8 +17040,8 @@ void BLAS_cge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
     alpha_use[1] = beta_i[1];
   } else {
     if (!alpha_flag) {
-      ((float *) y_elem)[0] = (float) drand48();
-      ((float *) y_elem)[1] = (float) drand48();
+      y_elem[0] = (float) xrand(seed);
+      y_elem[1] = (float) xrand(seed);
       alpha_i[0] = y_elem[0];
       alpha_i[0 + 1] = y_elem[1];
     }
@@ -17058,12 +17056,12 @@ void BLAS_cge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 
     /*first pick x randomly */
     for (i = 0, xi = x_starti; i < n_i; i++, xi++) {
-      x_elem = (float) drand48();
+      x_elem = (float) xrand(seed);
       x_i[xi * incxi] = x_elem;
     }
     /*copy new x into x_vec (twice) */
-    ssymv_copy_vector(n_i, x_vec, 1, x, incx);
-    ssymv_copy_vector(n_i, (x_vec + incx_veci * n_i), 1, x, incx);
+    scopy_vector(x, n_i, incx, x_vec, 1);
+    scopy_vector(x, n_i, incx, (x_vec + incx_veci * n_i), 1);
 
     if (case_type == 2) {
       /* degenerate case - similar to gemv */
@@ -17103,7 +17101,7 @@ void BLAS_cge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 
 	for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	  for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	    a_elem = (float) drand48();
+	    a_elem = (float) xrand(seed);
 	    b_i[aij] = a_elem;
 	  }
 	}
@@ -17146,7 +17144,7 @@ void BLAS_cge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 	alpha_use_ptr_i[1] = alpha_use[1];
 	alpha_i[0] = alpha_use[0];
 	alpha_i[1] = alpha_use[1];
-	ssymv_copy_vector(n_i, x, incx, x_vec, 1);
+	scopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 	return;
@@ -17185,7 +17183,7 @@ void BLAS_cge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 
 	for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
 	  for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	    a_elem = (float) drand48();
+	    a_elem = (float) xrand(seed);
 	    a_i[aij] = a_elem;
 	  }
 	}
@@ -17228,7 +17226,7 @@ void BLAS_cge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 	alpha_use_ptr_i[1] = alpha_use[1];
 	beta_i[0] = alpha_use[0];
 	beta_i[1] = alpha_use[1];
-	ssymv_copy_vector(n_i, x, incx, x_vec, 1);
+	scopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 	return;
@@ -17285,7 +17283,7 @@ void BLAS_cge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 
     /*first pick x randomly */
     for (i = 0, xi = x_starti; i < n_i; i++, xi++) {
-      x_elem = (float) drand48();
+      x_elem = (float) xrand(seed);
       x_i[xi * incxi] = x_elem;
     }
 
@@ -17303,7 +17301,7 @@ void BLAS_cge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	a_elem = (float) drand48();
+	a_elem = (float) xrand(seed);
 	a_i[aij] = a_elem;
       }
     }
@@ -17321,7 +17319,7 @@ void BLAS_cge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	a_elem = (float) drand48();
+	a_elem = (float) xrand(seed);
 	b_i[aij] = a_elem;
       }
     }
@@ -17330,8 +17328,8 @@ void BLAS_cge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 
     /* get x */
     /*copy new x into x_vec (twice) */
-    ssymv_copy_vector(n_i, x_vec, 1, x, incx);
-    ssymv_copy_vector(n_i, (x_vec + incx_veci * n_i), 1, x, incx);
+    scopy_vector(x, n_i, incx, x_vec, 1);
+    scopy_vector(x, n_i, incx, (x_vec + incx_veci * n_i), 1);
     {
       /* promote to complex */
       int r;
@@ -17407,7 +17405,7 @@ void BLAS_cge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 	}
 	alpha_use_ptr_i[0] = alpha_use[0];
 	alpha_use_ptr_i[1] = alpha_use[1];
-	ssymv_copy_vector(n_i, x, incx, x_vec, 1);
+	scopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 
@@ -17483,7 +17481,7 @@ void BLAS_cge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 	}
 	alpha_use_ptr_i[0] = alpha_use[0];
 	alpha_use_ptr_i[1] = alpha_use[1];
-	ssymv_copy_vector(n_i, x, incx, x_vec, 1);
+	scopy_vector(x_vec, n_i, 1, x, incx);
 	blas_free(a_vec);
 	blas_free(x_vec);
 
@@ -17696,7 +17694,7 @@ void BLAS_cge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 
   /*copy x_vec into x : it is possible that the generator
      changed x_vec, even though none were free */
-  ssymv_copy_vector(n_i, x, incx, x_vec, 1);
+  scopy_vector(x_vec, n_i, 1, x, incx);
   blas_free(a_vec);
   blas_free(x_vec);
 }

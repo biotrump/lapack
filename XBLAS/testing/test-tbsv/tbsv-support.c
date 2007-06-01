@@ -765,7 +765,7 @@ void sprint_tbsv_matrix(float *T,
 
   for (i = 0; i < n; i++) {
     stbsv_copy(order, uplo, trans, n, k, T, ldt, T_row, i);
-    sprint_vector(T_row, n, 1);
+    sprint_vector(T_row, n, 1, NULL);
   }
   printf("\n");
   blas_free(T_row);
@@ -816,7 +816,7 @@ void dprint_tbsv_matrix(double *T,
 
   for (i = 0; i < n; i++) {
     dtbsv_copy(order, uplo, trans, n, k, T, ldt, T_row, i);
-    dprint_vector(T_row, n, 1);
+    dprint_vector(T_row, n, 1, NULL);
   }
   printf("\n");
   blas_free(T_row);
@@ -867,7 +867,7 @@ void cprint_tbsv_matrix(void *T,
 
   for (i = 0; i < n; i++) {
     ctbsv_copy(order, uplo, trans, n, k, T, ldt, T_row, i);
-    cprint_vector(T_row, n, 1);
+    cprint_vector(T_row, n, 1, NULL);
   }
   printf("\n");
   blas_free(T_row);
@@ -918,7 +918,7 @@ void zprint_tbsv_matrix(void *T,
 
   for (i = 0; i < n; i++) {
     ztbsv_copy(order, uplo, trans, n, k, T, ldt, T_row, i);
-    zprint_vector(T_row, n, 1);
+    zprint_vector(T_row, n, 1, NULL);
   }
   printf("\n");
   blas_free(T_row);

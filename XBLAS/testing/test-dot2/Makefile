@@ -7,10 +7,14 @@ HEADER_PATH = -I../../src -I..
 TEST_SRCS = do_test_dot2.c test_dot2.c BLAS_dot2_testgen.c \
 	    dot2.c ../test-dot/testgen_aux.c  r_truth2.c \
 	    testgen_BLAS_sdot2.c testgen_BLAS_ddot2.c \
-	    testgen_BLAS_zdot2.c testgen_BLAS_cdot2.c
+	    testgen_BLAS_zdot2.c testgen_BLAS_cdot2.c \
+	    ../test-dot/print_vector.c \
+	    ../test-dot/copy_vector.c
 
 TEST_OBJS = $(TEST_SRCS:.c=.o)
 COMMON_OBJS = ../common/dummy_main.o
+
+ALL_OBJS = $(TEST_OBJS) $(TEST_DOT_OBJS) $(COMMON_OBJS)
 
 test: do_test_dot2
 	@echo Testing DOT2

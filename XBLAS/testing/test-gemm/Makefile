@@ -3,6 +3,7 @@ include ../../$(MAKEINC)
 
 DOT_PATH = ../../src/dot
 TEST_DOT_PATH = ../test-dot
+TEST_GEMV_PATH = ../test-gemv
 LIB_PATH = ../../$(OUTPUT_DIR)
 HEADER_PATH = -I../../src -I..
 
@@ -14,13 +15,17 @@ TEST_DOT_OBJS = $(TEST_DOT_PATH)/testgen_BLAS_sdot.o \
 		$(TEST_DOT_PATH)/testgen_BLAS_zdot.o \
 		$(TEST_DOT_PATH)/testgen_aux.o \
 		$(TEST_DOT_PATH)/test_dot.o \
-		$(TEST_DOT_PATH)/BLAS_dot_testgen.o
+		$(TEST_DOT_PATH)/BLAS_dot_testgen.o \
+		$(TEST_DOT_PATH)/print_vector.o \
+		$(TEST_DOT_PATH)/copy_vector.o
 
-TEST_SRCS = do_test_gemm.c BLAS_gemm_testgen.c gemm-support.c 
+TEST_GEMV_OBJS = $(TEST_GEMV_PATH)/gemv-support.o
+
+TEST_SRCS = do_test_gemm.c BLAS_gemm_testgen.c
 TEST_OBJS = $(TEST_SRCS:.c=.o)
 COMMON_OBJS = ../common/dummy_main.o
 
-ALL_OBJS = $(TEST_OBJS) $(TEST_DOT_OBJS) $(DOT_OBJS) $(COMMON_OBJS)
+ALL_OBJS = $(TEST_OBJS) $(TEST_DOT_OBJS) $(TEST_GEMV_OBJS) $(DOT_OBJS) $(COMMON_OBJS)
 
 test: do_test_gemm
 	@echo Testing GEMM - default quick test

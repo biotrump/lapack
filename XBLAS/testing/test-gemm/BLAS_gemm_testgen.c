@@ -12,9 +12,6 @@
 
 
 
-
-
-
 void BLAS_sgemm_testgen(int norm, enum blas_order_type order,
 			enum blas_trans_type transa,
 			enum blas_trans_type transb, int m, int n, int k,
@@ -23,7 +20,6 @@ void BLAS_sgemm_testgen(int norm, enum blas_order_type order,
 			int ldb, float *c, int ldc, int *seed,
 			double *head_r_true, double *tail_r_true)
 {
-
   int i, j;
   int cij, ci;
   int inccij, incci;
@@ -68,8 +64,6 @@ void BLAS_sgemm_testgen(int norm, enum blas_order_type order,
     b_vec[i] = 0.0;
   }
 
-  srand48(*seed);
-
   if (order == blas_colmajor) {
     incci = 1;
     inccij = ldc;
@@ -94,11 +88,11 @@ void BLAS_sgemm_testgen(int norm, enum blas_order_type order,
     tail_r_true[cij] = tail_r_true_elem;
 
     /* Copy a_vec to the first row of A */
-    sgemm_commit_row(order, transa, m, k, a, lda, a_vec, 0);
+    sge_commit_row(order, transa, m, k, a, lda, a_vec, 0);
 
     /* set every column of B to be b_vec */
     for (j = 0; j < n; j++)
-      sgemm_commit_col(order, transb, k, n, b, ldb, b_vec, j);
+      sge_commit_col(order, transb, k, n, b, ldb, b_vec, j);
 
     /* Next fill in the rest of matrix A.
        Note that alpha and beta are now fixed.   */
@@ -111,7 +105,7 @@ void BLAS_sgemm_testgen(int norm, enum blas_order_type order,
       c_i[cij] = c_elem;
       head_r_true[cij] = head_r_true_elem;
       tail_r_true[cij] = tail_r_true_elem;;
-      sgemm_commit_row(order, transa, m, k, a, lda, a_vec, i);
+      sge_commit_row(order, transa, m, k, a, lda, a_vec, i);
     }
 
     /* Now fill in c and r_true */
@@ -135,11 +129,11 @@ void BLAS_sgemm_testgen(int norm, enum blas_order_type order,
 
 
     if (alpha_flag == 0) {
-      c_elem = (float) drand48();
+      c_elem = xrand(seed);
       alpha_i[0] = c_elem;
     }
     if (beta_flag == 0) {
-      c_elem = (float) drand48();
+      c_elem = xrand(seed);
       beta_i[0] = c_elem;
     }
 
@@ -168,25 +162,25 @@ void BLAS_sgemm_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, bi = 0; i < k; i++, bi += incbi) {
       for (j = 0, bij = bi; j < n; j++, bij += incbij) {
-	b_elem = (float) drand48();
+	b_elem = xrand(seed);
 	b_i[bij] = b_elem;
       }
     }
 
     for (i = 0, ai = 0; i < m; i++, ai += incai) {
       for (j = 0, aij = ai; j < k; j++, aij += incaij) {
-	a_elem = (float) drand48();
+	a_elem = xrand(seed);
 	a_i[aij] = a_elem;
       }
     }
 
     for (i = 0, ci = 0; i < m; i++, ci += incci) {
-      sgemm_copy_row(order, transa, m, k, a, lda, a_vec, i);
+      sge_copy_row(order, transa, m, k, a, lda, a_vec, i);
 
 
 
       for (j = 0, cij = ci; j < n; j++, cij += inccij) {
-	sgemm_copy_col(order, transb, k, n, b, ldb, b_vec, j);
+	sge_copy_col(order, transb, k, n, b, ldb, b_vec, j);
 
 
 
@@ -215,7 +209,6 @@ void BLAS_dgemm_testgen(int norm, enum blas_order_type order,
 			double *b, int ldb, double *c, int ldc, int *seed,
 			double *head_r_true, double *tail_r_true)
 {
-
   int i, j;
   int cij, ci;
   int inccij, incci;
@@ -260,8 +253,6 @@ void BLAS_dgemm_testgen(int norm, enum blas_order_type order,
     b_vec[i] = 0.0;
   }
 
-  srand48(*seed);
-
   if (order == blas_colmajor) {
     incci = 1;
     inccij = ldc;
@@ -286,11 +277,11 @@ void BLAS_dgemm_testgen(int norm, enum blas_order_type order,
     tail_r_true[cij] = tail_r_true_elem;
 
     /* Copy a_vec to the first row of A */
-    dgemm_commit_row(order, transa, m, k, a, lda, a_vec, 0);
+    dge_commit_row(order, transa, m, k, a, lda, a_vec, 0);
 
     /* set every column of B to be b_vec */
     for (j = 0; j < n; j++)
-      dgemm_commit_col(order, transb, k, n, b, ldb, b_vec, j);
+      dge_commit_col(order, transb, k, n, b, ldb, b_vec, j);
 
     /* Next fill in the rest of matrix A.
        Note that alpha and beta are now fixed.   */
@@ -303,7 +294,7 @@ void BLAS_dgemm_testgen(int norm, enum blas_order_type order,
       c_i[cij] = c_elem;
       head_r_true[cij] = head_r_true_elem;
       tail_r_true[cij] = tail_r_true_elem;;
-      dgemm_commit_row(order, transa, m, k, a, lda, a_vec, i);
+      dge_commit_row(order, transa, m, k, a, lda, a_vec, i);
     }
 
     /* Now fill in c and r_true */
@@ -327,11 +318,11 @@ void BLAS_dgemm_testgen(int norm, enum blas_order_type order,
 
 
     if (alpha_flag == 0) {
-      c_elem = (float) drand48();
+      c_elem = xrand(seed);
       alpha_i[0] = c_elem;
     }
     if (beta_flag == 0) {
-      c_elem = (float) drand48();
+      c_elem = xrand(seed);
       beta_i[0] = c_elem;
     }
 
@@ -360,25 +351,25 @@ void BLAS_dgemm_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, bi = 0; i < k; i++, bi += incbi) {
       for (j = 0, bij = bi; j < n; j++, bij += incbij) {
-	b_elem = (float) drand48();
+	b_elem = xrand(seed);
 	b_i[bij] = b_elem;
       }
     }
 
     for (i = 0, ai = 0; i < m; i++, ai += incai) {
       for (j = 0, aij = ai; j < k; j++, aij += incaij) {
-	a_elem = (float) drand48();
+	a_elem = xrand(seed);
 	a_i[aij] = a_elem;
       }
     }
 
     for (i = 0, ci = 0; i < m; i++, ci += incci) {
-      dgemm_copy_row(order, transa, m, k, a, lda, a_vec, i);
+      dge_copy_row(order, transa, m, k, a, lda, a_vec, i);
 
 
 
       for (j = 0, cij = ci; j < n; j++, cij += inccij) {
-	dgemm_copy_col(order, transb, k, n, b, ldb, b_vec, j);
+	dge_copy_col(order, transb, k, n, b, ldb, b_vec, j);
 
 
 
@@ -407,7 +398,6 @@ void BLAS_dgemm_d_s_testgen(int norm, enum blas_order_type order,
 			    float *b, int ldb, double *c, int ldc, int *seed,
 			    double *head_r_true, double *tail_r_true)
 {
-
   int i, j;
   int cij, ci;
   int inccij, incci;
@@ -452,8 +442,6 @@ void BLAS_dgemm_d_s_testgen(int norm, enum blas_order_type order,
     b_vec[i] = 0.0;
   }
 
-  srand48(*seed);
-
   if (order == blas_colmajor) {
     incci = 1;
     inccij = ldc;
@@ -478,11 +466,11 @@ void BLAS_dgemm_d_s_testgen(int norm, enum blas_order_type order,
     tail_r_true[cij] = tail_r_true_elem;
 
     /* Copy a_vec to the first row of A */
-    dgemm_commit_row(order, transa, m, k, a, lda, a_vec, 0);
+    dge_commit_row(order, transa, m, k, a, lda, a_vec, 0);
 
     /* set every column of B to be b_vec */
     for (j = 0; j < n; j++)
-      sgemm_commit_col(order, transb, k, n, b, ldb, b_vec, j);
+      sge_commit_col(order, transb, k, n, b, ldb, b_vec, j);
 
     /* Next fill in the rest of matrix A.
        Note that alpha and beta are now fixed.   */
@@ -495,7 +483,7 @@ void BLAS_dgemm_d_s_testgen(int norm, enum blas_order_type order,
       c_i[cij] = c_elem;
       head_r_true[cij] = head_r_true_elem;
       tail_r_true[cij] = tail_r_true_elem;;
-      dgemm_commit_row(order, transa, m, k, a, lda, a_vec, i);
+      dge_commit_row(order, transa, m, k, a, lda, a_vec, i);
     }
 
     /* Now fill in c and r_true */
@@ -519,11 +507,11 @@ void BLAS_dgemm_d_s_testgen(int norm, enum blas_order_type order,
 
 
     if (alpha_flag == 0) {
-      c_elem = (float) drand48();
+      c_elem = (float) xrand(seed);
       alpha_i[0] = c_elem;
     }
     if (beta_flag == 0) {
-      c_elem = (float) drand48();
+      c_elem = (float) xrand(seed);
       beta_i[0] = c_elem;
     }
 
@@ -552,25 +540,25 @@ void BLAS_dgemm_d_s_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, bi = 0; i < k; i++, bi += incbi) {
       for (j = 0, bij = bi; j < n; j++, bij += incbij) {
-	b_elem = (float) drand48();
+	b_elem = (float) xrand(seed);
 	b_i[bij] = b_elem;
       }
     }
 
     for (i = 0, ai = 0; i < m; i++, ai += incai) {
       for (j = 0, aij = ai; j < k; j++, aij += incaij) {
-	a_elem = (float) drand48();
+	a_elem = (float) xrand(seed);
 	a_i[aij] = a_elem;
       }
     }
 
     for (i = 0, ci = 0; i < m; i++, ci += incci) {
-      dgemm_copy_row(order, transa, m, k, a, lda, a_vec, i);
+      dge_copy_row(order, transa, m, k, a, lda, a_vec, i);
 
 
 
       for (j = 0, cij = ci; j < n; j++, cij += inccij) {
-	sgemm_copy_col(order, transb, k, n, b, ldb, b_vec, j);
+	sge_copy_col(order, transb, k, n, b, ldb, b_vec, j);
 
 
 
@@ -599,7 +587,6 @@ void BLAS_dgemm_s_d_testgen(int norm, enum blas_order_type order,
 			    double *b, int ldb, double *c, int ldc, int *seed,
 			    double *head_r_true, double *tail_r_true)
 {
-
   int i, j;
   int cij, ci;
   int inccij, incci;
@@ -644,8 +631,6 @@ void BLAS_dgemm_s_d_testgen(int norm, enum blas_order_type order,
     b_vec[i] = 0.0;
   }
 
-  srand48(*seed);
-
   if (order == blas_colmajor) {
     incci = 1;
     inccij = ldc;
@@ -670,11 +655,11 @@ void BLAS_dgemm_s_d_testgen(int norm, enum blas_order_type order,
     tail_r_true[cij] = tail_r_true_elem;
 
     /* Copy a_vec to the first row of A */
-    sgemm_commit_row(order, transa, m, k, a, lda, a_vec, 0);
+    sge_commit_row(order, transa, m, k, a, lda, a_vec, 0);
 
     /* set every column of B to be b_vec */
     for (j = 0; j < n; j++)
-      dgemm_commit_col(order, transb, k, n, b, ldb, b_vec, j);
+      dge_commit_col(order, transb, k, n, b, ldb, b_vec, j);
 
     /* Next fill in the rest of matrix A.
        Note that alpha and beta are now fixed.   */
@@ -687,7 +672,7 @@ void BLAS_dgemm_s_d_testgen(int norm, enum blas_order_type order,
       c_i[cij] = c_elem;
       head_r_true[cij] = head_r_true_elem;
       tail_r_true[cij] = tail_r_true_elem;;
-      sgemm_commit_row(order, transa, m, k, a, lda, a_vec, i);
+      sge_commit_row(order, transa, m, k, a, lda, a_vec, i);
     }
 
     /* Now fill in c and r_true */
@@ -711,11 +696,11 @@ void BLAS_dgemm_s_d_testgen(int norm, enum blas_order_type order,
 
 
     if (alpha_flag == 0) {
-      c_elem = (float) drand48();
+      c_elem = (float) xrand(seed);
       alpha_i[0] = c_elem;
     }
     if (beta_flag == 0) {
-      c_elem = (float) drand48();
+      c_elem = (float) xrand(seed);
       beta_i[0] = c_elem;
     }
 
@@ -744,25 +729,25 @@ void BLAS_dgemm_s_d_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, bi = 0; i < k; i++, bi += incbi) {
       for (j = 0, bij = bi; j < n; j++, bij += incbij) {
-	b_elem = (float) drand48();
+	b_elem = (float) xrand(seed);
 	b_i[bij] = b_elem;
       }
     }
 
     for (i = 0, ai = 0; i < m; i++, ai += incai) {
       for (j = 0, aij = ai; j < k; j++, aij += incaij) {
-	a_elem = (float) drand48();
+	a_elem = (float) xrand(seed);
 	a_i[aij] = a_elem;
       }
     }
 
     for (i = 0, ci = 0; i < m; i++, ci += incci) {
-      sgemm_copy_row(order, transa, m, k, a, lda, a_vec, i);
+      sge_copy_row(order, transa, m, k, a, lda, a_vec, i);
 
 
 
       for (j = 0, cij = ci; j < n; j++, cij += inccij) {
-	dgemm_copy_col(order, transb, k, n, b, ldb, b_vec, j);
+	dge_copy_col(order, transb, k, n, b, ldb, b_vec, j);
 
 
 
@@ -791,7 +776,6 @@ void BLAS_dgemm_s_s_testgen(int norm, enum blas_order_type order,
 			    float *b, int ldb, double *c, int ldc, int *seed,
 			    double *head_r_true, double *tail_r_true)
 {
-
   int i, j;
   int cij, ci;
   int inccij, incci;
@@ -836,8 +820,6 @@ void BLAS_dgemm_s_s_testgen(int norm, enum blas_order_type order,
     b_vec[i] = 0.0;
   }
 
-  srand48(*seed);
-
   if (order == blas_colmajor) {
     incci = 1;
     inccij = ldc;
@@ -862,11 +844,11 @@ void BLAS_dgemm_s_s_testgen(int norm, enum blas_order_type order,
     tail_r_true[cij] = tail_r_true_elem;
 
     /* Copy a_vec to the first row of A */
-    sgemm_commit_row(order, transa, m, k, a, lda, a_vec, 0);
+    sge_commit_row(order, transa, m, k, a, lda, a_vec, 0);
 
     /* set every column of B to be b_vec */
     for (j = 0; j < n; j++)
-      sgemm_commit_col(order, transb, k, n, b, ldb, b_vec, j);
+      sge_commit_col(order, transb, k, n, b, ldb, b_vec, j);
 
     /* Next fill in the rest of matrix A.
        Note that alpha and beta are now fixed.   */
@@ -879,7 +861,7 @@ void BLAS_dgemm_s_s_testgen(int norm, enum blas_order_type order,
       c_i[cij] = c_elem;
       head_r_true[cij] = head_r_true_elem;
       tail_r_true[cij] = tail_r_true_elem;;
-      sgemm_commit_row(order, transa, m, k, a, lda, a_vec, i);
+      sge_commit_row(order, transa, m, k, a, lda, a_vec, i);
     }
 
     /* Now fill in c and r_true */
@@ -903,11 +885,11 @@ void BLAS_dgemm_s_s_testgen(int norm, enum blas_order_type order,
 
 
     if (alpha_flag == 0) {
-      c_elem = (float) drand48();
+      c_elem = (float) xrand(seed);
       alpha_i[0] = c_elem;
     }
     if (beta_flag == 0) {
-      c_elem = (float) drand48();
+      c_elem = (float) xrand(seed);
       beta_i[0] = c_elem;
     }
 
@@ -936,25 +918,25 @@ void BLAS_dgemm_s_s_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, bi = 0; i < k; i++, bi += incbi) {
       for (j = 0, bij = bi; j < n; j++, bij += incbij) {
-	b_elem = (float) drand48();
+	b_elem = (float) xrand(seed);
 	b_i[bij] = b_elem;
       }
     }
 
     for (i = 0, ai = 0; i < m; i++, ai += incai) {
       for (j = 0, aij = ai; j < k; j++, aij += incaij) {
-	a_elem = (float) drand48();
+	a_elem = (float) xrand(seed);
 	a_i[aij] = a_elem;
       }
     }
 
     for (i = 0, ci = 0; i < m; i++, ci += incci) {
-      sgemm_copy_row(order, transa, m, k, a, lda, a_vec, i);
+      sge_copy_row(order, transa, m, k, a, lda, a_vec, i);
 
 
 
       for (j = 0, cij = ci; j < n; j++, cij += inccij) {
-	sgemm_copy_col(order, transb, k, n, b, ldb, b_vec, j);
+	sge_copy_col(order, transb, k, n, b, ldb, b_vec, j);
 
 
 
@@ -984,7 +966,6 @@ void BLAS_cgemm_testgen(int norm, enum blas_order_type order,
 			void *c, int ldc, int *seed, double *head_r_true,
 			double *tail_r_true)
 {
-
   int i, j;
   int cij, ci;
   int inccij, incci;
@@ -1031,8 +1012,6 @@ void BLAS_cgemm_testgen(int norm, enum blas_order_type order,
     b_vec[i + 1] = 0.0;
   }
 
-  srand48(*seed);
-
   if (order == blas_colmajor) {
     incci = 1;
     inccij = ldc;
@@ -1060,11 +1039,11 @@ void BLAS_cgemm_testgen(int norm, enum blas_order_type order,
     tail_r_true[cij + 1] = tail_r_true_elem[1];
 
     /* Copy a_vec to the first row of A */
-    cgemm_commit_row(order, transa, m, k, a, lda, a_vec, 0);
+    cge_commit_row(order, transa, m, k, a, lda, a_vec, 0);
 
     /* set every column of B to be b_vec */
     for (j = 0; j < n; j++)
-      cgemm_commit_col(order, transb, k, n, b, ldb, b_vec, j);
+      cge_commit_col(order, transb, k, n, b, ldb, b_vec, j);
 
     /* Next fill in the rest of matrix A.
        Note that alpha and beta are now fixed.   */
@@ -1080,7 +1059,7 @@ void BLAS_cgemm_testgen(int norm, enum blas_order_type order,
       head_r_true[cij + 1] = head_r_true_elem[1];
       tail_r_true[cij] = tail_r_true_elem[0];
       tail_r_true[cij + 1] = tail_r_true_elem[1];;
-      cgemm_commit_row(order, transa, m, k, a, lda, a_vec, i);
+      cge_commit_row(order, transa, m, k, a, lda, a_vec, i);
     }
 
     /* Now fill in c and r_true */
@@ -1110,14 +1089,14 @@ void BLAS_cgemm_testgen(int norm, enum blas_order_type order,
 
 
     if (alpha_flag == 0) {
-      ((float *) c_elem)[0] = (float) drand48();
-      ((float *) c_elem)[1] = (float) drand48();
+      c_elem[0] = xrand(seed);
+      c_elem[1] = xrand(seed);
       alpha_i[0] = c_elem[0];
       alpha_i[0 + 1] = c_elem[1];
     }
     if (beta_flag == 0) {
-      ((float *) c_elem)[0] = (float) drand48();
-      ((float *) c_elem)[1] = (float) drand48();
+      c_elem[0] = xrand(seed);
+      c_elem[1] = xrand(seed);
       beta_i[0] = c_elem[0];
       beta_i[0 + 1] = c_elem[1];
     }
@@ -1147,8 +1126,8 @@ void BLAS_cgemm_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, bi = 0; i < k; i++, bi += incbi) {
       for (j = 0, bij = bi; j < n; j++, bij += incbij) {
-	((float *) b_elem)[0] = (float) drand48();
-	((float *) b_elem)[1] = (float) drand48();
+	b_elem[0] = xrand(seed);
+	b_elem[1] = xrand(seed);
 	b_i[bij] = b_elem[0];
 	b_i[bij + 1] = b_elem[1];
       }
@@ -1156,20 +1135,20 @@ void BLAS_cgemm_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < m; i++, ai += incai) {
       for (j = 0, aij = ai; j < k; j++, aij += incaij) {
-	((float *) a_elem)[0] = (float) drand48();
-	((float *) a_elem)[1] = (float) drand48();
+	a_elem[0] = xrand(seed);
+	a_elem[1] = xrand(seed);
 	a_i[aij] = a_elem[0];
 	a_i[aij + 1] = a_elem[1];
       }
     }
 
     for (i = 0, ci = 0; i < m; i++, ci += incci) {
-      cgemm_copy_row(order, transa, m, k, a, lda, a_vec, i);
+      cge_copy_row(order, transa, m, k, a, lda, a_vec, i);
 
 
 
       for (j = 0, cij = ci; j < n; j++, cij += inccij) {
-	cgemm_copy_col(order, transb, k, n, b, ldb, b_vec, j);
+	cge_copy_col(order, transb, k, n, b, ldb, b_vec, j);
 
 
 
@@ -1201,7 +1180,6 @@ void BLAS_zgemm_testgen(int norm, enum blas_order_type order,
 			void *c, int ldc, int *seed, double *head_r_true,
 			double *tail_r_true)
 {
-
   int i, j;
   int cij, ci;
   int inccij, incci;
@@ -1248,8 +1226,6 @@ void BLAS_zgemm_testgen(int norm, enum blas_order_type order,
     b_vec[i + 1] = 0.0;
   }
 
-  srand48(*seed);
-
   if (order == blas_colmajor) {
     incci = 1;
     inccij = ldc;
@@ -1277,11 +1253,11 @@ void BLAS_zgemm_testgen(int norm, enum blas_order_type order,
     tail_r_true[cij + 1] = tail_r_true_elem[1];
 
     /* Copy a_vec to the first row of A */
-    zgemm_commit_row(order, transa, m, k, a, lda, a_vec, 0);
+    zge_commit_row(order, transa, m, k, a, lda, a_vec, 0);
 
     /* set every column of B to be b_vec */
     for (j = 0; j < n; j++)
-      zgemm_commit_col(order, transb, k, n, b, ldb, b_vec, j);
+      zge_commit_col(order, transb, k, n, b, ldb, b_vec, j);
 
     /* Next fill in the rest of matrix A.
        Note that alpha and beta are now fixed.   */
@@ -1297,7 +1273,7 @@ void BLAS_zgemm_testgen(int norm, enum blas_order_type order,
       head_r_true[cij + 1] = head_r_true_elem[1];
       tail_r_true[cij] = tail_r_true_elem[0];
       tail_r_true[cij + 1] = tail_r_true_elem[1];;
-      zgemm_commit_row(order, transa, m, k, a, lda, a_vec, i);
+      zge_commit_row(order, transa, m, k, a, lda, a_vec, i);
     }
 
     /* Now fill in c and r_true */
@@ -1327,14 +1303,14 @@ void BLAS_zgemm_testgen(int norm, enum blas_order_type order,
 
 
     if (alpha_flag == 0) {
-      ((double *) c_elem)[0] = (float) drand48();
-      ((double *) c_elem)[1] = (float) drand48();
+      c_elem[0] = xrand(seed);
+      c_elem[1] = xrand(seed);
       alpha_i[0] = c_elem[0];
       alpha_i[0 + 1] = c_elem[1];
     }
     if (beta_flag == 0) {
-      ((double *) c_elem)[0] = (float) drand48();
-      ((double *) c_elem)[1] = (float) drand48();
+      c_elem[0] = xrand(seed);
+      c_elem[1] = xrand(seed);
       beta_i[0] = c_elem[0];
       beta_i[0 + 1] = c_elem[1];
     }
@@ -1364,8 +1340,8 @@ void BLAS_zgemm_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, bi = 0; i < k; i++, bi += incbi) {
       for (j = 0, bij = bi; j < n; j++, bij += incbij) {
-	((double *) b_elem)[0] = (float) drand48();
-	((double *) b_elem)[1] = (float) drand48();
+	b_elem[0] = xrand(seed);
+	b_elem[1] = xrand(seed);
 	b_i[bij] = b_elem[0];
 	b_i[bij + 1] = b_elem[1];
       }
@@ -1373,20 +1349,20 @@ void BLAS_zgemm_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < m; i++, ai += incai) {
       for (j = 0, aij = ai; j < k; j++, aij += incaij) {
-	((double *) a_elem)[0] = (float) drand48();
-	((double *) a_elem)[1] = (float) drand48();
+	a_elem[0] = xrand(seed);
+	a_elem[1] = xrand(seed);
 	a_i[aij] = a_elem[0];
 	a_i[aij + 1] = a_elem[1];
       }
     }
 
     for (i = 0, ci = 0; i < m; i++, ci += incci) {
-      zgemm_copy_row(order, transa, m, k, a, lda, a_vec, i);
+      zge_copy_row(order, transa, m, k, a, lda, a_vec, i);
 
 
 
       for (j = 0, cij = ci; j < n; j++, cij += inccij) {
-	zgemm_copy_col(order, transb, k, n, b, ldb, b_vec, j);
+	zge_copy_col(order, transb, k, n, b, ldb, b_vec, j);
 
 
 
@@ -1418,7 +1394,6 @@ void BLAS_zgemm_z_c_testgen(int norm, enum blas_order_type order,
 			    void *b, int ldb, void *c, int ldc, int *seed,
 			    double *head_r_true, double *tail_r_true)
 {
-
   int i, j;
   int cij, ci;
   int inccij, incci;
@@ -1465,8 +1440,6 @@ void BLAS_zgemm_z_c_testgen(int norm, enum blas_order_type order,
     b_vec[i + 1] = 0.0;
   }
 
-  srand48(*seed);
-
   if (order == blas_colmajor) {
     incci = 1;
     inccij = ldc;
@@ -1494,11 +1467,11 @@ void BLAS_zgemm_z_c_testgen(int norm, enum blas_order_type order,
     tail_r_true[cij + 1] = tail_r_true_elem[1];
 
     /* Copy a_vec to the first row of A */
-    zgemm_commit_row(order, transa, m, k, a, lda, a_vec, 0);
+    zge_commit_row(order, transa, m, k, a, lda, a_vec, 0);
 
     /* set every column of B to be b_vec */
     for (j = 0; j < n; j++)
-      cgemm_commit_col(order, transb, k, n, b, ldb, b_vec, j);
+      cge_commit_col(order, transb, k, n, b, ldb, b_vec, j);
 
     /* Next fill in the rest of matrix A.
        Note that alpha and beta are now fixed.   */
@@ -1514,7 +1487,7 @@ void BLAS_zgemm_z_c_testgen(int norm, enum blas_order_type order,
       head_r_true[cij + 1] = head_r_true_elem[1];
       tail_r_true[cij] = tail_r_true_elem[0];
       tail_r_true[cij + 1] = tail_r_true_elem[1];;
-      zgemm_commit_row(order, transa, m, k, a, lda, a_vec, i);
+      zge_commit_row(order, transa, m, k, a, lda, a_vec, i);
     }
 
     /* Now fill in c and r_true */
@@ -1544,14 +1517,14 @@ void BLAS_zgemm_z_c_testgen(int norm, enum blas_order_type order,
 
 
     if (alpha_flag == 0) {
-      ((double *) c_elem)[0] = (float) drand48();
-      ((double *) c_elem)[1] = (float) drand48();
+      c_elem[0] = (float) xrand(seed);
+      c_elem[1] = (float) xrand(seed);
       alpha_i[0] = c_elem[0];
       alpha_i[0 + 1] = c_elem[1];
     }
     if (beta_flag == 0) {
-      ((double *) c_elem)[0] = (float) drand48();
-      ((double *) c_elem)[1] = (float) drand48();
+      c_elem[0] = (float) xrand(seed);
+      c_elem[1] = (float) xrand(seed);
       beta_i[0] = c_elem[0];
       beta_i[0 + 1] = c_elem[1];
     }
@@ -1581,8 +1554,8 @@ void BLAS_zgemm_z_c_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, bi = 0; i < k; i++, bi += incbi) {
       for (j = 0, bij = bi; j < n; j++, bij += incbij) {
-	((float *) b_elem)[0] = (float) drand48();
-	((float *) b_elem)[1] = (float) drand48();
+	b_elem[0] = (float) xrand(seed);
+	b_elem[1] = (float) xrand(seed);
 	b_i[bij] = b_elem[0];
 	b_i[bij + 1] = b_elem[1];
       }
@@ -1590,20 +1563,20 @@ void BLAS_zgemm_z_c_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < m; i++, ai += incai) {
       for (j = 0, aij = ai; j < k; j++, aij += incaij) {
-	((double *) a_elem)[0] = (float) drand48();
-	((double *) a_elem)[1] = (float) drand48();
+	a_elem[0] = (float) xrand(seed);
+	a_elem[1] = (float) xrand(seed);
 	a_i[aij] = a_elem[0];
 	a_i[aij + 1] = a_elem[1];
       }
     }
 
     for (i = 0, ci = 0; i < m; i++, ci += incci) {
-      zgemm_copy_row(order, transa, m, k, a, lda, a_vec, i);
+      zge_copy_row(order, transa, m, k, a, lda, a_vec, i);
 
 
 
       for (j = 0, cij = ci; j < n; j++, cij += inccij) {
-	cgemm_copy_col(order, transb, k, n, b, ldb, b_vec, j);
+	cge_copy_col(order, transb, k, n, b, ldb, b_vec, j);
 
 
 
@@ -1635,7 +1608,6 @@ void BLAS_zgemm_c_z_testgen(int norm, enum blas_order_type order,
 			    void *b, int ldb, void *c, int ldc, int *seed,
 			    double *head_r_true, double *tail_r_true)
 {
-
   int i, j;
   int cij, ci;
   int inccij, incci;
@@ -1682,8 +1654,6 @@ void BLAS_zgemm_c_z_testgen(int norm, enum blas_order_type order,
     b_vec[i + 1] = 0.0;
   }
 
-  srand48(*seed);
-
   if (order == blas_colmajor) {
     incci = 1;
     inccij = ldc;
@@ -1711,11 +1681,11 @@ void BLAS_zgemm_c_z_testgen(int norm, enum blas_order_type order,
     tail_r_true[cij + 1] = tail_r_true_elem[1];
 
     /* Copy a_vec to the first row of A */
-    cgemm_commit_row(order, transa, m, k, a, lda, a_vec, 0);
+    cge_commit_row(order, transa, m, k, a, lda, a_vec, 0);
 
     /* set every column of B to be b_vec */
     for (j = 0; j < n; j++)
-      zgemm_commit_col(order, transb, k, n, b, ldb, b_vec, j);
+      zge_commit_col(order, transb, k, n, b, ldb, b_vec, j);
 
     /* Next fill in the rest of matrix A.
        Note that alpha and beta are now fixed.   */
@@ -1731,7 +1701,7 @@ void BLAS_zgemm_c_z_testgen(int norm, enum blas_order_type order,
       head_r_true[cij + 1] = head_r_true_elem[1];
       tail_r_true[cij] = tail_r_true_elem[0];
       tail_r_true[cij + 1] = tail_r_true_elem[1];;
-      cgemm_commit_row(order, transa, m, k, a, lda, a_vec, i);
+      cge_commit_row(order, transa, m, k, a, lda, a_vec, i);
     }
 
     /* Now fill in c and r_true */
@@ -1761,14 +1731,14 @@ void BLAS_zgemm_c_z_testgen(int norm, enum blas_order_type order,
 
 
     if (alpha_flag == 0) {
-      ((double *) c_elem)[0] = (float) drand48();
-      ((double *) c_elem)[1] = (float) drand48();
+      c_elem[0] = (float) xrand(seed);
+      c_elem[1] = (float) xrand(seed);
       alpha_i[0] = c_elem[0];
       alpha_i[0 + 1] = c_elem[1];
     }
     if (beta_flag == 0) {
-      ((double *) c_elem)[0] = (float) drand48();
-      ((double *) c_elem)[1] = (float) drand48();
+      c_elem[0] = (float) xrand(seed);
+      c_elem[1] = (float) xrand(seed);
       beta_i[0] = c_elem[0];
       beta_i[0 + 1] = c_elem[1];
     }
@@ -1798,8 +1768,8 @@ void BLAS_zgemm_c_z_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, bi = 0; i < k; i++, bi += incbi) {
       for (j = 0, bij = bi; j < n; j++, bij += incbij) {
-	((double *) b_elem)[0] = (float) drand48();
-	((double *) b_elem)[1] = (float) drand48();
+	b_elem[0] = (float) xrand(seed);
+	b_elem[1] = (float) xrand(seed);
 	b_i[bij] = b_elem[0];
 	b_i[bij + 1] = b_elem[1];
       }
@@ -1807,20 +1777,20 @@ void BLAS_zgemm_c_z_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < m; i++, ai += incai) {
       for (j = 0, aij = ai; j < k; j++, aij += incaij) {
-	((float *) a_elem)[0] = (float) drand48();
-	((float *) a_elem)[1] = (float) drand48();
+	a_elem[0] = (float) xrand(seed);
+	a_elem[1] = (float) xrand(seed);
 	a_i[aij] = a_elem[0];
 	a_i[aij + 1] = a_elem[1];
       }
     }
 
     for (i = 0, ci = 0; i < m; i++, ci += incci) {
-      cgemm_copy_row(order, transa, m, k, a, lda, a_vec, i);
+      cge_copy_row(order, transa, m, k, a, lda, a_vec, i);
 
 
 
       for (j = 0, cij = ci; j < n; j++, cij += inccij) {
-	zgemm_copy_col(order, transb, k, n, b, ldb, b_vec, j);
+	zge_copy_col(order, transb, k, n, b, ldb, b_vec, j);
 
 
 
@@ -1852,7 +1822,6 @@ void BLAS_zgemm_c_c_testgen(int norm, enum blas_order_type order,
 			    void *b, int ldb, void *c, int ldc, int *seed,
 			    double *head_r_true, double *tail_r_true)
 {
-
   int i, j;
   int cij, ci;
   int inccij, incci;
@@ -1899,8 +1868,6 @@ void BLAS_zgemm_c_c_testgen(int norm, enum blas_order_type order,
     b_vec[i + 1] = 0.0;
   }
 
-  srand48(*seed);
-
   if (order == blas_colmajor) {
     incci = 1;
     inccij = ldc;
@@ -1928,11 +1895,11 @@ void BLAS_zgemm_c_c_testgen(int norm, enum blas_order_type order,
     tail_r_true[cij + 1] = tail_r_true_elem[1];
 
     /* Copy a_vec to the first row of A */
-    cgemm_commit_row(order, transa, m, k, a, lda, a_vec, 0);
+    cge_commit_row(order, transa, m, k, a, lda, a_vec, 0);
 
     /* set every column of B to be b_vec */
     for (j = 0; j < n; j++)
-      cgemm_commit_col(order, transb, k, n, b, ldb, b_vec, j);
+      cge_commit_col(order, transb, k, n, b, ldb, b_vec, j);
 
     /* Next fill in the rest of matrix A.
        Note that alpha and beta are now fixed.   */
@@ -1948,7 +1915,7 @@ void BLAS_zgemm_c_c_testgen(int norm, enum blas_order_type order,
       head_r_true[cij + 1] = head_r_true_elem[1];
       tail_r_true[cij] = tail_r_true_elem[0];
       tail_r_true[cij + 1] = tail_r_true_elem[1];;
-      cgemm_commit_row(order, transa, m, k, a, lda, a_vec, i);
+      cge_commit_row(order, transa, m, k, a, lda, a_vec, i);
     }
 
     /* Now fill in c and r_true */
@@ -1978,14 +1945,14 @@ void BLAS_zgemm_c_c_testgen(int norm, enum blas_order_type order,
 
 
     if (alpha_flag == 0) {
-      ((double *) c_elem)[0] = (float) drand48();
-      ((double *) c_elem)[1] = (float) drand48();
+      c_elem[0] = (float) xrand(seed);
+      c_elem[1] = (float) xrand(seed);
       alpha_i[0] = c_elem[0];
       alpha_i[0 + 1] = c_elem[1];
     }
     if (beta_flag == 0) {
-      ((double *) c_elem)[0] = (float) drand48();
-      ((double *) c_elem)[1] = (float) drand48();
+      c_elem[0] = (float) xrand(seed);
+      c_elem[1] = (float) xrand(seed);
       beta_i[0] = c_elem[0];
       beta_i[0 + 1] = c_elem[1];
     }
@@ -2015,8 +1982,8 @@ void BLAS_zgemm_c_c_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, bi = 0; i < k; i++, bi += incbi) {
       for (j = 0, bij = bi; j < n; j++, bij += incbij) {
-	((float *) b_elem)[0] = (float) drand48();
-	((float *) b_elem)[1] = (float) drand48();
+	b_elem[0] = (float) xrand(seed);
+	b_elem[1] = (float) xrand(seed);
 	b_i[bij] = b_elem[0];
 	b_i[bij + 1] = b_elem[1];
       }
@@ -2024,20 +1991,20 @@ void BLAS_zgemm_c_c_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < m; i++, ai += incai) {
       for (j = 0, aij = ai; j < k; j++, aij += incaij) {
-	((float *) a_elem)[0] = (float) drand48();
-	((float *) a_elem)[1] = (float) drand48();
+	a_elem[0] = (float) xrand(seed);
+	a_elem[1] = (float) xrand(seed);
 	a_i[aij] = a_elem[0];
 	a_i[aij + 1] = a_elem[1];
       }
     }
 
     for (i = 0, ci = 0; i < m; i++, ci += incci) {
-      cgemm_copy_row(order, transa, m, k, a, lda, a_vec, i);
+      cge_copy_row(order, transa, m, k, a, lda, a_vec, i);
 
 
 
       for (j = 0, cij = ci; j < n; j++, cij += inccij) {
-	cgemm_copy_col(order, transb, k, n, b, ldb, b_vec, j);
+	cge_copy_col(order, transb, k, n, b, ldb, b_vec, j);
 
 
 
@@ -2069,7 +2036,6 @@ void BLAS_cgemm_c_s_testgen(int norm, enum blas_order_type order,
 			    float *b, int ldb, void *c, int ldc, int *seed,
 			    double *head_r_true, double *tail_r_true)
 {
-
   int i, j;
   int cij, ci;
   int inccij, incci;
@@ -2115,8 +2081,6 @@ void BLAS_cgemm_c_s_testgen(int norm, enum blas_order_type order,
     b_vec[i] = 0.0;
   }
 
-  srand48(*seed);
-
   if (order == blas_colmajor) {
     incci = 1;
     inccij = ldc;
@@ -2144,11 +2108,11 @@ void BLAS_cgemm_c_s_testgen(int norm, enum blas_order_type order,
     tail_r_true[cij + 1] = tail_r_true_elem[1];
 
     /* Copy a_vec to the first row of A */
-    cgemm_commit_row(order, transa, m, k, a, lda, a_vec, 0);
+    cge_commit_row(order, transa, m, k, a, lda, a_vec, 0);
 
     /* set every column of B to be b_vec */
     for (j = 0; j < n; j++)
-      sgemm_commit_col(order, transb, k, n, b, ldb, b_vec, j);
+      sge_commit_col(order, transb, k, n, b, ldb, b_vec, j);
 
     /* Next fill in the rest of matrix A.
        Note that alpha and beta are now fixed.   */
@@ -2164,7 +2128,7 @@ void BLAS_cgemm_c_s_testgen(int norm, enum blas_order_type order,
       head_r_true[cij + 1] = head_r_true_elem[1];
       tail_r_true[cij] = tail_r_true_elem[0];
       tail_r_true[cij + 1] = tail_r_true_elem[1];;
-      cgemm_commit_row(order, transa, m, k, a, lda, a_vec, i);
+      cge_commit_row(order, transa, m, k, a, lda, a_vec, i);
     }
 
     /* Now fill in c and r_true */
@@ -2197,14 +2161,14 @@ void BLAS_cgemm_c_s_testgen(int norm, enum blas_order_type order,
 
 
     if (alpha_flag == 0) {
-      ((float *) c_elem)[0] = (float) drand48();
-      ((float *) c_elem)[1] = (float) drand48();
+      c_elem[0] = xrand(seed);
+      c_elem[1] = xrand(seed);
       alpha_i[0] = c_elem[0];
       alpha_i[0 + 1] = c_elem[1];
     }
     if (beta_flag == 0) {
-      ((float *) c_elem)[0] = (float) drand48();
-      ((float *) c_elem)[1] = (float) drand48();
+      c_elem[0] = xrand(seed);
+      c_elem[1] = xrand(seed);
       beta_i[0] = c_elem[0];
       beta_i[0 + 1] = c_elem[1];
     }
@@ -2234,27 +2198,27 @@ void BLAS_cgemm_c_s_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, bi = 0; i < k; i++, bi += incbi) {
       for (j = 0, bij = bi; j < n; j++, bij += incbij) {
-	b_elem = (float) drand48();
+	b_elem = xrand(seed);
 	b_i[bij] = b_elem;
       }
     }
 
     for (i = 0, ai = 0; i < m; i++, ai += incai) {
       for (j = 0, aij = ai; j < k; j++, aij += incaij) {
-	((float *) a_elem)[0] = (float) drand48();
-	((float *) a_elem)[1] = (float) drand48();
+	a_elem[0] = xrand(seed);
+	a_elem[1] = xrand(seed);
 	a_i[aij] = a_elem[0];
 	a_i[aij + 1] = a_elem[1];
       }
     }
 
     for (i = 0, ci = 0; i < m; i++, ci += incci) {
-      cgemm_copy_row(order, transa, m, k, a, lda, a_vec, i);
+      cge_copy_row(order, transa, m, k, a, lda, a_vec, i);
 
 
 
       for (j = 0, cij = ci; j < n; j++, cij += inccij) {
-	sgemm_copy_col(order, transb, k, n, b, ldb, b_vec, j);
+	sge_copy_col(order, transb, k, n, b, ldb, b_vec, j);
 
 	{
 	  int r;
@@ -2294,7 +2258,6 @@ void BLAS_cgemm_s_c_testgen(int norm, enum blas_order_type order,
 			    void *b, int ldb, void *c, int ldc, int *seed,
 			    double *head_r_true, double *tail_r_true)
 {
-
   int i, j;
   int cij, ci;
   int inccij, incci;
@@ -2340,8 +2303,6 @@ void BLAS_cgemm_s_c_testgen(int norm, enum blas_order_type order,
     b_vec[i + 1] = 0.0;
   }
 
-  srand48(*seed);
-
   if (order == blas_colmajor) {
     incci = 1;
     inccij = ldc;
@@ -2369,11 +2330,11 @@ void BLAS_cgemm_s_c_testgen(int norm, enum blas_order_type order,
     tail_r_true[cij + 1] = tail_r_true_elem[1];
 
     /* Copy a_vec to the first row of A */
-    sgemm_commit_row(order, transa, m, k, a, lda, a_vec, 0);
+    sge_commit_row(order, transa, m, k, a, lda, a_vec, 0);
 
     /* set every column of B to be b_vec */
     for (j = 0; j < n; j++)
-      cgemm_commit_col(order, transb, k, n, b, ldb, b_vec, j);
+      cge_commit_col(order, transb, k, n, b, ldb, b_vec, j);
 
     /* Next fill in the rest of matrix A.
        Note that alpha and beta are now fixed.   */
@@ -2389,7 +2350,7 @@ void BLAS_cgemm_s_c_testgen(int norm, enum blas_order_type order,
       head_r_true[cij + 1] = head_r_true_elem[1];
       tail_r_true[cij] = tail_r_true_elem[0];
       tail_r_true[cij + 1] = tail_r_true_elem[1];;
-      sgemm_commit_row(order, transa, m, k, a, lda, a_vec, i);
+      sge_commit_row(order, transa, m, k, a, lda, a_vec, i);
     }
 
     /* Now fill in c and r_true */
@@ -2422,14 +2383,14 @@ void BLAS_cgemm_s_c_testgen(int norm, enum blas_order_type order,
 
 
     if (alpha_flag == 0) {
-      ((float *) c_elem)[0] = (float) drand48();
-      ((float *) c_elem)[1] = (float) drand48();
+      c_elem[0] = (float) xrand(seed);
+      c_elem[1] = (float) xrand(seed);
       alpha_i[0] = c_elem[0];
       alpha_i[0 + 1] = c_elem[1];
     }
     if (beta_flag == 0) {
-      ((float *) c_elem)[0] = (float) drand48();
-      ((float *) c_elem)[1] = (float) drand48();
+      c_elem[0] = (float) xrand(seed);
+      c_elem[1] = (float) xrand(seed);
       beta_i[0] = c_elem[0];
       beta_i[0 + 1] = c_elem[1];
     }
@@ -2459,8 +2420,8 @@ void BLAS_cgemm_s_c_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, bi = 0; i < k; i++, bi += incbi) {
       for (j = 0, bij = bi; j < n; j++, bij += incbij) {
-	((float *) b_elem)[0] = (float) drand48();
-	((float *) b_elem)[1] = (float) drand48();
+	b_elem[0] = (float) xrand(seed);
+	b_elem[1] = (float) xrand(seed);
 	b_i[bij] = b_elem[0];
 	b_i[bij + 1] = b_elem[1];
       }
@@ -2468,13 +2429,13 @@ void BLAS_cgemm_s_c_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < m; i++, ai += incai) {
       for (j = 0, aij = ai; j < k; j++, aij += incaij) {
-	a_elem = (float) drand48();
+	a_elem = (float) xrand(seed);
 	a_i[aij] = a_elem;
       }
     }
 
     for (i = 0, ci = 0; i < m; i++, ci += incci) {
-      sgemm_copy_row(order, transa, m, k, a, lda, a_vec, i);
+      sge_copy_row(order, transa, m, k, a, lda, a_vec, i);
 
       {
 	int r;
@@ -2485,7 +2446,7 @@ void BLAS_cgemm_s_c_testgen(int norm, enum blas_order_type order,
       }
 
       for (j = 0, cij = ci; j < n; j++, cij += inccij) {
-	cgemm_copy_col(order, transb, k, n, b, ldb, b_vec, j);
+	cge_copy_col(order, transb, k, n, b, ldb, b_vec, j);
 
 
 
@@ -2519,7 +2480,6 @@ void BLAS_cgemm_s_s_testgen(int norm, enum blas_order_type order,
 			    float *b, int ldb, void *c, int ldc, int *seed,
 			    double *head_r_true, double *tail_r_true)
 {
-
   int i, j;
   int cij, ci;
   int inccij, incci;
@@ -2564,8 +2524,6 @@ void BLAS_cgemm_s_s_testgen(int norm, enum blas_order_type order,
     b_vec[i] = 0.0;
   }
 
-  srand48(*seed);
-
   if (order == blas_colmajor) {
     incci = 1;
     inccij = ldc;
@@ -2593,11 +2551,11 @@ void BLAS_cgemm_s_s_testgen(int norm, enum blas_order_type order,
     tail_r_true[cij + 1] = tail_r_true_elem[1];
 
     /* Copy a_vec to the first row of A */
-    sgemm_commit_row(order, transa, m, k, a, lda, a_vec, 0);
+    sge_commit_row(order, transa, m, k, a, lda, a_vec, 0);
 
     /* set every column of B to be b_vec */
     for (j = 0; j < n; j++)
-      sgemm_commit_col(order, transb, k, n, b, ldb, b_vec, j);
+      sge_commit_col(order, transb, k, n, b, ldb, b_vec, j);
 
     /* Next fill in the rest of matrix A.
        Note that alpha and beta are now fixed.   */
@@ -2613,7 +2571,7 @@ void BLAS_cgemm_s_s_testgen(int norm, enum blas_order_type order,
       head_r_true[cij + 1] = head_r_true_elem[1];
       tail_r_true[cij] = tail_r_true_elem[0];
       tail_r_true[cij + 1] = tail_r_true_elem[1];;
-      sgemm_commit_row(order, transa, m, k, a, lda, a_vec, i);
+      sge_commit_row(order, transa, m, k, a, lda, a_vec, i);
     }
 
     /* Now fill in c and r_true */
@@ -2649,14 +2607,14 @@ void BLAS_cgemm_s_s_testgen(int norm, enum blas_order_type order,
 
 
     if (alpha_flag == 0) {
-      ((float *) c_elem)[0] = (float) drand48();
-      ((float *) c_elem)[1] = (float) drand48();
+      c_elem[0] = (float) xrand(seed);
+      c_elem[1] = (float) xrand(seed);
       alpha_i[0] = c_elem[0];
       alpha_i[0 + 1] = c_elem[1];
     }
     if (beta_flag == 0) {
-      ((float *) c_elem)[0] = (float) drand48();
-      ((float *) c_elem)[1] = (float) drand48();
+      c_elem[0] = (float) xrand(seed);
+      c_elem[1] = (float) xrand(seed);
       beta_i[0] = c_elem[0];
       beta_i[0 + 1] = c_elem[1];
     }
@@ -2686,20 +2644,20 @@ void BLAS_cgemm_s_s_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, bi = 0; i < k; i++, bi += incbi) {
       for (j = 0, bij = bi; j < n; j++, bij += incbij) {
-	b_elem = (float) drand48();
+	b_elem = (float) xrand(seed);
 	b_i[bij] = b_elem;
       }
     }
 
     for (i = 0, ai = 0; i < m; i++, ai += incai) {
       for (j = 0, aij = ai; j < k; j++, aij += incaij) {
-	a_elem = (float) drand48();
+	a_elem = (float) xrand(seed);
 	a_i[aij] = a_elem;
       }
     }
 
     for (i = 0, ci = 0; i < m; i++, ci += incci) {
-      sgemm_copy_row(order, transa, m, k, a, lda, a_vec, i);
+      sge_copy_row(order, transa, m, k, a, lda, a_vec, i);
 
       {
 	int r;
@@ -2710,7 +2668,7 @@ void BLAS_cgemm_s_s_testgen(int norm, enum blas_order_type order,
       }
 
       for (j = 0, cij = ci; j < n; j++, cij += inccij) {
-	sgemm_copy_col(order, transb, k, n, b, ldb, b_vec, j);
+	sge_copy_col(order, transb, k, n, b, ldb, b_vec, j);
 
 	{
 	  int r;
@@ -2750,7 +2708,6 @@ void BLAS_zgemm_z_d_testgen(int norm, enum blas_order_type order,
 			    double *b, int ldb, void *c, int ldc, int *seed,
 			    double *head_r_true, double *tail_r_true)
 {
-
   int i, j;
   int cij, ci;
   int inccij, incci;
@@ -2796,8 +2753,6 @@ void BLAS_zgemm_z_d_testgen(int norm, enum blas_order_type order,
     b_vec[i] = 0.0;
   }
 
-  srand48(*seed);
-
   if (order == blas_colmajor) {
     incci = 1;
     inccij = ldc;
@@ -2825,11 +2780,11 @@ void BLAS_zgemm_z_d_testgen(int norm, enum blas_order_type order,
     tail_r_true[cij + 1] = tail_r_true_elem[1];
 
     /* Copy a_vec to the first row of A */
-    zgemm_commit_row(order, transa, m, k, a, lda, a_vec, 0);
+    zge_commit_row(order, transa, m, k, a, lda, a_vec, 0);
 
     /* set every column of B to be b_vec */
     for (j = 0; j < n; j++)
-      dgemm_commit_col(order, transb, k, n, b, ldb, b_vec, j);
+      dge_commit_col(order, transb, k, n, b, ldb, b_vec, j);
 
     /* Next fill in the rest of matrix A.
        Note that alpha and beta are now fixed.   */
@@ -2845,7 +2800,7 @@ void BLAS_zgemm_z_d_testgen(int norm, enum blas_order_type order,
       head_r_true[cij + 1] = head_r_true_elem[1];
       tail_r_true[cij] = tail_r_true_elem[0];
       tail_r_true[cij + 1] = tail_r_true_elem[1];;
-      zgemm_commit_row(order, transa, m, k, a, lda, a_vec, i);
+      zge_commit_row(order, transa, m, k, a, lda, a_vec, i);
     }
 
     /* Now fill in c and r_true */
@@ -2878,14 +2833,14 @@ void BLAS_zgemm_z_d_testgen(int norm, enum blas_order_type order,
 
 
     if (alpha_flag == 0) {
-      ((double *) c_elem)[0] = (float) drand48();
-      ((double *) c_elem)[1] = (float) drand48();
+      c_elem[0] = xrand(seed);
+      c_elem[1] = xrand(seed);
       alpha_i[0] = c_elem[0];
       alpha_i[0 + 1] = c_elem[1];
     }
     if (beta_flag == 0) {
-      ((double *) c_elem)[0] = (float) drand48();
-      ((double *) c_elem)[1] = (float) drand48();
+      c_elem[0] = xrand(seed);
+      c_elem[1] = xrand(seed);
       beta_i[0] = c_elem[0];
       beta_i[0 + 1] = c_elem[1];
     }
@@ -2915,27 +2870,27 @@ void BLAS_zgemm_z_d_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, bi = 0; i < k; i++, bi += incbi) {
       for (j = 0, bij = bi; j < n; j++, bij += incbij) {
-	b_elem = (float) drand48();
+	b_elem = xrand(seed);
 	b_i[bij] = b_elem;
       }
     }
 
     for (i = 0, ai = 0; i < m; i++, ai += incai) {
       for (j = 0, aij = ai; j < k; j++, aij += incaij) {
-	((double *) a_elem)[0] = (float) drand48();
-	((double *) a_elem)[1] = (float) drand48();
+	a_elem[0] = xrand(seed);
+	a_elem[1] = xrand(seed);
 	a_i[aij] = a_elem[0];
 	a_i[aij + 1] = a_elem[1];
       }
     }
 
     for (i = 0, ci = 0; i < m; i++, ci += incci) {
-      zgemm_copy_row(order, transa, m, k, a, lda, a_vec, i);
+      zge_copy_row(order, transa, m, k, a, lda, a_vec, i);
 
 
 
       for (j = 0, cij = ci; j < n; j++, cij += inccij) {
-	dgemm_copy_col(order, transb, k, n, b, ldb, b_vec, j);
+	dge_copy_col(order, transb, k, n, b, ldb, b_vec, j);
 
 	{
 	  int r;
@@ -2975,7 +2930,6 @@ void BLAS_zgemm_d_z_testgen(int norm, enum blas_order_type order,
 			    void *b, int ldb, void *c, int ldc, int *seed,
 			    double *head_r_true, double *tail_r_true)
 {
-
   int i, j;
   int cij, ci;
   int inccij, incci;
@@ -3021,8 +2975,6 @@ void BLAS_zgemm_d_z_testgen(int norm, enum blas_order_type order,
     b_vec[i + 1] = 0.0;
   }
 
-  srand48(*seed);
-
   if (order == blas_colmajor) {
     incci = 1;
     inccij = ldc;
@@ -3050,11 +3002,11 @@ void BLAS_zgemm_d_z_testgen(int norm, enum blas_order_type order,
     tail_r_true[cij + 1] = tail_r_true_elem[1];
 
     /* Copy a_vec to the first row of A */
-    dgemm_commit_row(order, transa, m, k, a, lda, a_vec, 0);
+    dge_commit_row(order, transa, m, k, a, lda, a_vec, 0);
 
     /* set every column of B to be b_vec */
     for (j = 0; j < n; j++)
-      zgemm_commit_col(order, transb, k, n, b, ldb, b_vec, j);
+      zge_commit_col(order, transb, k, n, b, ldb, b_vec, j);
 
     /* Next fill in the rest of matrix A.
        Note that alpha and beta are now fixed.   */
@@ -3070,7 +3022,7 @@ void BLAS_zgemm_d_z_testgen(int norm, enum blas_order_type order,
       head_r_true[cij + 1] = head_r_true_elem[1];
       tail_r_true[cij] = tail_r_true_elem[0];
       tail_r_true[cij + 1] = tail_r_true_elem[1];;
-      dgemm_commit_row(order, transa, m, k, a, lda, a_vec, i);
+      dge_commit_row(order, transa, m, k, a, lda, a_vec, i);
     }
 
     /* Now fill in c and r_true */
@@ -3103,14 +3055,14 @@ void BLAS_zgemm_d_z_testgen(int norm, enum blas_order_type order,
 
 
     if (alpha_flag == 0) {
-      ((double *) c_elem)[0] = (float) drand48();
-      ((double *) c_elem)[1] = (float) drand48();
+      c_elem[0] = (float) xrand(seed);
+      c_elem[1] = (float) xrand(seed);
       alpha_i[0] = c_elem[0];
       alpha_i[0 + 1] = c_elem[1];
     }
     if (beta_flag == 0) {
-      ((double *) c_elem)[0] = (float) drand48();
-      ((double *) c_elem)[1] = (float) drand48();
+      c_elem[0] = (float) xrand(seed);
+      c_elem[1] = (float) xrand(seed);
       beta_i[0] = c_elem[0];
       beta_i[0 + 1] = c_elem[1];
     }
@@ -3140,8 +3092,8 @@ void BLAS_zgemm_d_z_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, bi = 0; i < k; i++, bi += incbi) {
       for (j = 0, bij = bi; j < n; j++, bij += incbij) {
-	((double *) b_elem)[0] = (float) drand48();
-	((double *) b_elem)[1] = (float) drand48();
+	b_elem[0] = (float) xrand(seed);
+	b_elem[1] = (float) xrand(seed);
 	b_i[bij] = b_elem[0];
 	b_i[bij + 1] = b_elem[1];
       }
@@ -3149,13 +3101,13 @@ void BLAS_zgemm_d_z_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < m; i++, ai += incai) {
       for (j = 0, aij = ai; j < k; j++, aij += incaij) {
-	a_elem = (float) drand48();
+	a_elem = (float) xrand(seed);
 	a_i[aij] = a_elem;
       }
     }
 
     for (i = 0, ci = 0; i < m; i++, ci += incci) {
-      dgemm_copy_row(order, transa, m, k, a, lda, a_vec, i);
+      dge_copy_row(order, transa, m, k, a, lda, a_vec, i);
 
       {
 	int r;
@@ -3166,7 +3118,7 @@ void BLAS_zgemm_d_z_testgen(int norm, enum blas_order_type order,
       }
 
       for (j = 0, cij = ci; j < n; j++, cij += inccij) {
-	zgemm_copy_col(order, transb, k, n, b, ldb, b_vec, j);
+	zge_copy_col(order, transb, k, n, b, ldb, b_vec, j);
 
 
 
@@ -3200,7 +3152,6 @@ void BLAS_zgemm_d_d_testgen(int norm, enum blas_order_type order,
 			    double *b, int ldb, void *c, int ldc, int *seed,
 			    double *head_r_true, double *tail_r_true)
 {
-
   int i, j;
   int cij, ci;
   int inccij, incci;
@@ -3245,8 +3196,6 @@ void BLAS_zgemm_d_d_testgen(int norm, enum blas_order_type order,
     b_vec[i] = 0.0;
   }
 
-  srand48(*seed);
-
   if (order == blas_colmajor) {
     incci = 1;
     inccij = ldc;
@@ -3274,11 +3223,11 @@ void BLAS_zgemm_d_d_testgen(int norm, enum blas_order_type order,
     tail_r_true[cij + 1] = tail_r_true_elem[1];
 
     /* Copy a_vec to the first row of A */
-    dgemm_commit_row(order, transa, m, k, a, lda, a_vec, 0);
+    dge_commit_row(order, transa, m, k, a, lda, a_vec, 0);
 
     /* set every column of B to be b_vec */
     for (j = 0; j < n; j++)
-      dgemm_commit_col(order, transb, k, n, b, ldb, b_vec, j);
+      dge_commit_col(order, transb, k, n, b, ldb, b_vec, j);
 
     /* Next fill in the rest of matrix A.
        Note that alpha and beta are now fixed.   */
@@ -3294,7 +3243,7 @@ void BLAS_zgemm_d_d_testgen(int norm, enum blas_order_type order,
       head_r_true[cij + 1] = head_r_true_elem[1];
       tail_r_true[cij] = tail_r_true_elem[0];
       tail_r_true[cij + 1] = tail_r_true_elem[1];;
-      dgemm_commit_row(order, transa, m, k, a, lda, a_vec, i);
+      dge_commit_row(order, transa, m, k, a, lda, a_vec, i);
     }
 
     /* Now fill in c and r_true */
@@ -3330,14 +3279,14 @@ void BLAS_zgemm_d_d_testgen(int norm, enum blas_order_type order,
 
 
     if (alpha_flag == 0) {
-      ((double *) c_elem)[0] = (float) drand48();
-      ((double *) c_elem)[1] = (float) drand48();
+      c_elem[0] = (float) xrand(seed);
+      c_elem[1] = (float) xrand(seed);
       alpha_i[0] = c_elem[0];
       alpha_i[0 + 1] = c_elem[1];
     }
     if (beta_flag == 0) {
-      ((double *) c_elem)[0] = (float) drand48();
-      ((double *) c_elem)[1] = (float) drand48();
+      c_elem[0] = (float) xrand(seed);
+      c_elem[1] = (float) xrand(seed);
       beta_i[0] = c_elem[0];
       beta_i[0 + 1] = c_elem[1];
     }
@@ -3367,20 +3316,20 @@ void BLAS_zgemm_d_d_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, bi = 0; i < k; i++, bi += incbi) {
       for (j = 0, bij = bi; j < n; j++, bij += incbij) {
-	b_elem = (float) drand48();
+	b_elem = (float) xrand(seed);
 	b_i[bij] = b_elem;
       }
     }
 
     for (i = 0, ai = 0; i < m; i++, ai += incai) {
       for (j = 0, aij = ai; j < k; j++, aij += incaij) {
-	a_elem = (float) drand48();
+	a_elem = (float) xrand(seed);
 	a_i[aij] = a_elem;
       }
     }
 
     for (i = 0, ci = 0; i < m; i++, ci += incci) {
-      dgemm_copy_row(order, transa, m, k, a, lda, a_vec, i);
+      dge_copy_row(order, transa, m, k, a, lda, a_vec, i);
 
       {
 	int r;
@@ -3391,7 +3340,7 @@ void BLAS_zgemm_d_d_testgen(int norm, enum blas_order_type order,
       }
 
       for (j = 0, cij = ci; j < n; j++, cij += inccij) {
-	dgemm_copy_col(order, transb, k, n, b, ldb, b_vec, j);
+	dge_copy_col(order, transb, k, n, b, ldb, b_vec, j);
 
 	{
 	  int r;

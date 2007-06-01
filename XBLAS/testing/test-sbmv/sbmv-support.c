@@ -623,7 +623,7 @@ void sprint_sbmv_matrix(float *a, int n, int k, int lda,
 
   for (row = 0; row < n; row++) {
     ssbmv_copy_row(order, uplo, n, a, k, lda, x, row);
-    sprint_vector(x, n, 1);
+    sprint_vector(x, n, 1, NULL);
   }
   printf("\n");
   blas_free(x);
@@ -642,7 +642,7 @@ void dprint_sbmv_matrix(double *a, int n, int k, int lda,
 
   for (row = 0; row < n; row++) {
     dsbmv_copy_row(order, uplo, n, a, k, lda, x, row);
-    dprint_vector(x, n, 1);
+    dprint_vector(x, n, 1, NULL);
   }
   printf("\n");
   blas_free(x);
@@ -661,7 +661,7 @@ void cprint_sbmv_matrix(void *a, int n, int k, int lda,
 
   for (row = 0; row < n; row++) {
     csbmv_copy_row(order, uplo, n, a, k, lda, x, row);
-    cprint_vector(x, n, 1);
+    cprint_vector(x, n, 1, NULL);
   }
   printf("\n");
   blas_free(x);
@@ -680,7 +680,7 @@ void zprint_sbmv_matrix(void *a, int n, int k, int lda,
 
   for (row = 0; row < n; row++) {
     zsbmv_copy_row(order, uplo, n, a, k, lda, x, row);
-    zprint_vector(x, n, 1);
+    zprint_vector(x, n, 1, NULL);
   }
   printf("\n");
   blas_free(x);

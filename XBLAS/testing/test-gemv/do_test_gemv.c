@@ -100,7 +100,6 @@ double do_test_dgemv_d_s(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incA;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -177,8 +176,7 @@ double do_test_dgemv_d_s(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incA = 1;
-
+  incx_gen = incy_gen = 1;
 
 
 
@@ -187,36 +185,21 @@ double do_test_dgemv_d_s(int m, int n,
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-  }
   y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double));
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-  }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-  }
   temp = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incA; i += incA) {
-    temp[i] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double));
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double));
@@ -227,7 +210,6 @@ double do_test_dgemv_d_s(int m, int n,
   if (max_mn > 0 && ratios == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-
   A =
     (double *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(double));
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && A == NULL) {
@@ -358,11 +340,6 @@ double do_test_dgemv_d_s(int m, int n,
 		    incx = incx_val;
 
 
-		    /* zero out x */
-		    for (j = 0; j < n_i * 2 * incx_gen; j++) {
-		      x[j] = 0.0;
-		    }
-
 		    /* set x starting index */
 		    ix = 0;
 		    if (incx < 0)
@@ -383,11 +360,6 @@ double do_test_dgemv_d_s(int m, int n,
 		      /* setting incy */
 		      incy = incy_val;
 
-
-		      /* zero out vector */
-		      for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			y[j] = 0.0;
-		      }
 
 		      /* set y starting index */
 		      iy = 0;
@@ -416,8 +388,8 @@ double do_test_dgemv_d_s(int m, int n,
 		      if (m > 0 && n > 0)
 			for (j = 0, k = 0; j < m_i; j++, k += incy_gen) {
 			  /* copy row j of A to temp */
-			  dgemv_copy(order_type, trans_type, m, n, A, lda,
-				     temp, j);
+			  dge_copy_row(order_type, trans_type, m_i, n_i, A,
+				       lda, temp, j);
 
 			  test_BLAS_ddot_d_s(n_i, blas_no_conj,
 					     alpha, beta, y_gen[k],
@@ -515,32 +487,27 @@ double do_test_dgemv_d_s(int m, int n,
 			  printf("      A=");
 			  for (j = 0; j < m_i; j++) {
 			    /* copy row j of A to temp */
-			    dgemv_copy(order_type, trans_type, m, n, A, lda,
-				       temp, j);
+			    dge_copy_row(order_type, trans_type, m_i, n_i, A,
+					 lda, temp, j);
 
 			    if (j > 0)
 			      printf("        ");
-			    for (k = 0; k < n_i * incA; k += incA) {
-			      printf("%.16e", temp[k]);
-			      printf("  ");
-			    }
-			    printf("\n");
+			    dprint_vector(temp, n_i, 1, NULL);
 			  }
 
 			  for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
 			    if (j < n_i) {
 			      printf("      ");
-			      printf("x[%d]=%.8e", ix, x[ix]);
+			      printf("%16.8e", x[ix]);
 			      printf("\n");
 			    }
 			    if (k < m_i) {
 			      printf("      ");
-			      printf("y_gen[%d]=%.16e", k * incy_gen,
-				     y_gen[k * incy_gen]);
+			      printf("%24.16e", y_gen[k * incy_gen]);
 			      printf("\n");
 			      printf("      ");
-			      printf("y_final[%d]=", iy);
-			      printf("%.16e", y[iy]);
+			      printf("y_final[%d] = ", iy);
+			      printf("%24.16e", y[iy]);
 			      printf("\n");
 			    }
 			    ix += incx;
@@ -548,16 +515,17 @@ double do_test_dgemv_d_s(int m, int n,
 			  }
 
 			  printf("      ");
-			  printf("alpha=%.16e", alpha);
+			  printf("alpha = ");
+			  printf("%24.16e", alpha);
 			  printf("\n      ");
-			  printf("beta=%.16e", beta);
+			  printf("beta = ");
+			  printf("%24.16e", beta);
 			  printf("\n");
 			  for (j = 0, k = 0; j < m_i * incy_gen;
 			       j += incy_gen, k++) {
 			    printf("      ");
-			    printf
-			      ("head_r_true[%d]=%.16e, tail_r_true[%d]=%.16e",
-			       j, head_r_true[j], j, tail_r_true[j]);
+			    printf("[%24.16e, %24.16e]", head_r_true[j],
+				   tail_r_true[j]);
 			    printf(", ratio[%d]=%.4e\n", k, ratios[k]);
 			  }
 
@@ -720,7 +688,6 @@ double do_test_dgemv_s_d(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incA;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -797,8 +764,7 @@ double do_test_dgemv_s_d(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incA = 1;
-
+  incx_gen = incy_gen = 1;
 
 
 
@@ -807,36 +773,21 @@ double do_test_dgemv_s_d(int m, int n,
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-  }
   y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double));
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
   }
   x_gen = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-  }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-  }
   temp = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incA; i += incA) {
-    temp[i] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double));
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double));
@@ -847,7 +798,6 @@ double do_test_dgemv_s_d(int m, int n,
   if (max_mn > 0 && ratios == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-
   A = (float *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(float));
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && A == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -977,11 +927,6 @@ double do_test_dgemv_s_d(int m, int n,
 		    incx = incx_val;
 
 
-		    /* zero out x */
-		    for (j = 0; j < n_i * 2 * incx_gen; j++) {
-		      x[j] = 0.0;
-		    }
-
 		    /* set x starting index */
 		    ix = 0;
 		    if (incx < 0)
@@ -1002,11 +947,6 @@ double do_test_dgemv_s_d(int m, int n,
 		      /* setting incy */
 		      incy = incy_val;
 
-
-		      /* zero out vector */
-		      for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			y[j] = 0.0;
-		      }
 
 		      /* set y starting index */
 		      iy = 0;
@@ -1035,8 +975,8 @@ double do_test_dgemv_s_d(int m, int n,
 		      if (m > 0 && n > 0)
 			for (j = 0, k = 0; j < m_i; j++, k += incy_gen) {
 			  /* copy row j of A to temp */
-			  sgemv_copy(order_type, trans_type, m, n, A, lda,
-				     temp, j);
+			  sge_copy_row(order_type, trans_type, m_i, n_i, A,
+				       lda, temp, j);
 
 			  test_BLAS_ddot_s_d(n_i, blas_no_conj,
 					     alpha, beta, y_gen[k],
@@ -1134,32 +1074,27 @@ double do_test_dgemv_s_d(int m, int n,
 			  printf("      A=");
 			  for (j = 0; j < m_i; j++) {
 			    /* copy row j of A to temp */
-			    sgemv_copy(order_type, trans_type, m, n, A, lda,
-				       temp, j);
+			    sge_copy_row(order_type, trans_type, m_i, n_i, A,
+					 lda, temp, j);
 
 			    if (j > 0)
 			      printf("        ");
-			    for (k = 0; k < n_i * incA; k += incA) {
-			      printf("%.8e", temp[k]);
-			      printf("  ");
-			    }
-			    printf("\n");
+			    sprint_vector(temp, n_i, 1, NULL);
 			  }
 
 			  for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
 			    if (j < n_i) {
 			      printf("      ");
-			      printf("x[%d]=%.16e", ix, x[ix]);
+			      printf("%24.16e", x[ix]);
 			      printf("\n");
 			    }
 			    if (k < m_i) {
 			      printf("      ");
-			      printf("y_gen[%d]=%.16e", k * incy_gen,
-				     y_gen[k * incy_gen]);
+			      printf("%24.16e", y_gen[k * incy_gen]);
 			      printf("\n");
 			      printf("      ");
-			      printf("y_final[%d]=", iy);
-			      printf("%.16e", y[iy]);
+			      printf("y_final[%d] = ", iy);
+			      printf("%24.16e", y[iy]);
 			      printf("\n");
 			    }
 			    ix += incx;
@@ -1167,16 +1102,17 @@ double do_test_dgemv_s_d(int m, int n,
 			  }
 
 			  printf("      ");
-			  printf("alpha=%.16e", alpha);
+			  printf("alpha = ");
+			  printf("%24.16e", alpha);
 			  printf("\n      ");
-			  printf("beta=%.16e", beta);
+			  printf("beta = ");
+			  printf("%24.16e", beta);
 			  printf("\n");
 			  for (j = 0, k = 0; j < m_i * incy_gen;
 			       j += incy_gen, k++) {
 			    printf("      ");
-			    printf
-			      ("head_r_true[%d]=%.16e, tail_r_true[%d]=%.16e",
-			       j, head_r_true[j], j, tail_r_true[j]);
+			    printf("[%24.16e, %24.16e]", head_r_true[j],
+				   tail_r_true[j]);
 			    printf(", ratio[%d]=%.4e\n", k, ratios[k]);
 			  }
 
@@ -1339,7 +1275,6 @@ double do_test_dgemv_s_s(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incA;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -1416,8 +1351,7 @@ double do_test_dgemv_s_s(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incA = 1;
-
+  incx_gen = incy_gen = 1;
 
 
 
@@ -1426,36 +1360,21 @@ double do_test_dgemv_s_s(int m, int n,
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-  }
   y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double));
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-  }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-  }
   temp = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incA; i += incA) {
-    temp[i] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double));
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double));
@@ -1466,7 +1385,6 @@ double do_test_dgemv_s_s(int m, int n,
   if (max_mn > 0 && ratios == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-
   A = (float *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(float));
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && A == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -1596,11 +1514,6 @@ double do_test_dgemv_s_s(int m, int n,
 		    incx = incx_val;
 
 
-		    /* zero out x */
-		    for (j = 0; j < n_i * 2 * incx_gen; j++) {
-		      x[j] = 0.0;
-		    }
-
 		    /* set x starting index */
 		    ix = 0;
 		    if (incx < 0)
@@ -1621,11 +1534,6 @@ double do_test_dgemv_s_s(int m, int n,
 		      /* setting incy */
 		      incy = incy_val;
 
-
-		      /* zero out vector */
-		      for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			y[j] = 0.0;
-		      }
 
 		      /* set y starting index */
 		      iy = 0;
@@ -1654,8 +1562,8 @@ double do_test_dgemv_s_s(int m, int n,
 		      if (m > 0 && n > 0)
 			for (j = 0, k = 0; j < m_i; j++, k += incy_gen) {
 			  /* copy row j of A to temp */
-			  sgemv_copy(order_type, trans_type, m, n, A, lda,
-				     temp, j);
+			  sge_copy_row(order_type, trans_type, m_i, n_i, A,
+				       lda, temp, j);
 
 			  test_BLAS_ddot_s_s(n_i, blas_no_conj,
 					     alpha, beta, y_gen[k],
@@ -1753,32 +1661,27 @@ double do_test_dgemv_s_s(int m, int n,
 			  printf("      A=");
 			  for (j = 0; j < m_i; j++) {
 			    /* copy row j of A to temp */
-			    sgemv_copy(order_type, trans_type, m, n, A, lda,
-				       temp, j);
+			    sge_copy_row(order_type, trans_type, m_i, n_i, A,
+					 lda, temp, j);
 
 			    if (j > 0)
 			      printf("        ");
-			    for (k = 0; k < n_i * incA; k += incA) {
-			      printf("%.8e", temp[k]);
-			      printf("  ");
-			    }
-			    printf("\n");
+			    sprint_vector(temp, n_i, 1, NULL);
 			  }
 
 			  for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
 			    if (j < n_i) {
 			      printf("      ");
-			      printf("x[%d]=%.8e", ix, x[ix]);
+			      printf("%16.8e", x[ix]);
 			      printf("\n");
 			    }
 			    if (k < m_i) {
 			      printf("      ");
-			      printf("y_gen[%d]=%.16e", k * incy_gen,
-				     y_gen[k * incy_gen]);
+			      printf("%24.16e", y_gen[k * incy_gen]);
 			      printf("\n");
 			      printf("      ");
-			      printf("y_final[%d]=", iy);
-			      printf("%.16e", y[iy]);
+			      printf("y_final[%d] = ", iy);
+			      printf("%24.16e", y[iy]);
 			      printf("\n");
 			    }
 			    ix += incx;
@@ -1786,16 +1689,17 @@ double do_test_dgemv_s_s(int m, int n,
 			  }
 
 			  printf("      ");
-			  printf("alpha=%.16e", alpha);
+			  printf("alpha = ");
+			  printf("%24.16e", alpha);
 			  printf("\n      ");
-			  printf("beta=%.16e", beta);
+			  printf("beta = ");
+			  printf("%24.16e", beta);
 			  printf("\n");
 			  for (j = 0, k = 0; j < m_i * incy_gen;
 			       j += incy_gen, k++) {
 			    printf("      ");
-			    printf
-			      ("head_r_true[%d]=%.16e, tail_r_true[%d]=%.16e",
-			       j, head_r_true[j], j, tail_r_true[j]);
+			    printf("[%24.16e, %24.16e]", head_r_true[j],
+				   tail_r_true[j]);
 			    printf(", ratio[%d]=%.4e\n", k, ratios[k]);
 			  }
 
@@ -1958,7 +1862,6 @@ double do_test_zgemv_z_c(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incA;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -2036,51 +1939,30 @@ double do_test_zgemv_z_c(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incA = 1;
+  incx_gen = incy_gen = 1;
   incx_gen *= 2;
   incy_gen *= 2;
-  incA *= 2;
 
   /* get space for calculation */
   x = (float *) blas_malloc(max_mn * 2 * incx_gen * sizeof(float) * 2);
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
   y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double) * 2);
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
-  }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
   temp = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incA; i += incA) {
-    temp[i] = 0.0;
-    temp[i + 1] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
@@ -2091,7 +1973,6 @@ double do_test_zgemv_z_c(int m, int n,
   if (max_mn > 0 && ratios == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-
   A =
     (double *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(double) *
 			   2);
@@ -2225,11 +2106,6 @@ double do_test_zgemv_z_c(int m, int n,
 		    incx = incx_val;
 		    incx *= 2;
 
-		    /* zero out x */
-		    for (j = 0; j < n_i * 2 * incx_gen; j++) {
-		      x[j] = 0.0;
-		    }
-
 		    /* set x starting index */
 		    ix = 0;
 		    if (incx < 0)
@@ -2251,11 +2127,6 @@ double do_test_zgemv_z_c(int m, int n,
 		      /* setting incy */
 		      incy = incy_val;
 		      incy *= 2;
-
-		      /* zero out vector */
-		      for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			y[j] = 0.0;
-		      }
 
 		      /* set y starting index */
 		      iy = 0;
@@ -2285,8 +2156,8 @@ double do_test_zgemv_z_c(int m, int n,
 		      if (m > 0 && n > 0)
 			for (j = 0, k = 0; j < m_i; j++, k += incy_gen) {
 			  /* copy row j of A to temp */
-			  zgemv_copy(order_type, trans_type, m, n, A, lda,
-				     temp, j);
+			  zge_copy_row(order_type, trans_type, m_i, n_i, A,
+				       lda, temp, j);
 
 			  test_BLAS_zdot_z_c(n_i, blas_no_conj,
 					     alpha, beta, &y_gen[k],
@@ -2384,34 +2255,29 @@ double do_test_zgemv_z_c(int m, int n,
 			  printf("      A=");
 			  for (j = 0; j < m_i; j++) {
 			    /* copy row j of A to temp */
-			    zgemv_copy(order_type, trans_type, m, n, A, lda,
-				       temp, j);
+			    zge_copy_row(order_type, trans_type, m_i, n_i, A,
+					 lda, temp, j);
 
 			    if (j > 0)
 			      printf("        ");
-			    for (k = 0; k < n_i * incA; k += incA) {
-			      printf("%.16e, %.16e", temp[k], temp[k + 1]);
-			      printf("  ");
-			    }
-			    printf("\n");
+			    zprint_vector(temp, n_i, 1, NULL);
 			  }
 
 			  for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
 			    if (j < n_i) {
 			      printf("      ");
-			      printf("x[%d]=%.8e, x[%d+1]=%.8e", ix, x[ix],
-				     ix, x[ix + 1]);
+			      printf("(%16.8e, %16.8e)", x[ix], x[ix + 1]);
 			      printf("\n");
 			    }
 			    if (k < m_i) {
 			      printf("      ");
-			      printf("y_gen[%d]=%.16e, y_gen[%d+1]=%.16e",
-				     k * incy_gen, y_gen[k * incy_gen],
-				     k * incy_gen, y_gen[k * incy_gen + 1]);
+			      printf("(%24.16e, %24.16e)",
+				     y_gen[k * incy_gen],
+				     y_gen[k * incy_gen + 1]);
 			      printf("\n");
 			      printf("      ");
-			      printf("y_final[%d]=", iy);
-			      printf("%.16e, %.16e", y[iy], y[iy + 1]);
+			      printf("y_final[%d] = ", iy);
+			      printf("(%24.16e, %24.16e)", y[iy], y[iy + 1]);
 			      printf("\n");
 			    }
 			    ix += incx;
@@ -2419,16 +2285,18 @@ double do_test_zgemv_z_c(int m, int n,
 			  }
 
 			  printf("      ");
-			  printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				 alpha[1]);
+			  printf("alpha = ");
+			  printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);
 			  printf("\n      ");
-			  printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				 beta[1]);
+			  printf("beta = ");
+			  printf("(%24.16e, %24.16e)", beta[0], beta[1]);
 			  printf("\n");
 			  for (j = 0, k = 0; j < m_i * incy_gen;
 			       j += incy_gen, k++) {
 			    printf("      ");
-
+			    printf("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				   head_r_true[j], tail_r_true[j],
+				   head_r_true[j + 1], tail_r_true[j + 1]);
 			    printf(", ratio[%d]=%.4e\n", k, ratios[k]);
 			  }
 
@@ -2591,7 +2459,6 @@ double do_test_zgemv_c_z(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incA;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -2669,51 +2536,30 @@ double do_test_zgemv_c_z(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incA = 1;
+  incx_gen = incy_gen = 1;
   incx_gen *= 2;
   incy_gen *= 2;
-  incA *= 2;
 
   /* get space for calculation */
   x = (double *) blas_malloc(max_mn * 2 * incx_gen * sizeof(double) * 2);
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
   y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double) * 2);
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
   }
   x_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
-  }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
   temp = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incA; i += incA) {
-    temp[i] = 0.0;
-    temp[i + 1] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
@@ -2724,7 +2570,6 @@ double do_test_zgemv_c_z(int m, int n,
   if (max_mn > 0 && ratios == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-
   A =
     (float *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(float) *
 			  2);
@@ -2858,11 +2703,6 @@ double do_test_zgemv_c_z(int m, int n,
 		    incx = incx_val;
 		    incx *= 2;
 
-		    /* zero out x */
-		    for (j = 0; j < n_i * 2 * incx_gen; j++) {
-		      x[j] = 0.0;
-		    }
-
 		    /* set x starting index */
 		    ix = 0;
 		    if (incx < 0)
@@ -2884,11 +2724,6 @@ double do_test_zgemv_c_z(int m, int n,
 		      /* setting incy */
 		      incy = incy_val;
 		      incy *= 2;
-
-		      /* zero out vector */
-		      for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			y[j] = 0.0;
-		      }
 
 		      /* set y starting index */
 		      iy = 0;
@@ -2918,8 +2753,8 @@ double do_test_zgemv_c_z(int m, int n,
 		      if (m > 0 && n > 0)
 			for (j = 0, k = 0; j < m_i; j++, k += incy_gen) {
 			  /* copy row j of A to temp */
-			  cgemv_copy(order_type, trans_type, m, n, A, lda,
-				     temp, j);
+			  cge_copy_row(order_type, trans_type, m_i, n_i, A,
+				       lda, temp, j);
 
 			  test_BLAS_zdot_c_z(n_i, blas_no_conj,
 					     alpha, beta, &y_gen[k],
@@ -3017,34 +2852,29 @@ double do_test_zgemv_c_z(int m, int n,
 			  printf("      A=");
 			  for (j = 0; j < m_i; j++) {
 			    /* copy row j of A to temp */
-			    cgemv_copy(order_type, trans_type, m, n, A, lda,
-				       temp, j);
+			    cge_copy_row(order_type, trans_type, m_i, n_i, A,
+					 lda, temp, j);
 
 			    if (j > 0)
 			      printf("        ");
-			    for (k = 0; k < n_i * incA; k += incA) {
-			      printf("%.8e, %.8e", temp[k], temp[k + 1]);
-			      printf("  ");
-			    }
-			    printf("\n");
+			    cprint_vector(temp, n_i, 1, NULL);
 			  }
 
 			  for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
 			    if (j < n_i) {
 			      printf("      ");
-			      printf("x[%d]=%.16e, x[%d+1]=%.16e", ix, x[ix],
-				     ix, x[ix + 1]);
+			      printf("(%24.16e, %24.16e)", x[ix], x[ix + 1]);
 			      printf("\n");
 			    }
 			    if (k < m_i) {
 			      printf("      ");
-			      printf("y_gen[%d]=%.16e, y_gen[%d+1]=%.16e",
-				     k * incy_gen, y_gen[k * incy_gen],
-				     k * incy_gen, y_gen[k * incy_gen + 1]);
+			      printf("(%24.16e, %24.16e)",
+				     y_gen[k * incy_gen],
+				     y_gen[k * incy_gen + 1]);
 			      printf("\n");
 			      printf("      ");
-			      printf("y_final[%d]=", iy);
-			      printf("%.16e, %.16e", y[iy], y[iy + 1]);
+			      printf("y_final[%d] = ", iy);
+			      printf("(%24.16e, %24.16e)", y[iy], y[iy + 1]);
 			      printf("\n");
 			    }
 			    ix += incx;
@@ -3052,16 +2882,18 @@ double do_test_zgemv_c_z(int m, int n,
 			  }
 
 			  printf("      ");
-			  printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				 alpha[1]);
+			  printf("alpha = ");
+			  printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);
 			  printf("\n      ");
-			  printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				 beta[1]);
+			  printf("beta = ");
+			  printf("(%24.16e, %24.16e)", beta[0], beta[1]);
 			  printf("\n");
 			  for (j = 0, k = 0; j < m_i * incy_gen;
 			       j += incy_gen, k++) {
 			    printf("      ");
-
+			    printf("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				   head_r_true[j], tail_r_true[j],
+				   head_r_true[j + 1], tail_r_true[j + 1]);
 			    printf(", ratio[%d]=%.4e\n", k, ratios[k]);
 			  }
 
@@ -3224,7 +3056,6 @@ double do_test_zgemv_c_c(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incA;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -3302,51 +3133,30 @@ double do_test_zgemv_c_c(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incA = 1;
+  incx_gen = incy_gen = 1;
   incx_gen *= 2;
   incy_gen *= 2;
-  incA *= 2;
 
   /* get space for calculation */
   x = (float *) blas_malloc(max_mn * 2 * incx_gen * sizeof(float) * 2);
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
   y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double) * 2);
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
-  }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
   temp = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incA; i += incA) {
-    temp[i] = 0.0;
-    temp[i + 1] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
@@ -3357,7 +3167,6 @@ double do_test_zgemv_c_c(int m, int n,
   if (max_mn > 0 && ratios == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-
   A =
     (float *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(float) *
 			  2);
@@ -3491,11 +3300,6 @@ double do_test_zgemv_c_c(int m, int n,
 		    incx = incx_val;
 		    incx *= 2;
 
-		    /* zero out x */
-		    for (j = 0; j < n_i * 2 * incx_gen; j++) {
-		      x[j] = 0.0;
-		    }
-
 		    /* set x starting index */
 		    ix = 0;
 		    if (incx < 0)
@@ -3517,11 +3321,6 @@ double do_test_zgemv_c_c(int m, int n,
 		      /* setting incy */
 		      incy = incy_val;
 		      incy *= 2;
-
-		      /* zero out vector */
-		      for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			y[j] = 0.0;
-		      }
 
 		      /* set y starting index */
 		      iy = 0;
@@ -3551,8 +3350,8 @@ double do_test_zgemv_c_c(int m, int n,
 		      if (m > 0 && n > 0)
 			for (j = 0, k = 0; j < m_i; j++, k += incy_gen) {
 			  /* copy row j of A to temp */
-			  cgemv_copy(order_type, trans_type, m, n, A, lda,
-				     temp, j);
+			  cge_copy_row(order_type, trans_type, m_i, n_i, A,
+				       lda, temp, j);
 
 			  test_BLAS_zdot_c_c(n_i, blas_no_conj,
 					     alpha, beta, &y_gen[k],
@@ -3650,34 +3449,29 @@ double do_test_zgemv_c_c(int m, int n,
 			  printf("      A=");
 			  for (j = 0; j < m_i; j++) {
 			    /* copy row j of A to temp */
-			    cgemv_copy(order_type, trans_type, m, n, A, lda,
-				       temp, j);
+			    cge_copy_row(order_type, trans_type, m_i, n_i, A,
+					 lda, temp, j);
 
 			    if (j > 0)
 			      printf("        ");
-			    for (k = 0; k < n_i * incA; k += incA) {
-			      printf("%.8e, %.8e", temp[k], temp[k + 1]);
-			      printf("  ");
-			    }
-			    printf("\n");
+			    cprint_vector(temp, n_i, 1, NULL);
 			  }
 
 			  for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
 			    if (j < n_i) {
 			      printf("      ");
-			      printf("x[%d]=%.8e, x[%d+1]=%.8e", ix, x[ix],
-				     ix, x[ix + 1]);
+			      printf("(%16.8e, %16.8e)", x[ix], x[ix + 1]);
 			      printf("\n");
 			    }
 			    if (k < m_i) {
 			      printf("      ");
-			      printf("y_gen[%d]=%.16e, y_gen[%d+1]=%.16e",
-				     k * incy_gen, y_gen[k * incy_gen],
-				     k * incy_gen, y_gen[k * incy_gen + 1]);
+			      printf("(%24.16e, %24.16e)",
+				     y_gen[k * incy_gen],
+				     y_gen[k * incy_gen + 1]);
 			      printf("\n");
 			      printf("      ");
-			      printf("y_final[%d]=", iy);
-			      printf("%.16e, %.16e", y[iy], y[iy + 1]);
+			      printf("y_final[%d] = ", iy);
+			      printf("(%24.16e, %24.16e)", y[iy], y[iy + 1]);
 			      printf("\n");
 			    }
 			    ix += incx;
@@ -3685,16 +3479,18 @@ double do_test_zgemv_c_c(int m, int n,
 			  }
 
 			  printf("      ");
-			  printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				 alpha[1]);
+			  printf("alpha = ");
+			  printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);
 			  printf("\n      ");
-			  printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				 beta[1]);
+			  printf("beta = ");
+			  printf("(%24.16e, %24.16e)", beta[0], beta[1]);
 			  printf("\n");
 			  for (j = 0, k = 0; j < m_i * incy_gen;
 			       j += incy_gen, k++) {
 			    printf("      ");
-
+			    printf("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				   head_r_true[j], tail_r_true[j],
+				   head_r_true[j + 1], tail_r_true[j + 1]);
 			    printf(", ratio[%d]=%.4e\n", k, ratios[k]);
 			  }
 
@@ -3857,7 +3653,6 @@ double do_test_cgemv_c_s(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incA;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -3935,49 +3730,30 @@ double do_test_cgemv_c_s(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incA = 1;
+  incx_gen = incy_gen = 1;
 
   incy_gen *= 2;
-  incA *= 2;
 
   /* get space for calculation */
   x = (float *) blas_malloc(max_mn * 2 * incx_gen * sizeof(float));
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-  }
   y = (float *) blas_malloc(max_mn * 2 * incy_gen * sizeof(float) * 2);
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-  }
   y_gen = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
   temp = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incA; i += incA) {
-    temp[i] = 0.0;
-    temp[i + 1] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
@@ -3988,7 +3764,6 @@ double do_test_cgemv_c_s(int m, int n,
   if (max_mn > 0 && ratios == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-
   A =
     (float *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(float) *
 			  2);
@@ -4122,11 +3897,6 @@ double do_test_cgemv_c_s(int m, int n,
 		    incx = incx_val;
 
 
-		    /* zero out x */
-		    for (j = 0; j < n_i * 2 * incx_gen; j++) {
-		      x[j] = 0.0;
-		    }
-
 		    /* set x starting index */
 		    ix = 0;
 		    if (incx < 0)
@@ -4147,11 +3917,6 @@ double do_test_cgemv_c_s(int m, int n,
 		      /* setting incy */
 		      incy = incy_val;
 		      incy *= 2;
-
-		      /* zero out vector */
-		      for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			y[j] = 0.0;
-		      }
 
 		      /* set y starting index */
 		      iy = 0;
@@ -4181,8 +3946,8 @@ double do_test_cgemv_c_s(int m, int n,
 		      if (m > 0 && n > 0)
 			for (j = 0, k = 0; j < m_i; j++, k += incy_gen) {
 			  /* copy row j of A to temp */
-			  cgemv_copy(order_type, trans_type, m, n, A, lda,
-				     temp, j);
+			  cge_copy_row(order_type, trans_type, m_i, n_i, A,
+				       lda, temp, j);
 
 			  test_BLAS_cdot_c_s(n_i, blas_no_conj,
 					     alpha, beta, &y_gen[k],
@@ -4280,33 +4045,28 @@ double do_test_cgemv_c_s(int m, int n,
 			  printf("      A=");
 			  for (j = 0; j < m_i; j++) {
 			    /* copy row j of A to temp */
-			    cgemv_copy(order_type, trans_type, m, n, A, lda,
-				       temp, j);
+			    cge_copy_row(order_type, trans_type, m_i, n_i, A,
+					 lda, temp, j);
 
 			    if (j > 0)
 			      printf("        ");
-			    for (k = 0; k < n_i * incA; k += incA) {
-			      printf("%.8e, %.8e", temp[k], temp[k + 1]);
-			      printf("  ");
-			    }
-			    printf("\n");
+			    cprint_vector(temp, n_i, 1, NULL);
 			  }
 
 			  for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
 			    if (j < n_i) {
 			      printf("      ");
-			      printf("x[%d]=%.8e", ix, x[ix]);
+			      printf("%16.8e", x[ix]);
 			      printf("\n");
 			    }
 			    if (k < m_i) {
 			      printf("      ");
-			      printf("y_gen[%d]=%.8e, y_gen[%d+1]=%.8e",
-				     k * incy_gen, y_gen[k * incy_gen],
-				     k * incy_gen, y_gen[k * incy_gen + 1]);
+			      printf("(%16.8e, %16.8e)", y_gen[k * incy_gen],
+				     y_gen[k * incy_gen + 1]);
 			      printf("\n");
 			      printf("      ");
-			      printf("y_final[%d]=", iy);
-			      printf("%.8e, %.8e", y[iy], y[iy + 1]);
+			      printf("y_final[%d] = ", iy);
+			      printf("(%16.8e, %16.8e)", y[iy], y[iy + 1]);
 			      printf("\n");
 			    }
 			    ix += incx;
@@ -4314,16 +4074,18 @@ double do_test_cgemv_c_s(int m, int n,
 			  }
 
 			  printf("      ");
-			  printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-				 alpha[1]);
+			  printf("alpha = ");
+			  printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);
 			  printf("\n      ");
-			  printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
-				 beta[1]);
+			  printf("beta = ");
+			  printf("(%16.8e, %16.8e)", beta[0], beta[1]);
 			  printf("\n");
 			  for (j = 0, k = 0; j < m_i * incy_gen;
 			       j += incy_gen, k++) {
 			    printf("      ");
-
+			    printf("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				   head_r_true[j], tail_r_true[j],
+				   head_r_true[j + 1], tail_r_true[j + 1]);
 			    printf(", ratio[%d]=%.4e\n", k, ratios[k]);
 			  }
 
@@ -4486,7 +4248,6 @@ double do_test_cgemv_s_c(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incA;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -4564,50 +4325,30 @@ double do_test_cgemv_s_c(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incA = 1;
+  incx_gen = incy_gen = 1;
   incx_gen *= 2;
   incy_gen *= 2;
-
 
   /* get space for calculation */
   x = (float *) blas_malloc(max_mn * 2 * incx_gen * sizeof(float) * 2);
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
   y = (float *) blas_malloc(max_mn * 2 * incy_gen * sizeof(float) * 2);
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
-  }
   y_gen = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
   temp = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incA; i += incA) {
-    temp[i] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
@@ -4618,7 +4359,6 @@ double do_test_cgemv_s_c(int m, int n,
   if (max_mn > 0 && ratios == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-
   A = (float *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(float));
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && A == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -4750,11 +4490,6 @@ double do_test_cgemv_s_c(int m, int n,
 		    incx = incx_val;
 		    incx *= 2;
 
-		    /* zero out x */
-		    for (j = 0; j < n_i * 2 * incx_gen; j++) {
-		      x[j] = 0.0;
-		    }
-
 		    /* set x starting index */
 		    ix = 0;
 		    if (incx < 0)
@@ -4776,11 +4511,6 @@ double do_test_cgemv_s_c(int m, int n,
 		      /* setting incy */
 		      incy = incy_val;
 		      incy *= 2;
-
-		      /* zero out vector */
-		      for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			y[j] = 0.0;
-		      }
 
 		      /* set y starting index */
 		      iy = 0;
@@ -4810,8 +4540,8 @@ double do_test_cgemv_s_c(int m, int n,
 		      if (m > 0 && n > 0)
 			for (j = 0, k = 0; j < m_i; j++, k += incy_gen) {
 			  /* copy row j of A to temp */
-			  sgemv_copy(order_type, trans_type, m, n, A, lda,
-				     temp, j);
+			  sge_copy_row(order_type, trans_type, m_i, n_i, A,
+				       lda, temp, j);
 
 			  test_BLAS_cdot_s_c(n_i, blas_no_conj,
 					     alpha, beta, &y_gen[k],
@@ -4909,34 +4639,28 @@ double do_test_cgemv_s_c(int m, int n,
 			  printf("      A=");
 			  for (j = 0; j < m_i; j++) {
 			    /* copy row j of A to temp */
-			    sgemv_copy(order_type, trans_type, m, n, A, lda,
-				       temp, j);
+			    sge_copy_row(order_type, trans_type, m_i, n_i, A,
+					 lda, temp, j);
 
 			    if (j > 0)
 			      printf("        ");
-			    for (k = 0; k < n_i * incA; k += incA) {
-			      printf("%.8e", temp[k]);
-			      printf("  ");
-			    }
-			    printf("\n");
+			    sprint_vector(temp, n_i, 1, NULL);
 			  }
 
 			  for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
 			    if (j < n_i) {
 			      printf("      ");
-			      printf("x[%d]=%.8e, x[%d+1]=%.8e", ix, x[ix],
-				     ix, x[ix + 1]);
+			      printf("(%16.8e, %16.8e)", x[ix], x[ix + 1]);
 			      printf("\n");
 			    }
 			    if (k < m_i) {
 			      printf("      ");
-			      printf("y_gen[%d]=%.8e, y_gen[%d+1]=%.8e",
-				     k * incy_gen, y_gen[k * incy_gen],
-				     k * incy_gen, y_gen[k * incy_gen + 1]);
+			      printf("(%16.8e, %16.8e)", y_gen[k * incy_gen],
+				     y_gen[k * incy_gen + 1]);
 			      printf("\n");
 			      printf("      ");
-			      printf("y_final[%d]=", iy);
-			      printf("%.8e, %.8e", y[iy], y[iy + 1]);
+			      printf("y_final[%d] = ", iy);
+			      printf("(%16.8e, %16.8e)", y[iy], y[iy + 1]);
 			      printf("\n");
 			    }
 			    ix += incx;
@@ -4944,16 +4668,18 @@ double do_test_cgemv_s_c(int m, int n,
 			  }
 
 			  printf("      ");
-			  printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-				 alpha[1]);
+			  printf("alpha = ");
+			  printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);
 			  printf("\n      ");
-			  printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
-				 beta[1]);
+			  printf("beta = ");
+			  printf("(%16.8e, %16.8e)", beta[0], beta[1]);
 			  printf("\n");
 			  for (j = 0, k = 0; j < m_i * incy_gen;
 			       j += incy_gen, k++) {
 			    printf("      ");
-
+			    printf("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				   head_r_true[j], tail_r_true[j],
+				   head_r_true[j + 1], tail_r_true[j + 1]);
 			    printf(", ratio[%d]=%.4e\n", k, ratios[k]);
 			  }
 
@@ -5116,7 +4842,6 @@ double do_test_cgemv_s_s(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incA;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -5194,48 +4919,30 @@ double do_test_cgemv_s_s(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incA = 1;
+  incx_gen = incy_gen = 1;
 
   incy_gen *= 2;
-
 
   /* get space for calculation */
   x = (float *) blas_malloc(max_mn * 2 * incx_gen * sizeof(float));
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-  }
   y = (float *) blas_malloc(max_mn * 2 * incy_gen * sizeof(float) * 2);
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-  }
   y_gen = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
   temp = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incA; i += incA) {
-    temp[i] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
@@ -5246,7 +4953,6 @@ double do_test_cgemv_s_s(int m, int n,
   if (max_mn > 0 && ratios == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-
   A = (float *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(float));
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && A == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -5378,11 +5084,6 @@ double do_test_cgemv_s_s(int m, int n,
 		    incx = incx_val;
 
 
-		    /* zero out x */
-		    for (j = 0; j < n_i * 2 * incx_gen; j++) {
-		      x[j] = 0.0;
-		    }
-
 		    /* set x starting index */
 		    ix = 0;
 		    if (incx < 0)
@@ -5403,11 +5104,6 @@ double do_test_cgemv_s_s(int m, int n,
 		      /* setting incy */
 		      incy = incy_val;
 		      incy *= 2;
-
-		      /* zero out vector */
-		      for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			y[j] = 0.0;
-		      }
 
 		      /* set y starting index */
 		      iy = 0;
@@ -5437,8 +5133,8 @@ double do_test_cgemv_s_s(int m, int n,
 		      if (m > 0 && n > 0)
 			for (j = 0, k = 0; j < m_i; j++, k += incy_gen) {
 			  /* copy row j of A to temp */
-			  sgemv_copy(order_type, trans_type, m, n, A, lda,
-				     temp, j);
+			  sge_copy_row(order_type, trans_type, m_i, n_i, A,
+				       lda, temp, j);
 
 			  test_BLAS_cdot_s_s(n_i, blas_no_conj,
 					     alpha, beta, &y_gen[k],
@@ -5536,33 +5232,28 @@ double do_test_cgemv_s_s(int m, int n,
 			  printf("      A=");
 			  for (j = 0; j < m_i; j++) {
 			    /* copy row j of A to temp */
-			    sgemv_copy(order_type, trans_type, m, n, A, lda,
-				       temp, j);
+			    sge_copy_row(order_type, trans_type, m_i, n_i, A,
+					 lda, temp, j);
 
 			    if (j > 0)
 			      printf("        ");
-			    for (k = 0; k < n_i * incA; k += incA) {
-			      printf("%.8e", temp[k]);
-			      printf("  ");
-			    }
-			    printf("\n");
+			    sprint_vector(temp, n_i, 1, NULL);
 			  }
 
 			  for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
 			    if (j < n_i) {
 			      printf("      ");
-			      printf("x[%d]=%.8e", ix, x[ix]);
+			      printf("%16.8e", x[ix]);
 			      printf("\n");
 			    }
 			    if (k < m_i) {
 			      printf("      ");
-			      printf("y_gen[%d]=%.8e, y_gen[%d+1]=%.8e",
-				     k * incy_gen, y_gen[k * incy_gen],
-				     k * incy_gen, y_gen[k * incy_gen + 1]);
+			      printf("(%16.8e, %16.8e)", y_gen[k * incy_gen],
+				     y_gen[k * incy_gen + 1]);
 			      printf("\n");
 			      printf("      ");
-			      printf("y_final[%d]=", iy);
-			      printf("%.8e, %.8e", y[iy], y[iy + 1]);
+			      printf("y_final[%d] = ", iy);
+			      printf("(%16.8e, %16.8e)", y[iy], y[iy + 1]);
 			      printf("\n");
 			    }
 			    ix += incx;
@@ -5570,16 +5261,18 @@ double do_test_cgemv_s_s(int m, int n,
 			  }
 
 			  printf("      ");
-			  printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-				 alpha[1]);
+			  printf("alpha = ");
+			  printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);
 			  printf("\n      ");
-			  printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
-				 beta[1]);
+			  printf("beta = ");
+			  printf("(%16.8e, %16.8e)", beta[0], beta[1]);
 			  printf("\n");
 			  for (j = 0, k = 0; j < m_i * incy_gen;
 			       j += incy_gen, k++) {
 			    printf("      ");
-
+			    printf("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				   head_r_true[j], tail_r_true[j],
+				   head_r_true[j + 1], tail_r_true[j + 1]);
 			    printf(", ratio[%d]=%.4e\n", k, ratios[k]);
 			  }
 
@@ -5742,7 +5435,6 @@ double do_test_zgemv_z_d(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incA;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -5820,49 +5512,30 @@ double do_test_zgemv_z_d(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incA = 1;
+  incx_gen = incy_gen = 1;
 
   incy_gen *= 2;
-  incA *= 2;
 
   /* get space for calculation */
   x = (double *) blas_malloc(max_mn * 2 * incx_gen * sizeof(double));
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-  }
   y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double) * 2);
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
   }
   x_gen = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-  }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
   temp = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incA; i += incA) {
-    temp[i] = 0.0;
-    temp[i + 1] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
@@ -5873,7 +5546,6 @@ double do_test_zgemv_z_d(int m, int n,
   if (max_mn > 0 && ratios == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-
   A =
     (double *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(double) *
 			   2);
@@ -6007,11 +5679,6 @@ double do_test_zgemv_z_d(int m, int n,
 		    incx = incx_val;
 
 
-		    /* zero out x */
-		    for (j = 0; j < n_i * 2 * incx_gen; j++) {
-		      x[j] = 0.0;
-		    }
-
 		    /* set x starting index */
 		    ix = 0;
 		    if (incx < 0)
@@ -6032,11 +5699,6 @@ double do_test_zgemv_z_d(int m, int n,
 		      /* setting incy */
 		      incy = incy_val;
 		      incy *= 2;
-
-		      /* zero out vector */
-		      for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			y[j] = 0.0;
-		      }
 
 		      /* set y starting index */
 		      iy = 0;
@@ -6066,8 +5728,8 @@ double do_test_zgemv_z_d(int m, int n,
 		      if (m > 0 && n > 0)
 			for (j = 0, k = 0; j < m_i; j++, k += incy_gen) {
 			  /* copy row j of A to temp */
-			  zgemv_copy(order_type, trans_type, m, n, A, lda,
-				     temp, j);
+			  zge_copy_row(order_type, trans_type, m_i, n_i, A,
+				       lda, temp, j);
 
 			  test_BLAS_zdot_z_d(n_i, blas_no_conj,
 					     alpha, beta, &y_gen[k],
@@ -6165,33 +5827,29 @@ double do_test_zgemv_z_d(int m, int n,
 			  printf("      A=");
 			  for (j = 0; j < m_i; j++) {
 			    /* copy row j of A to temp */
-			    zgemv_copy(order_type, trans_type, m, n, A, lda,
-				       temp, j);
+			    zge_copy_row(order_type, trans_type, m_i, n_i, A,
+					 lda, temp, j);
 
 			    if (j > 0)
 			      printf("        ");
-			    for (k = 0; k < n_i * incA; k += incA) {
-			      printf("%.16e, %.16e", temp[k], temp[k + 1]);
-			      printf("  ");
-			    }
-			    printf("\n");
+			    zprint_vector(temp, n_i, 1, NULL);
 			  }
 
 			  for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
 			    if (j < n_i) {
 			      printf("      ");
-			      printf("x[%d]=%.16e", ix, x[ix]);
+			      printf("%24.16e", x[ix]);
 			      printf("\n");
 			    }
 			    if (k < m_i) {
 			      printf("      ");
-			      printf("y_gen[%d]=%.16e, y_gen[%d+1]=%.16e",
-				     k * incy_gen, y_gen[k * incy_gen],
-				     k * incy_gen, y_gen[k * incy_gen + 1]);
+			      printf("(%24.16e, %24.16e)",
+				     y_gen[k * incy_gen],
+				     y_gen[k * incy_gen + 1]);
 			      printf("\n");
 			      printf("      ");
-			      printf("y_final[%d]=", iy);
-			      printf("%.16e, %.16e", y[iy], y[iy + 1]);
+			      printf("y_final[%d] = ", iy);
+			      printf("(%24.16e, %24.16e)", y[iy], y[iy + 1]);
 			      printf("\n");
 			    }
 			    ix += incx;
@@ -6199,16 +5857,18 @@ double do_test_zgemv_z_d(int m, int n,
 			  }
 
 			  printf("      ");
-			  printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				 alpha[1]);
+			  printf("alpha = ");
+			  printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);
 			  printf("\n      ");
-			  printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				 beta[1]);
+			  printf("beta = ");
+			  printf("(%24.16e, %24.16e)", beta[0], beta[1]);
 			  printf("\n");
 			  for (j = 0, k = 0; j < m_i * incy_gen;
 			       j += incy_gen, k++) {
 			    printf("      ");
-
+			    printf("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				   head_r_true[j], tail_r_true[j],
+				   head_r_true[j + 1], tail_r_true[j + 1]);
 			    printf(", ratio[%d]=%.4e\n", k, ratios[k]);
 			  }
 
@@ -6371,7 +6031,6 @@ double do_test_zgemv_d_z(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incA;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -6449,50 +6108,30 @@ double do_test_zgemv_d_z(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incA = 1;
+  incx_gen = incy_gen = 1;
   incx_gen *= 2;
   incy_gen *= 2;
-
 
   /* get space for calculation */
   x = (double *) blas_malloc(max_mn * 2 * incx_gen * sizeof(double) * 2);
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
   y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double) * 2);
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
   }
   x_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
-  }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
   temp = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incA; i += incA) {
-    temp[i] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
@@ -6503,7 +6142,6 @@ double do_test_zgemv_d_z(int m, int n,
   if (max_mn > 0 && ratios == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-
   A =
     (double *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(double));
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && A == NULL) {
@@ -6636,11 +6274,6 @@ double do_test_zgemv_d_z(int m, int n,
 		    incx = incx_val;
 		    incx *= 2;
 
-		    /* zero out x */
-		    for (j = 0; j < n_i * 2 * incx_gen; j++) {
-		      x[j] = 0.0;
-		    }
-
 		    /* set x starting index */
 		    ix = 0;
 		    if (incx < 0)
@@ -6662,11 +6295,6 @@ double do_test_zgemv_d_z(int m, int n,
 		      /* setting incy */
 		      incy = incy_val;
 		      incy *= 2;
-
-		      /* zero out vector */
-		      for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			y[j] = 0.0;
-		      }
 
 		      /* set y starting index */
 		      iy = 0;
@@ -6696,8 +6324,8 @@ double do_test_zgemv_d_z(int m, int n,
 		      if (m > 0 && n > 0)
 			for (j = 0, k = 0; j < m_i; j++, k += incy_gen) {
 			  /* copy row j of A to temp */
-			  dgemv_copy(order_type, trans_type, m, n, A, lda,
-				     temp, j);
+			  dge_copy_row(order_type, trans_type, m_i, n_i, A,
+				       lda, temp, j);
 
 			  test_BLAS_zdot_d_z(n_i, blas_no_conj,
 					     alpha, beta, &y_gen[k],
@@ -6795,34 +6423,29 @@ double do_test_zgemv_d_z(int m, int n,
 			  printf("      A=");
 			  for (j = 0; j < m_i; j++) {
 			    /* copy row j of A to temp */
-			    dgemv_copy(order_type, trans_type, m, n, A, lda,
-				       temp, j);
+			    dge_copy_row(order_type, trans_type, m_i, n_i, A,
+					 lda, temp, j);
 
 			    if (j > 0)
 			      printf("        ");
-			    for (k = 0; k < n_i * incA; k += incA) {
-			      printf("%.16e", temp[k]);
-			      printf("  ");
-			    }
-			    printf("\n");
+			    dprint_vector(temp, n_i, 1, NULL);
 			  }
 
 			  for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
 			    if (j < n_i) {
 			      printf("      ");
-			      printf("x[%d]=%.16e, x[%d+1]=%.16e", ix, x[ix],
-				     ix, x[ix + 1]);
+			      printf("(%24.16e, %24.16e)", x[ix], x[ix + 1]);
 			      printf("\n");
 			    }
 			    if (k < m_i) {
 			      printf("      ");
-			      printf("y_gen[%d]=%.16e, y_gen[%d+1]=%.16e",
-				     k * incy_gen, y_gen[k * incy_gen],
-				     k * incy_gen, y_gen[k * incy_gen + 1]);
+			      printf("(%24.16e, %24.16e)",
+				     y_gen[k * incy_gen],
+				     y_gen[k * incy_gen + 1]);
 			      printf("\n");
 			      printf("      ");
-			      printf("y_final[%d]=", iy);
-			      printf("%.16e, %.16e", y[iy], y[iy + 1]);
+			      printf("y_final[%d] = ", iy);
+			      printf("(%24.16e, %24.16e)", y[iy], y[iy + 1]);
 			      printf("\n");
 			    }
 			    ix += incx;
@@ -6830,16 +6453,18 @@ double do_test_zgemv_d_z(int m, int n,
 			  }
 
 			  printf("      ");
-			  printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				 alpha[1]);
+			  printf("alpha = ");
+			  printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);
 			  printf("\n      ");
-			  printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				 beta[1]);
+			  printf("beta = ");
+			  printf("(%24.16e, %24.16e)", beta[0], beta[1]);
 			  printf("\n");
 			  for (j = 0, k = 0; j < m_i * incy_gen;
 			       j += incy_gen, k++) {
 			    printf("      ");
-
+			    printf("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				   head_r_true[j], tail_r_true[j],
+				   head_r_true[j + 1], tail_r_true[j + 1]);
 			    printf(", ratio[%d]=%.4e\n", k, ratios[k]);
 			  }
 
@@ -7002,7 +6627,6 @@ double do_test_zgemv_d_d(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incA;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -7080,48 +6704,30 @@ double do_test_zgemv_d_d(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incA = 1;
+  incx_gen = incy_gen = 1;
 
   incy_gen *= 2;
-
 
   /* get space for calculation */
   x = (double *) blas_malloc(max_mn * 2 * incx_gen * sizeof(double));
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-  }
   y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double) * 2);
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
   }
   x_gen = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-  }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
   temp = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incA; i += incA) {
-    temp[i] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
@@ -7132,7 +6738,6 @@ double do_test_zgemv_d_d(int m, int n,
   if (max_mn > 0 && ratios == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-
   A =
     (double *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(double));
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && A == NULL) {
@@ -7265,11 +6870,6 @@ double do_test_zgemv_d_d(int m, int n,
 		    incx = incx_val;
 
 
-		    /* zero out x */
-		    for (j = 0; j < n_i * 2 * incx_gen; j++) {
-		      x[j] = 0.0;
-		    }
-
 		    /* set x starting index */
 		    ix = 0;
 		    if (incx < 0)
@@ -7290,11 +6890,6 @@ double do_test_zgemv_d_d(int m, int n,
 		      /* setting incy */
 		      incy = incy_val;
 		      incy *= 2;
-
-		      /* zero out vector */
-		      for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			y[j] = 0.0;
-		      }
 
 		      /* set y starting index */
 		      iy = 0;
@@ -7324,8 +6919,8 @@ double do_test_zgemv_d_d(int m, int n,
 		      if (m > 0 && n > 0)
 			for (j = 0, k = 0; j < m_i; j++, k += incy_gen) {
 			  /* copy row j of A to temp */
-			  dgemv_copy(order_type, trans_type, m, n, A, lda,
-				     temp, j);
+			  dge_copy_row(order_type, trans_type, m_i, n_i, A,
+				       lda, temp, j);
 
 			  test_BLAS_zdot_d_d(n_i, blas_no_conj,
 					     alpha, beta, &y_gen[k],
@@ -7423,33 +7018,29 @@ double do_test_zgemv_d_d(int m, int n,
 			  printf("      A=");
 			  for (j = 0; j < m_i; j++) {
 			    /* copy row j of A to temp */
-			    dgemv_copy(order_type, trans_type, m, n, A, lda,
-				       temp, j);
+			    dge_copy_row(order_type, trans_type, m_i, n_i, A,
+					 lda, temp, j);
 
 			    if (j > 0)
 			      printf("        ");
-			    for (k = 0; k < n_i * incA; k += incA) {
-			      printf("%.16e", temp[k]);
-			      printf("  ");
-			    }
-			    printf("\n");
+			    dprint_vector(temp, n_i, 1, NULL);
 			  }
 
 			  for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
 			    if (j < n_i) {
 			      printf("      ");
-			      printf("x[%d]=%.16e", ix, x[ix]);
+			      printf("%24.16e", x[ix]);
 			      printf("\n");
 			    }
 			    if (k < m_i) {
 			      printf("      ");
-			      printf("y_gen[%d]=%.16e, y_gen[%d+1]=%.16e",
-				     k * incy_gen, y_gen[k * incy_gen],
-				     k * incy_gen, y_gen[k * incy_gen + 1]);
+			      printf("(%24.16e, %24.16e)",
+				     y_gen[k * incy_gen],
+				     y_gen[k * incy_gen + 1]);
 			      printf("\n");
 			      printf("      ");
-			      printf("y_final[%d]=", iy);
-			      printf("%.16e, %.16e", y[iy], y[iy + 1]);
+			      printf("y_final[%d] = ", iy);
+			      printf("(%24.16e, %24.16e)", y[iy], y[iy + 1]);
 			      printf("\n");
 			    }
 			    ix += incx;
@@ -7457,16 +7048,18 @@ double do_test_zgemv_d_d(int m, int n,
 			  }
 
 			  printf("      ");
-			  printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				 alpha[1]);
+			  printf("alpha = ");
+			  printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);
 			  printf("\n      ");
-			  printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				 beta[1]);
+			  printf("beta = ");
+			  printf("(%24.16e, %24.16e)", beta[0], beta[1]);
 			  printf("\n");
 			  for (j = 0, k = 0; j < m_i * incy_gen;
 			       j += incy_gen, k++) {
 			    printf("      ");
-
+			    printf("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				   head_r_true[j], tail_r_true[j],
+				   head_r_true[j + 1], tail_r_true[j + 1]);
 			    printf(", ratio[%d]=%.4e\n", k, ratios[k]);
 			  }
 
@@ -7628,7 +7221,6 @@ double do_test_sgemv_x(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incA;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -7705,8 +7297,7 @@ double do_test_sgemv_x(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incA = 1;
-
+  incx_gen = incy_gen = 1;
 
 
 
@@ -7715,36 +7306,21 @@ double do_test_sgemv_x(int m, int n,
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-  }
   y = (float *) blas_malloc(max_mn * 2 * incy_gen * sizeof(float));
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-  }
   y_gen = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-  }
   temp = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incA; i += incA) {
-    temp[i] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double));
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double));
@@ -7755,7 +7331,6 @@ double do_test_sgemv_x(int m, int n,
   if (max_mn > 0 && ratios == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-
   A = (float *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(float));
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && A == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -7904,11 +7479,6 @@ double do_test_sgemv_x(int m, int n,
 		      incx = incx_val;
 
 
-		      /* zero out x */
-		      for (j = 0; j < n_i * 2 * incx_gen; j++) {
-			x[j] = 0.0;
-		      }
-
 		      /* set x starting index */
 		      ix = 0;
 		      if (incx < 0)
@@ -7929,11 +7499,6 @@ double do_test_sgemv_x(int m, int n,
 			/* setting incy */
 			incy = incy_val;
 
-
-			/* zero out vector */
-			for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			  y[j] = 0.0;
-			}
 
 			/* set y starting index */
 			iy = 0;
@@ -7963,8 +7528,8 @@ double do_test_sgemv_x(int m, int n,
 			if (m > 0 && n > 0)
 			  for (j = 0, k = 0; j < m_i; j++, k += incy_gen) {
 			    /* copy row j of A to temp */
-			    sgemv_copy(order_type, trans_type, m, n, A, lda,
-				       temp, j);
+			    sge_copy_row(order_type, trans_type, m_i, n_i, A,
+					 lda, temp, j);
 
 			    test_BLAS_sdot(n_i, blas_no_conj,
 					   alpha, beta, y_gen[k],
@@ -8062,32 +7627,27 @@ double do_test_sgemv_x(int m, int n,
 			    printf("      A=");
 			    for (j = 0; j < m_i; j++) {
 			      /* copy row j of A to temp */
-			      sgemv_copy(order_type, trans_type, m, n, A, lda,
-					 temp, j);
+			      sge_copy_row(order_type, trans_type, m_i, n_i,
+					   A, lda, temp, j);
 
 			      if (j > 0)
 				printf("        ");
-			      for (k = 0; k < n_i * incA; k += incA) {
-				printf("%.8e", temp[k]);
-				printf("  ");
-			      }
-			      printf("\n");
+			      sprint_vector(temp, n_i, 1, NULL);
 			    }
 
 			    for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
 			      if (j < n_i) {
 				printf("      ");
-				printf("x[%d]=%.8e", ix, x[ix]);
+				printf("%16.8e", x[ix]);
 				printf("\n");
 			      }
 			      if (k < m_i) {
 				printf("      ");
-				printf("y_gen[%d]=%.8e", k * incy_gen,
-				       y_gen[k * incy_gen]);
+				printf("%16.8e", y_gen[k * incy_gen]);
 				printf("\n");
 				printf("      ");
-				printf("y_final[%d]=", iy);
-				printf("%.8e", y[iy]);
+				printf("y_final[%d] = ", iy);
+				printf("%16.8e", y[iy]);
 				printf("\n");
 			      }
 			      ix += incx;
@@ -8095,16 +7655,17 @@ double do_test_sgemv_x(int m, int n,
 			    }
 
 			    printf("      ");
-			    printf("alpha=%.8e", alpha);
+			    printf("alpha = ");
+			    printf("%16.8e", alpha);
 			    printf("\n      ");
-			    printf("beta=%.8e", beta);
+			    printf("beta = ");
+			    printf("%16.8e", beta);
 			    printf("\n");
 			    for (j = 0, k = 0; j < m_i * incy_gen;
 				 j += incy_gen, k++) {
 			      printf("      ");
-			      printf
-				("head_r_true[%d]=%.16e, tail_r_true[%d]=%.16e",
-				 j, head_r_true[j], j, tail_r_true[j]);
+			      printf("[%24.16e, %24.16e]", head_r_true[j],
+				     tail_r_true[j]);
 			      printf(", ratio[%d]=%.4e\n", k, ratios[k]);
 			    }
 
@@ -8266,7 +7827,6 @@ double do_test_dgemv_x(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incA;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -8343,8 +7903,7 @@ double do_test_dgemv_x(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incA = 1;
-
+  incx_gen = incy_gen = 1;
 
 
 
@@ -8353,36 +7912,21 @@ double do_test_dgemv_x(int m, int n,
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-  }
   y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double));
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
   }
   x_gen = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-  }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-  }
   temp = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incA; i += incA) {
-    temp[i] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double));
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double));
@@ -8393,7 +7937,6 @@ double do_test_dgemv_x(int m, int n,
   if (max_mn > 0 && ratios == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-
   A =
     (double *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(double));
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && A == NULL) {
@@ -8543,11 +8086,6 @@ double do_test_dgemv_x(int m, int n,
 		      incx = incx_val;
 
 
-		      /* zero out x */
-		      for (j = 0; j < n_i * 2 * incx_gen; j++) {
-			x[j] = 0.0;
-		      }
-
 		      /* set x starting index */
 		      ix = 0;
 		      if (incx < 0)
@@ -8568,11 +8106,6 @@ double do_test_dgemv_x(int m, int n,
 			/* setting incy */
 			incy = incy_val;
 
-
-			/* zero out vector */
-			for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			  y[j] = 0.0;
-			}
 
 			/* set y starting index */
 			iy = 0;
@@ -8602,8 +8135,8 @@ double do_test_dgemv_x(int m, int n,
 			if (m > 0 && n > 0)
 			  for (j = 0, k = 0; j < m_i; j++, k += incy_gen) {
 			    /* copy row j of A to temp */
-			    dgemv_copy(order_type, trans_type, m, n, A, lda,
-				       temp, j);
+			    dge_copy_row(order_type, trans_type, m_i, n_i, A,
+					 lda, temp, j);
 
 			    test_BLAS_ddot(n_i, blas_no_conj,
 					   alpha, beta, y_gen[k],
@@ -8701,32 +8234,27 @@ double do_test_dgemv_x(int m, int n,
 			    printf("      A=");
 			    for (j = 0; j < m_i; j++) {
 			      /* copy row j of A to temp */
-			      dgemv_copy(order_type, trans_type, m, n, A, lda,
-					 temp, j);
+			      dge_copy_row(order_type, trans_type, m_i, n_i,
+					   A, lda, temp, j);
 
 			      if (j > 0)
 				printf("        ");
-			      for (k = 0; k < n_i * incA; k += incA) {
-				printf("%.16e", temp[k]);
-				printf("  ");
-			      }
-			      printf("\n");
+			      dprint_vector(temp, n_i, 1, NULL);
 			    }
 
 			    for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
 			      if (j < n_i) {
 				printf("      ");
-				printf("x[%d]=%.16e", ix, x[ix]);
+				printf("%24.16e", x[ix]);
 				printf("\n");
 			      }
 			      if (k < m_i) {
 				printf("      ");
-				printf("y_gen[%d]=%.16e", k * incy_gen,
-				       y_gen[k * incy_gen]);
+				printf("%24.16e", y_gen[k * incy_gen]);
 				printf("\n");
 				printf("      ");
-				printf("y_final[%d]=", iy);
-				printf("%.16e", y[iy]);
+				printf("y_final[%d] = ", iy);
+				printf("%24.16e", y[iy]);
 				printf("\n");
 			      }
 			      ix += incx;
@@ -8734,16 +8262,17 @@ double do_test_dgemv_x(int m, int n,
 			    }
 
 			    printf("      ");
-			    printf("alpha=%.16e", alpha);
+			    printf("alpha = ");
+			    printf("%24.16e", alpha);
 			    printf("\n      ");
-			    printf("beta=%.16e", beta);
+			    printf("beta = ");
+			    printf("%24.16e", beta);
 			    printf("\n");
 			    for (j = 0, k = 0; j < m_i * incy_gen;
 				 j += incy_gen, k++) {
 			      printf("      ");
-			      printf
-				("head_r_true[%d]=%.16e, tail_r_true[%d]=%.16e",
-				 j, head_r_true[j], j, tail_r_true[j]);
+			      printf("[%24.16e, %24.16e]", head_r_true[j],
+				     tail_r_true[j]);
 			      printf(", ratio[%d]=%.4e\n", k, ratios[k]);
 			    }
 
@@ -8905,7 +8434,6 @@ double do_test_cgemv_x(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incA;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -8983,51 +8511,30 @@ double do_test_cgemv_x(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incA = 1;
+  incx_gen = incy_gen = 1;
   incx_gen *= 2;
   incy_gen *= 2;
-  incA *= 2;
 
   /* get space for calculation */
   x = (float *) blas_malloc(max_mn * 2 * incx_gen * sizeof(float) * 2);
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
   y = (float *) blas_malloc(max_mn * 2 * incy_gen * sizeof(float) * 2);
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
-  }
   y_gen = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
   temp = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incA; i += incA) {
-    temp[i] = 0.0;
-    temp[i + 1] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
@@ -9038,7 +8545,6 @@ double do_test_cgemv_x(int m, int n,
   if (max_mn > 0 && ratios == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-
   A =
     (float *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(float) *
 			  2);
@@ -9191,11 +8697,6 @@ double do_test_cgemv_x(int m, int n,
 		      incx = incx_val;
 		      incx *= 2;
 
-		      /* zero out x */
-		      for (j = 0; j < n_i * 2 * incx_gen; j++) {
-			x[j] = 0.0;
-		      }
-
 		      /* set x starting index */
 		      ix = 0;
 		      if (incx < 0)
@@ -9217,11 +8718,6 @@ double do_test_cgemv_x(int m, int n,
 			/* setting incy */
 			incy = incy_val;
 			incy *= 2;
-
-			/* zero out vector */
-			for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			  y[j] = 0.0;
-			}
 
 			/* set y starting index */
 			iy = 0;
@@ -9252,8 +8748,8 @@ double do_test_cgemv_x(int m, int n,
 			if (m > 0 && n > 0)
 			  for (j = 0, k = 0; j < m_i; j++, k += incy_gen) {
 			    /* copy row j of A to temp */
-			    cgemv_copy(order_type, trans_type, m, n, A, lda,
-				       temp, j);
+			    cge_copy_row(order_type, trans_type, m_i, n_i, A,
+					 lda, temp, j);
 
 			    test_BLAS_cdot(n_i, blas_no_conj,
 					   alpha, beta, &y_gen[k],
@@ -9351,34 +8847,29 @@ double do_test_cgemv_x(int m, int n,
 			    printf("      A=");
 			    for (j = 0; j < m_i; j++) {
 			      /* copy row j of A to temp */
-			      cgemv_copy(order_type, trans_type, m, n, A, lda,
-					 temp, j);
+			      cge_copy_row(order_type, trans_type, m_i, n_i,
+					   A, lda, temp, j);
 
 			      if (j > 0)
 				printf("        ");
-			      for (k = 0; k < n_i * incA; k += incA) {
-				printf("%.8e, %.8e", temp[k], temp[k + 1]);
-				printf("  ");
-			      }
-			      printf("\n");
+			      cprint_vector(temp, n_i, 1, NULL);
 			    }
 
 			    for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
 			      if (j < n_i) {
 				printf("      ");
-				printf("x[%d]=%.8e, x[%d+1]=%.8e", ix, x[ix],
-				       ix, x[ix + 1]);
+				printf("(%16.8e, %16.8e)", x[ix], x[ix + 1]);
 				printf("\n");
 			      }
 			      if (k < m_i) {
 				printf("      ");
-				printf("y_gen[%d]=%.8e, y_gen[%d+1]=%.8e",
-				       k * incy_gen, y_gen[k * incy_gen],
-				       k * incy_gen, y_gen[k * incy_gen + 1]);
+				printf("(%16.8e, %16.8e)",
+				       y_gen[k * incy_gen],
+				       y_gen[k * incy_gen + 1]);
 				printf("\n");
 				printf("      ");
-				printf("y_final[%d]=", iy);
-				printf("%.8e, %.8e", y[iy], y[iy + 1]);
+				printf("y_final[%d] = ", iy);
+				printf("(%16.8e, %16.8e)", y[iy], y[iy + 1]);
 				printf("\n");
 			      }
 			      ix += incx;
@@ -9386,16 +8877,19 @@ double do_test_cgemv_x(int m, int n,
 			    }
 
 			    printf("      ");
-			    printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-				   alpha[1]);
+			    printf("alpha = ");
+			    printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);
 			    printf("\n      ");
-			    printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
-				   beta[1]);
+			    printf("beta = ");
+			    printf("(%16.8e, %16.8e)", beta[0], beta[1]);
 			    printf("\n");
 			    for (j = 0, k = 0; j < m_i * incy_gen;
 				 j += incy_gen, k++) {
 			      printf("      ");
-
+			      printf
+				("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				 head_r_true[j], tail_r_true[j],
+				 head_r_true[j + 1], tail_r_true[j + 1]);
 			      printf(", ratio[%d]=%.4e\n", k, ratios[k]);
 			    }
 
@@ -9557,7 +9051,6 @@ double do_test_zgemv_x(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incA;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -9635,51 +9128,30 @@ double do_test_zgemv_x(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incA = 1;
+  incx_gen = incy_gen = 1;
   incx_gen *= 2;
   incy_gen *= 2;
-  incA *= 2;
 
   /* get space for calculation */
   x = (double *) blas_malloc(max_mn * 2 * incx_gen * sizeof(double) * 2);
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
   y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double) * 2);
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
   }
   x_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
-  }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
   temp = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incA; i += incA) {
-    temp[i] = 0.0;
-    temp[i + 1] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
@@ -9690,7 +9162,6 @@ double do_test_zgemv_x(int m, int n,
   if (max_mn > 0 && ratios == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-
   A =
     (double *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(double) *
 			   2);
@@ -9843,11 +9314,6 @@ double do_test_zgemv_x(int m, int n,
 		      incx = incx_val;
 		      incx *= 2;
 
-		      /* zero out x */
-		      for (j = 0; j < n_i * 2 * incx_gen; j++) {
-			x[j] = 0.0;
-		      }
-
 		      /* set x starting index */
 		      ix = 0;
 		      if (incx < 0)
@@ -9869,11 +9335,6 @@ double do_test_zgemv_x(int m, int n,
 			/* setting incy */
 			incy = incy_val;
 			incy *= 2;
-
-			/* zero out vector */
-			for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			  y[j] = 0.0;
-			}
 
 			/* set y starting index */
 			iy = 0;
@@ -9904,8 +9365,8 @@ double do_test_zgemv_x(int m, int n,
 			if (m > 0 && n > 0)
 			  for (j = 0, k = 0; j < m_i; j++, k += incy_gen) {
 			    /* copy row j of A to temp */
-			    zgemv_copy(order_type, trans_type, m, n, A, lda,
-				       temp, j);
+			    zge_copy_row(order_type, trans_type, m_i, n_i, A,
+					 lda, temp, j);
 
 			    test_BLAS_zdot(n_i, blas_no_conj,
 					   alpha, beta, &y_gen[k],
@@ -10003,34 +9464,31 @@ double do_test_zgemv_x(int m, int n,
 			    printf("      A=");
 			    for (j = 0; j < m_i; j++) {
 			      /* copy row j of A to temp */
-			      zgemv_copy(order_type, trans_type, m, n, A, lda,
-					 temp, j);
+			      zge_copy_row(order_type, trans_type, m_i, n_i,
+					   A, lda, temp, j);
 
 			      if (j > 0)
 				printf("        ");
-			      for (k = 0; k < n_i * incA; k += incA) {
-				printf("%.16e, %.16e", temp[k], temp[k + 1]);
-				printf("  ");
-			      }
-			      printf("\n");
+			      zprint_vector(temp, n_i, 1, NULL);
 			    }
 
 			    for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
 			      if (j < n_i) {
 				printf("      ");
-				printf("x[%d]=%.16e, x[%d+1]=%.16e", ix,
-				       x[ix], ix, x[ix + 1]);
+				printf("(%24.16e, %24.16e)", x[ix],
+				       x[ix + 1]);
 				printf("\n");
 			      }
 			      if (k < m_i) {
 				printf("      ");
-				printf("y_gen[%d]=%.16e, y_gen[%d+1]=%.16e",
-				       k * incy_gen, y_gen[k * incy_gen],
-				       k * incy_gen, y_gen[k * incy_gen + 1]);
+				printf("(%24.16e, %24.16e)",
+				       y_gen[k * incy_gen],
+				       y_gen[k * incy_gen + 1]);
 				printf("\n");
 				printf("      ");
-				printf("y_final[%d]=", iy);
-				printf("%.16e, %.16e", y[iy], y[iy + 1]);
+				printf("y_final[%d] = ", iy);
+				printf("(%24.16e, %24.16e)", y[iy],
+				       y[iy + 1]);
 				printf("\n");
 			      }
 			      ix += incx;
@@ -10038,16 +9496,19 @@ double do_test_zgemv_x(int m, int n,
 			    }
 
 			    printf("      ");
-			    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				   alpha[1]);
+			    printf("alpha = ");
+			    printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);
 			    printf("\n      ");
-			    printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				   beta[1]);
+			    printf("beta = ");
+			    printf("(%24.16e, %24.16e)", beta[0], beta[1]);
 			    printf("\n");
 			    for (j = 0, k = 0; j < m_i * incy_gen;
 				 j += incy_gen, k++) {
 			      printf("      ");
-
+			      printf
+				("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				 head_r_true[j], tail_r_true[j],
+				 head_r_true[j + 1], tail_r_true[j + 1]);
 			      printf(", ratio[%d]=%.4e\n", k, ratios[k]);
 			    }
 
@@ -10210,7 +9671,6 @@ double do_test_dgemv_d_s_x(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incA;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -10287,8 +9747,7 @@ double do_test_dgemv_d_s_x(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incA = 1;
-
+  incx_gen = incy_gen = 1;
 
 
 
@@ -10297,36 +9756,21 @@ double do_test_dgemv_d_s_x(int m, int n,
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-  }
   y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double));
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-  }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-  }
   temp = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incA; i += incA) {
-    temp[i] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double));
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double));
@@ -10337,7 +9781,6 @@ double do_test_dgemv_d_s_x(int m, int n,
   if (max_mn > 0 && ratios == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-
   A =
     (double *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(double));
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && A == NULL) {
@@ -10487,11 +9930,6 @@ double do_test_dgemv_d_s_x(int m, int n,
 		      incx = incx_val;
 
 
-		      /* zero out x */
-		      for (j = 0; j < n_i * 2 * incx_gen; j++) {
-			x[j] = 0.0;
-		      }
-
 		      /* set x starting index */
 		      ix = 0;
 		      if (incx < 0)
@@ -10512,11 +9950,6 @@ double do_test_dgemv_d_s_x(int m, int n,
 			/* setting incy */
 			incy = incy_val;
 
-
-			/* zero out vector */
-			for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			  y[j] = 0.0;
-			}
 
 			/* set y starting index */
 			iy = 0;
@@ -10546,8 +9979,8 @@ double do_test_dgemv_d_s_x(int m, int n,
 			if (m > 0 && n > 0)
 			  for (j = 0, k = 0; j < m_i; j++, k += incy_gen) {
 			    /* copy row j of A to temp */
-			    dgemv_copy(order_type, trans_type, m, n, A, lda,
-				       temp, j);
+			    dge_copy_row(order_type, trans_type, m_i, n_i, A,
+					 lda, temp, j);
 
 			    test_BLAS_ddot_d_s(n_i, blas_no_conj,
 					       alpha, beta, y_gen[k],
@@ -10645,32 +10078,27 @@ double do_test_dgemv_d_s_x(int m, int n,
 			    printf("      A=");
 			    for (j = 0; j < m_i; j++) {
 			      /* copy row j of A to temp */
-			      dgemv_copy(order_type, trans_type, m, n, A, lda,
-					 temp, j);
+			      dge_copy_row(order_type, trans_type, m_i, n_i,
+					   A, lda, temp, j);
 
 			      if (j > 0)
 				printf("        ");
-			      for (k = 0; k < n_i * incA; k += incA) {
-				printf("%.16e", temp[k]);
-				printf("  ");
-			      }
-			      printf("\n");
+			      dprint_vector(temp, n_i, 1, NULL);
 			    }
 
 			    for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
 			      if (j < n_i) {
 				printf("      ");
-				printf("x[%d]=%.8e", ix, x[ix]);
+				printf("%16.8e", x[ix]);
 				printf("\n");
 			      }
 			      if (k < m_i) {
 				printf("      ");
-				printf("y_gen[%d]=%.16e", k * incy_gen,
-				       y_gen[k * incy_gen]);
+				printf("%24.16e", y_gen[k * incy_gen]);
 				printf("\n");
 				printf("      ");
-				printf("y_final[%d]=", iy);
-				printf("%.16e", y[iy]);
+				printf("y_final[%d] = ", iy);
+				printf("%24.16e", y[iy]);
 				printf("\n");
 			      }
 			      ix += incx;
@@ -10678,16 +10106,17 @@ double do_test_dgemv_d_s_x(int m, int n,
 			    }
 
 			    printf("      ");
-			    printf("alpha=%.16e", alpha);
+			    printf("alpha = ");
+			    printf("%24.16e", alpha);
 			    printf("\n      ");
-			    printf("beta=%.16e", beta);
+			    printf("beta = ");
+			    printf("%24.16e", beta);
 			    printf("\n");
 			    for (j = 0, k = 0; j < m_i * incy_gen;
 				 j += incy_gen, k++) {
 			      printf("      ");
-			      printf
-				("head_r_true[%d]=%.16e, tail_r_true[%d]=%.16e",
-				 j, head_r_true[j], j, tail_r_true[j]);
+			      printf("[%24.16e, %24.16e]", head_r_true[j],
+				     tail_r_true[j]);
 			      printf(", ratio[%d]=%.4e\n", k, ratios[k]);
 			    }
 
@@ -10850,7 +10279,6 @@ double do_test_dgemv_s_d_x(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incA;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -10927,8 +10355,7 @@ double do_test_dgemv_s_d_x(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incA = 1;
-
+  incx_gen = incy_gen = 1;
 
 
 
@@ -10937,36 +10364,21 @@ double do_test_dgemv_s_d_x(int m, int n,
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-  }
   y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double));
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
   }
   x_gen = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-  }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-  }
   temp = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incA; i += incA) {
-    temp[i] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double));
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double));
@@ -10977,7 +10389,6 @@ double do_test_dgemv_s_d_x(int m, int n,
   if (max_mn > 0 && ratios == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-
   A = (float *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(float));
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && A == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -11126,11 +10537,6 @@ double do_test_dgemv_s_d_x(int m, int n,
 		      incx = incx_val;
 
 
-		      /* zero out x */
-		      for (j = 0; j < n_i * 2 * incx_gen; j++) {
-			x[j] = 0.0;
-		      }
-
 		      /* set x starting index */
 		      ix = 0;
 		      if (incx < 0)
@@ -11151,11 +10557,6 @@ double do_test_dgemv_s_d_x(int m, int n,
 			/* setting incy */
 			incy = incy_val;
 
-
-			/* zero out vector */
-			for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			  y[j] = 0.0;
-			}
 
 			/* set y starting index */
 			iy = 0;
@@ -11185,8 +10586,8 @@ double do_test_dgemv_s_d_x(int m, int n,
 			if (m > 0 && n > 0)
 			  for (j = 0, k = 0; j < m_i; j++, k += incy_gen) {
 			    /* copy row j of A to temp */
-			    sgemv_copy(order_type, trans_type, m, n, A, lda,
-				       temp, j);
+			    sge_copy_row(order_type, trans_type, m_i, n_i, A,
+					 lda, temp, j);
 
 			    test_BLAS_ddot_s_d(n_i, blas_no_conj,
 					       alpha, beta, y_gen[k],
@@ -11284,32 +10685,27 @@ double do_test_dgemv_s_d_x(int m, int n,
 			    printf("      A=");
 			    for (j = 0; j < m_i; j++) {
 			      /* copy row j of A to temp */
-			      sgemv_copy(order_type, trans_type, m, n, A, lda,
-					 temp, j);
+			      sge_copy_row(order_type, trans_type, m_i, n_i,
+					   A, lda, temp, j);
 
 			      if (j > 0)
 				printf("        ");
-			      for (k = 0; k < n_i * incA; k += incA) {
-				printf("%.8e", temp[k]);
-				printf("  ");
-			      }
-			      printf("\n");
+			      sprint_vector(temp, n_i, 1, NULL);
 			    }
 
 			    for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
 			      if (j < n_i) {
 				printf("      ");
-				printf("x[%d]=%.16e", ix, x[ix]);
+				printf("%24.16e", x[ix]);
 				printf("\n");
 			      }
 			      if (k < m_i) {
 				printf("      ");
-				printf("y_gen[%d]=%.16e", k * incy_gen,
-				       y_gen[k * incy_gen]);
+				printf("%24.16e", y_gen[k * incy_gen]);
 				printf("\n");
 				printf("      ");
-				printf("y_final[%d]=", iy);
-				printf("%.16e", y[iy]);
+				printf("y_final[%d] = ", iy);
+				printf("%24.16e", y[iy]);
 				printf("\n");
 			      }
 			      ix += incx;
@@ -11317,16 +10713,17 @@ double do_test_dgemv_s_d_x(int m, int n,
 			    }
 
 			    printf("      ");
-			    printf("alpha=%.16e", alpha);
+			    printf("alpha = ");
+			    printf("%24.16e", alpha);
 			    printf("\n      ");
-			    printf("beta=%.16e", beta);
+			    printf("beta = ");
+			    printf("%24.16e", beta);
 			    printf("\n");
 			    for (j = 0, k = 0; j < m_i * incy_gen;
 				 j += incy_gen, k++) {
 			      printf("      ");
-			      printf
-				("head_r_true[%d]=%.16e, tail_r_true[%d]=%.16e",
-				 j, head_r_true[j], j, tail_r_true[j]);
+			      printf("[%24.16e, %24.16e]", head_r_true[j],
+				     tail_r_true[j]);
 			      printf(", ratio[%d]=%.4e\n", k, ratios[k]);
 			    }
 
@@ -11489,7 +10886,6 @@ double do_test_dgemv_s_s_x(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incA;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -11566,8 +10962,7 @@ double do_test_dgemv_s_s_x(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incA = 1;
-
+  incx_gen = incy_gen = 1;
 
 
 
@@ -11576,36 +10971,21 @@ double do_test_dgemv_s_s_x(int m, int n,
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-  }
   y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double));
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-  }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-  }
   temp = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incA; i += incA) {
-    temp[i] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double));
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double));
@@ -11616,7 +10996,6 @@ double do_test_dgemv_s_s_x(int m, int n,
   if (max_mn > 0 && ratios == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-
   A = (float *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(float));
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && A == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -11765,11 +11144,6 @@ double do_test_dgemv_s_s_x(int m, int n,
 		      incx = incx_val;
 
 
-		      /* zero out x */
-		      for (j = 0; j < n_i * 2 * incx_gen; j++) {
-			x[j] = 0.0;
-		      }
-
 		      /* set x starting index */
 		      ix = 0;
 		      if (incx < 0)
@@ -11790,11 +11164,6 @@ double do_test_dgemv_s_s_x(int m, int n,
 			/* setting incy */
 			incy = incy_val;
 
-
-			/* zero out vector */
-			for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			  y[j] = 0.0;
-			}
 
 			/* set y starting index */
 			iy = 0;
@@ -11824,8 +11193,8 @@ double do_test_dgemv_s_s_x(int m, int n,
 			if (m > 0 && n > 0)
 			  for (j = 0, k = 0; j < m_i; j++, k += incy_gen) {
 			    /* copy row j of A to temp */
-			    sgemv_copy(order_type, trans_type, m, n, A, lda,
-				       temp, j);
+			    sge_copy_row(order_type, trans_type, m_i, n_i, A,
+					 lda, temp, j);
 
 			    test_BLAS_ddot_s_s(n_i, blas_no_conj,
 					       alpha, beta, y_gen[k],
@@ -11923,32 +11292,27 @@ double do_test_dgemv_s_s_x(int m, int n,
 			    printf("      A=");
 			    for (j = 0; j < m_i; j++) {
 			      /* copy row j of A to temp */
-			      sgemv_copy(order_type, trans_type, m, n, A, lda,
-					 temp, j);
+			      sge_copy_row(order_type, trans_type, m_i, n_i,
+					   A, lda, temp, j);
 
 			      if (j > 0)
 				printf("        ");
-			      for (k = 0; k < n_i * incA; k += incA) {
-				printf("%.8e", temp[k]);
-				printf("  ");
-			      }
-			      printf("\n");
+			      sprint_vector(temp, n_i, 1, NULL);
 			    }
 
 			    for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
 			      if (j < n_i) {
 				printf("      ");
-				printf("x[%d]=%.8e", ix, x[ix]);
+				printf("%16.8e", x[ix]);
 				printf("\n");
 			      }
 			      if (k < m_i) {
 				printf("      ");
-				printf("y_gen[%d]=%.16e", k * incy_gen,
-				       y_gen[k * incy_gen]);
+				printf("%24.16e", y_gen[k * incy_gen]);
 				printf("\n");
 				printf("      ");
-				printf("y_final[%d]=", iy);
-				printf("%.16e", y[iy]);
+				printf("y_final[%d] = ", iy);
+				printf("%24.16e", y[iy]);
 				printf("\n");
 			      }
 			      ix += incx;
@@ -11956,16 +11320,17 @@ double do_test_dgemv_s_s_x(int m, int n,
 			    }
 
 			    printf("      ");
-			    printf("alpha=%.16e", alpha);
+			    printf("alpha = ");
+			    printf("%24.16e", alpha);
 			    printf("\n      ");
-			    printf("beta=%.16e", beta);
+			    printf("beta = ");
+			    printf("%24.16e", beta);
 			    printf("\n");
 			    for (j = 0, k = 0; j < m_i * incy_gen;
 				 j += incy_gen, k++) {
 			      printf("      ");
-			      printf
-				("head_r_true[%d]=%.16e, tail_r_true[%d]=%.16e",
-				 j, head_r_true[j], j, tail_r_true[j]);
+			      printf("[%24.16e, %24.16e]", head_r_true[j],
+				     tail_r_true[j]);
 			      printf(", ratio[%d]=%.4e\n", k, ratios[k]);
 			    }
 
@@ -12128,7 +11493,6 @@ double do_test_zgemv_z_c_x(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incA;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -12206,51 +11570,30 @@ double do_test_zgemv_z_c_x(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incA = 1;
+  incx_gen = incy_gen = 1;
   incx_gen *= 2;
   incy_gen *= 2;
-  incA *= 2;
 
   /* get space for calculation */
   x = (float *) blas_malloc(max_mn * 2 * incx_gen * sizeof(float) * 2);
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
   y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double) * 2);
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
-  }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
   temp = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incA; i += incA) {
-    temp[i] = 0.0;
-    temp[i + 1] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
@@ -12261,7 +11604,6 @@ double do_test_zgemv_z_c_x(int m, int n,
   if (max_mn > 0 && ratios == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-
   A =
     (double *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(double) *
 			   2);
@@ -12414,11 +11756,6 @@ double do_test_zgemv_z_c_x(int m, int n,
 		      incx = incx_val;
 		      incx *= 2;
 
-		      /* zero out x */
-		      for (j = 0; j < n_i * 2 * incx_gen; j++) {
-			x[j] = 0.0;
-		      }
-
 		      /* set x starting index */
 		      ix = 0;
 		      if (incx < 0)
@@ -12440,11 +11777,6 @@ double do_test_zgemv_z_c_x(int m, int n,
 			/* setting incy */
 			incy = incy_val;
 			incy *= 2;
-
-			/* zero out vector */
-			for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			  y[j] = 0.0;
-			}
 
 			/* set y starting index */
 			iy = 0;
@@ -12475,8 +11807,8 @@ double do_test_zgemv_z_c_x(int m, int n,
 			if (m > 0 && n > 0)
 			  for (j = 0, k = 0; j < m_i; j++, k += incy_gen) {
 			    /* copy row j of A to temp */
-			    zgemv_copy(order_type, trans_type, m, n, A, lda,
-				       temp, j);
+			    zge_copy_row(order_type, trans_type, m_i, n_i, A,
+					 lda, temp, j);
 
 			    test_BLAS_zdot_z_c(n_i, blas_no_conj,
 					       alpha, beta, &y_gen[k],
@@ -12574,34 +11906,30 @@ double do_test_zgemv_z_c_x(int m, int n,
 			    printf("      A=");
 			    for (j = 0; j < m_i; j++) {
 			      /* copy row j of A to temp */
-			      zgemv_copy(order_type, trans_type, m, n, A, lda,
-					 temp, j);
+			      zge_copy_row(order_type, trans_type, m_i, n_i,
+					   A, lda, temp, j);
 
 			      if (j > 0)
 				printf("        ");
-			      for (k = 0; k < n_i * incA; k += incA) {
-				printf("%.16e, %.16e", temp[k], temp[k + 1]);
-				printf("  ");
-			      }
-			      printf("\n");
+			      zprint_vector(temp, n_i, 1, NULL);
 			    }
 
 			    for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
 			      if (j < n_i) {
 				printf("      ");
-				printf("x[%d]=%.8e, x[%d+1]=%.8e", ix, x[ix],
-				       ix, x[ix + 1]);
+				printf("(%16.8e, %16.8e)", x[ix], x[ix + 1]);
 				printf("\n");
 			      }
 			      if (k < m_i) {
 				printf("      ");
-				printf("y_gen[%d]=%.16e, y_gen[%d+1]=%.16e",
-				       k * incy_gen, y_gen[k * incy_gen],
-				       k * incy_gen, y_gen[k * incy_gen + 1]);
+				printf("(%24.16e, %24.16e)",
+				       y_gen[k * incy_gen],
+				       y_gen[k * incy_gen + 1]);
 				printf("\n");
 				printf("      ");
-				printf("y_final[%d]=", iy);
-				printf("%.16e, %.16e", y[iy], y[iy + 1]);
+				printf("y_final[%d] = ", iy);
+				printf("(%24.16e, %24.16e)", y[iy],
+				       y[iy + 1]);
 				printf("\n");
 			      }
 			      ix += incx;
@@ -12609,16 +11937,19 @@ double do_test_zgemv_z_c_x(int m, int n,
 			    }
 
 			    printf("      ");
-			    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				   alpha[1]);
+			    printf("alpha = ");
+			    printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);
 			    printf("\n      ");
-			    printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				   beta[1]);
+			    printf("beta = ");
+			    printf("(%24.16e, %24.16e)", beta[0], beta[1]);
 			    printf("\n");
 			    for (j = 0, k = 0; j < m_i * incy_gen;
 				 j += incy_gen, k++) {
 			      printf("      ");
-
+			      printf
+				("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				 head_r_true[j], tail_r_true[j],
+				 head_r_true[j + 1], tail_r_true[j + 1]);
 			      printf(", ratio[%d]=%.4e\n", k, ratios[k]);
 			    }
 
@@ -12781,7 +12112,6 @@ double do_test_zgemv_c_z_x(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incA;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -12859,51 +12189,30 @@ double do_test_zgemv_c_z_x(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incA = 1;
+  incx_gen = incy_gen = 1;
   incx_gen *= 2;
   incy_gen *= 2;
-  incA *= 2;
 
   /* get space for calculation */
   x = (double *) blas_malloc(max_mn * 2 * incx_gen * sizeof(double) * 2);
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
   y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double) * 2);
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
   }
   x_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
-  }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
   temp = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incA; i += incA) {
-    temp[i] = 0.0;
-    temp[i + 1] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
@@ -12914,7 +12223,6 @@ double do_test_zgemv_c_z_x(int m, int n,
   if (max_mn > 0 && ratios == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-
   A =
     (float *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(float) *
 			  2);
@@ -13067,11 +12375,6 @@ double do_test_zgemv_c_z_x(int m, int n,
 		      incx = incx_val;
 		      incx *= 2;
 
-		      /* zero out x */
-		      for (j = 0; j < n_i * 2 * incx_gen; j++) {
-			x[j] = 0.0;
-		      }
-
 		      /* set x starting index */
 		      ix = 0;
 		      if (incx < 0)
@@ -13093,11 +12396,6 @@ double do_test_zgemv_c_z_x(int m, int n,
 			/* setting incy */
 			incy = incy_val;
 			incy *= 2;
-
-			/* zero out vector */
-			for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			  y[j] = 0.0;
-			}
 
 			/* set y starting index */
 			iy = 0;
@@ -13128,8 +12426,8 @@ double do_test_zgemv_c_z_x(int m, int n,
 			if (m > 0 && n > 0)
 			  for (j = 0, k = 0; j < m_i; j++, k += incy_gen) {
 			    /* copy row j of A to temp */
-			    cgemv_copy(order_type, trans_type, m, n, A, lda,
-				       temp, j);
+			    cge_copy_row(order_type, trans_type, m_i, n_i, A,
+					 lda, temp, j);
 
 			    test_BLAS_zdot_c_z(n_i, blas_no_conj,
 					       alpha, beta, &y_gen[k],
@@ -13227,34 +12525,31 @@ double do_test_zgemv_c_z_x(int m, int n,
 			    printf("      A=");
 			    for (j = 0; j < m_i; j++) {
 			      /* copy row j of A to temp */
-			      cgemv_copy(order_type, trans_type, m, n, A, lda,
-					 temp, j);
+			      cge_copy_row(order_type, trans_type, m_i, n_i,
+					   A, lda, temp, j);
 
 			      if (j > 0)
 				printf("        ");
-			      for (k = 0; k < n_i * incA; k += incA) {
-				printf("%.8e, %.8e", temp[k], temp[k + 1]);
-				printf("  ");
-			      }
-			      printf("\n");
+			      cprint_vector(temp, n_i, 1, NULL);
 			    }
 
 			    for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
 			      if (j < n_i) {
 				printf("      ");
-				printf("x[%d]=%.16e, x[%d+1]=%.16e", ix,
-				       x[ix], ix, x[ix + 1]);
+				printf("(%24.16e, %24.16e)", x[ix],
+				       x[ix + 1]);
 				printf("\n");
 			      }
 			      if (k < m_i) {
 				printf("      ");
-				printf("y_gen[%d]=%.16e, y_gen[%d+1]=%.16e",
-				       k * incy_gen, y_gen[k * incy_gen],
-				       k * incy_gen, y_gen[k * incy_gen + 1]);
+				printf("(%24.16e, %24.16e)",
+				       y_gen[k * incy_gen],
+				       y_gen[k * incy_gen + 1]);
 				printf("\n");
 				printf("      ");
-				printf("y_final[%d]=", iy);
-				printf("%.16e, %.16e", y[iy], y[iy + 1]);
+				printf("y_final[%d] = ", iy);
+				printf("(%24.16e, %24.16e)", y[iy],
+				       y[iy + 1]);
 				printf("\n");
 			      }
 			      ix += incx;
@@ -13262,16 +12557,19 @@ double do_test_zgemv_c_z_x(int m, int n,
 			    }
 
 			    printf("      ");
-			    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				   alpha[1]);
+			    printf("alpha = ");
+			    printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);
 			    printf("\n      ");
-			    printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				   beta[1]);
+			    printf("beta = ");
+			    printf("(%24.16e, %24.16e)", beta[0], beta[1]);
 			    printf("\n");
 			    for (j = 0, k = 0; j < m_i * incy_gen;
 				 j += incy_gen, k++) {
 			      printf("      ");
-
+			      printf
+				("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				 head_r_true[j], tail_r_true[j],
+				 head_r_true[j + 1], tail_r_true[j + 1]);
 			      printf(", ratio[%d]=%.4e\n", k, ratios[k]);
 			    }
 
@@ -13434,7 +12732,6 @@ double do_test_zgemv_c_c_x(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incA;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -13512,51 +12809,30 @@ double do_test_zgemv_c_c_x(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incA = 1;
+  incx_gen = incy_gen = 1;
   incx_gen *= 2;
   incy_gen *= 2;
-  incA *= 2;
 
   /* get space for calculation */
   x = (float *) blas_malloc(max_mn * 2 * incx_gen * sizeof(float) * 2);
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
   y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double) * 2);
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
-  }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
   temp = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incA; i += incA) {
-    temp[i] = 0.0;
-    temp[i + 1] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
@@ -13567,7 +12843,6 @@ double do_test_zgemv_c_c_x(int m, int n,
   if (max_mn > 0 && ratios == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-
   A =
     (float *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(float) *
 			  2);
@@ -13720,11 +12995,6 @@ double do_test_zgemv_c_c_x(int m, int n,
 		      incx = incx_val;
 		      incx *= 2;
 
-		      /* zero out x */
-		      for (j = 0; j < n_i * 2 * incx_gen; j++) {
-			x[j] = 0.0;
-		      }
-
 		      /* set x starting index */
 		      ix = 0;
 		      if (incx < 0)
@@ -13746,11 +13016,6 @@ double do_test_zgemv_c_c_x(int m, int n,
 			/* setting incy */
 			incy = incy_val;
 			incy *= 2;
-
-			/* zero out vector */
-			for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			  y[j] = 0.0;
-			}
 
 			/* set y starting index */
 			iy = 0;
@@ -13781,8 +13046,8 @@ double do_test_zgemv_c_c_x(int m, int n,
 			if (m > 0 && n > 0)
 			  for (j = 0, k = 0; j < m_i; j++, k += incy_gen) {
 			    /* copy row j of A to temp */
-			    cgemv_copy(order_type, trans_type, m, n, A, lda,
-				       temp, j);
+			    cge_copy_row(order_type, trans_type, m_i, n_i, A,
+					 lda, temp, j);
 
 			    test_BLAS_zdot_c_c(n_i, blas_no_conj,
 					       alpha, beta, &y_gen[k],
@@ -13880,34 +13145,30 @@ double do_test_zgemv_c_c_x(int m, int n,
 			    printf("      A=");
 			    for (j = 0; j < m_i; j++) {
 			      /* copy row j of A to temp */
-			      cgemv_copy(order_type, trans_type, m, n, A, lda,
-					 temp, j);
+			      cge_copy_row(order_type, trans_type, m_i, n_i,
+					   A, lda, temp, j);
 
 			      if (j > 0)
 				printf("        ");
-			      for (k = 0; k < n_i * incA; k += incA) {
-				printf("%.8e, %.8e", temp[k], temp[k + 1]);
-				printf("  ");
-			      }
-			      printf("\n");
+			      cprint_vector(temp, n_i, 1, NULL);
 			    }
 
 			    for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
 			      if (j < n_i) {
 				printf("      ");
-				printf("x[%d]=%.8e, x[%d+1]=%.8e", ix, x[ix],
-				       ix, x[ix + 1]);
+				printf("(%16.8e, %16.8e)", x[ix], x[ix + 1]);
 				printf("\n");
 			      }
 			      if (k < m_i) {
 				printf("      ");
-				printf("y_gen[%d]=%.16e, y_gen[%d+1]=%.16e",
-				       k * incy_gen, y_gen[k * incy_gen],
-				       k * incy_gen, y_gen[k * incy_gen + 1]);
+				printf("(%24.16e, %24.16e)",
+				       y_gen[k * incy_gen],
+				       y_gen[k * incy_gen + 1]);
 				printf("\n");
 				printf("      ");
-				printf("y_final[%d]=", iy);
-				printf("%.16e, %.16e", y[iy], y[iy + 1]);
+				printf("y_final[%d] = ", iy);
+				printf("(%24.16e, %24.16e)", y[iy],
+				       y[iy + 1]);
 				printf("\n");
 			      }
 			      ix += incx;
@@ -13915,16 +13176,19 @@ double do_test_zgemv_c_c_x(int m, int n,
 			    }
 
 			    printf("      ");
-			    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				   alpha[1]);
+			    printf("alpha = ");
+			    printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);
 			    printf("\n      ");
-			    printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				   beta[1]);
+			    printf("beta = ");
+			    printf("(%24.16e, %24.16e)", beta[0], beta[1]);
 			    printf("\n");
 			    for (j = 0, k = 0; j < m_i * incy_gen;
 				 j += incy_gen, k++) {
 			      printf("      ");
-
+			      printf
+				("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				 head_r_true[j], tail_r_true[j],
+				 head_r_true[j + 1], tail_r_true[j + 1]);
 			      printf(", ratio[%d]=%.4e\n", k, ratios[k]);
 			    }
 
@@ -14087,7 +13351,6 @@ double do_test_cgemv_c_s_x(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incA;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -14165,49 +13428,30 @@ double do_test_cgemv_c_s_x(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incA = 1;
+  incx_gen = incy_gen = 1;
 
   incy_gen *= 2;
-  incA *= 2;
 
   /* get space for calculation */
   x = (float *) blas_malloc(max_mn * 2 * incx_gen * sizeof(float));
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-  }
   y = (float *) blas_malloc(max_mn * 2 * incy_gen * sizeof(float) * 2);
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-  }
   y_gen = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
   temp = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incA; i += incA) {
-    temp[i] = 0.0;
-    temp[i + 1] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
@@ -14218,7 +13462,6 @@ double do_test_cgemv_c_s_x(int m, int n,
   if (max_mn > 0 && ratios == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-
   A =
     (float *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(float) *
 			  2);
@@ -14371,11 +13614,6 @@ double do_test_cgemv_c_s_x(int m, int n,
 		      incx = incx_val;
 
 
-		      /* zero out x */
-		      for (j = 0; j < n_i * 2 * incx_gen; j++) {
-			x[j] = 0.0;
-		      }
-
 		      /* set x starting index */
 		      ix = 0;
 		      if (incx < 0)
@@ -14396,11 +13634,6 @@ double do_test_cgemv_c_s_x(int m, int n,
 			/* setting incy */
 			incy = incy_val;
 			incy *= 2;
-
-			/* zero out vector */
-			for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			  y[j] = 0.0;
-			}
 
 			/* set y starting index */
 			iy = 0;
@@ -14431,8 +13664,8 @@ double do_test_cgemv_c_s_x(int m, int n,
 			if (m > 0 && n > 0)
 			  for (j = 0, k = 0; j < m_i; j++, k += incy_gen) {
 			    /* copy row j of A to temp */
-			    cgemv_copy(order_type, trans_type, m, n, A, lda,
-				       temp, j);
+			    cge_copy_row(order_type, trans_type, m_i, n_i, A,
+					 lda, temp, j);
 
 			    test_BLAS_cdot_c_s(n_i, blas_no_conj,
 					       alpha, beta, &y_gen[k],
@@ -14530,33 +13763,29 @@ double do_test_cgemv_c_s_x(int m, int n,
 			    printf("      A=");
 			    for (j = 0; j < m_i; j++) {
 			      /* copy row j of A to temp */
-			      cgemv_copy(order_type, trans_type, m, n, A, lda,
-					 temp, j);
+			      cge_copy_row(order_type, trans_type, m_i, n_i,
+					   A, lda, temp, j);
 
 			      if (j > 0)
 				printf("        ");
-			      for (k = 0; k < n_i * incA; k += incA) {
-				printf("%.8e, %.8e", temp[k], temp[k + 1]);
-				printf("  ");
-			      }
-			      printf("\n");
+			      cprint_vector(temp, n_i, 1, NULL);
 			    }
 
 			    for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
 			      if (j < n_i) {
 				printf("      ");
-				printf("x[%d]=%.8e", ix, x[ix]);
+				printf("%16.8e", x[ix]);
 				printf("\n");
 			      }
 			      if (k < m_i) {
 				printf("      ");
-				printf("y_gen[%d]=%.8e, y_gen[%d+1]=%.8e",
-				       k * incy_gen, y_gen[k * incy_gen],
-				       k * incy_gen, y_gen[k * incy_gen + 1]);
+				printf("(%16.8e, %16.8e)",
+				       y_gen[k * incy_gen],
+				       y_gen[k * incy_gen + 1]);
 				printf("\n");
 				printf("      ");
-				printf("y_final[%d]=", iy);
-				printf("%.8e, %.8e", y[iy], y[iy + 1]);
+				printf("y_final[%d] = ", iy);
+				printf("(%16.8e, %16.8e)", y[iy], y[iy + 1]);
 				printf("\n");
 			      }
 			      ix += incx;
@@ -14564,16 +13793,19 @@ double do_test_cgemv_c_s_x(int m, int n,
 			    }
 
 			    printf("      ");
-			    printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-				   alpha[1]);
+			    printf("alpha = ");
+			    printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);
 			    printf("\n      ");
-			    printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
-				   beta[1]);
+			    printf("beta = ");
+			    printf("(%16.8e, %16.8e)", beta[0], beta[1]);
 			    printf("\n");
 			    for (j = 0, k = 0; j < m_i * incy_gen;
 				 j += incy_gen, k++) {
 			      printf("      ");
-
+			      printf
+				("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				 head_r_true[j], tail_r_true[j],
+				 head_r_true[j + 1], tail_r_true[j + 1]);
 			      printf(", ratio[%d]=%.4e\n", k, ratios[k]);
 			    }
 
@@ -14736,7 +13968,6 @@ double do_test_cgemv_s_c_x(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incA;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -14814,50 +14045,30 @@ double do_test_cgemv_s_c_x(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incA = 1;
+  incx_gen = incy_gen = 1;
   incx_gen *= 2;
   incy_gen *= 2;
-
 
   /* get space for calculation */
   x = (float *) blas_malloc(max_mn * 2 * incx_gen * sizeof(float) * 2);
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
   y = (float *) blas_malloc(max_mn * 2 * incy_gen * sizeof(float) * 2);
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
-  }
   y_gen = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
   temp = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incA; i += incA) {
-    temp[i] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
@@ -14868,7 +14079,6 @@ double do_test_cgemv_s_c_x(int m, int n,
   if (max_mn > 0 && ratios == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-
   A = (float *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(float));
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && A == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -15019,11 +14229,6 @@ double do_test_cgemv_s_c_x(int m, int n,
 		      incx = incx_val;
 		      incx *= 2;
 
-		      /* zero out x */
-		      for (j = 0; j < n_i * 2 * incx_gen; j++) {
-			x[j] = 0.0;
-		      }
-
 		      /* set x starting index */
 		      ix = 0;
 		      if (incx < 0)
@@ -15045,11 +14250,6 @@ double do_test_cgemv_s_c_x(int m, int n,
 			/* setting incy */
 			incy = incy_val;
 			incy *= 2;
-
-			/* zero out vector */
-			for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			  y[j] = 0.0;
-			}
 
 			/* set y starting index */
 			iy = 0;
@@ -15080,8 +14280,8 @@ double do_test_cgemv_s_c_x(int m, int n,
 			if (m > 0 && n > 0)
 			  for (j = 0, k = 0; j < m_i; j++, k += incy_gen) {
 			    /* copy row j of A to temp */
-			    sgemv_copy(order_type, trans_type, m, n, A, lda,
-				       temp, j);
+			    sge_copy_row(order_type, trans_type, m_i, n_i, A,
+					 lda, temp, j);
 
 			    test_BLAS_cdot_s_c(n_i, blas_no_conj,
 					       alpha, beta, &y_gen[k],
@@ -15179,34 +14379,29 @@ double do_test_cgemv_s_c_x(int m, int n,
 			    printf("      A=");
 			    for (j = 0; j < m_i; j++) {
 			      /* copy row j of A to temp */
-			      sgemv_copy(order_type, trans_type, m, n, A, lda,
-					 temp, j);
+			      sge_copy_row(order_type, trans_type, m_i, n_i,
+					   A, lda, temp, j);
 
 			      if (j > 0)
 				printf("        ");
-			      for (k = 0; k < n_i * incA; k += incA) {
-				printf("%.8e", temp[k]);
-				printf("  ");
-			      }
-			      printf("\n");
+			      sprint_vector(temp, n_i, 1, NULL);
 			    }
 
 			    for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
 			      if (j < n_i) {
 				printf("      ");
-				printf("x[%d]=%.8e, x[%d+1]=%.8e", ix, x[ix],
-				       ix, x[ix + 1]);
+				printf("(%16.8e, %16.8e)", x[ix], x[ix + 1]);
 				printf("\n");
 			      }
 			      if (k < m_i) {
 				printf("      ");
-				printf("y_gen[%d]=%.8e, y_gen[%d+1]=%.8e",
-				       k * incy_gen, y_gen[k * incy_gen],
-				       k * incy_gen, y_gen[k * incy_gen + 1]);
+				printf("(%16.8e, %16.8e)",
+				       y_gen[k * incy_gen],
+				       y_gen[k * incy_gen + 1]);
 				printf("\n");
 				printf("      ");
-				printf("y_final[%d]=", iy);
-				printf("%.8e, %.8e", y[iy], y[iy + 1]);
+				printf("y_final[%d] = ", iy);
+				printf("(%16.8e, %16.8e)", y[iy], y[iy + 1]);
 				printf("\n");
 			      }
 			      ix += incx;
@@ -15214,16 +14409,19 @@ double do_test_cgemv_s_c_x(int m, int n,
 			    }
 
 			    printf("      ");
-			    printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-				   alpha[1]);
+			    printf("alpha = ");
+			    printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);
 			    printf("\n      ");
-			    printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
-				   beta[1]);
+			    printf("beta = ");
+			    printf("(%16.8e, %16.8e)", beta[0], beta[1]);
 			    printf("\n");
 			    for (j = 0, k = 0; j < m_i * incy_gen;
 				 j += incy_gen, k++) {
 			      printf("      ");
-
+			      printf
+				("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				 head_r_true[j], tail_r_true[j],
+				 head_r_true[j + 1], tail_r_true[j + 1]);
 			      printf(", ratio[%d]=%.4e\n", k, ratios[k]);
 			    }
 
@@ -15386,7 +14584,6 @@ double do_test_cgemv_s_s_x(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incA;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -15464,48 +14661,30 @@ double do_test_cgemv_s_s_x(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incA = 1;
+  incx_gen = incy_gen = 1;
 
   incy_gen *= 2;
-
 
   /* get space for calculation */
   x = (float *) blas_malloc(max_mn * 2 * incx_gen * sizeof(float));
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-  }
   y = (float *) blas_malloc(max_mn * 2 * incy_gen * sizeof(float) * 2);
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-  }
   y_gen = (float *) blas_malloc(max_mn * sizeof(float) * 2);
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
   temp = (float *) blas_malloc(max_mn * sizeof(float));
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incA; i += incA) {
-    temp[i] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
@@ -15516,7 +14695,6 @@ double do_test_cgemv_s_s_x(int m, int n,
   if (max_mn > 0 && ratios == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-
   A = (float *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(float));
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && A == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -15667,11 +14845,6 @@ double do_test_cgemv_s_s_x(int m, int n,
 		      incx = incx_val;
 
 
-		      /* zero out x */
-		      for (j = 0; j < n_i * 2 * incx_gen; j++) {
-			x[j] = 0.0;
-		      }
-
 		      /* set x starting index */
 		      ix = 0;
 		      if (incx < 0)
@@ -15692,11 +14865,6 @@ double do_test_cgemv_s_s_x(int m, int n,
 			/* setting incy */
 			incy = incy_val;
 			incy *= 2;
-
-			/* zero out vector */
-			for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			  y[j] = 0.0;
-			}
 
 			/* set y starting index */
 			iy = 0;
@@ -15727,8 +14895,8 @@ double do_test_cgemv_s_s_x(int m, int n,
 			if (m > 0 && n > 0)
 			  for (j = 0, k = 0; j < m_i; j++, k += incy_gen) {
 			    /* copy row j of A to temp */
-			    sgemv_copy(order_type, trans_type, m, n, A, lda,
-				       temp, j);
+			    sge_copy_row(order_type, trans_type, m_i, n_i, A,
+					 lda, temp, j);
 
 			    test_BLAS_cdot_s_s(n_i, blas_no_conj,
 					       alpha, beta, &y_gen[k],
@@ -15826,33 +14994,29 @@ double do_test_cgemv_s_s_x(int m, int n,
 			    printf("      A=");
 			    for (j = 0; j < m_i; j++) {
 			      /* copy row j of A to temp */
-			      sgemv_copy(order_type, trans_type, m, n, A, lda,
-					 temp, j);
+			      sge_copy_row(order_type, trans_type, m_i, n_i,
+					   A, lda, temp, j);
 
 			      if (j > 0)
 				printf("        ");
-			      for (k = 0; k < n_i * incA; k += incA) {
-				printf("%.8e", temp[k]);
-				printf("  ");
-			      }
-			      printf("\n");
+			      sprint_vector(temp, n_i, 1, NULL);
 			    }
 
 			    for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
 			      if (j < n_i) {
 				printf("      ");
-				printf("x[%d]=%.8e", ix, x[ix]);
+				printf("%16.8e", x[ix]);
 				printf("\n");
 			      }
 			      if (k < m_i) {
 				printf("      ");
-				printf("y_gen[%d]=%.8e, y_gen[%d+1]=%.8e",
-				       k * incy_gen, y_gen[k * incy_gen],
-				       k * incy_gen, y_gen[k * incy_gen + 1]);
+				printf("(%16.8e, %16.8e)",
+				       y_gen[k * incy_gen],
+				       y_gen[k * incy_gen + 1]);
 				printf("\n");
 				printf("      ");
-				printf("y_final[%d]=", iy);
-				printf("%.8e, %.8e", y[iy], y[iy + 1]);
+				printf("y_final[%d] = ", iy);
+				printf("(%16.8e, %16.8e)", y[iy], y[iy + 1]);
 				printf("\n");
 			      }
 			      ix += incx;
@@ -15860,16 +15024,19 @@ double do_test_cgemv_s_s_x(int m, int n,
 			    }
 
 			    printf("      ");
-			    printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-				   alpha[1]);
+			    printf("alpha = ");
+			    printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);
 			    printf("\n      ");
-			    printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
-				   beta[1]);
+			    printf("beta = ");
+			    printf("(%16.8e, %16.8e)", beta[0], beta[1]);
 			    printf("\n");
 			    for (j = 0, k = 0; j < m_i * incy_gen;
 				 j += incy_gen, k++) {
 			      printf("      ");
-
+			      printf
+				("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				 head_r_true[j], tail_r_true[j],
+				 head_r_true[j + 1], tail_r_true[j + 1]);
 			      printf(", ratio[%d]=%.4e\n", k, ratios[k]);
 			    }
 
@@ -16032,7 +15199,6 @@ double do_test_zgemv_z_d_x(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incA;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -16110,49 +15276,30 @@ double do_test_zgemv_z_d_x(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incA = 1;
+  incx_gen = incy_gen = 1;
 
   incy_gen *= 2;
-  incA *= 2;
 
   /* get space for calculation */
   x = (double *) blas_malloc(max_mn * 2 * incx_gen * sizeof(double));
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-  }
   y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double) * 2);
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
   }
   x_gen = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-  }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
   temp = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incA; i += incA) {
-    temp[i] = 0.0;
-    temp[i + 1] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
@@ -16163,7 +15310,6 @@ double do_test_zgemv_z_d_x(int m, int n,
   if (max_mn > 0 && ratios == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-
   A =
     (double *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(double) *
 			   2);
@@ -16316,11 +15462,6 @@ double do_test_zgemv_z_d_x(int m, int n,
 		      incx = incx_val;
 
 
-		      /* zero out x */
-		      for (j = 0; j < n_i * 2 * incx_gen; j++) {
-			x[j] = 0.0;
-		      }
-
 		      /* set x starting index */
 		      ix = 0;
 		      if (incx < 0)
@@ -16341,11 +15482,6 @@ double do_test_zgemv_z_d_x(int m, int n,
 			/* setting incy */
 			incy = incy_val;
 			incy *= 2;
-
-			/* zero out vector */
-			for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			  y[j] = 0.0;
-			}
 
 			/* set y starting index */
 			iy = 0;
@@ -16376,8 +15512,8 @@ double do_test_zgemv_z_d_x(int m, int n,
 			if (m > 0 && n > 0)
 			  for (j = 0, k = 0; j < m_i; j++, k += incy_gen) {
 			    /* copy row j of A to temp */
-			    zgemv_copy(order_type, trans_type, m, n, A, lda,
-				       temp, j);
+			    zge_copy_row(order_type, trans_type, m_i, n_i, A,
+					 lda, temp, j);
 
 			    test_BLAS_zdot_z_d(n_i, blas_no_conj,
 					       alpha, beta, &y_gen[k],
@@ -16475,33 +15611,30 @@ double do_test_zgemv_z_d_x(int m, int n,
 			    printf("      A=");
 			    for (j = 0; j < m_i; j++) {
 			      /* copy row j of A to temp */
-			      zgemv_copy(order_type, trans_type, m, n, A, lda,
-					 temp, j);
+			      zge_copy_row(order_type, trans_type, m_i, n_i,
+					   A, lda, temp, j);
 
 			      if (j > 0)
 				printf("        ");
-			      for (k = 0; k < n_i * incA; k += incA) {
-				printf("%.16e, %.16e", temp[k], temp[k + 1]);
-				printf("  ");
-			      }
-			      printf("\n");
+			      zprint_vector(temp, n_i, 1, NULL);
 			    }
 
 			    for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
 			      if (j < n_i) {
 				printf("      ");
-				printf("x[%d]=%.16e", ix, x[ix]);
+				printf("%24.16e", x[ix]);
 				printf("\n");
 			      }
 			      if (k < m_i) {
 				printf("      ");
-				printf("y_gen[%d]=%.16e, y_gen[%d+1]=%.16e",
-				       k * incy_gen, y_gen[k * incy_gen],
-				       k * incy_gen, y_gen[k * incy_gen + 1]);
+				printf("(%24.16e, %24.16e)",
+				       y_gen[k * incy_gen],
+				       y_gen[k * incy_gen + 1]);
 				printf("\n");
 				printf("      ");
-				printf("y_final[%d]=", iy);
-				printf("%.16e, %.16e", y[iy], y[iy + 1]);
+				printf("y_final[%d] = ", iy);
+				printf("(%24.16e, %24.16e)", y[iy],
+				       y[iy + 1]);
 				printf("\n");
 			      }
 			      ix += incx;
@@ -16509,16 +15642,19 @@ double do_test_zgemv_z_d_x(int m, int n,
 			    }
 
 			    printf("      ");
-			    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				   alpha[1]);
+			    printf("alpha = ");
+			    printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);
 			    printf("\n      ");
-			    printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				   beta[1]);
+			    printf("beta = ");
+			    printf("(%24.16e, %24.16e)", beta[0], beta[1]);
 			    printf("\n");
 			    for (j = 0, k = 0; j < m_i * incy_gen;
 				 j += incy_gen, k++) {
 			      printf("      ");
-
+			      printf
+				("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				 head_r_true[j], tail_r_true[j],
+				 head_r_true[j + 1], tail_r_true[j + 1]);
 			      printf(", ratio[%d]=%.4e\n", k, ratios[k]);
 			    }
 
@@ -16681,7 +15817,6 @@ double do_test_zgemv_d_z_x(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incA;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -16759,50 +15894,30 @@ double do_test_zgemv_d_z_x(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incA = 1;
+  incx_gen = incy_gen = 1;
   incx_gen *= 2;
   incy_gen *= 2;
-
 
   /* get space for calculation */
   x = (double *) blas_malloc(max_mn * 2 * incx_gen * sizeof(double) * 2);
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
   y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double) * 2);
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
   }
   x_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
-  }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
   temp = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incA; i += incA) {
-    temp[i] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
@@ -16813,7 +15928,6 @@ double do_test_zgemv_d_z_x(int m, int n,
   if (max_mn > 0 && ratios == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-
   A =
     (double *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(double));
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && A == NULL) {
@@ -16965,11 +16079,6 @@ double do_test_zgemv_d_z_x(int m, int n,
 		      incx = incx_val;
 		      incx *= 2;
 
-		      /* zero out x */
-		      for (j = 0; j < n_i * 2 * incx_gen; j++) {
-			x[j] = 0.0;
-		      }
-
 		      /* set x starting index */
 		      ix = 0;
 		      if (incx < 0)
@@ -16991,11 +16100,6 @@ double do_test_zgemv_d_z_x(int m, int n,
 			/* setting incy */
 			incy = incy_val;
 			incy *= 2;
-
-			/* zero out vector */
-			for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			  y[j] = 0.0;
-			}
 
 			/* set y starting index */
 			iy = 0;
@@ -17026,8 +16130,8 @@ double do_test_zgemv_d_z_x(int m, int n,
 			if (m > 0 && n > 0)
 			  for (j = 0, k = 0; j < m_i; j++, k += incy_gen) {
 			    /* copy row j of A to temp */
-			    dgemv_copy(order_type, trans_type, m, n, A, lda,
-				       temp, j);
+			    dge_copy_row(order_type, trans_type, m_i, n_i, A,
+					 lda, temp, j);
 
 			    test_BLAS_zdot_d_z(n_i, blas_no_conj,
 					       alpha, beta, &y_gen[k],
@@ -17125,34 +16229,31 @@ double do_test_zgemv_d_z_x(int m, int n,
 			    printf("      A=");
 			    for (j = 0; j < m_i; j++) {
 			      /* copy row j of A to temp */
-			      dgemv_copy(order_type, trans_type, m, n, A, lda,
-					 temp, j);
+			      dge_copy_row(order_type, trans_type, m_i, n_i,
+					   A, lda, temp, j);
 
 			      if (j > 0)
 				printf("        ");
-			      for (k = 0; k < n_i * incA; k += incA) {
-				printf("%.16e", temp[k]);
-				printf("  ");
-			      }
-			      printf("\n");
+			      dprint_vector(temp, n_i, 1, NULL);
 			    }
 
 			    for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
 			      if (j < n_i) {
 				printf("      ");
-				printf("x[%d]=%.16e, x[%d+1]=%.16e", ix,
-				       x[ix], ix, x[ix + 1]);
+				printf("(%24.16e, %24.16e)", x[ix],
+				       x[ix + 1]);
 				printf("\n");
 			      }
 			      if (k < m_i) {
 				printf("      ");
-				printf("y_gen[%d]=%.16e, y_gen[%d+1]=%.16e",
-				       k * incy_gen, y_gen[k * incy_gen],
-				       k * incy_gen, y_gen[k * incy_gen + 1]);
+				printf("(%24.16e, %24.16e)",
+				       y_gen[k * incy_gen],
+				       y_gen[k * incy_gen + 1]);
 				printf("\n");
 				printf("      ");
-				printf("y_final[%d]=", iy);
-				printf("%.16e, %.16e", y[iy], y[iy + 1]);
+				printf("y_final[%d] = ", iy);
+				printf("(%24.16e, %24.16e)", y[iy],
+				       y[iy + 1]);
 				printf("\n");
 			      }
 			      ix += incx;
@@ -17160,16 +16261,19 @@ double do_test_zgemv_d_z_x(int m, int n,
 			    }
 
 			    printf("      ");
-			    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				   alpha[1]);
+			    printf("alpha = ");
+			    printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);
 			    printf("\n      ");
-			    printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				   beta[1]);
+			    printf("beta = ");
+			    printf("(%24.16e, %24.16e)", beta[0], beta[1]);
 			    printf("\n");
 			    for (j = 0, k = 0; j < m_i * incy_gen;
 				 j += incy_gen, k++) {
 			      printf("      ");
-
+			      printf
+				("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				 head_r_true[j], tail_r_true[j],
+				 head_r_true[j + 1], tail_r_true[j + 1]);
 			      printf(", ratio[%d]=%.4e\n", k, ratios[k]);
 			    }
 
@@ -17332,7 +16436,6 @@ double do_test_zgemv_d_d_x(int m, int n,
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incA;			/* inc for A */
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -17410,48 +16513,30 @@ double do_test_zgemv_d_d_x(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = incA = 1;
+  incx_gen = incy_gen = 1;
 
   incy_gen *= 2;
-
 
   /* get space for calculation */
   x = (double *) blas_malloc(max_mn * 2 * incx_gen * sizeof(double));
   if (max_mn * 2 * incx_gen > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * 2 * incx_gen * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-  }
   y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double) * 2);
   if (max_mn * 2 * incy_gen > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * 2 * incy_gen * incy_gen; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
   }
   x_gen = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-  }
   y_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   if (max_mn > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < max_mn * incy_gen; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
   temp = (double *) blas_malloc(max_mn * sizeof(double));
   if (max_mn > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < max_mn * incA; i += incA) {
-    temp[i] = 0.0;
   }
   head_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(max_mn * sizeof(double) * 2);
@@ -17462,7 +16547,6 @@ double do_test_zgemv_d_d_x(int m, int n,
   if (max_mn > 0 && ratios == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-
   A =
     (double *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(double));
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && A == NULL) {
@@ -17614,11 +16698,6 @@ double do_test_zgemv_d_d_x(int m, int n,
 		      incx = incx_val;
 
 
-		      /* zero out x */
-		      for (j = 0; j < n_i * 2 * incx_gen; j++) {
-			x[j] = 0.0;
-		      }
-
 		      /* set x starting index */
 		      ix = 0;
 		      if (incx < 0)
@@ -17639,11 +16718,6 @@ double do_test_zgemv_d_d_x(int m, int n,
 			/* setting incy */
 			incy = incy_val;
 			incy *= 2;
-
-			/* zero out vector */
-			for (j = 0; j < m_i * 2 * incy_gen; j++) {
-			  y[j] = 0.0;
-			}
 
 			/* set y starting index */
 			iy = 0;
@@ -17674,8 +16748,8 @@ double do_test_zgemv_d_d_x(int m, int n,
 			if (m > 0 && n > 0)
 			  for (j = 0, k = 0; j < m_i; j++, k += incy_gen) {
 			    /* copy row j of A to temp */
-			    dgemv_copy(order_type, trans_type, m, n, A, lda,
-				       temp, j);
+			    dge_copy_row(order_type, trans_type, m_i, n_i, A,
+					 lda, temp, j);
 
 			    test_BLAS_zdot_d_d(n_i, blas_no_conj,
 					       alpha, beta, &y_gen[k],
@@ -17773,33 +16847,30 @@ double do_test_zgemv_d_d_x(int m, int n,
 			    printf("      A=");
 			    for (j = 0; j < m_i; j++) {
 			      /* copy row j of A to temp */
-			      dgemv_copy(order_type, trans_type, m, n, A, lda,
-					 temp, j);
+			      dge_copy_row(order_type, trans_type, m_i, n_i,
+					   A, lda, temp, j);
 
 			      if (j > 0)
 				printf("        ");
-			      for (k = 0; k < n_i * incA; k += incA) {
-				printf("%.16e", temp[k]);
-				printf("  ");
-			      }
-			      printf("\n");
+			      dprint_vector(temp, n_i, 1, NULL);
 			    }
 
 			    for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
 			      if (j < n_i) {
 				printf("      ");
-				printf("x[%d]=%.16e", ix, x[ix]);
+				printf("%24.16e", x[ix]);
 				printf("\n");
 			      }
 			      if (k < m_i) {
 				printf("      ");
-				printf("y_gen[%d]=%.16e, y_gen[%d+1]=%.16e",
-				       k * incy_gen, y_gen[k * incy_gen],
-				       k * incy_gen, y_gen[k * incy_gen + 1]);
+				printf("(%24.16e, %24.16e)",
+				       y_gen[k * incy_gen],
+				       y_gen[k * incy_gen + 1]);
 				printf("\n");
 				printf("      ");
-				printf("y_final[%d]=", iy);
-				printf("%.16e, %.16e", y[iy], y[iy + 1]);
+				printf("y_final[%d] = ", iy);
+				printf("(%24.16e, %24.16e)", y[iy],
+				       y[iy + 1]);
 				printf("\n");
 			      }
 			      ix += incx;
@@ -17807,16 +16878,19 @@ double do_test_zgemv_d_d_x(int m, int n,
 			    }
 
 			    printf("      ");
-			    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				   alpha[1]);
+			    printf("alpha = ");
+			    printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);
 			    printf("\n      ");
-			    printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				   beta[1]);
+			    printf("beta = ");
+			    printf("(%24.16e, %24.16e)", beta[0], beta[1]);
 			    printf("\n");
 			    for (j = 0, k = 0; j < m_i * incy_gen;
 				 j += incy_gen, k++) {
 			      printf("      ");
-
+			      printf
+				("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				 head_r_true[j], tail_r_true[j],
+				 head_r_true[j + 1], tail_r_true[j + 1]);
 			      printf(", ratio[%d]=%.4e\n", k, ratios[k]);
 			    }
 

@@ -6,7 +6,9 @@ TEST_DOT2_PATH = ../test-dot2
 LIB_PATH = ../../$(OUTPUT_DIR)
 HEADER_PATH = -I../../src -I..
 
-TEST_DOT_OBJS = $(TEST_DOT_PATH)/testgen_aux.o
+TEST_DOT_OBJS = $(TEST_DOT_PATH)/testgen_aux.o \
+		$(TEST_DOT_PATH)/print_vector.o \
+		$(TEST_DOT_PATH)/copy_vector.o
 TEST_DOT2_OBJS = $(TEST_DOT2_PATH)/dot2.o \
 		 $(TEST_DOT2_PATH)/testgen_BLAS_sdot2.o \
 		 $(TEST_DOT2_PATH)/testgen_BLAS_ddot2.o \

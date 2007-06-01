@@ -30,7 +30,6 @@
 
 
 
-
 void sskew_commit_row_hbmv(enum blas_order_type order,
 			   enum blas_uplo_type uplo, int n, float *a, int k,
 			   int lda, float *a_vec, int row)
@@ -580,7 +579,7 @@ void chbmv_copy_row(enum blas_order_type order, enum blas_uplo_type uplo,
     a_elem[0] = a_i[ai];
     a_elem[1] = a_i[ai + 1];
     if (i == row) {
-
+      a_elem[1] = 0.0;
     }
     if (uplo == blas_lower) {
       a_elem[1] = -a_elem[1];;
@@ -669,7 +668,7 @@ void zhbmv_copy_row(enum blas_order_type order, enum blas_uplo_type uplo,
     a_elem[0] = a_i[ai];
     a_elem[1] = a_i[ai + 1];
     if (i == row) {
-
+      a_elem[1] = 0.0;
     }
     if (uplo == blas_lower) {
       a_elem[1] = -a_elem[1];;
@@ -698,7 +697,7 @@ void cprint_hbmv_matrix(void *a, int n, int k, int lda,
 
   for (row = 0; row < n; row++) {
     chbmv_copy_row(order, uplo, n, a, k, lda, x, row);
-    cprint_vector(x, n, 1);
+    cprint_vector(x, n, 1, NULL);
   }
   printf("\n");
   blas_free(x);
@@ -717,7 +716,7 @@ void zprint_hbmv_matrix(void *a, int n, int k, int lda,
 
   for (row = 0; row < n; row++) {
     zhbmv_copy_row(order, uplo, n, a, k, lda, x, row);
-    zprint_vector(x, n, 1);
+    zprint_vector(x, n, 1, NULL);
   }
   printf("\n");
   blas_free(x);

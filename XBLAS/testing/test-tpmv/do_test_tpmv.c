@@ -88,7 +88,7 @@ double do_test_dtpmv_s(int n,
   /* Variables in the "x_val" form are loop vars for corresponding
      variables */
   int i;			/* iterate through the repeating tests */
-  int j, k;			/* multipurpose counters */
+  int j;			/* multipurpose counters */
   int ix;			/* use to index x  */
   int incx_val, incx;		/* for testing different inc values */
   int inctp, inc_index;		/* 1 if real, 2 if complex */
@@ -160,36 +160,23 @@ double do_test_dtpmv_s(int n,
   if (3 * n * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * n * incx; i += incx) {
-    x[i] = 0.0;
-  }
   x_gen = (double *) blas_malloc(3 * n * 2 * sizeof(double));
   if (3 * n * 2 > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n * inc_index; i++) {
-    x_gen[i] = 0.0;
   }
   tp = (float *) blas_malloc(2 * n * n * n * inctp * sizeof(float));
   if (2 * n * n * n * inctp > 0 && tp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * n * n * inctp; i += inctp) {
-    tp[i] = 0.0;
-  }
   temp = (float *) blas_malloc(3 * n * 2 * sizeof(float));
   if (3 * n * 2 > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n * 2 * inc_index; i += inc_index) {
-    temp[i] = 0.0;
   }
   head_r_true = (double *) blas_malloc(n * sizeof(double));
   tail_r_true = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-
   ratios = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && ratios == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -316,11 +303,6 @@ double do_test_dtpmv_s(int n,
 		    /* setting incx */
 		    incx = incx_val;
 
-
-		    /* zero out x */
-		    for (j = 0; j < n * incx; j++) {
-		      x[j] = 0.0;
-		    }
 
 		    /* set x starting index */
 		    ix = 0;
@@ -460,11 +442,7 @@ double do_test_dtpmv_s(int n,
 
 			  if (j > 0)
 			    printf("        ");
-			  for (k = 0; k < n; k++) {
-			    printf("%.8e", temp[k * inctp]);
-			    printf("  ");
-			  }
-			  printf("\n");
+			  sprint_vector(temp, n, 1, NULL);
 			}
 
 			ix = 0;
@@ -473,27 +451,26 @@ double do_test_dtpmv_s(int n,
 
 			for (j = 0; j < n; j++) {
 			  printf("      ");
-			  printf("x[%d]=", ix);
-			  printf("%.16e", x_gen[j * inc_index]);
+			  printf("x[%d] = ", j * inc_index);
+			  printf("%24.16e", x_gen[j * inc_index]);
 			  printf("; ");
-			  printf("x_final[%d]=", ix);
-			  printf("%.16e", x[ix]);
+			  printf("x_final[%d] = ", ix);
+			  printf("%24.16e", x[ix]);
 			  printf("\n");
-
 			  ix += incx;
 			}
 
 			printf("      ");
-			printf("alpha=%.16e", alpha);
+			printf("alpha = ");
+			printf("%24.16e", alpha);
 			printf("; ");
 			printf("\n");
 			for (j = 0; j < n; j++) {
 			  printf("      ");
 
-			  printf
-			    ("head_r_true[%d]=%.16e, tail_r_true[%d]=%.16e",
-			     j * inc_index, head_r_true[j * inc_index],
-			     j * inc_index, tail_r_true[j * inc_index]);
+			  printf("[%24.16e, %24.16e]",
+				 head_r_true[j * inc_index],
+				 tail_r_true[j * inc_index]);
 			  printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 			}
 			printf("      ratio=%.4e\n", ratio);
@@ -624,7 +601,7 @@ double do_test_ztpmv_c(int n,
   /* Variables in the "x_val" form are loop vars for corresponding
      variables */
   int i;			/* iterate through the repeating tests */
-  int j, k;			/* multipurpose counters */
+  int j;			/* multipurpose counters */
   int ix;			/* use to index x  */
   int incx_val, incx;		/* for testing different inc values */
   int inctp, inc_index;		/* 1 if real, 2 if complex */
@@ -697,40 +674,23 @@ double do_test_ztpmv_c(int n,
   if (3 * n * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * n * incx; i += incx) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
   x_gen = (double *) blas_malloc(3 * n * 2 * sizeof(double) * 2);
   if (3 * n * 2 > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n * inc_index; i++) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
   }
   tp = (float *) blas_malloc(2 * n * n * n * inctp * sizeof(float) * 2);
   if (2 * n * n * n * inctp > 0 && tp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * n * n * inctp; i += inctp) {
-    tp[i] = 0.0;
-    tp[i + 1] = 0.0;
-  }
   temp = (float *) blas_malloc(3 * n * 2 * sizeof(float) * 2);
   if (3 * n * 2 > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n * 2 * inc_index; i += inc_index) {
-    temp[i] = 0.0;
-    temp[i + 1] = 0.0;
   }
   head_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   if (n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-
   ratios = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && ratios == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -858,11 +818,6 @@ double do_test_ztpmv_c(int n,
 		    /* setting incx */
 		    incx = incx_val;
 		    incx *= 2;
-
-		    /* zero out x */
-		    for (j = 0; j < n * incx; j++) {
-		      x[j] = 0.0;
-		    }
 
 		    /* set x starting index */
 		    ix = 0;
@@ -1003,12 +958,7 @@ double do_test_ztpmv_c(int n,
 
 			  if (j > 0)
 			    printf("        ");
-			  for (k = 0; k < n; k++) {
-			    printf("(%.8e, %.8e)", temp[k * inctp],
-				   temp[k * inctp + 1]);
-			    printf("  ");
-			  }
-			  printf("\n");
+			  cprint_vector(temp, n, 1, NULL);
 			}
 
 			ix = 0;
@@ -1017,26 +967,29 @@ double do_test_ztpmv_c(int n,
 
 			for (j = 0; j < n; j++) {
 			  printf("      ");
-			  printf("x[%d]=", ix);
-			  printf("(%.16e, %.16e)", x_gen[j * inc_index],
+			  printf("x[%d] = ", j * inc_index);
+			  printf("(%24.16e, %24.16e)", x_gen[j * inc_index],
 				 x_gen[j * inc_index + 1]);
 			  printf("; ");
-			  printf("x_final[%d]=", ix);
-			  printf("(%.16e, %.16e)", x[ix], x[ix + 1]);
+			  printf("x_final[%d] = ", ix);
+			  printf("(%24.16e, %24.16e)", x[ix], x[ix + 1]);
 			  printf("\n");
-
 			  ix += incx;
 			}
 
 			printf("      ");
-			printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-			       alpha[1]);
+			printf("alpha = ");
+			printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);
 			printf("; ");
 			printf("\n");
 			for (j = 0; j < n; j++) {
 			  printf("      ");
 
-
+			  printf("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				 head_r_true[j * inc_index],
+				 tail_r_true[j * inc_index],
+				 head_r_true[j * inc_index + 1],
+				 tail_r_true[j * inc_index + 1]);
 			  printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 			}
 			printf("      ratio=%.4e\n", ratio);
@@ -1167,7 +1120,7 @@ double do_test_ctpmv_s(int n,
   /* Variables in the "x_val" form are loop vars for corresponding
      variables */
   int i;			/* iterate through the repeating tests */
-  int j, k;			/* multipurpose counters */
+  int j;			/* multipurpose counters */
   int ix;			/* use to index x  */
   int incx_val, incx;		/* for testing different inc values */
   int inctp, inc_index;		/* 1 if real, 2 if complex */
@@ -1240,38 +1193,23 @@ double do_test_ctpmv_s(int n,
   if (3 * n * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * n * incx; i += incx) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
   x_gen = (float *) blas_malloc(3 * n * 2 * sizeof(float) * 2);
   if (3 * n * 2 > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n * inc_index; i++) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
   }
   tp = (float *) blas_malloc(2 * n * n * n * inctp * sizeof(float));
   if (2 * n * n * n * inctp > 0 && tp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * n * n * inctp; i += inctp) {
-    tp[i] = 0.0;
-  }
   temp = (float *) blas_malloc(3 * n * 2 * sizeof(float));
   if (3 * n * 2 > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n * 2 * inc_index; i += inc_index) {
-    temp[i] = 0.0;
   }
   head_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   if (n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-
   ratios = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && ratios == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -1399,11 +1337,6 @@ double do_test_ctpmv_s(int n,
 		    /* setting incx */
 		    incx = incx_val;
 		    incx *= 2;
-
-		    /* zero out x */
-		    for (j = 0; j < n * incx; j++) {
-		      x[j] = 0.0;
-		    }
 
 		    /* set x starting index */
 		    ix = 0;
@@ -1544,11 +1477,7 @@ double do_test_ctpmv_s(int n,
 
 			  if (j > 0)
 			    printf("        ");
-			  for (k = 0; k < n; k++) {
-			    printf("%.8e", temp[k * inctp]);
-			    printf("  ");
-			  }
-			  printf("\n");
+			  sprint_vector(temp, n, 1, NULL);
 			}
 
 			ix = 0;
@@ -1557,26 +1486,29 @@ double do_test_ctpmv_s(int n,
 
 			for (j = 0; j < n; j++) {
 			  printf("      ");
-			  printf("x[%d]=", ix);
-			  printf("(%.8e, %.8e)", x_gen[j * inc_index],
+			  printf("x[%d] = ", j * inc_index);
+			  printf("(%16.8e, %16.8e)", x_gen[j * inc_index],
 				 x_gen[j * inc_index + 1]);
 			  printf("; ");
-			  printf("x_final[%d]=", ix);
-			  printf("(%.8e, %.8e)", x[ix], x[ix + 1]);
+			  printf("x_final[%d] = ", ix);
+			  printf("(%16.8e, %16.8e)", x[ix], x[ix + 1]);
 			  printf("\n");
-
 			  ix += incx;
 			}
 
 			printf("      ");
-			printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-			       alpha[1]);
+			printf("alpha = ");
+			printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);
 			printf("; ");
 			printf("\n");
 			for (j = 0; j < n; j++) {
 			  printf("      ");
 
-
+			  printf("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				 head_r_true[j * inc_index],
+				 tail_r_true[j * inc_index],
+				 head_r_true[j * inc_index + 1],
+				 tail_r_true[j * inc_index + 1]);
 			  printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 			}
 			printf("      ratio=%.4e\n", ratio);
@@ -1707,7 +1639,7 @@ double do_test_ztpmv_d(int n,
   /* Variables in the "x_val" form are loop vars for corresponding
      variables */
   int i;			/* iterate through the repeating tests */
-  int j, k;			/* multipurpose counters */
+  int j;			/* multipurpose counters */
   int ix;			/* use to index x  */
   int incx_val, incx;		/* for testing different inc values */
   int inctp, inc_index;		/* 1 if real, 2 if complex */
@@ -1780,38 +1712,23 @@ double do_test_ztpmv_d(int n,
   if (3 * n * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * n * incx; i += incx) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
   x_gen = (double *) blas_malloc(3 * n * 2 * sizeof(double) * 2);
   if (3 * n * 2 > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n * inc_index; i++) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
   }
   tp = (double *) blas_malloc(2 * n * n * n * inctp * sizeof(double));
   if (2 * n * n * n * inctp > 0 && tp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * n * n * inctp; i += inctp) {
-    tp[i] = 0.0;
-  }
   temp = (double *) blas_malloc(3 * n * 2 * sizeof(double));
   if (3 * n * 2 > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n * 2 * inc_index; i += inc_index) {
-    temp[i] = 0.0;
   }
   head_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   if (n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-
   ratios = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && ratios == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -1939,11 +1856,6 @@ double do_test_ztpmv_d(int n,
 		    /* setting incx */
 		    incx = incx_val;
 		    incx *= 2;
-
-		    /* zero out x */
-		    for (j = 0; j < n * incx; j++) {
-		      x[j] = 0.0;
-		    }
 
 		    /* set x starting index */
 		    ix = 0;
@@ -2084,11 +1996,7 @@ double do_test_ztpmv_d(int n,
 
 			  if (j > 0)
 			    printf("        ");
-			  for (k = 0; k < n; k++) {
-			    printf("%.16e", temp[k * inctp]);
-			    printf("  ");
-			  }
-			  printf("\n");
+			  dprint_vector(temp, n, 1, NULL);
 			}
 
 			ix = 0;
@@ -2097,26 +2005,29 @@ double do_test_ztpmv_d(int n,
 
 			for (j = 0; j < n; j++) {
 			  printf("      ");
-			  printf("x[%d]=", ix);
-			  printf("(%.16e, %.16e)", x_gen[j * inc_index],
+			  printf("x[%d] = ", j * inc_index);
+			  printf("(%24.16e, %24.16e)", x_gen[j * inc_index],
 				 x_gen[j * inc_index + 1]);
 			  printf("; ");
-			  printf("x_final[%d]=", ix);
-			  printf("(%.16e, %.16e)", x[ix], x[ix + 1]);
+			  printf("x_final[%d] = ", ix);
+			  printf("(%24.16e, %24.16e)", x[ix], x[ix + 1]);
 			  printf("\n");
-
 			  ix += incx;
 			}
 
 			printf("      ");
-			printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-			       alpha[1]);
+			printf("alpha = ");
+			printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);
 			printf("; ");
 			printf("\n");
 			for (j = 0; j < n; j++) {
 			  printf("      ");
 
-
+			  printf("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				 head_r_true[j * inc_index],
+				 tail_r_true[j * inc_index],
+				 head_r_true[j * inc_index + 1],
+				 tail_r_true[j * inc_index + 1]);
 			  printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 			}
 			printf("      ratio=%.4e\n", ratio);
@@ -2247,7 +2158,7 @@ double do_test_stpmv_x(int n,
   /* Variables in the "x_val" form are loop vars for corresponding
      variables */
   int i;			/* iterate through the repeating tests */
-  int j, k;			/* multipurpose counters */
+  int j;			/* multipurpose counters */
   int ix;			/* use to index x  */
   int incx_val, incx;		/* for testing different inc values */
   int inctp, inc_index;		/* 1 if real, 2 if complex */
@@ -2319,36 +2230,23 @@ double do_test_stpmv_x(int n,
   if (3 * n * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * n * incx; i += incx) {
-    x[i] = 0.0;
-  }
   x_gen = (float *) blas_malloc(3 * n * 2 * sizeof(float));
   if (3 * n * 2 > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n * inc_index; i++) {
-    x_gen[i] = 0.0;
   }
   tp = (float *) blas_malloc(2 * n * n * n * inctp * sizeof(float));
   if (2 * n * n * n * inctp > 0 && tp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * n * n * inctp; i += inctp) {
-    tp[i] = 0.0;
-  }
   temp = (float *) blas_malloc(3 * n * 2 * sizeof(float));
   if (3 * n * 2 > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n * 2 * inc_index; i += inc_index) {
-    temp[i] = 0.0;
   }
   head_r_true = (double *) blas_malloc(n * sizeof(double));
   tail_r_true = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-
   ratios = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && ratios == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -2496,11 +2394,6 @@ double do_test_stpmv_x(int n,
 		      incx = incx_val;
 
 
-		      /* zero out x */
-		      for (j = 0; j < n * incx; j++) {
-			x[j] = 0.0;
-		      }
-
 		      /* set x starting index */
 		      ix = 0;
 		      if (incx < 0)
@@ -2639,11 +2532,7 @@ double do_test_stpmv_x(int n,
 
 			    if (j > 0)
 			      printf("        ");
-			    for (k = 0; k < n; k++) {
-			      printf("%.8e", temp[k * inctp]);
-			      printf("  ");
-			    }
-			    printf("\n");
+			    sprint_vector(temp, n, 1, NULL);
 			  }
 
 			  ix = 0;
@@ -2652,27 +2541,26 @@ double do_test_stpmv_x(int n,
 
 			  for (j = 0; j < n; j++) {
 			    printf("      ");
-			    printf("x[%d]=", ix);
-			    printf("%.8e", x_gen[j * inc_index]);
+			    printf("x[%d] = ", j * inc_index);
+			    printf("%16.8e", x_gen[j * inc_index]);
 			    printf("; ");
-			    printf("x_final[%d]=", ix);
-			    printf("%.8e", x[ix]);
+			    printf("x_final[%d] = ", ix);
+			    printf("%16.8e", x[ix]);
 			    printf("\n");
-
 			    ix += incx;
 			  }
 
 			  printf("      ");
-			  printf("alpha=%.8e", alpha);
+			  printf("alpha = ");
+			  printf("%16.8e", alpha);
 			  printf("; ");
 			  printf("\n");
 			  for (j = 0; j < n; j++) {
 			    printf("      ");
 
-			    printf
-			      ("head_r_true[%d]=%.16e, tail_r_true[%d]=%.16e",
-			       j * inc_index, head_r_true[j * inc_index],
-			       j * inc_index, tail_r_true[j * inc_index]);
+			    printf("[%24.16e, %24.16e]",
+				   head_r_true[j * inc_index],
+				   tail_r_true[j * inc_index]);
 			    printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 			  }
 			  printf("      ratio=%.4e\n", ratio);
@@ -2803,7 +2691,7 @@ double do_test_dtpmv_x(int n,
   /* Variables in the "x_val" form are loop vars for corresponding
      variables */
   int i;			/* iterate through the repeating tests */
-  int j, k;			/* multipurpose counters */
+  int j;			/* multipurpose counters */
   int ix;			/* use to index x  */
   int incx_val, incx;		/* for testing different inc values */
   int inctp, inc_index;		/* 1 if real, 2 if complex */
@@ -2875,36 +2763,23 @@ double do_test_dtpmv_x(int n,
   if (3 * n * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * n * incx; i += incx) {
-    x[i] = 0.0;
-  }
   x_gen = (double *) blas_malloc(3 * n * 2 * sizeof(double));
   if (3 * n * 2 > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n * inc_index; i++) {
-    x_gen[i] = 0.0;
   }
   tp = (double *) blas_malloc(2 * n * n * n * inctp * sizeof(double));
   if (2 * n * n * n * inctp > 0 && tp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * n * n * inctp; i += inctp) {
-    tp[i] = 0.0;
-  }
   temp = (double *) blas_malloc(3 * n * 2 * sizeof(double));
   if (3 * n * 2 > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n * 2 * inc_index; i += inc_index) {
-    temp[i] = 0.0;
   }
   head_r_true = (double *) blas_malloc(n * sizeof(double));
   tail_r_true = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-
   ratios = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && ratios == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -3052,11 +2927,6 @@ double do_test_dtpmv_x(int n,
 		      incx = incx_val;
 
 
-		      /* zero out x */
-		      for (j = 0; j < n * incx; j++) {
-			x[j] = 0.0;
-		      }
-
 		      /* set x starting index */
 		      ix = 0;
 		      if (incx < 0)
@@ -3195,11 +3065,7 @@ double do_test_dtpmv_x(int n,
 
 			    if (j > 0)
 			      printf("        ");
-			    for (k = 0; k < n; k++) {
-			      printf("%.16e", temp[k * inctp]);
-			      printf("  ");
-			    }
-			    printf("\n");
+			    dprint_vector(temp, n, 1, NULL);
 			  }
 
 			  ix = 0;
@@ -3208,27 +3074,26 @@ double do_test_dtpmv_x(int n,
 
 			  for (j = 0; j < n; j++) {
 			    printf("      ");
-			    printf("x[%d]=", ix);
-			    printf("%.16e", x_gen[j * inc_index]);
+			    printf("x[%d] = ", j * inc_index);
+			    printf("%24.16e", x_gen[j * inc_index]);
 			    printf("; ");
-			    printf("x_final[%d]=", ix);
-			    printf("%.16e", x[ix]);
+			    printf("x_final[%d] = ", ix);
+			    printf("%24.16e", x[ix]);
 			    printf("\n");
-
 			    ix += incx;
 			  }
 
 			  printf("      ");
-			  printf("alpha=%.16e", alpha);
+			  printf("alpha = ");
+			  printf("%24.16e", alpha);
 			  printf("; ");
 			  printf("\n");
 			  for (j = 0; j < n; j++) {
 			    printf("      ");
 
-			    printf
-			      ("head_r_true[%d]=%.16e, tail_r_true[%d]=%.16e",
-			       j * inc_index, head_r_true[j * inc_index],
-			       j * inc_index, tail_r_true[j * inc_index]);
+			    printf("[%24.16e, %24.16e]",
+				   head_r_true[j * inc_index],
+				   tail_r_true[j * inc_index]);
 			    printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 			  }
 			  printf("      ratio=%.4e\n", ratio);
@@ -3359,7 +3224,7 @@ double do_test_ctpmv_x(int n,
   /* Variables in the "x_val" form are loop vars for corresponding
      variables */
   int i;			/* iterate through the repeating tests */
-  int j, k;			/* multipurpose counters */
+  int j;			/* multipurpose counters */
   int ix;			/* use to index x  */
   int incx_val, incx;		/* for testing different inc values */
   int inctp, inc_index;		/* 1 if real, 2 if complex */
@@ -3432,40 +3297,23 @@ double do_test_ctpmv_x(int n,
   if (3 * n * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * n * incx; i += incx) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
   x_gen = (float *) blas_malloc(3 * n * 2 * sizeof(float) * 2);
   if (3 * n * 2 > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n * inc_index; i++) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
   }
   tp = (float *) blas_malloc(2 * n * n * n * inctp * sizeof(float) * 2);
   if (2 * n * n * n * inctp > 0 && tp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * n * n * inctp; i += inctp) {
-    tp[i] = 0.0;
-    tp[i + 1] = 0.0;
-  }
   temp = (float *) blas_malloc(3 * n * 2 * sizeof(float) * 2);
   if (3 * n * 2 > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n * 2 * inc_index; i += inc_index) {
-    temp[i] = 0.0;
-    temp[i + 1] = 0.0;
   }
   head_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   if (n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-
   ratios = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && ratios == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -3614,11 +3462,6 @@ double do_test_ctpmv_x(int n,
 		      incx = incx_val;
 		      incx *= 2;
 
-		      /* zero out x */
-		      for (j = 0; j < n * incx; j++) {
-			x[j] = 0.0;
-		      }
-
 		      /* set x starting index */
 		      ix = 0;
 		      if (incx < 0)
@@ -3758,12 +3601,7 @@ double do_test_ctpmv_x(int n,
 
 			    if (j > 0)
 			      printf("        ");
-			    for (k = 0; k < n; k++) {
-			      printf("(%.8e, %.8e)", temp[k * inctp],
-				     temp[k * inctp + 1]);
-			      printf("  ");
-			    }
-			    printf("\n");
+			    cprint_vector(temp, n, 1, NULL);
 			  }
 
 			  ix = 0;
@@ -3772,26 +3610,29 @@ double do_test_ctpmv_x(int n,
 
 			  for (j = 0; j < n; j++) {
 			    printf("      ");
-			    printf("x[%d]=", ix);
-			    printf("(%.8e, %.8e)", x_gen[j * inc_index],
+			    printf("x[%d] = ", j * inc_index);
+			    printf("(%16.8e, %16.8e)", x_gen[j * inc_index],
 				   x_gen[j * inc_index + 1]);
 			    printf("; ");
-			    printf("x_final[%d]=", ix);
-			    printf("(%.8e, %.8e)", x[ix], x[ix + 1]);
+			    printf("x_final[%d] = ", ix);
+			    printf("(%16.8e, %16.8e)", x[ix], x[ix + 1]);
 			    printf("\n");
-
 			    ix += incx;
 			  }
 
 			  printf("      ");
-			  printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-				 alpha[1]);
+			  printf("alpha = ");
+			  printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);
 			  printf("; ");
 			  printf("\n");
 			  for (j = 0; j < n; j++) {
 			    printf("      ");
 
-
+			    printf("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				   head_r_true[j * inc_index],
+				   tail_r_true[j * inc_index],
+				   head_r_true[j * inc_index + 1],
+				   tail_r_true[j * inc_index + 1]);
 			    printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 			  }
 			  printf("      ratio=%.4e\n", ratio);
@@ -3922,7 +3763,7 @@ double do_test_ztpmv_x(int n,
   /* Variables in the "x_val" form are loop vars for corresponding
      variables */
   int i;			/* iterate through the repeating tests */
-  int j, k;			/* multipurpose counters */
+  int j;			/* multipurpose counters */
   int ix;			/* use to index x  */
   int incx_val, incx;		/* for testing different inc values */
   int inctp, inc_index;		/* 1 if real, 2 if complex */
@@ -3995,40 +3836,23 @@ double do_test_ztpmv_x(int n,
   if (3 * n * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * n * incx; i += incx) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
   x_gen = (double *) blas_malloc(3 * n * 2 * sizeof(double) * 2);
   if (3 * n * 2 > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n * inc_index; i++) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
   }
   tp = (double *) blas_malloc(2 * n * n * n * inctp * sizeof(double) * 2);
   if (2 * n * n * n * inctp > 0 && tp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * n * n * inctp; i += inctp) {
-    tp[i] = 0.0;
-    tp[i + 1] = 0.0;
-  }
   temp = (double *) blas_malloc(3 * n * 2 * sizeof(double) * 2);
   if (3 * n * 2 > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n * 2 * inc_index; i += inc_index) {
-    temp[i] = 0.0;
-    temp[i + 1] = 0.0;
   }
   head_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   if (n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-
   ratios = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && ratios == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -4177,11 +4001,6 @@ double do_test_ztpmv_x(int n,
 		      incx = incx_val;
 		      incx *= 2;
 
-		      /* zero out x */
-		      for (j = 0; j < n * incx; j++) {
-			x[j] = 0.0;
-		      }
-
 		      /* set x starting index */
 		      ix = 0;
 		      if (incx < 0)
@@ -4321,12 +4140,7 @@ double do_test_ztpmv_x(int n,
 
 			    if (j > 0)
 			      printf("        ");
-			    for (k = 0; k < n; k++) {
-			      printf("(%.16e, %.16e)", temp[k * inctp],
-				     temp[k * inctp + 1]);
-			      printf("  ");
-			    }
-			    printf("\n");
+			    zprint_vector(temp, n, 1, NULL);
 			  }
 
 			  ix = 0;
@@ -4335,26 +4149,29 @@ double do_test_ztpmv_x(int n,
 
 			  for (j = 0; j < n; j++) {
 			    printf("      ");
-			    printf("x[%d]=", ix);
-			    printf("(%.16e, %.16e)", x_gen[j * inc_index],
+			    printf("x[%d] = ", j * inc_index);
+			    printf("(%24.16e, %24.16e)", x_gen[j * inc_index],
 				   x_gen[j * inc_index + 1]);
 			    printf("; ");
-			    printf("x_final[%d]=", ix);
-			    printf("(%.16e, %.16e)", x[ix], x[ix + 1]);
+			    printf("x_final[%d] = ", ix);
+			    printf("(%24.16e, %24.16e)", x[ix], x[ix + 1]);
 			    printf("\n");
-
 			    ix += incx;
 			  }
 
 			  printf("      ");
-			  printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				 alpha[1]);
+			  printf("alpha = ");
+			  printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);
 			  printf("; ");
 			  printf("\n");
 			  for (j = 0; j < n; j++) {
 			    printf("      ");
 
-
+			    printf("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				   head_r_true[j * inc_index],
+				   tail_r_true[j * inc_index],
+				   head_r_true[j * inc_index + 1],
+				   tail_r_true[j * inc_index + 1]);
 			    printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 			  }
 			  printf("      ratio=%.4e\n", ratio);
@@ -4486,7 +4303,7 @@ double do_test_dtpmv_s_x(int n,
   /* Variables in the "x_val" form are loop vars for corresponding
      variables */
   int i;			/* iterate through the repeating tests */
-  int j, k;			/* multipurpose counters */
+  int j;			/* multipurpose counters */
   int ix;			/* use to index x  */
   int incx_val, incx;		/* for testing different inc values */
   int inctp, inc_index;		/* 1 if real, 2 if complex */
@@ -4558,36 +4375,23 @@ double do_test_dtpmv_s_x(int n,
   if (3 * n * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * n * incx; i += incx) {
-    x[i] = 0.0;
-  }
   x_gen = (double *) blas_malloc(3 * n * 2 * sizeof(double));
   if (3 * n * 2 > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n * inc_index; i++) {
-    x_gen[i] = 0.0;
   }
   tp = (float *) blas_malloc(2 * n * n * n * inctp * sizeof(float));
   if (2 * n * n * n * inctp > 0 && tp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * n * n * inctp; i += inctp) {
-    tp[i] = 0.0;
-  }
   temp = (float *) blas_malloc(3 * n * 2 * sizeof(float));
   if (3 * n * 2 > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n * 2 * inc_index; i += inc_index) {
-    temp[i] = 0.0;
   }
   head_r_true = (double *) blas_malloc(n * sizeof(double));
   tail_r_true = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-
   ratios = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && ratios == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -4735,11 +4539,6 @@ double do_test_dtpmv_s_x(int n,
 		      incx = incx_val;
 
 
-		      /* zero out x */
-		      for (j = 0; j < n * incx; j++) {
-			x[j] = 0.0;
-		      }
-
 		      /* set x starting index */
 		      ix = 0;
 		      if (incx < 0)
@@ -4879,11 +4678,7 @@ double do_test_dtpmv_s_x(int n,
 
 			    if (j > 0)
 			      printf("        ");
-			    for (k = 0; k < n; k++) {
-			      printf("%.8e", temp[k * inctp]);
-			      printf("  ");
-			    }
-			    printf("\n");
+			    sprint_vector(temp, n, 1, NULL);
 			  }
 
 			  ix = 0;
@@ -4892,27 +4687,26 @@ double do_test_dtpmv_s_x(int n,
 
 			  for (j = 0; j < n; j++) {
 			    printf("      ");
-			    printf("x[%d]=", ix);
-			    printf("%.16e", x_gen[j * inc_index]);
+			    printf("x[%d] = ", j * inc_index);
+			    printf("%24.16e", x_gen[j * inc_index]);
 			    printf("; ");
-			    printf("x_final[%d]=", ix);
-			    printf("%.16e", x[ix]);
+			    printf("x_final[%d] = ", ix);
+			    printf("%24.16e", x[ix]);
 			    printf("\n");
-
 			    ix += incx;
 			  }
 
 			  printf("      ");
-			  printf("alpha=%.16e", alpha);
+			  printf("alpha = ");
+			  printf("%24.16e", alpha);
 			  printf("; ");
 			  printf("\n");
 			  for (j = 0; j < n; j++) {
 			    printf("      ");
 
-			    printf
-			      ("head_r_true[%d]=%.16e, tail_r_true[%d]=%.16e",
-			       j * inc_index, head_r_true[j * inc_index],
-			       j * inc_index, tail_r_true[j * inc_index]);
+			    printf("[%24.16e, %24.16e]",
+				   head_r_true[j * inc_index],
+				   tail_r_true[j * inc_index]);
 			    printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 			  }
 			  printf("      ratio=%.4e\n", ratio);
@@ -5044,7 +4838,7 @@ double do_test_ztpmv_c_x(int n,
   /* Variables in the "x_val" form are loop vars for corresponding
      variables */
   int i;			/* iterate through the repeating tests */
-  int j, k;			/* multipurpose counters */
+  int j;			/* multipurpose counters */
   int ix;			/* use to index x  */
   int incx_val, incx;		/* for testing different inc values */
   int inctp, inc_index;		/* 1 if real, 2 if complex */
@@ -5117,40 +4911,23 @@ double do_test_ztpmv_c_x(int n,
   if (3 * n * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * n * incx; i += incx) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
   x_gen = (double *) blas_malloc(3 * n * 2 * sizeof(double) * 2);
   if (3 * n * 2 > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n * inc_index; i++) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
   }
   tp = (float *) blas_malloc(2 * n * n * n * inctp * sizeof(float) * 2);
   if (2 * n * n * n * inctp > 0 && tp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * n * n * inctp; i += inctp) {
-    tp[i] = 0.0;
-    tp[i + 1] = 0.0;
-  }
   temp = (float *) blas_malloc(3 * n * 2 * sizeof(float) * 2);
   if (3 * n * 2 > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n * 2 * inc_index; i += inc_index) {
-    temp[i] = 0.0;
-    temp[i + 1] = 0.0;
   }
   head_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   if (n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-
   ratios = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && ratios == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -5299,11 +5076,6 @@ double do_test_ztpmv_c_x(int n,
 		      incx = incx_val;
 		      incx *= 2;
 
-		      /* zero out x */
-		      for (j = 0; j < n * incx; j++) {
-			x[j] = 0.0;
-		      }
-
 		      /* set x starting index */
 		      ix = 0;
 		      if (incx < 0)
@@ -5444,12 +5216,7 @@ double do_test_ztpmv_c_x(int n,
 
 			    if (j > 0)
 			      printf("        ");
-			    for (k = 0; k < n; k++) {
-			      printf("(%.8e, %.8e)", temp[k * inctp],
-				     temp[k * inctp + 1]);
-			      printf("  ");
-			    }
-			    printf("\n");
+			    cprint_vector(temp, n, 1, NULL);
 			  }
 
 			  ix = 0;
@@ -5458,26 +5225,29 @@ double do_test_ztpmv_c_x(int n,
 
 			  for (j = 0; j < n; j++) {
 			    printf("      ");
-			    printf("x[%d]=", ix);
-			    printf("(%.16e, %.16e)", x_gen[j * inc_index],
+			    printf("x[%d] = ", j * inc_index);
+			    printf("(%24.16e, %24.16e)", x_gen[j * inc_index],
 				   x_gen[j * inc_index + 1]);
 			    printf("; ");
-			    printf("x_final[%d]=", ix);
-			    printf("(%.16e, %.16e)", x[ix], x[ix + 1]);
+			    printf("x_final[%d] = ", ix);
+			    printf("(%24.16e, %24.16e)", x[ix], x[ix + 1]);
 			    printf("\n");
-
 			    ix += incx;
 			  }
 
 			  printf("      ");
-			  printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				 alpha[1]);
+			  printf("alpha = ");
+			  printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);
 			  printf("; ");
 			  printf("\n");
 			  for (j = 0; j < n; j++) {
 			    printf("      ");
 
-
+			    printf("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				   head_r_true[j * inc_index],
+				   tail_r_true[j * inc_index],
+				   head_r_true[j * inc_index + 1],
+				   tail_r_true[j * inc_index + 1]);
 			    printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 			  }
 			  printf("      ratio=%.4e\n", ratio);
@@ -5609,7 +5379,7 @@ double do_test_ctpmv_s_x(int n,
   /* Variables in the "x_val" form are loop vars for corresponding
      variables */
   int i;			/* iterate through the repeating tests */
-  int j, k;			/* multipurpose counters */
+  int j;			/* multipurpose counters */
   int ix;			/* use to index x  */
   int incx_val, incx;		/* for testing different inc values */
   int inctp, inc_index;		/* 1 if real, 2 if complex */
@@ -5682,38 +5452,23 @@ double do_test_ctpmv_s_x(int n,
   if (3 * n * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * n * incx; i += incx) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
   x_gen = (float *) blas_malloc(3 * n * 2 * sizeof(float) * 2);
   if (3 * n * 2 > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n * inc_index; i++) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
   }
   tp = (float *) blas_malloc(2 * n * n * n * inctp * sizeof(float));
   if (2 * n * n * n * inctp > 0 && tp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * n * n * inctp; i += inctp) {
-    tp[i] = 0.0;
-  }
   temp = (float *) blas_malloc(3 * n * 2 * sizeof(float));
   if (3 * n * 2 > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n * 2 * inc_index; i += inc_index) {
-    temp[i] = 0.0;
   }
   head_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   if (n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-
   ratios = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && ratios == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -5862,11 +5617,6 @@ double do_test_ctpmv_s_x(int n,
 		      incx = incx_val;
 		      incx *= 2;
 
-		      /* zero out x */
-		      for (j = 0; j < n * incx; j++) {
-			x[j] = 0.0;
-		      }
-
 		      /* set x starting index */
 		      ix = 0;
 		      if (incx < 0)
@@ -6007,11 +5757,7 @@ double do_test_ctpmv_s_x(int n,
 
 			    if (j > 0)
 			      printf("        ");
-			    for (k = 0; k < n; k++) {
-			      printf("%.8e", temp[k * inctp]);
-			      printf("  ");
-			    }
-			    printf("\n");
+			    sprint_vector(temp, n, 1, NULL);
 			  }
 
 			  ix = 0;
@@ -6020,26 +5766,29 @@ double do_test_ctpmv_s_x(int n,
 
 			  for (j = 0; j < n; j++) {
 			    printf("      ");
-			    printf("x[%d]=", ix);
-			    printf("(%.8e, %.8e)", x_gen[j * inc_index],
+			    printf("x[%d] = ", j * inc_index);
+			    printf("(%16.8e, %16.8e)", x_gen[j * inc_index],
 				   x_gen[j * inc_index + 1]);
 			    printf("; ");
-			    printf("x_final[%d]=", ix);
-			    printf("(%.8e, %.8e)", x[ix], x[ix + 1]);
+			    printf("x_final[%d] = ", ix);
+			    printf("(%16.8e, %16.8e)", x[ix], x[ix + 1]);
 			    printf("\n");
-
 			    ix += incx;
 			  }
 
 			  printf("      ");
-			  printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-				 alpha[1]);
+			  printf("alpha = ");
+			  printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);
 			  printf("; ");
 			  printf("\n");
 			  for (j = 0; j < n; j++) {
 			    printf("      ");
 
-
+			    printf("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				   head_r_true[j * inc_index],
+				   tail_r_true[j * inc_index],
+				   head_r_true[j * inc_index + 1],
+				   tail_r_true[j * inc_index + 1]);
 			    printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 			  }
 			  printf("      ratio=%.4e\n", ratio);
@@ -6171,7 +5920,7 @@ double do_test_ztpmv_d_x(int n,
   /* Variables in the "x_val" form are loop vars for corresponding
      variables */
   int i;			/* iterate through the repeating tests */
-  int j, k;			/* multipurpose counters */
+  int j;			/* multipurpose counters */
   int ix;			/* use to index x  */
   int incx_val, incx;		/* for testing different inc values */
   int inctp, inc_index;		/* 1 if real, 2 if complex */
@@ -6244,38 +5993,23 @@ double do_test_ztpmv_d_x(int n,
   if (3 * n * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * n * incx; i += incx) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
   x_gen = (double *) blas_malloc(3 * n * 2 * sizeof(double) * 2);
   if (3 * n * 2 > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n * inc_index; i++) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
   }
   tp = (double *) blas_malloc(2 * n * n * n * inctp * sizeof(double));
   if (2 * n * n * n * inctp > 0 && tp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 2 * n * n * inctp; i += inctp) {
-    tp[i] = 0.0;
-  }
   temp = (double *) blas_malloc(3 * n * 2 * sizeof(double));
   if (3 * n * 2 > 0 && temp == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n * 2 * inc_index; i += inc_index) {
-    temp[i] = 0.0;
   }
   head_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n * sizeof(double) * 2);
   if (n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-
   ratios = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && ratios == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -6424,11 +6158,6 @@ double do_test_ztpmv_d_x(int n,
 		      incx = incx_val;
 		      incx *= 2;
 
-		      /* zero out x */
-		      for (j = 0; j < n * incx; j++) {
-			x[j] = 0.0;
-		      }
-
 		      /* set x starting index */
 		      ix = 0;
 		      if (incx < 0)
@@ -6569,11 +6298,7 @@ double do_test_ztpmv_d_x(int n,
 
 			    if (j > 0)
 			      printf("        ");
-			    for (k = 0; k < n; k++) {
-			      printf("%.16e", temp[k * inctp]);
-			      printf("  ");
-			    }
-			    printf("\n");
+			    dprint_vector(temp, n, 1, NULL);
 			  }
 
 			  ix = 0;
@@ -6582,26 +6307,29 @@ double do_test_ztpmv_d_x(int n,
 
 			  for (j = 0; j < n; j++) {
 			    printf("      ");
-			    printf("x[%d]=", ix);
-			    printf("(%.16e, %.16e)", x_gen[j * inc_index],
+			    printf("x[%d] = ", j * inc_index);
+			    printf("(%24.16e, %24.16e)", x_gen[j * inc_index],
 				   x_gen[j * inc_index + 1]);
 			    printf("; ");
-			    printf("x_final[%d]=", ix);
-			    printf("(%.16e, %.16e)", x[ix], x[ix + 1]);
+			    printf("x_final[%d] = ", ix);
+			    printf("(%24.16e, %24.16e)", x[ix], x[ix + 1]);
 			    printf("\n");
-
 			    ix += incx;
 			  }
 
 			  printf("      ");
-			  printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				 alpha[1]);
+			  printf("alpha = ");
+			  printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);
 			  printf("; ");
 			  printf("\n");
 			  for (j = 0; j < n; j++) {
 			    printf("      ");
 
-
+			    printf("([%24.16e  %24.16e], [%24.16e %24.16e])",
+				   head_r_true[j * inc_index],
+				   tail_r_true[j * inc_index],
+				   head_r_true[j * inc_index + 1],
+				   tail_r_true[j * inc_index + 1]);
 			    printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 			  }
 			  printf("      ratio=%.4e\n", ratio);

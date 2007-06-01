@@ -1854,80 +1854,76 @@ extern void BLAS_zgemm_d_d_testgen(int norm, enum blas_order_type order,
         void* beta, int beta_flag, double* b, int ldb, 
         void* c, int ldc, int *seed, double *r_true_l, double *r_true_t);
 
-extern void sgemm_commit_row (enum blas_order_type order,
+extern void sge_commit_row (enum blas_order_type order,
    enum blas_trans_type trans, 
    int m, int n, float* a, int lda, float* a_vec, int row);
-extern void dgemm_commit_row (enum blas_order_type order,
+extern void dge_commit_row (enum blas_order_type order,
    enum blas_trans_type trans, 
    int m, int n, double* a, int lda, double* a_vec, int row);
-extern void cgemm_commit_row (enum blas_order_type order,
+extern void cge_commit_row (enum blas_order_type order,
    enum blas_trans_type trans, 
    int m, int n, void* a, int lda, void* a_vec, int row);
-extern void zgemm_commit_row (enum blas_order_type order,
+extern void zge_commit_row (enum blas_order_type order,
    enum blas_trans_type trans, 
    int m, int n, void* a, int lda, void* a_vec, int row);
 
-extern void sgemm_commit_col (enum blas_order_type order,
+extern void sge_commit_col (enum blas_order_type order,
    enum blas_trans_type trans, 
    int m, int n, float* a, int lda, float* a_vec, int col);
-extern void dgemm_commit_col (enum blas_order_type order,
+extern void dge_commit_col (enum blas_order_type order,
    enum blas_trans_type trans, 
    int m, int n, double* a, int lda, double* a_vec, int col);
-extern void cgemm_commit_col (enum blas_order_type order,
+extern void cge_commit_col (enum blas_order_type order,
    enum blas_trans_type trans, 
    int m, int n, void* a, int lda, void* a_vec, int col);
-extern void zgemm_commit_col (enum blas_order_type order,
+extern void zge_commit_col (enum blas_order_type order,
    enum blas_trans_type trans, 
    int m, int n, void* a, int lda, void* a_vec, int col);
 
-extern void sgemm_copy_row 
+extern void sge_copy_row 
   (enum blas_order_type order, enum blas_trans_type trans, 
    int m, int n, float* a, int lda, float* a_vec, int row);
-extern void dgemm_copy_row 
+extern void dge_copy_row 
   (enum blas_order_type order, enum blas_trans_type trans, 
    int m, int n, double* a, int lda, double* a_vec, int row);
-extern void cgemm_copy_row 
+extern void cge_copy_row 
   (enum blas_order_type order, enum blas_trans_type trans, 
    int m, int n, void* a, int lda, void* a_vec, int row);
-extern void zgemm_copy_row 
+extern void zge_copy_row 
   (enum blas_order_type order, enum blas_trans_type trans, 
    int m, int n, void* a, int lda, void* a_vec, int row);
 
-extern void sgemm_copy_col
+extern void sge_copy_col
   (enum blas_order_type order, enum blas_trans_type trans, 
    int m, int n, float* a, int lda, float* a_vec, int col);
-extern void dgemm_copy_col
+extern void dge_copy_col
   (enum blas_order_type order, enum blas_trans_type trans, 
    int m, int n, double* a, int lda, double* a_vec, int col);
-extern void cgemm_copy_col
+extern void cge_copy_col
   (enum blas_order_type order, enum blas_trans_type trans, 
    int m, int n, void* a, int lda, void* a_vec, int col);
-extern void zgemm_copy_col
+extern void zge_copy_col
   (enum blas_order_type order, enum blas_trans_type trans, 
    int m, int n, void* a, int lda, void* a_vec, int col);
 
-extern void sgemm_copy(enum blas_order_type order, int m, int n, 
+extern void sge_copy_matrix(enum blas_order_type order, int m, int n, 
     float* a, int lda, float* b, int ldb);
-extern void dgemm_copy(enum blas_order_type order, int m, int n, 
+extern void dge_copy_matrix(enum blas_order_type order, int m, int n, 
     double* a, int lda, double* b, int ldb);
-extern void cgemm_copy(enum blas_order_type order, int m, int n, 
+extern void cge_copy_matrix(enum blas_order_type order, int m, int n, 
     void* a, int lda, void* b, int ldb);
-extern void zgemm_copy(enum blas_order_type order, int m, int n, 
+extern void zge_copy_matrix(enum blas_order_type order, int m, int n, 
     void* a, int lda, void* b, int ldb);
 
-extern void sgemm_zero(enum blas_order_type order, int m, int n, float* a, int lda);
-extern void dgemm_zero(enum blas_order_type order, int m, int n, double* a, int lda);
-extern void cgemm_zero(enum blas_order_type order, int m, int n, void* a, int lda);
-extern void zgemm_zero(enum blas_order_type order, int m, int n, void* a, int lda);
 
-extern void sprint_matrix (float* a, int m, int n, int lda, 
-     enum blas_order_type order);
-extern void dprint_matrix (double* a, int m, int n, int lda, 
-     enum blas_order_type order);
-extern void cprint_matrix (void* a, int m, int n, int lda, 
-     enum blas_order_type order);
-extern void zprint_matrix (void* a, int m, int n, int lda, 
-     enum blas_order_type order);
+extern void sge_print_matrix (float* a, int m, int n, int lda, 
+     enum blas_order_type order, const char *name);
+extern void dge_print_matrix (double* a, int m, int n, int lda, 
+     enum blas_order_type order, const char *name);
+extern void cge_print_matrix (void* a, int m, int n, int lda, 
+     enum blas_order_type order, const char *name);
+extern void zge_print_matrix (void* a, int m, int n, int lda, 
+     enum blas_order_type order, const char *name);
 
 
 void BLAS_ssymm_testgen(int norm, enum blas_order_type order, 
@@ -2030,43 +2026,6 @@ void BLAS_zsymm_d_d_testgen(int norm, enum blas_order_type order,
    double* a, int lda, double* b, int ldb, void* c, int ldc, 
    int *seed, double *r_true_l, double *r_true_t);
 
-void ssymm_commit_row(enum blas_order_type order, enum blas_uplo_type uplo, 
-   enum blas_side_type side, int n, float* a, int lda, 
-   float* a_vec, int row);
-void dsymm_commit_row(enum blas_order_type order, enum blas_uplo_type uplo, 
-   enum blas_side_type side, int n, double* a, int lda, 
-   double* a_vec, int row);
-void csymm_commit_row(enum blas_order_type order, enum blas_uplo_type uplo, 
-   enum blas_side_type side, int n, void* a, int lda, 
-   void* a_vec, int row);
-void zsymm_commit_row(enum blas_order_type order, enum blas_uplo_type uplo, 
-   enum blas_side_type side, int n, void* a, int lda, 
-   void* a_vec, int row);
-
-void ssymm_copy_row(enum blas_order_type order, enum blas_uplo_type uplo, 
-   enum blas_side_type side, int n, float* a, int lda, 
-   float* a_vec, int row);
-void dsymm_copy_row(enum blas_order_type order, enum blas_uplo_type uplo, 
-   enum blas_side_type side, int n, double* a, int lda, 
-   double* a_vec, int row);
-void csymm_copy_row(enum blas_order_type order, enum blas_uplo_type uplo, 
-   enum blas_side_type side, int n, void* a, int lda, 
-   void* a_vec, int row);
-void zsymm_copy_row(enum blas_order_type order, enum blas_uplo_type uplo, 
-   enum blas_side_type side, int n, void* a, int lda, 
-   void* a_vec, int row);
-
-void sprint_symm_matrix (float* a, int n, int lda, 
-     enum blas_order_type order, enum blas_uplo_type uplo);
-void dprint_symm_matrix (double* a, int n, int lda, 
-     enum blas_order_type order, enum blas_uplo_type uplo);
-void cprint_symm_matrix (void* a, int n, int lda, 
-     enum blas_order_type order, enum blas_uplo_type uplo);
-void zprint_symm_matrix (void* a, int n, int lda, 
-     enum blas_order_type order, enum blas_uplo_type uplo);
-
-
-
 void BLAS_chemm_testgen(int norm, enum blas_order_type order, 
    enum blas_uplo_type uplo, enum blas_side_type side, 
    int m, int n, int randomize, 
@@ -2118,10 +2077,10 @@ void zhemm_commit_row(enum blas_order_type order, enum blas_uplo_type uplo,
    enum blas_side_type side, int n, void* a, int lda, 
    void* a_vec, int row);
 
-void chemm_copy_row(enum blas_order_type order, enum blas_uplo_type uplo, 
+void che_copy_row(enum blas_order_type order, enum blas_uplo_type uplo, 
    enum blas_side_type side, int n, void* a, int lda, 
    void* a_vec, int row);
-void zhemm_copy_row(enum blas_order_type order, enum blas_uplo_type uplo, 
+void zhe_copy_row(enum blas_order_type order, enum blas_uplo_type uplo, 
    enum blas_side_type side, int n, void* a, int lda, 
    void* a_vec, int row);
 
@@ -2169,11 +2128,6 @@ void BLAS_dskew_testgen(int norm, enum blas_order_type order,
    double* alpha, int alpha_flag, double* beta, int beta_flag, 
    double* a, int lda, double* b, int ldb, double* c, int ldc, 
    int *seed, double *r_true_l, double *r_true_t);
-
-void cprint_hemm_matrix (void* a, int n, int lda, 
-     enum blas_order_type order, enum blas_uplo_type uplo);
-void zprint_hemm_matrix (void* a, int n, int lda, 
-     enum blas_order_type order, enum blas_uplo_type uplo);
 
    
 void BLAS_ssymv_testgen(int norm, enum blas_order_type order, 
@@ -2276,55 +2230,50 @@ void BLAS_zsymv_d_d_testgen(int norm, enum blas_order_type order,
    double* a, int lda, double* x, int incx, void* y, int incy, 
    int *seed, double *r_true_l, double *r_true_t);
 
-void ssymv_commit_row(enum blas_order_type order, enum blas_uplo_type uplo, 
+void ssy_commit_row(enum blas_order_type order, enum blas_uplo_type uplo, 
    int n, float* a, int lda, 
    float* a_vec, int row);
-void dsymv_commit_row(enum blas_order_type order, enum blas_uplo_type uplo, 
+void dsy_commit_row(enum blas_order_type order, enum blas_uplo_type uplo, 
    int n, double* a, int lda, 
    double* a_vec, int row);
-void csymv_commit_row(enum blas_order_type order, enum blas_uplo_type uplo, 
+void csy_commit_row(enum blas_order_type order, enum blas_uplo_type uplo, 
    int n, void* a, int lda, 
    void* a_vec, int row);
-void zsymv_commit_row(enum blas_order_type order, enum blas_uplo_type uplo, 
+void zsy_commit_row(enum blas_order_type order, enum blas_uplo_type uplo, 
    int n, void* a, int lda, 
    void* a_vec, int row);
 
-void ssymv_copy_row(enum blas_order_type order, enum blas_uplo_type uplo, 
+void ssy_copy_row(enum blas_order_type order, enum blas_uplo_type uplo, 
    int n, float* a, int lda, 
    float* a_vec, int row);
-void dsymv_copy_row(enum blas_order_type order, enum blas_uplo_type uplo, 
+void dsy_copy_row(enum blas_order_type order, enum blas_uplo_type uplo, 
    int n, double* a, int lda, 
    double* a_vec, int row);
-void csymv_copy_row(enum blas_order_type order, enum blas_uplo_type uplo, 
+void csy_copy_row(enum blas_order_type order, enum blas_uplo_type uplo, 
    int n, void* a, int lda, 
    void* a_vec, int row);
-void zsymv_copy_row(enum blas_order_type order, enum blas_uplo_type uplo, 
+void zsy_copy_row(enum blas_order_type order, enum blas_uplo_type uplo, 
    int n, void* a, int lda, 
    void* a_vec, int row);
 
-void ssymv_copy_vector(int n, float* x_to, int incx_to, 
-   float* x_from, int incx_from);
-void dsymv_copy_vector(int n, double* x_to, int incx_to, 
-   double* x_from, int incx_from);
-void csymv_copy_vector(int n, void* x_to, int incx_to, 
-   void* x_from, int incx_from);
-void zsymv_copy_vector(int n, void* x_to, int incx_to, 
-   void* x_from, int incx_from);
-
-void sprint_symv_matrix (float* a, int n, int lda, 
+void ssy_print_matrix (float* a, int n, int lda, 
      enum blas_order_type order, enum blas_uplo_type uplo);
-void dprint_symv_matrix (double* a, int n, int lda, 
+void dsy_print_matrix (double* a, int n, int lda, 
      enum blas_order_type order, enum blas_uplo_type uplo);
-void cprint_symv_matrix (void* a, int n, int lda, 
+void csy_print_matrix (void* a, int n, int lda, 
      enum blas_order_type order, enum blas_uplo_type uplo);
-void zprint_symv_matrix (void* a, int n, int lda, 
+void zsy_print_matrix (void* a, int n, int lda, 
      enum blas_order_type order, enum blas_uplo_type uplo);
 
-void sprint_vector (float* x, int n, int incx);
-void dprint_vector (double* x, int n, int incx);
-void cprint_vector (void* x, int n, int incx);
-void zprint_vector (void* x, int n, int incx);
+void scopy_vector(const float *x, int n, int incx, float *y, int incy);
+void dcopy_vector(const double *x, int n, int incx, double *y, int incy);
+void ccopy_vector(const void *x, int n, int incx, void *y, int incy);
+void zcopy_vector(const void *x, int n, int incx, void *y, int incy);
 
+void sprint_vector (const float* x, int n, int inc, const char *name);
+void dprint_vector (const double* x, int n, int inc, const char *name);
+void cprint_vector (const void* x, int n, int inc, const char *name);
+void zprint_vector (const void* x, int n, int inc, const char *name);
 
 extern void BLAS_ssbmv_testgen(int norm, enum blas_order_type order, 
    enum blas_uplo_type uplo,
@@ -2510,29 +2459,9 @@ void BLAS_zhemv_z_d_testgen(int norm, enum blas_order_type order,
    void* a, int lda, double* x, int incx, void* y, int incy, 
    int *seed, double *r_true_l, double *r_true_t);
 
-void sskew_commit_row_hemv(enum blas_order_type order, enum blas_uplo_type uplo, 
-   int n, float* a, int lda, 
-   float* a_vec, int row);
-void dskew_commit_row_hemv(enum blas_order_type order, enum blas_uplo_type uplo, 
-   int n, double* a, int lda, 
-   double* a_vec, int row);
-
-void sskew_copy_row_hemv(enum blas_order_type order, enum blas_uplo_type uplo, 
-   int n, float* a, int lda, 
-   float* a_vec, int row);
-void dskew_copy_row_hemv(enum blas_order_type order, enum blas_uplo_type uplo, 
-   int n, double* a, int lda, 
-   double* a_vec, int row);
-void chemv_copy_row(enum blas_order_type order, enum blas_uplo_type uplo, 
-   int n, void* a, int lda, 
-   void* a_vec, int row);
-void zhemv_copy_row(enum blas_order_type order, enum blas_uplo_type uplo, 
-   int n, void* a, int lda, 
-   void* a_vec, int row);
-
-void cprint_hemv_matrix (void* a, int n, int lda, 
+void che_print_matrix (void* a, int n, int lda, 
      enum blas_order_type order, enum blas_uplo_type uplo);
-void zprint_hemv_matrix (void* a, int n, int lda, 
+void zhe_print_matrix (void* a, int n, int lda, 
      enum blas_order_type order, enum blas_uplo_type uplo);
 
 void BLAS_sskew_testgen_hemv(int norm, enum blas_order_type order, 

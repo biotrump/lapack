@@ -22,8 +22,6 @@
 
 
 
-
-
 void chpmv_copy_row(enum blas_order_type order, enum blas_uplo_type uplo,
 		    int n, void *a, void *a_vec, int row)
 
@@ -62,7 +60,7 @@ void chpmv_copy_row(enum blas_order_type order, enum blas_uplo_type uplo,
 	tmp[1] = -tmp[1];
       }
       if (i == row) {
-	tmp[1] = 0.0;;
+	tmp[1] = 0.0;
       }
       a_vec_i[i * inc] = tmp[0];
       a_vec_i[i * inc + 1] = tmp[1];
@@ -138,7 +136,7 @@ void zhpmv_copy_row(enum blas_order_type order, enum blas_uplo_type uplo,
 	tmp[1] = -tmp[1];
       }
       if (i == row) {
-	tmp[1] = 0.0;;
+	tmp[1] = 0.0;
       }
       a_vec_i[i * inc] = tmp[0];
       a_vec_i[i * inc + 1] = tmp[1];
@@ -335,7 +333,7 @@ void chpmv_pack_matrix(enum blas_order_type order, enum blas_uplo_type uplo,
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   };
   for (row = 0; row < n; row++) {
-    chemv_copy_row(order, uplo, n, a_full, lda, a_row, row);
+    che_copy_row(order, uplo, blas_left_side, n, a_full, lda, a_row, row);
     chpmv_commit_row(order, uplo, n, a_packed, a_row, row);
   }
 
@@ -356,7 +354,7 @@ void zhpmv_pack_matrix(enum blas_order_type order, enum blas_uplo_type uplo,
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   };
   for (row = 0; row < n; row++) {
-    zhemv_copy_row(order, uplo, n, a_full, lda, a_row, row);
+    zhe_copy_row(order, uplo, blas_left_side, n, a_full, lda, a_row, row);
     zhpmv_commit_row(order, uplo, n, a_packed, a_row, row);
   }
 
@@ -377,7 +375,7 @@ void cprint_hpmv_matrix(void *a, int n,
 
     for (row = 0; row < n; row++) {
       chpmv_copy_row(order, uplo, n, a, x, row);
-      cprint_vector(x, n, 1);
+      cprint_vector(x, n, 1, NULL);
     }
     printf("\n");
     blas_free(x);
@@ -398,7 +396,7 @@ void zprint_hpmv_matrix(void *a, int n,
 
     for (row = 0; row < n; row++) {
       zhpmv_copy_row(order, uplo, n, a, x, row);
-      zprint_vector(x, n, 1);
+      zprint_vector(x, n, 1, NULL);
     }
     printf("\n");
     blas_free(x);

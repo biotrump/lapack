@@ -3,13 +3,15 @@ include ../../$(MAKEINC)
 
 DOT_PATH = ../../src/dot
 TEST_DOT_PATH = ../test-dot
-TEST_GEMM_PATH = ../test-gemm
+TEST_GEMV_PATH = ../test-gemv
+TEST_SYMV_PATH = ../test-symv
 LIB_PATH = ../../$(OUTPUT_DIR)
 HEADER_PATH = -I../../src -I..
 
 DOT_OBJS = $(DOT_PATH)/BLAS_sdot_x.o $(DOT_PATH)/BLAS_ddot_x.o
 
-GEMM_TEST_OBJS	= $(TEST_GEMM_PATH)/gemm-support.o
+GEMV_TEST_OBJS  = $(TEST_GEMV_PATH)/gemv-support.o
+SYMV_TEST_OBJS  = $(TEST_SYMV_PATH)/symv-support.o
 
 TEST_DOT_OBJS = $(TEST_DOT_PATH)/testgen_BLAS_sdot.o \
 		$(TEST_DOT_PATH)/testgen_BLAS_ddot.o \
@@ -17,13 +19,15 @@ TEST_DOT_OBJS = $(TEST_DOT_PATH)/testgen_BLAS_sdot.o \
 		$(TEST_DOT_PATH)/testgen_BLAS_zdot.o \
 		$(TEST_DOT_PATH)/testgen_aux.o \
 		$(TEST_DOT_PATH)/test_dot.o \
-		$(TEST_DOT_PATH)/BLAS_dot_testgen.o
+		$(TEST_DOT_PATH)/BLAS_dot_testgen.o \
+		$(TEST_DOT_PATH)/print_vector.o \
+		$(TEST_DOT_PATH)/copy_vector.o
 
-TEST_SRCS = do_test_symm.c BLAS_symm_testgen.c symm-support.c 
+TEST_SRCS = do_test_symm.c BLAS_symm_testgen.c
 TEST_OBJS = $(TEST_SRCS:.c=.o)
 COMMON_OBJS = ../common/dummy_main.o
 
-ALL_OBJS = $(TEST_OBJS) $(TEST_DOT_OBJS) $(DOT_OBJS) $(GEMM_TEST_OBJS) $(COMMON_OBJS)
+ALL_OBJS = $(TEST_OBJS) $(TEST_DOT_OBJS) $(DOT_OBJS) $(GEMV_TEST_OBJS) $(SYMV_TEST_OBJS) $(COMMON_OBJS)
 
 test: do_test_symm
 	@echo Testing SYMM - default quick test
@@ -50,9 +54,6 @@ do_test_symm: $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB)
 	-o do_test_symm $(EXTRA_LIBS)
 
 test-lib: $(TEST_OBJS)
-
-# $(GEMM_TEST_OBJS):
-#	cd $(TEST_GEMM_PATH) && $(MAKE) test-lib
 
 .c.o:
 	$(CC) $(CFLAGS) $(HEADER_PATH) -c -o $@ $<

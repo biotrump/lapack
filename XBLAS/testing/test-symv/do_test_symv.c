@@ -157,41 +157,22 @@ void do_test_dsymv_d_s
   if (3 * n_i > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incy; i += incy) {
-    y[i] = 0.0;
-    y_gen[i] = 0.0;
-  }
-
   a = (double *) blas_malloc(2 * n_i * n_i * n_i * sizeof(double));
   if (2 * n_i * n_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
   }
   x = (float *) blas_malloc(3 * n_i * sizeof(float));
   if (3 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-  }
-
   a_vec = (double *) blas_malloc(n_i * sizeof(double));
   if (n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n_i * inca; i += inca) {
-    a_vec[i] = 0.0;
   }
   x_vec = (float *) blas_malloc(n_i * sizeof(float));
   if (n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(n_i * sizeof(double));
   tail_r_true = (double *) blas_malloc(n_i * sizeof(double));
   if (n_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -324,7 +305,7 @@ void do_test_dsymv_d_s
 
 		      /* copy generated y vector since this will be
 		         over written */
-		      dsymv_copy_vector(n, y_gen, incy, y, incy);
+		      dcopy_vector(y, n, incy, y_gen, incy);
 
 		      /* call symv routines to be tested */
 		      FPU_FIX_STOP;
@@ -351,11 +332,10 @@ void do_test_dsymv_d_s
 
 		      for (i = 0, yi = y_starti, ri = 0;
 			   i < n_i; i++, yi += incyi, ri += incri) {
-			dsymv_copy_row(order_type, uplo_type,
-				       n_i, a, lda, a_vec, i);
+			dsy_copy_row(order_type, uplo_type,
+				     n_i, a, lda, a_vec, i);
 
 			/* just use the x vector - it was unchanged (in theory) */
-
 
 			rin = y_gen[yi];
 			rout = y[yi];
@@ -410,28 +390,21 @@ void do_test_dsymv_d_s
 			  printf("randomize %d\n", randomize_val);
 
 			  /* print out info */
-			  printf("alpha=%.16e", alpha);;
+			  printf("alpha = ");
+			  printf("%24.16e", alpha);;
 			  printf("   ");
-			  printf("beta=%.16e", beta);;
+			  printf("beta = ");
+			  printf("%24.16e", beta);;
 			  printf("\n");
 
 			  printf("a\n");
-			  dprint_symv_matrix(a, n_i,
-					     lda, order_type, uplo_type);
-			  printf("x\t");
-			  sprint_vector(x, n, incx);
-
-			  printf("y_gen\t");
-			  dprint_vector(y_gen, n, incy);
-
-			  printf("y\t");
-			  dprint_vector(y, n, incy);
-
-			  printf("head_r_true\t");
-			  dprint_vector(head_r_true, n, 1);
-
-			  printf("ratios :\t");
-			  dprint_vector(ratios, n, 1);
+			  dsy_print_matrix(a, n_i,
+					   lda, order_type, uplo_type);
+			  sprint_vector(x, n, incx, "x");
+			  dprint_vector(y_gen, n, incy, "y_gen");
+			  dprint_vector(y, n, incy, "y");
+			  dprint_vector(head_r_true, n, 1, "head_r_true");
+			  dprint_vector(ratios, n, 1, "ratios");
 			  printf("ratio = %g\n", ratio);
 			}
 			bad_ratio_count++;
@@ -597,41 +570,22 @@ void do_test_dsymv_s_d
   if (3 * n_i > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incy; i += incy) {
-    y[i] = 0.0;
-    y_gen[i] = 0.0;
-  }
-
   a = (float *) blas_malloc(2 * n_i * n_i * n_i * sizeof(float));
   if (2 * n_i * n_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
   }
   x = (double *) blas_malloc(3 * n_i * sizeof(double));
   if (3 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-  }
-
   a_vec = (float *) blas_malloc(n_i * sizeof(float));
   if (n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n_i * inca; i += inca) {
-    a_vec[i] = 0.0;
   }
   x_vec = (double *) blas_malloc(n_i * sizeof(double));
   if (n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(n_i * sizeof(double));
   tail_r_true = (double *) blas_malloc(n_i * sizeof(double));
   if (n_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -764,7 +718,7 @@ void do_test_dsymv_s_d
 
 		      /* copy generated y vector since this will be
 		         over written */
-		      dsymv_copy_vector(n, y_gen, incy, y, incy);
+		      dcopy_vector(y, n, incy, y_gen, incy);
 
 		      /* call symv routines to be tested */
 		      FPU_FIX_STOP;
@@ -791,11 +745,10 @@ void do_test_dsymv_s_d
 
 		      for (i = 0, yi = y_starti, ri = 0;
 			   i < n_i; i++, yi += incyi, ri += incri) {
-			ssymv_copy_row(order_type, uplo_type,
-				       n_i, a, lda, a_vec, i);
+			ssy_copy_row(order_type, uplo_type,
+				     n_i, a, lda, a_vec, i);
 
 			/* just use the x vector - it was unchanged (in theory) */
-
 
 			rin = y_gen[yi];
 			rout = y[yi];
@@ -850,28 +803,21 @@ void do_test_dsymv_s_d
 			  printf("randomize %d\n", randomize_val);
 
 			  /* print out info */
-			  printf("alpha=%.16e", alpha);;
+			  printf("alpha = ");
+			  printf("%24.16e", alpha);;
 			  printf("   ");
-			  printf("beta=%.16e", beta);;
+			  printf("beta = ");
+			  printf("%24.16e", beta);;
 			  printf("\n");
 
 			  printf("a\n");
-			  sprint_symv_matrix(a, n_i,
-					     lda, order_type, uplo_type);
-			  printf("x\t");
-			  dprint_vector(x, n, incx);
-
-			  printf("y_gen\t");
-			  dprint_vector(y_gen, n, incy);
-
-			  printf("y\t");
-			  dprint_vector(y, n, incy);
-
-			  printf("head_r_true\t");
-			  dprint_vector(head_r_true, n, 1);
-
-			  printf("ratios :\t");
-			  dprint_vector(ratios, n, 1);
+			  ssy_print_matrix(a, n_i,
+					   lda, order_type, uplo_type);
+			  dprint_vector(x, n, incx, "x");
+			  dprint_vector(y_gen, n, incy, "y_gen");
+			  dprint_vector(y, n, incy, "y");
+			  dprint_vector(head_r_true, n, 1, "head_r_true");
+			  dprint_vector(ratios, n, 1, "ratios");
 			  printf("ratio = %g\n", ratio);
 			}
 			bad_ratio_count++;
@@ -1037,41 +983,22 @@ void do_test_dsymv_s_s
   if (3 * n_i > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incy; i += incy) {
-    y[i] = 0.0;
-    y_gen[i] = 0.0;
-  }
-
   a = (float *) blas_malloc(2 * n_i * n_i * n_i * sizeof(float));
   if (2 * n_i * n_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
   }
   x = (float *) blas_malloc(3 * n_i * sizeof(float));
   if (3 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-  }
-
   a_vec = (float *) blas_malloc(n_i * sizeof(float));
   if (n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n_i * inca; i += inca) {
-    a_vec[i] = 0.0;
   }
   x_vec = (float *) blas_malloc(n_i * sizeof(float));
   if (n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(n_i * sizeof(double));
   tail_r_true = (double *) blas_malloc(n_i * sizeof(double));
   if (n_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -1204,7 +1131,7 @@ void do_test_dsymv_s_s
 
 		      /* copy generated y vector since this will be
 		         over written */
-		      dsymv_copy_vector(n, y_gen, incy, y, incy);
+		      dcopy_vector(y, n, incy, y_gen, incy);
 
 		      /* call symv routines to be tested */
 		      FPU_FIX_STOP;
@@ -1231,11 +1158,10 @@ void do_test_dsymv_s_s
 
 		      for (i = 0, yi = y_starti, ri = 0;
 			   i < n_i; i++, yi += incyi, ri += incri) {
-			ssymv_copy_row(order_type, uplo_type,
-				       n_i, a, lda, a_vec, i);
+			ssy_copy_row(order_type, uplo_type,
+				     n_i, a, lda, a_vec, i);
 
 			/* just use the x vector - it was unchanged (in theory) */
-
 
 			rin = y_gen[yi];
 			rout = y[yi];
@@ -1290,28 +1216,21 @@ void do_test_dsymv_s_s
 			  printf("randomize %d\n", randomize_val);
 
 			  /* print out info */
-			  printf("alpha=%.16e", alpha);;
+			  printf("alpha = ");
+			  printf("%24.16e", alpha);;
 			  printf("   ");
-			  printf("beta=%.16e", beta);;
+			  printf("beta = ");
+			  printf("%24.16e", beta);;
 			  printf("\n");
 
 			  printf("a\n");
-			  sprint_symv_matrix(a, n_i,
-					     lda, order_type, uplo_type);
-			  printf("x\t");
-			  sprint_vector(x, n, incx);
-
-			  printf("y_gen\t");
-			  dprint_vector(y_gen, n, incy);
-
-			  printf("y\t");
-			  dprint_vector(y, n, incy);
-
-			  printf("head_r_true\t");
-			  dprint_vector(head_r_true, n, 1);
-
-			  printf("ratios :\t");
-			  dprint_vector(ratios, n, 1);
+			  ssy_print_matrix(a, n_i,
+					   lda, order_type, uplo_type);
+			  sprint_vector(x, n, incx, "x");
+			  dprint_vector(y_gen, n, incy, "y_gen");
+			  dprint_vector(y, n, incy, "y");
+			  dprint_vector(head_r_true, n, 1, "head_r_true");
+			  dprint_vector(ratios, n, 1, "ratios");
 			  printf("ratio = %g\n", ratio);
 			}
 			bad_ratio_count++;
@@ -1478,47 +1397,22 @@ void do_test_zsymv_z_c
   if (3 * n_i > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
-
   a = (double *) blas_malloc(2 * n_i * n_i * n_i * sizeof(double) * 2);
   if (2 * n_i * n_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   x = (float *) blas_malloc(3 * n_i * sizeof(float) * 2);
   if (3 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
-
   a_vec = (double *) blas_malloc(n_i * sizeof(double) * 2);
   if (n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n_i * inca; i += inca) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
   }
   x_vec = (float *) blas_malloc(n_i * sizeof(float) * 2);
   if (n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-    x_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   if (n_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -1655,7 +1549,7 @@ void do_test_zsymv_z_c
 
 		      /* copy generated y vector since this will be
 		         over written */
-		      zsymv_copy_vector(n, y_gen, incy, y, incy);
+		      zcopy_vector(y, n, incy, y_gen, incy);
 
 		      /* call symv routines to be tested */
 		      FPU_FIX_STOP;
@@ -1682,11 +1576,10 @@ void do_test_zsymv_z_c
 
 		      for (i = 0, yi = y_starti, ri = 0;
 			   i < n_i; i++, yi += incyi, ri += incri) {
-			zsymv_copy_row(order_type, uplo_type,
-				       n_i, a, lda, a_vec, i);
+			zsy_copy_row(order_type, uplo_type,
+				     n_i, a, lda, a_vec, i);
 
 			/* just use the x vector - it was unchanged (in theory) */
-
 
 			rin[0] = y_gen[yi];
 			rin[1] = y_gen[yi + 1];
@@ -1745,30 +1638,21 @@ void do_test_zsymv_z_c
 			  printf("randomize %d\n", randomize_val);
 
 			  /* print out info */
-			  printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				 alpha[1]);;
+			  printf("alpha = ");
+			  printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);;
 			  printf("   ");
-			  printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				 beta[1]);;
+			  printf("beta = ");
+			  printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			  printf("\n");
 
 			  printf("a\n");
-			  zprint_symv_matrix(a, n_i,
-					     lda, order_type, uplo_type);
-			  printf("x\t");
-			  cprint_vector(x, n, incx);
-
-			  printf("y_gen\t");
-			  zprint_vector(y_gen, n, incy);
-
-			  printf("y\t");
-			  zprint_vector(y, n, incy);
-
-			  printf("head_r_true\t");
-			  zprint_vector(head_r_true, n, 1);
-
-			  printf("ratios :\t");
-			  dprint_vector(ratios, n, 1);
+			  zsy_print_matrix(a, n_i,
+					   lda, order_type, uplo_type);
+			  cprint_vector(x, n, incx, "x");
+			  zprint_vector(y_gen, n, incy, "y_gen");
+			  zprint_vector(y, n, incy, "y");
+			  zprint_vector(head_r_true, n, 1, "head_r_true");
+			  dprint_vector(ratios, n, 1, "ratios");
 			  printf("ratio = %g\n", ratio);
 			}
 			bad_ratio_count++;
@@ -1935,47 +1819,22 @@ void do_test_zsymv_c_z
   if (3 * n_i > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
-
   a = (float *) blas_malloc(2 * n_i * n_i * n_i * sizeof(float) * 2);
   if (2 * n_i * n_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   x = (double *) blas_malloc(3 * n_i * sizeof(double) * 2);
   if (3 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
-
   a_vec = (float *) blas_malloc(n_i * sizeof(float) * 2);
   if (n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n_i * inca; i += inca) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
   }
   x_vec = (double *) blas_malloc(n_i * sizeof(double) * 2);
   if (n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-    x_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   if (n_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -2112,7 +1971,7 @@ void do_test_zsymv_c_z
 
 		      /* copy generated y vector since this will be
 		         over written */
-		      zsymv_copy_vector(n, y_gen, incy, y, incy);
+		      zcopy_vector(y, n, incy, y_gen, incy);
 
 		      /* call symv routines to be tested */
 		      FPU_FIX_STOP;
@@ -2139,11 +1998,10 @@ void do_test_zsymv_c_z
 
 		      for (i = 0, yi = y_starti, ri = 0;
 			   i < n_i; i++, yi += incyi, ri += incri) {
-			csymv_copy_row(order_type, uplo_type,
-				       n_i, a, lda, a_vec, i);
+			csy_copy_row(order_type, uplo_type,
+				     n_i, a, lda, a_vec, i);
 
 			/* just use the x vector - it was unchanged (in theory) */
-
 
 			rin[0] = y_gen[yi];
 			rin[1] = y_gen[yi + 1];
@@ -2202,30 +2060,21 @@ void do_test_zsymv_c_z
 			  printf("randomize %d\n", randomize_val);
 
 			  /* print out info */
-			  printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				 alpha[1]);;
+			  printf("alpha = ");
+			  printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);;
 			  printf("   ");
-			  printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				 beta[1]);;
+			  printf("beta = ");
+			  printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			  printf("\n");
 
 			  printf("a\n");
-			  cprint_symv_matrix(a, n_i,
-					     lda, order_type, uplo_type);
-			  printf("x\t");
-			  zprint_vector(x, n, incx);
-
-			  printf("y_gen\t");
-			  zprint_vector(y_gen, n, incy);
-
-			  printf("y\t");
-			  zprint_vector(y, n, incy);
-
-			  printf("head_r_true\t");
-			  zprint_vector(head_r_true, n, 1);
-
-			  printf("ratios :\t");
-			  dprint_vector(ratios, n, 1);
+			  csy_print_matrix(a, n_i,
+					   lda, order_type, uplo_type);
+			  zprint_vector(x, n, incx, "x");
+			  zprint_vector(y_gen, n, incy, "y_gen");
+			  zprint_vector(y, n, incy, "y");
+			  zprint_vector(head_r_true, n, 1, "head_r_true");
+			  dprint_vector(ratios, n, 1, "ratios");
 			  printf("ratio = %g\n", ratio);
 			}
 			bad_ratio_count++;
@@ -2392,47 +2241,22 @@ void do_test_zsymv_c_c
   if (3 * n_i > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
-
   a = (float *) blas_malloc(2 * n_i * n_i * n_i * sizeof(float) * 2);
   if (2 * n_i * n_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   x = (float *) blas_malloc(3 * n_i * sizeof(float) * 2);
   if (3 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
-
   a_vec = (float *) blas_malloc(n_i * sizeof(float) * 2);
   if (n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n_i * inca; i += inca) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
   }
   x_vec = (float *) blas_malloc(n_i * sizeof(float) * 2);
   if (n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-    x_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   if (n_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -2569,7 +2393,7 @@ void do_test_zsymv_c_c
 
 		      /* copy generated y vector since this will be
 		         over written */
-		      zsymv_copy_vector(n, y_gen, incy, y, incy);
+		      zcopy_vector(y, n, incy, y_gen, incy);
 
 		      /* call symv routines to be tested */
 		      FPU_FIX_STOP;
@@ -2596,11 +2420,10 @@ void do_test_zsymv_c_c
 
 		      for (i = 0, yi = y_starti, ri = 0;
 			   i < n_i; i++, yi += incyi, ri += incri) {
-			csymv_copy_row(order_type, uplo_type,
-				       n_i, a, lda, a_vec, i);
+			csy_copy_row(order_type, uplo_type,
+				     n_i, a, lda, a_vec, i);
 
 			/* just use the x vector - it was unchanged (in theory) */
-
 
 			rin[0] = y_gen[yi];
 			rin[1] = y_gen[yi + 1];
@@ -2659,30 +2482,21 @@ void do_test_zsymv_c_c
 			  printf("randomize %d\n", randomize_val);
 
 			  /* print out info */
-			  printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				 alpha[1]);;
+			  printf("alpha = ");
+			  printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);;
 			  printf("   ");
-			  printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				 beta[1]);;
+			  printf("beta = ");
+			  printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			  printf("\n");
 
 			  printf("a\n");
-			  cprint_symv_matrix(a, n_i,
-					     lda, order_type, uplo_type);
-			  printf("x\t");
-			  cprint_vector(x, n, incx);
-
-			  printf("y_gen\t");
-			  zprint_vector(y_gen, n, incy);
-
-			  printf("y\t");
-			  zprint_vector(y, n, incy);
-
-			  printf("head_r_true\t");
-			  zprint_vector(head_r_true, n, 1);
-
-			  printf("ratios :\t");
-			  dprint_vector(ratios, n, 1);
+			  csy_print_matrix(a, n_i,
+					   lda, order_type, uplo_type);
+			  cprint_vector(x, n, incx, "x");
+			  zprint_vector(y_gen, n, incy, "y_gen");
+			  zprint_vector(y, n, incy, "y");
+			  zprint_vector(head_r_true, n, 1, "head_r_true");
+			  dprint_vector(ratios, n, 1, "ratios");
 			  printf("ratio = %g\n", ratio);
 			}
 			bad_ratio_count++;
@@ -2849,45 +2663,22 @@ void do_test_csymv_c_s
   if (3 * n_i > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
-
   a = (float *) blas_malloc(2 * n_i * n_i * n_i * sizeof(float) * 2);
   if (2 * n_i * n_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   x = (float *) blas_malloc(3 * n_i * sizeof(float));
   if (3 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-  }
-
   a_vec = (float *) blas_malloc(n_i * sizeof(float) * 2);
   if (n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n_i * inca; i += inca) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
   }
   x_vec = (float *) blas_malloc(n_i * sizeof(float));
   if (n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   if (n_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -3024,7 +2815,7 @@ void do_test_csymv_c_s
 
 		      /* copy generated y vector since this will be
 		         over written */
-		      csymv_copy_vector(n, y_gen, incy, y, incy);
+		      ccopy_vector(y, n, incy, y_gen, incy);
 
 		      /* call symv routines to be tested */
 		      FPU_FIX_STOP;
@@ -3051,11 +2842,10 @@ void do_test_csymv_c_s
 
 		      for (i = 0, yi = y_starti, ri = 0;
 			   i < n_i; i++, yi += incyi, ri += incri) {
-			csymv_copy_row(order_type, uplo_type,
-				       n_i, a, lda, a_vec, i);
+			csy_copy_row(order_type, uplo_type,
+				     n_i, a, lda, a_vec, i);
 
 			/* just use the x vector - it was unchanged (in theory) */
-
 
 			rin[0] = y_gen[yi];
 			rin[1] = y_gen[yi + 1];
@@ -3114,30 +2904,21 @@ void do_test_csymv_c_s
 			  printf("randomize %d\n", randomize_val);
 
 			  /* print out info */
-			  printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-				 alpha[1]);;
+			  printf("alpha = ");
+			  printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);;
 			  printf("   ");
-			  printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
-				 beta[1]);;
+			  printf("beta = ");
+			  printf("(%16.8e, %16.8e)", beta[0], beta[1]);;
 			  printf("\n");
 
 			  printf("a\n");
-			  cprint_symv_matrix(a, n_i,
-					     lda, order_type, uplo_type);
-			  printf("x\t");
-			  sprint_vector(x, n, incx);
-
-			  printf("y_gen\t");
-			  cprint_vector(y_gen, n, incy);
-
-			  printf("y\t");
-			  cprint_vector(y, n, incy);
-
-			  printf("head_r_true\t");
-			  zprint_vector(head_r_true, n, 1);
-
-			  printf("ratios :\t");
-			  dprint_vector(ratios, n, 1);
+			  csy_print_matrix(a, n_i,
+					   lda, order_type, uplo_type);
+			  sprint_vector(x, n, incx, "x");
+			  cprint_vector(y_gen, n, incy, "y_gen");
+			  cprint_vector(y, n, incy, "y");
+			  zprint_vector(head_r_true, n, 1, "head_r_true");
+			  dprint_vector(ratios, n, 1, "ratios");
 			  printf("ratio = %g\n", ratio);
 			}
 			bad_ratio_count++;
@@ -3304,45 +3085,22 @@ void do_test_csymv_s_c
   if (3 * n_i > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
-
   a = (float *) blas_malloc(2 * n_i * n_i * n_i * sizeof(float));
   if (2 * n_i * n_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
   }
   x = (float *) blas_malloc(3 * n_i * sizeof(float) * 2);
   if (3 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
-
   a_vec = (float *) blas_malloc(n_i * sizeof(float));
   if (n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n_i * inca; i += inca) {
-    a_vec[i] = 0.0;
   }
   x_vec = (float *) blas_malloc(n_i * sizeof(float) * 2);
   if (n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-    x_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   if (n_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -3479,7 +3237,7 @@ void do_test_csymv_s_c
 
 		      /* copy generated y vector since this will be
 		         over written */
-		      csymv_copy_vector(n, y_gen, incy, y, incy);
+		      ccopy_vector(y, n, incy, y_gen, incy);
 
 		      /* call symv routines to be tested */
 		      FPU_FIX_STOP;
@@ -3506,11 +3264,10 @@ void do_test_csymv_s_c
 
 		      for (i = 0, yi = y_starti, ri = 0;
 			   i < n_i; i++, yi += incyi, ri += incri) {
-			ssymv_copy_row(order_type, uplo_type,
-				       n_i, a, lda, a_vec, i);
+			ssy_copy_row(order_type, uplo_type,
+				     n_i, a, lda, a_vec, i);
 
 			/* just use the x vector - it was unchanged (in theory) */
-
 
 			rin[0] = y_gen[yi];
 			rin[1] = y_gen[yi + 1];
@@ -3569,30 +3326,21 @@ void do_test_csymv_s_c
 			  printf("randomize %d\n", randomize_val);
 
 			  /* print out info */
-			  printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-				 alpha[1]);;
+			  printf("alpha = ");
+			  printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);;
 			  printf("   ");
-			  printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
-				 beta[1]);;
+			  printf("beta = ");
+			  printf("(%16.8e, %16.8e)", beta[0], beta[1]);;
 			  printf("\n");
 
 			  printf("a\n");
-			  sprint_symv_matrix(a, n_i,
-					     lda, order_type, uplo_type);
-			  printf("x\t");
-			  cprint_vector(x, n, incx);
-
-			  printf("y_gen\t");
-			  cprint_vector(y_gen, n, incy);
-
-			  printf("y\t");
-			  cprint_vector(y, n, incy);
-
-			  printf("head_r_true\t");
-			  zprint_vector(head_r_true, n, 1);
-
-			  printf("ratios :\t");
-			  dprint_vector(ratios, n, 1);
+			  ssy_print_matrix(a, n_i,
+					   lda, order_type, uplo_type);
+			  cprint_vector(x, n, incx, "x");
+			  cprint_vector(y_gen, n, incy, "y_gen");
+			  cprint_vector(y, n, incy, "y");
+			  zprint_vector(head_r_true, n, 1, "head_r_true");
+			  dprint_vector(ratios, n, 1, "ratios");
 			  printf("ratio = %g\n", ratio);
 			}
 			bad_ratio_count++;
@@ -3759,43 +3507,22 @@ void do_test_csymv_s_s
   if (3 * n_i > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
-
   a = (float *) blas_malloc(2 * n_i * n_i * n_i * sizeof(float));
   if (2 * n_i * n_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
   }
   x = (float *) blas_malloc(3 * n_i * sizeof(float));
   if (3 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-  }
-
   a_vec = (float *) blas_malloc(n_i * sizeof(float));
   if (n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n_i * inca; i += inca) {
-    a_vec[i] = 0.0;
   }
   x_vec = (float *) blas_malloc(n_i * sizeof(float));
   if (n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   if (n_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -3932,7 +3659,7 @@ void do_test_csymv_s_s
 
 		      /* copy generated y vector since this will be
 		         over written */
-		      csymv_copy_vector(n, y_gen, incy, y, incy);
+		      ccopy_vector(y, n, incy, y_gen, incy);
 
 		      /* call symv routines to be tested */
 		      FPU_FIX_STOP;
@@ -3959,11 +3686,10 @@ void do_test_csymv_s_s
 
 		      for (i = 0, yi = y_starti, ri = 0;
 			   i < n_i; i++, yi += incyi, ri += incri) {
-			ssymv_copy_row(order_type, uplo_type,
-				       n_i, a, lda, a_vec, i);
+			ssy_copy_row(order_type, uplo_type,
+				     n_i, a, lda, a_vec, i);
 
 			/* just use the x vector - it was unchanged (in theory) */
-
 
 			rin[0] = y_gen[yi];
 			rin[1] = y_gen[yi + 1];
@@ -4022,30 +3748,21 @@ void do_test_csymv_s_s
 			  printf("randomize %d\n", randomize_val);
 
 			  /* print out info */
-			  printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-				 alpha[1]);;
+			  printf("alpha = ");
+			  printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);;
 			  printf("   ");
-			  printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
-				 beta[1]);;
+			  printf("beta = ");
+			  printf("(%16.8e, %16.8e)", beta[0], beta[1]);;
 			  printf("\n");
 
 			  printf("a\n");
-			  sprint_symv_matrix(a, n_i,
-					     lda, order_type, uplo_type);
-			  printf("x\t");
-			  sprint_vector(x, n, incx);
-
-			  printf("y_gen\t");
-			  cprint_vector(y_gen, n, incy);
-
-			  printf("y\t");
-			  cprint_vector(y, n, incy);
-
-			  printf("head_r_true\t");
-			  zprint_vector(head_r_true, n, 1);
-
-			  printf("ratios :\t");
-			  dprint_vector(ratios, n, 1);
+			  ssy_print_matrix(a, n_i,
+					   lda, order_type, uplo_type);
+			  sprint_vector(x, n, incx, "x");
+			  cprint_vector(y_gen, n, incy, "y_gen");
+			  cprint_vector(y, n, incy, "y");
+			  zprint_vector(head_r_true, n, 1, "head_r_true");
+			  dprint_vector(ratios, n, 1, "ratios");
 			  printf("ratio = %g\n", ratio);
 			}
 			bad_ratio_count++;
@@ -4212,45 +3929,22 @@ void do_test_zsymv_z_d
   if (3 * n_i > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
-
   a = (double *) blas_malloc(2 * n_i * n_i * n_i * sizeof(double) * 2);
   if (2 * n_i * n_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   x = (double *) blas_malloc(3 * n_i * sizeof(double));
   if (3 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-  }
-
   a_vec = (double *) blas_malloc(n_i * sizeof(double) * 2);
   if (n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n_i * inca; i += inca) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
   }
   x_vec = (double *) blas_malloc(n_i * sizeof(double));
   if (n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   if (n_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -4387,7 +4081,7 @@ void do_test_zsymv_z_d
 
 		      /* copy generated y vector since this will be
 		         over written */
-		      zsymv_copy_vector(n, y_gen, incy, y, incy);
+		      zcopy_vector(y, n, incy, y_gen, incy);
 
 		      /* call symv routines to be tested */
 		      FPU_FIX_STOP;
@@ -4414,11 +4108,10 @@ void do_test_zsymv_z_d
 
 		      for (i = 0, yi = y_starti, ri = 0;
 			   i < n_i; i++, yi += incyi, ri += incri) {
-			zsymv_copy_row(order_type, uplo_type,
-				       n_i, a, lda, a_vec, i);
+			zsy_copy_row(order_type, uplo_type,
+				     n_i, a, lda, a_vec, i);
 
 			/* just use the x vector - it was unchanged (in theory) */
-
 
 			rin[0] = y_gen[yi];
 			rin[1] = y_gen[yi + 1];
@@ -4477,30 +4170,21 @@ void do_test_zsymv_z_d
 			  printf("randomize %d\n", randomize_val);
 
 			  /* print out info */
-			  printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				 alpha[1]);;
+			  printf("alpha = ");
+			  printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);;
 			  printf("   ");
-			  printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				 beta[1]);;
+			  printf("beta = ");
+			  printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			  printf("\n");
 
 			  printf("a\n");
-			  zprint_symv_matrix(a, n_i,
-					     lda, order_type, uplo_type);
-			  printf("x\t");
-			  dprint_vector(x, n, incx);
-
-			  printf("y_gen\t");
-			  zprint_vector(y_gen, n, incy);
-
-			  printf("y\t");
-			  zprint_vector(y, n, incy);
-
-			  printf("head_r_true\t");
-			  zprint_vector(head_r_true, n, 1);
-
-			  printf("ratios :\t");
-			  dprint_vector(ratios, n, 1);
+			  zsy_print_matrix(a, n_i,
+					   lda, order_type, uplo_type);
+			  dprint_vector(x, n, incx, "x");
+			  zprint_vector(y_gen, n, incy, "y_gen");
+			  zprint_vector(y, n, incy, "y");
+			  zprint_vector(head_r_true, n, 1, "head_r_true");
+			  dprint_vector(ratios, n, 1, "ratios");
 			  printf("ratio = %g\n", ratio);
 			}
 			bad_ratio_count++;
@@ -4667,45 +4351,22 @@ void do_test_zsymv_d_z
   if (3 * n_i > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
-
   a = (double *) blas_malloc(2 * n_i * n_i * n_i * sizeof(double));
   if (2 * n_i * n_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
   }
   x = (double *) blas_malloc(3 * n_i * sizeof(double) * 2);
   if (3 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
-
   a_vec = (double *) blas_malloc(n_i * sizeof(double));
   if (n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n_i * inca; i += inca) {
-    a_vec[i] = 0.0;
   }
   x_vec = (double *) blas_malloc(n_i * sizeof(double) * 2);
   if (n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-    x_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   if (n_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -4842,7 +4503,7 @@ void do_test_zsymv_d_z
 
 		      /* copy generated y vector since this will be
 		         over written */
-		      zsymv_copy_vector(n, y_gen, incy, y, incy);
+		      zcopy_vector(y, n, incy, y_gen, incy);
 
 		      /* call symv routines to be tested */
 		      FPU_FIX_STOP;
@@ -4869,11 +4530,10 @@ void do_test_zsymv_d_z
 
 		      for (i = 0, yi = y_starti, ri = 0;
 			   i < n_i; i++, yi += incyi, ri += incri) {
-			dsymv_copy_row(order_type, uplo_type,
-				       n_i, a, lda, a_vec, i);
+			dsy_copy_row(order_type, uplo_type,
+				     n_i, a, lda, a_vec, i);
 
 			/* just use the x vector - it was unchanged (in theory) */
-
 
 			rin[0] = y_gen[yi];
 			rin[1] = y_gen[yi + 1];
@@ -4932,30 +4592,21 @@ void do_test_zsymv_d_z
 			  printf("randomize %d\n", randomize_val);
 
 			  /* print out info */
-			  printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				 alpha[1]);;
+			  printf("alpha = ");
+			  printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);;
 			  printf("   ");
-			  printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				 beta[1]);;
+			  printf("beta = ");
+			  printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			  printf("\n");
 
 			  printf("a\n");
-			  dprint_symv_matrix(a, n_i,
-					     lda, order_type, uplo_type);
-			  printf("x\t");
-			  zprint_vector(x, n, incx);
-
-			  printf("y_gen\t");
-			  zprint_vector(y_gen, n, incy);
-
-			  printf("y\t");
-			  zprint_vector(y, n, incy);
-
-			  printf("head_r_true\t");
-			  zprint_vector(head_r_true, n, 1);
-
-			  printf("ratios :\t");
-			  dprint_vector(ratios, n, 1);
+			  dsy_print_matrix(a, n_i,
+					   lda, order_type, uplo_type);
+			  zprint_vector(x, n, incx, "x");
+			  zprint_vector(y_gen, n, incy, "y_gen");
+			  zprint_vector(y, n, incy, "y");
+			  zprint_vector(head_r_true, n, 1, "head_r_true");
+			  dprint_vector(ratios, n, 1, "ratios");
 			  printf("ratio = %g\n", ratio);
 			}
 			bad_ratio_count++;
@@ -5122,43 +4773,22 @@ void do_test_zsymv_d_d
   if (3 * n_i > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
-
   a = (double *) blas_malloc(2 * n_i * n_i * n_i * sizeof(double));
   if (2 * n_i * n_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
   }
   x = (double *) blas_malloc(3 * n_i * sizeof(double));
   if (3 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-  }
-
   a_vec = (double *) blas_malloc(n_i * sizeof(double));
   if (n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n_i * inca; i += inca) {
-    a_vec[i] = 0.0;
   }
   x_vec = (double *) blas_malloc(n_i * sizeof(double));
   if (n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   if (n_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -5295,7 +4925,7 @@ void do_test_zsymv_d_d
 
 		      /* copy generated y vector since this will be
 		         over written */
-		      zsymv_copy_vector(n, y_gen, incy, y, incy);
+		      zcopy_vector(y, n, incy, y_gen, incy);
 
 		      /* call symv routines to be tested */
 		      FPU_FIX_STOP;
@@ -5322,11 +4952,10 @@ void do_test_zsymv_d_d
 
 		      for (i = 0, yi = y_starti, ri = 0;
 			   i < n_i; i++, yi += incyi, ri += incri) {
-			dsymv_copy_row(order_type, uplo_type,
-				       n_i, a, lda, a_vec, i);
+			dsy_copy_row(order_type, uplo_type,
+				     n_i, a, lda, a_vec, i);
 
 			/* just use the x vector - it was unchanged (in theory) */
-
 
 			rin[0] = y_gen[yi];
 			rin[1] = y_gen[yi + 1];
@@ -5385,30 +5014,21 @@ void do_test_zsymv_d_d
 			  printf("randomize %d\n", randomize_val);
 
 			  /* print out info */
-			  printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				 alpha[1]);;
+			  printf("alpha = ");
+			  printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);;
 			  printf("   ");
-			  printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				 beta[1]);;
+			  printf("beta = ");
+			  printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			  printf("\n");
 
 			  printf("a\n");
-			  dprint_symv_matrix(a, n_i,
-					     lda, order_type, uplo_type);
-			  printf("x\t");
-			  dprint_vector(x, n, incx);
-
-			  printf("y_gen\t");
-			  zprint_vector(y_gen, n, incy);
-
-			  printf("y\t");
-			  zprint_vector(y, n, incy);
-
-			  printf("head_r_true\t");
-			  zprint_vector(head_r_true, n, 1);
-
-			  printf("ratios :\t");
-			  dprint_vector(ratios, n, 1);
+			  dsy_print_matrix(a, n_i,
+					   lda, order_type, uplo_type);
+			  dprint_vector(x, n, incx, "x");
+			  zprint_vector(y_gen, n, incy, "y_gen");
+			  zprint_vector(y, n, incy, "y");
+			  zprint_vector(head_r_true, n, 1, "head_r_true");
+			  dprint_vector(ratios, n, 1, "ratios");
 			  printf("ratio = %g\n", ratio);
 			}
 			bad_ratio_count++;
@@ -5574,41 +5194,22 @@ void do_test_ssymv_x
   if (3 * n_i > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incy; i += incy) {
-    y[i] = 0.0;
-    y_gen[i] = 0.0;
-  }
-
   a = (float *) blas_malloc(2 * n_i * n_i * n_i * sizeof(float));
   if (2 * n_i * n_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
   }
   x = (float *) blas_malloc(3 * n_i * sizeof(float));
   if (3 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-  }
-
   a_vec = (float *) blas_malloc(n_i * sizeof(float));
   if (n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n_i * inca; i += inca) {
-    a_vec[i] = 0.0;
   }
   x_vec = (float *) blas_malloc(n_i * sizeof(float));
   if (n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(n_i * sizeof(double));
   tail_r_true = (double *) blas_malloc(n_i * sizeof(double));
   if (n_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -5761,7 +5362,7 @@ void do_test_ssymv_x
 
 			/* copy generated y vector since this will be
 			   over written */
-			ssymv_copy_vector(n, y_gen, incy, y, incy);
+			scopy_vector(y, n, incy, y_gen, incy);
 
 			/* call symv routines to be tested */
 			FPU_FIX_STOP;
@@ -5788,11 +5389,10 @@ void do_test_ssymv_x
 
 			for (i = 0, yi = y_starti, ri = 0;
 			     i < n_i; i++, yi += incyi, ri += incri) {
-			  ssymv_copy_row(order_type, uplo_type,
-					 n_i, a, lda, a_vec, i);
+			  ssy_copy_row(order_type, uplo_type,
+				       n_i, a, lda, a_vec, i);
 
 			  /* just use the x vector - it was unchanged (in theory) */
-
 
 			  rin = y_gen[yi];
 			  rout = y[yi];
@@ -5847,28 +5447,21 @@ void do_test_ssymv_x
 			    printf("randomize %d\n", randomize_val);
 
 			    /* print out info */
-			    printf("alpha=%.8e", alpha);;
+			    printf("alpha = ");
+			    printf("%16.8e", alpha);;
 			    printf("   ");
-			    printf("beta=%.8e", beta);;
+			    printf("beta = ");
+			    printf("%16.8e", beta);;
 			    printf("\n");
 
 			    printf("a\n");
-			    sprint_symv_matrix(a, n_i,
-					       lda, order_type, uplo_type);
-			    printf("x\t");
-			    sprint_vector(x, n, incx);
-
-			    printf("y_gen\t");
-			    sprint_vector(y_gen, n, incy);
-
-			    printf("y\t");
-			    sprint_vector(y, n, incy);
-
-			    printf("head_r_true\t");
-			    dprint_vector(head_r_true, n, 1);
-
-			    printf("ratios :\t");
-			    dprint_vector(ratios, n, 1);
+			    ssy_print_matrix(a, n_i,
+					     lda, order_type, uplo_type);
+			    sprint_vector(x, n, incx, "x");
+			    sprint_vector(y_gen, n, incy, "y_gen");
+			    sprint_vector(y, n, incy, "y");
+			    dprint_vector(head_r_true, n, 1, "head_r_true");
+			    dprint_vector(ratios, n, 1, "ratios");
 			    printf("ratio = %g\n", ratio);
 			  }
 			  bad_ratio_count++;
@@ -6035,41 +5628,22 @@ void do_test_dsymv_x
   if (3 * n_i > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incy; i += incy) {
-    y[i] = 0.0;
-    y_gen[i] = 0.0;
-  }
-
   a = (double *) blas_malloc(2 * n_i * n_i * n_i * sizeof(double));
   if (2 * n_i * n_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
   }
   x = (double *) blas_malloc(3 * n_i * sizeof(double));
   if (3 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-  }
-
   a_vec = (double *) blas_malloc(n_i * sizeof(double));
   if (n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n_i * inca; i += inca) {
-    a_vec[i] = 0.0;
   }
   x_vec = (double *) blas_malloc(n_i * sizeof(double));
   if (n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(n_i * sizeof(double));
   tail_r_true = (double *) blas_malloc(n_i * sizeof(double));
   if (n_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -6222,7 +5796,7 @@ void do_test_dsymv_x
 
 			/* copy generated y vector since this will be
 			   over written */
-			dsymv_copy_vector(n, y_gen, incy, y, incy);
+			dcopy_vector(y, n, incy, y_gen, incy);
 
 			/* call symv routines to be tested */
 			FPU_FIX_STOP;
@@ -6249,11 +5823,10 @@ void do_test_dsymv_x
 
 			for (i = 0, yi = y_starti, ri = 0;
 			     i < n_i; i++, yi += incyi, ri += incri) {
-			  dsymv_copy_row(order_type, uplo_type,
-					 n_i, a, lda, a_vec, i);
+			  dsy_copy_row(order_type, uplo_type,
+				       n_i, a, lda, a_vec, i);
 
 			  /* just use the x vector - it was unchanged (in theory) */
-
 
 			  rin = y_gen[yi];
 			  rout = y[yi];
@@ -6308,28 +5881,21 @@ void do_test_dsymv_x
 			    printf("randomize %d\n", randomize_val);
 
 			    /* print out info */
-			    printf("alpha=%.16e", alpha);;
+			    printf("alpha = ");
+			    printf("%24.16e", alpha);;
 			    printf("   ");
-			    printf("beta=%.16e", beta);;
+			    printf("beta = ");
+			    printf("%24.16e", beta);;
 			    printf("\n");
 
 			    printf("a\n");
-			    dprint_symv_matrix(a, n_i,
-					       lda, order_type, uplo_type);
-			    printf("x\t");
-			    dprint_vector(x, n, incx);
-
-			    printf("y_gen\t");
-			    dprint_vector(y_gen, n, incy);
-
-			    printf("y\t");
-			    dprint_vector(y, n, incy);
-
-			    printf("head_r_true\t");
-			    dprint_vector(head_r_true, n, 1);
-
-			    printf("ratios :\t");
-			    dprint_vector(ratios, n, 1);
+			    dsy_print_matrix(a, n_i,
+					     lda, order_type, uplo_type);
+			    dprint_vector(x, n, incx, "x");
+			    dprint_vector(y_gen, n, incy, "y_gen");
+			    dprint_vector(y, n, incy, "y");
+			    dprint_vector(head_r_true, n, 1, "head_r_true");
+			    dprint_vector(ratios, n, 1, "ratios");
 			    printf("ratio = %g\n", ratio);
 			  }
 			  bad_ratio_count++;
@@ -6497,47 +6063,22 @@ void do_test_csymv_x
   if (3 * n_i > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
-
   a = (float *) blas_malloc(2 * n_i * n_i * n_i * sizeof(float) * 2);
   if (2 * n_i * n_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   x = (float *) blas_malloc(3 * n_i * sizeof(float) * 2);
   if (3 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
-
   a_vec = (float *) blas_malloc(n_i * sizeof(float) * 2);
   if (n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n_i * inca; i += inca) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
   }
   x_vec = (float *) blas_malloc(n_i * sizeof(float) * 2);
   if (n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-    x_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   if (n_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -6694,7 +6235,7 @@ void do_test_csymv_x
 
 			/* copy generated y vector since this will be
 			   over written */
-			csymv_copy_vector(n, y_gen, incy, y, incy);
+			ccopy_vector(y, n, incy, y_gen, incy);
 
 			/* call symv routines to be tested */
 			FPU_FIX_STOP;
@@ -6721,11 +6262,10 @@ void do_test_csymv_x
 
 			for (i = 0, yi = y_starti, ri = 0;
 			     i < n_i; i++, yi += incyi, ri += incri) {
-			  csymv_copy_row(order_type, uplo_type,
-					 n_i, a, lda, a_vec, i);
+			  csy_copy_row(order_type, uplo_type,
+				       n_i, a, lda, a_vec, i);
 
 			  /* just use the x vector - it was unchanged (in theory) */
-
 
 			  rin[0] = y_gen[yi];
 			  rin[1] = y_gen[yi + 1];
@@ -6784,30 +6324,21 @@ void do_test_csymv_x
 			    printf("randomize %d\n", randomize_val);
 
 			    /* print out info */
-			    printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-				   alpha[1]);;
+			    printf("alpha = ");
+			    printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);;
 			    printf("   ");
-			    printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
-				   beta[1]);;
+			    printf("beta = ");
+			    printf("(%16.8e, %16.8e)", beta[0], beta[1]);;
 			    printf("\n");
 
 			    printf("a\n");
-			    cprint_symv_matrix(a, n_i,
-					       lda, order_type, uplo_type);
-			    printf("x\t");
-			    cprint_vector(x, n, incx);
-
-			    printf("y_gen\t");
-			    cprint_vector(y_gen, n, incy);
-
-			    printf("y\t");
-			    cprint_vector(y, n, incy);
-
-			    printf("head_r_true\t");
-			    zprint_vector(head_r_true, n, 1);
-
-			    printf("ratios :\t");
-			    dprint_vector(ratios, n, 1);
+			    csy_print_matrix(a, n_i,
+					     lda, order_type, uplo_type);
+			    cprint_vector(x, n, incx, "x");
+			    cprint_vector(y_gen, n, incy, "y_gen");
+			    cprint_vector(y, n, incy, "y");
+			    zprint_vector(head_r_true, n, 1, "head_r_true");
+			    dprint_vector(ratios, n, 1, "ratios");
 			    printf("ratio = %g\n", ratio);
 			  }
 			  bad_ratio_count++;
@@ -6975,47 +6506,22 @@ void do_test_zsymv_x
   if (3 * n_i > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
-
   a = (double *) blas_malloc(2 * n_i * n_i * n_i * sizeof(double) * 2);
   if (2 * n_i * n_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   x = (double *) blas_malloc(3 * n_i * sizeof(double) * 2);
   if (3 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
-
   a_vec = (double *) blas_malloc(n_i * sizeof(double) * 2);
   if (n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n_i * inca; i += inca) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
   }
   x_vec = (double *) blas_malloc(n_i * sizeof(double) * 2);
   if (n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-    x_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   if (n_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -7172,7 +6678,7 @@ void do_test_zsymv_x
 
 			/* copy generated y vector since this will be
 			   over written */
-			zsymv_copy_vector(n, y_gen, incy, y, incy);
+			zcopy_vector(y, n, incy, y_gen, incy);
 
 			/* call symv routines to be tested */
 			FPU_FIX_STOP;
@@ -7199,11 +6705,10 @@ void do_test_zsymv_x
 
 			for (i = 0, yi = y_starti, ri = 0;
 			     i < n_i; i++, yi += incyi, ri += incri) {
-			  zsymv_copy_row(order_type, uplo_type,
-					 n_i, a, lda, a_vec, i);
+			  zsy_copy_row(order_type, uplo_type,
+				       n_i, a, lda, a_vec, i);
 
 			  /* just use the x vector - it was unchanged (in theory) */
-
 
 			  rin[0] = y_gen[yi];
 			  rin[1] = y_gen[yi + 1];
@@ -7262,30 +6767,21 @@ void do_test_zsymv_x
 			    printf("randomize %d\n", randomize_val);
 
 			    /* print out info */
-			    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				   alpha[1]);;
+			    printf("alpha = ");
+			    printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);;
 			    printf("   ");
-			    printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				   beta[1]);;
+			    printf("beta = ");
+			    printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			    printf("\n");
 
 			    printf("a\n");
-			    zprint_symv_matrix(a, n_i,
-					       lda, order_type, uplo_type);
-			    printf("x\t");
-			    zprint_vector(x, n, incx);
-
-			    printf("y_gen\t");
-			    zprint_vector(y_gen, n, incy);
-
-			    printf("y\t");
-			    zprint_vector(y, n, incy);
-
-			    printf("head_r_true\t");
-			    zprint_vector(head_r_true, n, 1);
-
-			    printf("ratios :\t");
-			    dprint_vector(ratios, n, 1);
+			    zsy_print_matrix(a, n_i,
+					     lda, order_type, uplo_type);
+			    zprint_vector(x, n, incx, "x");
+			    zprint_vector(y_gen, n, incy, "y_gen");
+			    zprint_vector(y, n, incy, "y");
+			    zprint_vector(head_r_true, n, 1, "head_r_true");
+			    dprint_vector(ratios, n, 1, "ratios");
 			    printf("ratio = %g\n", ratio);
 			  }
 			  bad_ratio_count++;
@@ -7452,41 +6948,22 @@ void do_test_dsymv_d_s_x
   if (3 * n_i > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incy; i += incy) {
-    y[i] = 0.0;
-    y_gen[i] = 0.0;
-  }
-
   a = (double *) blas_malloc(2 * n_i * n_i * n_i * sizeof(double));
   if (2 * n_i * n_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
   }
   x = (float *) blas_malloc(3 * n_i * sizeof(float));
   if (3 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-  }
-
   a_vec = (double *) blas_malloc(n_i * sizeof(double));
   if (n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n_i * inca; i += inca) {
-    a_vec[i] = 0.0;
   }
   x_vec = (float *) blas_malloc(n_i * sizeof(float));
   if (n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(n_i * sizeof(double));
   tail_r_true = (double *) blas_malloc(n_i * sizeof(double));
   if (n_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -7639,7 +7116,7 @@ void do_test_dsymv_d_s_x
 
 			/* copy generated y vector since this will be
 			   over written */
-			dsymv_copy_vector(n, y_gen, incy, y, incy);
+			dcopy_vector(y, n, incy, y_gen, incy);
 
 			/* call symv routines to be tested */
 			FPU_FIX_STOP;
@@ -7666,11 +7143,10 @@ void do_test_dsymv_d_s_x
 
 			for (i = 0, yi = y_starti, ri = 0;
 			     i < n_i; i++, yi += incyi, ri += incri) {
-			  dsymv_copy_row(order_type, uplo_type,
-					 n_i, a, lda, a_vec, i);
+			  dsy_copy_row(order_type, uplo_type,
+				       n_i, a, lda, a_vec, i);
 
 			  /* just use the x vector - it was unchanged (in theory) */
-
 
 			  rin = y_gen[yi];
 			  rout = y[yi];
@@ -7726,28 +7202,21 @@ void do_test_dsymv_d_s_x
 			    printf("randomize %d\n", randomize_val);
 
 			    /* print out info */
-			    printf("alpha=%.16e", alpha);;
+			    printf("alpha = ");
+			    printf("%24.16e", alpha);;
 			    printf("   ");
-			    printf("beta=%.16e", beta);;
+			    printf("beta = ");
+			    printf("%24.16e", beta);;
 			    printf("\n");
 
 			    printf("a\n");
-			    dprint_symv_matrix(a, n_i,
-					       lda, order_type, uplo_type);
-			    printf("x\t");
-			    sprint_vector(x, n, incx);
-
-			    printf("y_gen\t");
-			    dprint_vector(y_gen, n, incy);
-
-			    printf("y\t");
-			    dprint_vector(y, n, incy);
-
-			    printf("head_r_true\t");
-			    dprint_vector(head_r_true, n, 1);
-
-			    printf("ratios :\t");
-			    dprint_vector(ratios, n, 1);
+			    dsy_print_matrix(a, n_i,
+					     lda, order_type, uplo_type);
+			    sprint_vector(x, n, incx, "x");
+			    dprint_vector(y_gen, n, incy, "y_gen");
+			    dprint_vector(y, n, incy, "y");
+			    dprint_vector(head_r_true, n, 1, "head_r_true");
+			    dprint_vector(ratios, n, 1, "ratios");
 			    printf("ratio = %g\n", ratio);
 			  }
 			  bad_ratio_count++;
@@ -7914,41 +7383,22 @@ void do_test_dsymv_s_d_x
   if (3 * n_i > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incy; i += incy) {
-    y[i] = 0.0;
-    y_gen[i] = 0.0;
-  }
-
   a = (float *) blas_malloc(2 * n_i * n_i * n_i * sizeof(float));
   if (2 * n_i * n_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
   }
   x = (double *) blas_malloc(3 * n_i * sizeof(double));
   if (3 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-  }
-
   a_vec = (float *) blas_malloc(n_i * sizeof(float));
   if (n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n_i * inca; i += inca) {
-    a_vec[i] = 0.0;
   }
   x_vec = (double *) blas_malloc(n_i * sizeof(double));
   if (n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(n_i * sizeof(double));
   tail_r_true = (double *) blas_malloc(n_i * sizeof(double));
   if (n_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -8101,7 +7551,7 @@ void do_test_dsymv_s_d_x
 
 			/* copy generated y vector since this will be
 			   over written */
-			dsymv_copy_vector(n, y_gen, incy, y, incy);
+			dcopy_vector(y, n, incy, y_gen, incy);
 
 			/* call symv routines to be tested */
 			FPU_FIX_STOP;
@@ -8128,11 +7578,10 @@ void do_test_dsymv_s_d_x
 
 			for (i = 0, yi = y_starti, ri = 0;
 			     i < n_i; i++, yi += incyi, ri += incri) {
-			  ssymv_copy_row(order_type, uplo_type,
-					 n_i, a, lda, a_vec, i);
+			  ssy_copy_row(order_type, uplo_type,
+				       n_i, a, lda, a_vec, i);
 
 			  /* just use the x vector - it was unchanged (in theory) */
-
 
 			  rin = y_gen[yi];
 			  rout = y[yi];
@@ -8188,28 +7637,21 @@ void do_test_dsymv_s_d_x
 			    printf("randomize %d\n", randomize_val);
 
 			    /* print out info */
-			    printf("alpha=%.16e", alpha);;
+			    printf("alpha = ");
+			    printf("%24.16e", alpha);;
 			    printf("   ");
-			    printf("beta=%.16e", beta);;
+			    printf("beta = ");
+			    printf("%24.16e", beta);;
 			    printf("\n");
 
 			    printf("a\n");
-			    sprint_symv_matrix(a, n_i,
-					       lda, order_type, uplo_type);
-			    printf("x\t");
-			    dprint_vector(x, n, incx);
-
-			    printf("y_gen\t");
-			    dprint_vector(y_gen, n, incy);
-
-			    printf("y\t");
-			    dprint_vector(y, n, incy);
-
-			    printf("head_r_true\t");
-			    dprint_vector(head_r_true, n, 1);
-
-			    printf("ratios :\t");
-			    dprint_vector(ratios, n, 1);
+			    ssy_print_matrix(a, n_i,
+					     lda, order_type, uplo_type);
+			    dprint_vector(x, n, incx, "x");
+			    dprint_vector(y_gen, n, incy, "y_gen");
+			    dprint_vector(y, n, incy, "y");
+			    dprint_vector(head_r_true, n, 1, "head_r_true");
+			    dprint_vector(ratios, n, 1, "ratios");
 			    printf("ratio = %g\n", ratio);
 			  }
 			  bad_ratio_count++;
@@ -8376,41 +7818,22 @@ void do_test_dsymv_s_s_x
   if (3 * n_i > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incy; i += incy) {
-    y[i] = 0.0;
-    y_gen[i] = 0.0;
-  }
-
   a = (float *) blas_malloc(2 * n_i * n_i * n_i * sizeof(float));
   if (2 * n_i * n_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
   }
   x = (float *) blas_malloc(3 * n_i * sizeof(float));
   if (3 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-  }
-
   a_vec = (float *) blas_malloc(n_i * sizeof(float));
   if (n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n_i * inca; i += inca) {
-    a_vec[i] = 0.0;
   }
   x_vec = (float *) blas_malloc(n_i * sizeof(float));
   if (n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(n_i * sizeof(double));
   tail_r_true = (double *) blas_malloc(n_i * sizeof(double));
   if (n_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -8563,7 +7986,7 @@ void do_test_dsymv_s_s_x
 
 			/* copy generated y vector since this will be
 			   over written */
-			dsymv_copy_vector(n, y_gen, incy, y, incy);
+			dcopy_vector(y, n, incy, y_gen, incy);
 
 			/* call symv routines to be tested */
 			FPU_FIX_STOP;
@@ -8590,11 +8013,10 @@ void do_test_dsymv_s_s_x
 
 			for (i = 0, yi = y_starti, ri = 0;
 			     i < n_i; i++, yi += incyi, ri += incri) {
-			  ssymv_copy_row(order_type, uplo_type,
-					 n_i, a, lda, a_vec, i);
+			  ssy_copy_row(order_type, uplo_type,
+				       n_i, a, lda, a_vec, i);
 
 			  /* just use the x vector - it was unchanged (in theory) */
-
 
 			  rin = y_gen[yi];
 			  rout = y[yi];
@@ -8650,28 +8072,21 @@ void do_test_dsymv_s_s_x
 			    printf("randomize %d\n", randomize_val);
 
 			    /* print out info */
-			    printf("alpha=%.16e", alpha);;
+			    printf("alpha = ");
+			    printf("%24.16e", alpha);;
 			    printf("   ");
-			    printf("beta=%.16e", beta);;
+			    printf("beta = ");
+			    printf("%24.16e", beta);;
 			    printf("\n");
 
 			    printf("a\n");
-			    sprint_symv_matrix(a, n_i,
-					       lda, order_type, uplo_type);
-			    printf("x\t");
-			    sprint_vector(x, n, incx);
-
-			    printf("y_gen\t");
-			    dprint_vector(y_gen, n, incy);
-
-			    printf("y\t");
-			    dprint_vector(y, n, incy);
-
-			    printf("head_r_true\t");
-			    dprint_vector(head_r_true, n, 1);
-
-			    printf("ratios :\t");
-			    dprint_vector(ratios, n, 1);
+			    ssy_print_matrix(a, n_i,
+					     lda, order_type, uplo_type);
+			    sprint_vector(x, n, incx, "x");
+			    dprint_vector(y_gen, n, incy, "y_gen");
+			    dprint_vector(y, n, incy, "y");
+			    dprint_vector(head_r_true, n, 1, "head_r_true");
+			    dprint_vector(ratios, n, 1, "ratios");
 			    printf("ratio = %g\n", ratio);
 			  }
 			  bad_ratio_count++;
@@ -8839,47 +8254,22 @@ void do_test_zsymv_z_c_x
   if (3 * n_i > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
-
   a = (double *) blas_malloc(2 * n_i * n_i * n_i * sizeof(double) * 2);
   if (2 * n_i * n_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   x = (float *) blas_malloc(3 * n_i * sizeof(float) * 2);
   if (3 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
-
   a_vec = (double *) blas_malloc(n_i * sizeof(double) * 2);
   if (n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n_i * inca; i += inca) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
   }
   x_vec = (float *) blas_malloc(n_i * sizeof(float) * 2);
   if (n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-    x_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   if (n_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -9036,7 +8426,7 @@ void do_test_zsymv_z_c_x
 
 			/* copy generated y vector since this will be
 			   over written */
-			zsymv_copy_vector(n, y_gen, incy, y, incy);
+			zcopy_vector(y, n, incy, y_gen, incy);
 
 			/* call symv routines to be tested */
 			FPU_FIX_STOP;
@@ -9063,11 +8453,10 @@ void do_test_zsymv_z_c_x
 
 			for (i = 0, yi = y_starti, ri = 0;
 			     i < n_i; i++, yi += incyi, ri += incri) {
-			  zsymv_copy_row(order_type, uplo_type,
-					 n_i, a, lda, a_vec, i);
+			  zsy_copy_row(order_type, uplo_type,
+				       n_i, a, lda, a_vec, i);
 
 			  /* just use the x vector - it was unchanged (in theory) */
-
 
 			  rin[0] = y_gen[yi];
 			  rin[1] = y_gen[yi + 1];
@@ -9127,30 +8516,21 @@ void do_test_zsymv_z_c_x
 			    printf("randomize %d\n", randomize_val);
 
 			    /* print out info */
-			    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				   alpha[1]);;
+			    printf("alpha = ");
+			    printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);;
 			    printf("   ");
-			    printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				   beta[1]);;
+			    printf("beta = ");
+			    printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			    printf("\n");
 
 			    printf("a\n");
-			    zprint_symv_matrix(a, n_i,
-					       lda, order_type, uplo_type);
-			    printf("x\t");
-			    cprint_vector(x, n, incx);
-
-			    printf("y_gen\t");
-			    zprint_vector(y_gen, n, incy);
-
-			    printf("y\t");
-			    zprint_vector(y, n, incy);
-
-			    printf("head_r_true\t");
-			    zprint_vector(head_r_true, n, 1);
-
-			    printf("ratios :\t");
-			    dprint_vector(ratios, n, 1);
+			    zsy_print_matrix(a, n_i,
+					     lda, order_type, uplo_type);
+			    cprint_vector(x, n, incx, "x");
+			    zprint_vector(y_gen, n, incy, "y_gen");
+			    zprint_vector(y, n, incy, "y");
+			    zprint_vector(head_r_true, n, 1, "head_r_true");
+			    dprint_vector(ratios, n, 1, "ratios");
 			    printf("ratio = %g\n", ratio);
 			  }
 			  bad_ratio_count++;
@@ -9318,47 +8698,22 @@ void do_test_zsymv_c_z_x
   if (3 * n_i > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
-
   a = (float *) blas_malloc(2 * n_i * n_i * n_i * sizeof(float) * 2);
   if (2 * n_i * n_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   x = (double *) blas_malloc(3 * n_i * sizeof(double) * 2);
   if (3 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
-
   a_vec = (float *) blas_malloc(n_i * sizeof(float) * 2);
   if (n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n_i * inca; i += inca) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
   }
   x_vec = (double *) blas_malloc(n_i * sizeof(double) * 2);
   if (n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-    x_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   if (n_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -9515,7 +8870,7 @@ void do_test_zsymv_c_z_x
 
 			/* copy generated y vector since this will be
 			   over written */
-			zsymv_copy_vector(n, y_gen, incy, y, incy);
+			zcopy_vector(y, n, incy, y_gen, incy);
 
 			/* call symv routines to be tested */
 			FPU_FIX_STOP;
@@ -9542,11 +8897,10 @@ void do_test_zsymv_c_z_x
 
 			for (i = 0, yi = y_starti, ri = 0;
 			     i < n_i; i++, yi += incyi, ri += incri) {
-			  csymv_copy_row(order_type, uplo_type,
-					 n_i, a, lda, a_vec, i);
+			  csy_copy_row(order_type, uplo_type,
+				       n_i, a, lda, a_vec, i);
 
 			  /* just use the x vector - it was unchanged (in theory) */
-
 
 			  rin[0] = y_gen[yi];
 			  rin[1] = y_gen[yi + 1];
@@ -9606,30 +8960,21 @@ void do_test_zsymv_c_z_x
 			    printf("randomize %d\n", randomize_val);
 
 			    /* print out info */
-			    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				   alpha[1]);;
+			    printf("alpha = ");
+			    printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);;
 			    printf("   ");
-			    printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				   beta[1]);;
+			    printf("beta = ");
+			    printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			    printf("\n");
 
 			    printf("a\n");
-			    cprint_symv_matrix(a, n_i,
-					       lda, order_type, uplo_type);
-			    printf("x\t");
-			    zprint_vector(x, n, incx);
-
-			    printf("y_gen\t");
-			    zprint_vector(y_gen, n, incy);
-
-			    printf("y\t");
-			    zprint_vector(y, n, incy);
-
-			    printf("head_r_true\t");
-			    zprint_vector(head_r_true, n, 1);
-
-			    printf("ratios :\t");
-			    dprint_vector(ratios, n, 1);
+			    csy_print_matrix(a, n_i,
+					     lda, order_type, uplo_type);
+			    zprint_vector(x, n, incx, "x");
+			    zprint_vector(y_gen, n, incy, "y_gen");
+			    zprint_vector(y, n, incy, "y");
+			    zprint_vector(head_r_true, n, 1, "head_r_true");
+			    dprint_vector(ratios, n, 1, "ratios");
 			    printf("ratio = %g\n", ratio);
 			  }
 			  bad_ratio_count++;
@@ -9797,47 +9142,22 @@ void do_test_zsymv_c_c_x
   if (3 * n_i > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
-
   a = (float *) blas_malloc(2 * n_i * n_i * n_i * sizeof(float) * 2);
   if (2 * n_i * n_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   x = (float *) blas_malloc(3 * n_i * sizeof(float) * 2);
   if (3 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
-
   a_vec = (float *) blas_malloc(n_i * sizeof(float) * 2);
   if (n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n_i * inca; i += inca) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
   }
   x_vec = (float *) blas_malloc(n_i * sizeof(float) * 2);
   if (n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-    x_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   if (n_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -9994,7 +9314,7 @@ void do_test_zsymv_c_c_x
 
 			/* copy generated y vector since this will be
 			   over written */
-			zsymv_copy_vector(n, y_gen, incy, y, incy);
+			zcopy_vector(y, n, incy, y_gen, incy);
 
 			/* call symv routines to be tested */
 			FPU_FIX_STOP;
@@ -10021,11 +9341,10 @@ void do_test_zsymv_c_c_x
 
 			for (i = 0, yi = y_starti, ri = 0;
 			     i < n_i; i++, yi += incyi, ri += incri) {
-			  csymv_copy_row(order_type, uplo_type,
-					 n_i, a, lda, a_vec, i);
+			  csy_copy_row(order_type, uplo_type,
+				       n_i, a, lda, a_vec, i);
 
 			  /* just use the x vector - it was unchanged (in theory) */
-
 
 			  rin[0] = y_gen[yi];
 			  rin[1] = y_gen[yi + 1];
@@ -10085,30 +9404,21 @@ void do_test_zsymv_c_c_x
 			    printf("randomize %d\n", randomize_val);
 
 			    /* print out info */
-			    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				   alpha[1]);;
+			    printf("alpha = ");
+			    printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);;
 			    printf("   ");
-			    printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				   beta[1]);;
+			    printf("beta = ");
+			    printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			    printf("\n");
 
 			    printf("a\n");
-			    cprint_symv_matrix(a, n_i,
-					       lda, order_type, uplo_type);
-			    printf("x\t");
-			    cprint_vector(x, n, incx);
-
-			    printf("y_gen\t");
-			    zprint_vector(y_gen, n, incy);
-
-			    printf("y\t");
-			    zprint_vector(y, n, incy);
-
-			    printf("head_r_true\t");
-			    zprint_vector(head_r_true, n, 1);
-
-			    printf("ratios :\t");
-			    dprint_vector(ratios, n, 1);
+			    csy_print_matrix(a, n_i,
+					     lda, order_type, uplo_type);
+			    cprint_vector(x, n, incx, "x");
+			    zprint_vector(y_gen, n, incy, "y_gen");
+			    zprint_vector(y, n, incy, "y");
+			    zprint_vector(head_r_true, n, 1, "head_r_true");
+			    dprint_vector(ratios, n, 1, "ratios");
 			    printf("ratio = %g\n", ratio);
 			  }
 			  bad_ratio_count++;
@@ -10276,45 +9586,22 @@ void do_test_csymv_c_s_x
   if (3 * n_i > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
-
   a = (float *) blas_malloc(2 * n_i * n_i * n_i * sizeof(float) * 2);
   if (2 * n_i * n_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   x = (float *) blas_malloc(3 * n_i * sizeof(float));
   if (3 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-  }
-
   a_vec = (float *) blas_malloc(n_i * sizeof(float) * 2);
   if (n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n_i * inca; i += inca) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
   }
   x_vec = (float *) blas_malloc(n_i * sizeof(float));
   if (n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   if (n_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -10471,7 +9758,7 @@ void do_test_csymv_c_s_x
 
 			/* copy generated y vector since this will be
 			   over written */
-			csymv_copy_vector(n, y_gen, incy, y, incy);
+			ccopy_vector(y, n, incy, y_gen, incy);
 
 			/* call symv routines to be tested */
 			FPU_FIX_STOP;
@@ -10498,11 +9785,10 @@ void do_test_csymv_c_s_x
 
 			for (i = 0, yi = y_starti, ri = 0;
 			     i < n_i; i++, yi += incyi, ri += incri) {
-			  csymv_copy_row(order_type, uplo_type,
-					 n_i, a, lda, a_vec, i);
+			  csy_copy_row(order_type, uplo_type,
+				       n_i, a, lda, a_vec, i);
 
 			  /* just use the x vector - it was unchanged (in theory) */
-
 
 			  rin[0] = y_gen[yi];
 			  rin[1] = y_gen[yi + 1];
@@ -10562,30 +9848,21 @@ void do_test_csymv_c_s_x
 			    printf("randomize %d\n", randomize_val);
 
 			    /* print out info */
-			    printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-				   alpha[1]);;
+			    printf("alpha = ");
+			    printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);;
 			    printf("   ");
-			    printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
-				   beta[1]);;
+			    printf("beta = ");
+			    printf("(%16.8e, %16.8e)", beta[0], beta[1]);;
 			    printf("\n");
 
 			    printf("a\n");
-			    cprint_symv_matrix(a, n_i,
-					       lda, order_type, uplo_type);
-			    printf("x\t");
-			    sprint_vector(x, n, incx);
-
-			    printf("y_gen\t");
-			    cprint_vector(y_gen, n, incy);
-
-			    printf("y\t");
-			    cprint_vector(y, n, incy);
-
-			    printf("head_r_true\t");
-			    zprint_vector(head_r_true, n, 1);
-
-			    printf("ratios :\t");
-			    dprint_vector(ratios, n, 1);
+			    csy_print_matrix(a, n_i,
+					     lda, order_type, uplo_type);
+			    sprint_vector(x, n, incx, "x");
+			    cprint_vector(y_gen, n, incy, "y_gen");
+			    cprint_vector(y, n, incy, "y");
+			    zprint_vector(head_r_true, n, 1, "head_r_true");
+			    dprint_vector(ratios, n, 1, "ratios");
 			    printf("ratio = %g\n", ratio);
 			  }
 			  bad_ratio_count++;
@@ -10753,45 +10030,22 @@ void do_test_csymv_s_c_x
   if (3 * n_i > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
-
   a = (float *) blas_malloc(2 * n_i * n_i * n_i * sizeof(float));
   if (2 * n_i * n_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
   }
   x = (float *) blas_malloc(3 * n_i * sizeof(float) * 2);
   if (3 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
-
   a_vec = (float *) blas_malloc(n_i * sizeof(float));
   if (n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n_i * inca; i += inca) {
-    a_vec[i] = 0.0;
   }
   x_vec = (float *) blas_malloc(n_i * sizeof(float) * 2);
   if (n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-    x_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   if (n_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -10948,7 +10202,7 @@ void do_test_csymv_s_c_x
 
 			/* copy generated y vector since this will be
 			   over written */
-			csymv_copy_vector(n, y_gen, incy, y, incy);
+			ccopy_vector(y, n, incy, y_gen, incy);
 
 			/* call symv routines to be tested */
 			FPU_FIX_STOP;
@@ -10975,11 +10229,10 @@ void do_test_csymv_s_c_x
 
 			for (i = 0, yi = y_starti, ri = 0;
 			     i < n_i; i++, yi += incyi, ri += incri) {
-			  ssymv_copy_row(order_type, uplo_type,
-					 n_i, a, lda, a_vec, i);
+			  ssy_copy_row(order_type, uplo_type,
+				       n_i, a, lda, a_vec, i);
 
 			  /* just use the x vector - it was unchanged (in theory) */
-
 
 			  rin[0] = y_gen[yi];
 			  rin[1] = y_gen[yi + 1];
@@ -11039,30 +10292,21 @@ void do_test_csymv_s_c_x
 			    printf("randomize %d\n", randomize_val);
 
 			    /* print out info */
-			    printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-				   alpha[1]);;
+			    printf("alpha = ");
+			    printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);;
 			    printf("   ");
-			    printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
-				   beta[1]);;
+			    printf("beta = ");
+			    printf("(%16.8e, %16.8e)", beta[0], beta[1]);;
 			    printf("\n");
 
 			    printf("a\n");
-			    sprint_symv_matrix(a, n_i,
-					       lda, order_type, uplo_type);
-			    printf("x\t");
-			    cprint_vector(x, n, incx);
-
-			    printf("y_gen\t");
-			    cprint_vector(y_gen, n, incy);
-
-			    printf("y\t");
-			    cprint_vector(y, n, incy);
-
-			    printf("head_r_true\t");
-			    zprint_vector(head_r_true, n, 1);
-
-			    printf("ratios :\t");
-			    dprint_vector(ratios, n, 1);
+			    ssy_print_matrix(a, n_i,
+					     lda, order_type, uplo_type);
+			    cprint_vector(x, n, incx, "x");
+			    cprint_vector(y_gen, n, incy, "y_gen");
+			    cprint_vector(y, n, incy, "y");
+			    zprint_vector(head_r_true, n, 1, "head_r_true");
+			    dprint_vector(ratios, n, 1, "ratios");
 			    printf("ratio = %g\n", ratio);
 			  }
 			  bad_ratio_count++;
@@ -11230,43 +10474,22 @@ void do_test_csymv_s_s_x
   if (3 * n_i > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
-
   a = (float *) blas_malloc(2 * n_i * n_i * n_i * sizeof(float));
   if (2 * n_i * n_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
   }
   x = (float *) blas_malloc(3 * n_i * sizeof(float));
   if (3 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-  }
-
   a_vec = (float *) blas_malloc(n_i * sizeof(float));
   if (n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n_i * inca; i += inca) {
-    a_vec[i] = 0.0;
   }
   x_vec = (float *) blas_malloc(n_i * sizeof(float));
   if (n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   if (n_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -11423,7 +10646,7 @@ void do_test_csymv_s_s_x
 
 			/* copy generated y vector since this will be
 			   over written */
-			csymv_copy_vector(n, y_gen, incy, y, incy);
+			ccopy_vector(y, n, incy, y_gen, incy);
 
 			/* call symv routines to be tested */
 			FPU_FIX_STOP;
@@ -11450,11 +10673,10 @@ void do_test_csymv_s_s_x
 
 			for (i = 0, yi = y_starti, ri = 0;
 			     i < n_i; i++, yi += incyi, ri += incri) {
-			  ssymv_copy_row(order_type, uplo_type,
-					 n_i, a, lda, a_vec, i);
+			  ssy_copy_row(order_type, uplo_type,
+				       n_i, a, lda, a_vec, i);
 
 			  /* just use the x vector - it was unchanged (in theory) */
-
 
 			  rin[0] = y_gen[yi];
 			  rin[1] = y_gen[yi + 1];
@@ -11514,30 +10736,21 @@ void do_test_csymv_s_s_x
 			    printf("randomize %d\n", randomize_val);
 
 			    /* print out info */
-			    printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-				   alpha[1]);;
+			    printf("alpha = ");
+			    printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);;
 			    printf("   ");
-			    printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
-				   beta[1]);;
+			    printf("beta = ");
+			    printf("(%16.8e, %16.8e)", beta[0], beta[1]);;
 			    printf("\n");
 
 			    printf("a\n");
-			    sprint_symv_matrix(a, n_i,
-					       lda, order_type, uplo_type);
-			    printf("x\t");
-			    sprint_vector(x, n, incx);
-
-			    printf("y_gen\t");
-			    cprint_vector(y_gen, n, incy);
-
-			    printf("y\t");
-			    cprint_vector(y, n, incy);
-
-			    printf("head_r_true\t");
-			    zprint_vector(head_r_true, n, 1);
-
-			    printf("ratios :\t");
-			    dprint_vector(ratios, n, 1);
+			    ssy_print_matrix(a, n_i,
+					     lda, order_type, uplo_type);
+			    sprint_vector(x, n, incx, "x");
+			    cprint_vector(y_gen, n, incy, "y_gen");
+			    cprint_vector(y, n, incy, "y");
+			    zprint_vector(head_r_true, n, 1, "head_r_true");
+			    dprint_vector(ratios, n, 1, "ratios");
 			    printf("ratio = %g\n", ratio);
 			  }
 			  bad_ratio_count++;
@@ -11705,45 +10918,22 @@ void do_test_zsymv_z_d_x
   if (3 * n_i > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
-
   a = (double *) blas_malloc(2 * n_i * n_i * n_i * sizeof(double) * 2);
   if (2 * n_i * n_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   x = (double *) blas_malloc(3 * n_i * sizeof(double));
   if (3 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-  }
-
   a_vec = (double *) blas_malloc(n_i * sizeof(double) * 2);
   if (n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n_i * inca; i += inca) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
   }
   x_vec = (double *) blas_malloc(n_i * sizeof(double));
   if (n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   if (n_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -11900,7 +11090,7 @@ void do_test_zsymv_z_d_x
 
 			/* copy generated y vector since this will be
 			   over written */
-			zsymv_copy_vector(n, y_gen, incy, y, incy);
+			zcopy_vector(y, n, incy, y_gen, incy);
 
 			/* call symv routines to be tested */
 			FPU_FIX_STOP;
@@ -11927,11 +11117,10 @@ void do_test_zsymv_z_d_x
 
 			for (i = 0, yi = y_starti, ri = 0;
 			     i < n_i; i++, yi += incyi, ri += incri) {
-			  zsymv_copy_row(order_type, uplo_type,
-					 n_i, a, lda, a_vec, i);
+			  zsy_copy_row(order_type, uplo_type,
+				       n_i, a, lda, a_vec, i);
 
 			  /* just use the x vector - it was unchanged (in theory) */
-
 
 			  rin[0] = y_gen[yi];
 			  rin[1] = y_gen[yi + 1];
@@ -11991,30 +11180,21 @@ void do_test_zsymv_z_d_x
 			    printf("randomize %d\n", randomize_val);
 
 			    /* print out info */
-			    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				   alpha[1]);;
+			    printf("alpha = ");
+			    printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);;
 			    printf("   ");
-			    printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				   beta[1]);;
+			    printf("beta = ");
+			    printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			    printf("\n");
 
 			    printf("a\n");
-			    zprint_symv_matrix(a, n_i,
-					       lda, order_type, uplo_type);
-			    printf("x\t");
-			    dprint_vector(x, n, incx);
-
-			    printf("y_gen\t");
-			    zprint_vector(y_gen, n, incy);
-
-			    printf("y\t");
-			    zprint_vector(y, n, incy);
-
-			    printf("head_r_true\t");
-			    zprint_vector(head_r_true, n, 1);
-
-			    printf("ratios :\t");
-			    dprint_vector(ratios, n, 1);
+			    zsy_print_matrix(a, n_i,
+					     lda, order_type, uplo_type);
+			    dprint_vector(x, n, incx, "x");
+			    zprint_vector(y_gen, n, incy, "y_gen");
+			    zprint_vector(y, n, incy, "y");
+			    zprint_vector(head_r_true, n, 1, "head_r_true");
+			    dprint_vector(ratios, n, 1, "ratios");
 			    printf("ratio = %g\n", ratio);
 			  }
 			  bad_ratio_count++;
@@ -12182,45 +11362,22 @@ void do_test_zsymv_d_z_x
   if (3 * n_i > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
-
   a = (double *) blas_malloc(2 * n_i * n_i * n_i * sizeof(double));
   if (2 * n_i * n_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
   }
   x = (double *) blas_malloc(3 * n_i * sizeof(double) * 2);
   if (3 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
-
   a_vec = (double *) blas_malloc(n_i * sizeof(double));
   if (n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n_i * inca; i += inca) {
-    a_vec[i] = 0.0;
   }
   x_vec = (double *) blas_malloc(n_i * sizeof(double) * 2);
   if (n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-    x_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   if (n_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -12377,7 +11534,7 @@ void do_test_zsymv_d_z_x
 
 			/* copy generated y vector since this will be
 			   over written */
-			zsymv_copy_vector(n, y_gen, incy, y, incy);
+			zcopy_vector(y, n, incy, y_gen, incy);
 
 			/* call symv routines to be tested */
 			FPU_FIX_STOP;
@@ -12404,11 +11561,10 @@ void do_test_zsymv_d_z_x
 
 			for (i = 0, yi = y_starti, ri = 0;
 			     i < n_i; i++, yi += incyi, ri += incri) {
-			  dsymv_copy_row(order_type, uplo_type,
-					 n_i, a, lda, a_vec, i);
+			  dsy_copy_row(order_type, uplo_type,
+				       n_i, a, lda, a_vec, i);
 
 			  /* just use the x vector - it was unchanged (in theory) */
-
 
 			  rin[0] = y_gen[yi];
 			  rin[1] = y_gen[yi + 1];
@@ -12468,30 +11624,21 @@ void do_test_zsymv_d_z_x
 			    printf("randomize %d\n", randomize_val);
 
 			    /* print out info */
-			    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				   alpha[1]);;
+			    printf("alpha = ");
+			    printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);;
 			    printf("   ");
-			    printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				   beta[1]);;
+			    printf("beta = ");
+			    printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			    printf("\n");
 
 			    printf("a\n");
-			    dprint_symv_matrix(a, n_i,
-					       lda, order_type, uplo_type);
-			    printf("x\t");
-			    zprint_vector(x, n, incx);
-
-			    printf("y_gen\t");
-			    zprint_vector(y_gen, n, incy);
-
-			    printf("y\t");
-			    zprint_vector(y, n, incy);
-
-			    printf("head_r_true\t");
-			    zprint_vector(head_r_true, n, 1);
-
-			    printf("ratios :\t");
-			    dprint_vector(ratios, n, 1);
+			    dsy_print_matrix(a, n_i,
+					     lda, order_type, uplo_type);
+			    zprint_vector(x, n, incx, "x");
+			    zprint_vector(y_gen, n, incy, "y_gen");
+			    zprint_vector(y, n, incy, "y");
+			    zprint_vector(head_r_true, n, 1, "head_r_true");
+			    dprint_vector(ratios, n, 1, "ratios");
 			    printf("ratio = %g\n", ratio);
 			  }
 			  bad_ratio_count++;
@@ -12659,43 +11806,22 @@ void do_test_zsymv_d_d_x
   if (3 * n_i > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
-
   a = (double *) blas_malloc(2 * n_i * n_i * n_i * sizeof(double));
   if (2 * n_i * n_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
   }
   x = (double *) blas_malloc(3 * n_i * sizeof(double));
   if (3 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-  }
-
   a_vec = (double *) blas_malloc(n_i * sizeof(double));
   if (n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n_i * inca; i += inca) {
-    a_vec[i] = 0.0;
   }
   x_vec = (double *) blas_malloc(n_i * sizeof(double));
   if (n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   if (n_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -12852,7 +11978,7 @@ void do_test_zsymv_d_d_x
 
 			/* copy generated y vector since this will be
 			   over written */
-			zsymv_copy_vector(n, y_gen, incy, y, incy);
+			zcopy_vector(y, n, incy, y_gen, incy);
 
 			/* call symv routines to be tested */
 			FPU_FIX_STOP;
@@ -12879,11 +12005,10 @@ void do_test_zsymv_d_d_x
 
 			for (i = 0, yi = y_starti, ri = 0;
 			     i < n_i; i++, yi += incyi, ri += incri) {
-			  dsymv_copy_row(order_type, uplo_type,
-					 n_i, a, lda, a_vec, i);
+			  dsy_copy_row(order_type, uplo_type,
+				       n_i, a, lda, a_vec, i);
 
 			  /* just use the x vector - it was unchanged (in theory) */
-
 
 			  rin[0] = y_gen[yi];
 			  rin[1] = y_gen[yi + 1];
@@ -12943,30 +12068,21 @@ void do_test_zsymv_d_d_x
 			    printf("randomize %d\n", randomize_val);
 
 			    /* print out info */
-			    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				   alpha[1]);;
+			    printf("alpha = ");
+			    printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);;
 			    printf("   ");
-			    printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				   beta[1]);;
+			    printf("beta = ");
+			    printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			    printf("\n");
 
 			    printf("a\n");
-			    dprint_symv_matrix(a, n_i,
-					       lda, order_type, uplo_type);
-			    printf("x\t");
-			    dprint_vector(x, n, incx);
-
-			    printf("y_gen\t");
-			    zprint_vector(y_gen, n, incy);
-
-			    printf("y\t");
-			    zprint_vector(y, n, incy);
-
-			    printf("head_r_true\t");
-			    zprint_vector(head_r_true, n, 1);
-
-			    printf("ratios :\t");
-			    dprint_vector(ratios, n, 1);
+			    dsy_print_matrix(a, n_i,
+					     lda, order_type, uplo_type);
+			    dprint_vector(x, n, incx, "x");
+			    zprint_vector(y_gen, n, incy, "y_gen");
+			    zprint_vector(y, n, incy, "y");
+			    zprint_vector(head_r_true, n, 1, "head_r_true");
+			    dprint_vector(ratios, n, 1, "ratios");
 			    printf("ratio = %g\n", ratio);
 			  }
 			  bad_ratio_count++;

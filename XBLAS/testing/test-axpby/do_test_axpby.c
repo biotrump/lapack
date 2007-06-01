@@ -267,11 +267,6 @@ double do_test_daxpby_s(int n, int ntests, int *seed, double thresh,
 	      incx = incx_val;
 
 
-	      /* zero out x */
-	      for (j = 0; j < n * 2 * incx_gen; j += incx_gen) {
-		x[j] = 0.0;
-	      }
-
 	      /* set x starting index */
 	      ix = 0;
 	      if (incx < 0)
@@ -293,17 +288,10 @@ double do_test_daxpby_s(int n, int ntests, int *seed, double thresh,
 		incy = incy_val;
 
 
-		/* zero out vector */
-		for (j = 0; j < n * 2 * incy_gen; j += incy_gen) {
-		  y_ori[j] = 0.0;
-		  y_comp[j] = 0.0;
-		}
-
 		/* set y starting index */
 		iy = 0;
 		if (incy < 0)
 		  iy = -(n - 1) * incy;
-
 
 		/* copy y_gen to y */
 		for (j = 0; j < n * incy_gen; j += incy_gen) {
@@ -408,20 +396,22 @@ double do_test_daxpby_s(int n, int ntests, int *seed, double thresh,
 
 		    for (j = 0; j < n; j++) {
 		      printf("      ");
-		      printf("x[%d]=%.8e", ix, x[ix]);
+		      printf("%16.8e", x[ix]);
 		      printf("; ");
-		      printf("y_ori[%d]=%.16e", iy, y_ori[iy]);
+		      printf("%24.16e", y_ori[iy]);
 		      printf("; ");
-		      printf("y_comp[%d]=%.16e", iy, y_comp[iy]);
+		      printf("%24.16e", y_comp[iy]);
 		      printf("\n");
 		      ix += incx;
 		      iy += incy;
 		    }
 
 		    printf("      ");
-		    printf("alpha=%.16e", alpha);
+		    printf("alpha = ");
+		    printf("%24.16e", alpha);
 		    printf("; ");
-		    printf("beta=%.16e", beta);
+		    printf("beta = ");
+		    printf("%24.16e", beta);
 		    printf("\n");
 		    printf("      ratio=%.4e\n", ratio);
 		    printf("iymax = %d\n", iymax);
@@ -740,11 +730,6 @@ double do_test_caxpby_s(int n, int ntests, int *seed, double thresh,
 	      incx = incx_val;
 
 
-	      /* zero out x */
-	      for (j = 0; j < n * 2 * incx_gen; j += incx_gen) {
-		x[j] = 0.0;
-	      }
-
 	      /* set x starting index */
 	      ix = 0;
 	      if (incx < 0)
@@ -766,19 +751,10 @@ double do_test_caxpby_s(int n, int ntests, int *seed, double thresh,
 		incy = incy_val;
 		incy *= 2;
 
-		/* zero out vector */
-		for (j = 0; j < n * 2 * incy_gen; j += incy_gen) {
-		  y_ori[j] = 0.0;
-		  y_ori[j + 1] = 0.0;
-		  y_comp[j] = 0.0;
-		  y_comp[j + 1] = 0.0;
-		}
-
 		/* set y starting index */
 		iy = 0;
 		if (incy < 0)
 		  iy = -(n - 1) * incy;
-
 
 		/* copy y_gen to y */
 		for (j = 0; j < n * incy_gen; j += incy_gen) {
@@ -886,23 +862,22 @@ double do_test_caxpby_s(int n, int ntests, int *seed, double thresh,
 
 		    for (j = 0; j < n; j++) {
 		      printf("      ");
-		      printf("x[%d]=%.8e", ix, x[ix]);
+		      printf("%16.8e", x[ix]);
 		      printf("; ");
-		      printf("y_ori[%d]=%.8e, y_ori[%d+1]=%.8e", iy,
-			     y_ori[iy], iy, y_ori[iy + 1]);
+		      printf("(%16.8e, %16.8e)", y_ori[iy], y_ori[iy + 1]);
 		      printf("; ");
-		      printf("y_comp[%d]=%.8e, y_comp[%d+1]=%.8e", iy,
-			     y_comp[iy], iy, y_comp[iy + 1]);
+		      printf("(%16.8e, %16.8e)", y_comp[iy], y_comp[iy + 1]);
 		      printf("\n");
 		      ix += incx;
 		      iy += incy;
 		    }
 
 		    printf("      ");
-		    printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-			   alpha[1]);
+		    printf("alpha = ");
+		    printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);
 		    printf("; ");
-		    printf("beta[0]=%.8e, beta[1]=%.8e", beta[0], beta[1]);
+		    printf("beta = ");
+		    printf("(%16.8e, %16.8e)", beta[0], beta[1]);
 		    printf("\n");
 		    printf("      ratio=%.4e\n", ratio);
 		    printf("iymax = %d\n", iymax);
@@ -1222,12 +1197,6 @@ double do_test_zaxpby_c(int n, int ntests, int *seed, double thresh,
 	      incx = incx_val;
 	      incx *= 2;
 
-	      /* zero out x */
-	      for (j = 0; j < n * 2 * incx_gen; j += incx_gen) {
-		x[j] = 0.0;
-		x[j + 1] = 0.0;
-	      }
-
 	      /* set x starting index */
 	      ix = 0;
 	      if (incx < 0)
@@ -1251,19 +1220,10 @@ double do_test_zaxpby_c(int n, int ntests, int *seed, double thresh,
 		incy = incy_val;
 		incy *= 2;
 
-		/* zero out vector */
-		for (j = 0; j < n * 2 * incy_gen; j += incy_gen) {
-		  y_ori[j] = 0.0;
-		  y_ori[j + 1] = 0.0;
-		  y_comp[j] = 0.0;
-		  y_comp[j + 1] = 0.0;
-		}
-
 		/* set y starting index */
 		iy = 0;
 		if (incy < 0)
 		  iy = -(n - 1) * incy;
-
 
 		/* copy y_gen to y */
 		for (j = 0; j < n * incy_gen; j += incy_gen) {
@@ -1371,24 +1331,23 @@ double do_test_zaxpby_c(int n, int ntests, int *seed, double thresh,
 
 		    for (j = 0; j < n; j++) {
 		      printf("      ");
-		      printf("x[%d]=%.8e, x[%d+1]=%.8e", ix, x[ix], ix,
-			     x[ix + 1]);
+		      printf("(%16.8e, %16.8e)", x[ix], x[ix + 1]);
 		      printf("; ");
-		      printf("y_ori[%d]=%.16e, y_ori[%d+1]=%.16e", iy,
-			     y_ori[iy], iy, y_ori[iy + 1]);
+		      printf("(%24.16e, %24.16e)", y_ori[iy], y_ori[iy + 1]);
 		      printf("; ");
-		      printf("y_comp[%d]=%.16e, y_comp[%d+1]=%.16e", iy,
-			     y_comp[iy], iy, y_comp[iy + 1]);
+		      printf("(%24.16e, %24.16e)", y_comp[iy],
+			     y_comp[iy + 1]);
 		      printf("\n");
 		      ix += incx;
 		      iy += incy;
 		    }
 
 		    printf("      ");
-		    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-			   alpha[1]);
+		    printf("alpha = ");
+		    printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);
 		    printf("; ");
-		    printf("beta[0]=%.16e, beta[1]=%.16e", beta[0], beta[1]);
+		    printf("beta = ");
+		    printf("(%24.16e, %24.16e)", beta[0], beta[1]);
 		    printf("\n");
 		    printf("      ratio=%.4e\n", ratio);
 		    printf("iymax = %d\n", iymax);
@@ -1707,11 +1666,6 @@ double do_test_zaxpby_d(int n, int ntests, int *seed, double thresh,
 	      incx = incx_val;
 
 
-	      /* zero out x */
-	      for (j = 0; j < n * 2 * incx_gen; j += incx_gen) {
-		x[j] = 0.0;
-	      }
-
 	      /* set x starting index */
 	      ix = 0;
 	      if (incx < 0)
@@ -1733,19 +1687,10 @@ double do_test_zaxpby_d(int n, int ntests, int *seed, double thresh,
 		incy = incy_val;
 		incy *= 2;
 
-		/* zero out vector */
-		for (j = 0; j < n * 2 * incy_gen; j += incy_gen) {
-		  y_ori[j] = 0.0;
-		  y_ori[j + 1] = 0.0;
-		  y_comp[j] = 0.0;
-		  y_comp[j + 1] = 0.0;
-		}
-
 		/* set y starting index */
 		iy = 0;
 		if (incy < 0)
 		  iy = -(n - 1) * incy;
-
 
 		/* copy y_gen to y */
 		for (j = 0; j < n * incy_gen; j += incy_gen) {
@@ -1853,23 +1798,23 @@ double do_test_zaxpby_d(int n, int ntests, int *seed, double thresh,
 
 		    for (j = 0; j < n; j++) {
 		      printf("      ");
-		      printf("x[%d]=%.16e", ix, x[ix]);
+		      printf("%24.16e", x[ix]);
 		      printf("; ");
-		      printf("y_ori[%d]=%.16e, y_ori[%d+1]=%.16e", iy,
-			     y_ori[iy], iy, y_ori[iy + 1]);
+		      printf("(%24.16e, %24.16e)", y_ori[iy], y_ori[iy + 1]);
 		      printf("; ");
-		      printf("y_comp[%d]=%.16e, y_comp[%d+1]=%.16e", iy,
-			     y_comp[iy], iy, y_comp[iy + 1]);
+		      printf("(%24.16e, %24.16e)", y_comp[iy],
+			     y_comp[iy + 1]);
 		      printf("\n");
 		      ix += incx;
 		      iy += incy;
 		    }
 
 		    printf("      ");
-		    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-			   alpha[1]);
+		    printf("alpha = ");
+		    printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);
 		    printf("; ");
-		    printf("beta[0]=%.16e, beta[1]=%.16e", beta[0], beta[1]);
+		    printf("beta = ");
+		    printf("(%24.16e, %24.16e)", beta[0], beta[1]);
 		    printf("\n");
 		    printf("      ratio=%.4e\n", ratio);
 		    printf("iymax = %d\n", iymax);
@@ -2204,11 +2149,6 @@ double do_test_saxpby_x(int n, int ntests, int *seed, double thresh,
 		incx = incx_val;
 
 
-		/* zero out x */
-		for (j = 0; j < n * 2 * incx_gen; j += incx_gen) {
-		  x[j] = 0.0;
-		}
-
 		/* set x starting index */
 		ix = 0;
 		if (incx < 0)
@@ -2230,17 +2170,10 @@ double do_test_saxpby_x(int n, int ntests, int *seed, double thresh,
 		  incy = incy_val;
 
 
-		  /* zero out vector */
-		  for (j = 0; j < n * 2 * incy_gen; j += incy_gen) {
-		    y_ori[j] = 0.0;
-		    y_comp[j] = 0.0;
-		  }
-
 		  /* set y starting index */
 		  iy = 0;
 		  if (incy < 0)
 		    iy = -(n - 1) * incy;
-
 
 		  /* copy y_gen to y */
 		  for (j = 0; j < n * incy_gen; j += incy_gen) {
@@ -2345,20 +2278,22 @@ double do_test_saxpby_x(int n, int ntests, int *seed, double thresh,
 
 		      for (j = 0; j < n; j++) {
 			printf("      ");
-			printf("x[%d]=%.8e", ix, x[ix]);
+			printf("%16.8e", x[ix]);
 			printf("; ");
-			printf("y_ori[%d]=%.8e", iy, y_ori[iy]);
+			printf("%16.8e", y_ori[iy]);
 			printf("; ");
-			printf("y_comp[%d]=%.8e", iy, y_comp[iy]);
+			printf("%16.8e", y_comp[iy]);
 			printf("\n");
 			ix += incx;
 			iy += incy;
 		      }
 
 		      printf("      ");
-		      printf("alpha=%.8e", alpha);
+		      printf("alpha = ");
+		      printf("%16.8e", alpha);
 		      printf("; ");
-		      printf("beta=%.8e", beta);
+		      printf("beta = ");
+		      printf("%16.8e", beta);
 		      printf("\n");
 		      printf("      ratio=%.4e\n", ratio);
 		      printf("iymax = %d\n", iymax);
@@ -2693,11 +2628,6 @@ double do_test_daxpby_x(int n, int ntests, int *seed, double thresh,
 		incx = incx_val;
 
 
-		/* zero out x */
-		for (j = 0; j < n * 2 * incx_gen; j += incx_gen) {
-		  x[j] = 0.0;
-		}
-
 		/* set x starting index */
 		ix = 0;
 		if (incx < 0)
@@ -2719,17 +2649,10 @@ double do_test_daxpby_x(int n, int ntests, int *seed, double thresh,
 		  incy = incy_val;
 
 
-		  /* zero out vector */
-		  for (j = 0; j < n * 2 * incy_gen; j += incy_gen) {
-		    y_ori[j] = 0.0;
-		    y_comp[j] = 0.0;
-		  }
-
 		  /* set y starting index */
 		  iy = 0;
 		  if (incy < 0)
 		    iy = -(n - 1) * incy;
-
 
 		  /* copy y_gen to y */
 		  for (j = 0; j < n * incy_gen; j += incy_gen) {
@@ -2834,20 +2757,22 @@ double do_test_daxpby_x(int n, int ntests, int *seed, double thresh,
 
 		      for (j = 0; j < n; j++) {
 			printf("      ");
-			printf("x[%d]=%.16e", ix, x[ix]);
+			printf("%24.16e", x[ix]);
 			printf("; ");
-			printf("y_ori[%d]=%.16e", iy, y_ori[iy]);
+			printf("%24.16e", y_ori[iy]);
 			printf("; ");
-			printf("y_comp[%d]=%.16e", iy, y_comp[iy]);
+			printf("%24.16e", y_comp[iy]);
 			printf("\n");
 			ix += incx;
 			iy += incy;
 		      }
 
 		      printf("      ");
-		      printf("alpha=%.16e", alpha);
+		      printf("alpha = ");
+		      printf("%24.16e", alpha);
 		      printf("; ");
-		      printf("beta=%.16e", beta);
+		      printf("beta = ");
+		      printf("%24.16e", beta);
 		      printf("\n");
 		      printf("      ratio=%.4e\n", ratio);
 		      printf("iymax = %d\n", iymax);
@@ -3186,12 +3111,6 @@ double do_test_caxpby_x(int n, int ntests, int *seed, double thresh,
 		incx = incx_val;
 		incx *= 2;
 
-		/* zero out x */
-		for (j = 0; j < n * 2 * incx_gen; j += incx_gen) {
-		  x[j] = 0.0;
-		  x[j + 1] = 0.0;
-		}
-
 		/* set x starting index */
 		ix = 0;
 		if (incx < 0)
@@ -3215,19 +3134,10 @@ double do_test_caxpby_x(int n, int ntests, int *seed, double thresh,
 		  incy = incy_val;
 		  incy *= 2;
 
-		  /* zero out vector */
-		  for (j = 0; j < n * 2 * incy_gen; j += incy_gen) {
-		    y_ori[j] = 0.0;
-		    y_ori[j + 1] = 0.0;
-		    y_comp[j] = 0.0;
-		    y_comp[j + 1] = 0.0;
-		  }
-
 		  /* set y starting index */
 		  iy = 0;
 		  if (incy < 0)
 		    iy = -(n - 1) * incy;
-
 
 		  /* copy y_gen to y */
 		  for (j = 0; j < n * incy_gen; j += incy_gen) {
@@ -3335,24 +3245,23 @@ double do_test_caxpby_x(int n, int ntests, int *seed, double thresh,
 
 		      for (j = 0; j < n; j++) {
 			printf("      ");
-			printf("x[%d]=%.8e, x[%d+1]=%.8e", ix, x[ix], ix,
-			       x[ix + 1]);
+			printf("(%16.8e, %16.8e)", x[ix], x[ix + 1]);
 			printf("; ");
-			printf("y_ori[%d]=%.8e, y_ori[%d+1]=%.8e", iy,
-			       y_ori[iy], iy, y_ori[iy + 1]);
+			printf("(%16.8e, %16.8e)", y_ori[iy], y_ori[iy + 1]);
 			printf("; ");
-			printf("y_comp[%d]=%.8e, y_comp[%d+1]=%.8e", iy,
-			       y_comp[iy], iy, y_comp[iy + 1]);
+			printf("(%16.8e, %16.8e)", y_comp[iy],
+			       y_comp[iy + 1]);
 			printf("\n");
 			ix += incx;
 			iy += incy;
 		      }
 
 		      printf("      ");
-		      printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-			     alpha[1]);
+		      printf("alpha = ");
+		      printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);
 		      printf("; ");
-		      printf("beta[0]=%.8e, beta[1]=%.8e", beta[0], beta[1]);
+		      printf("beta = ");
+		      printf("(%16.8e, %16.8e)", beta[0], beta[1]);
 		      printf("\n");
 		      printf("      ratio=%.4e\n", ratio);
 		      printf("iymax = %d\n", iymax);
@@ -3691,12 +3600,6 @@ double do_test_zaxpby_x(int n, int ntests, int *seed, double thresh,
 		incx = incx_val;
 		incx *= 2;
 
-		/* zero out x */
-		for (j = 0; j < n * 2 * incx_gen; j += incx_gen) {
-		  x[j] = 0.0;
-		  x[j + 1] = 0.0;
-		}
-
 		/* set x starting index */
 		ix = 0;
 		if (incx < 0)
@@ -3720,19 +3623,10 @@ double do_test_zaxpby_x(int n, int ntests, int *seed, double thresh,
 		  incy = incy_val;
 		  incy *= 2;
 
-		  /* zero out vector */
-		  for (j = 0; j < n * 2 * incy_gen; j += incy_gen) {
-		    y_ori[j] = 0.0;
-		    y_ori[j + 1] = 0.0;
-		    y_comp[j] = 0.0;
-		    y_comp[j + 1] = 0.0;
-		  }
-
 		  /* set y starting index */
 		  iy = 0;
 		  if (incy < 0)
 		    iy = -(n - 1) * incy;
-
 
 		  /* copy y_gen to y */
 		  for (j = 0; j < n * incy_gen; j += incy_gen) {
@@ -3840,25 +3734,24 @@ double do_test_zaxpby_x(int n, int ntests, int *seed, double thresh,
 
 		      for (j = 0; j < n; j++) {
 			printf("      ");
-			printf("x[%d]=%.16e, x[%d+1]=%.16e", ix, x[ix], ix,
-			       x[ix + 1]);
+			printf("(%24.16e, %24.16e)", x[ix], x[ix + 1]);
 			printf("; ");
-			printf("y_ori[%d]=%.16e, y_ori[%d+1]=%.16e", iy,
-			       y_ori[iy], iy, y_ori[iy + 1]);
+			printf("(%24.16e, %24.16e)", y_ori[iy],
+			       y_ori[iy + 1]);
 			printf("; ");
-			printf("y_comp[%d]=%.16e, y_comp[%d+1]=%.16e", iy,
-			       y_comp[iy], iy, y_comp[iy + 1]);
+			printf("(%24.16e, %24.16e)", y_comp[iy],
+			       y_comp[iy + 1]);
 			printf("\n");
 			ix += incx;
 			iy += incy;
 		      }
 
 		      printf("      ");
-		      printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-			     alpha[1]);
+		      printf("alpha = ");
+		      printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);
 		      printf("; ");
-		      printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-			     beta[1]);
+		      printf("beta = ");
+		      printf("(%24.16e, %24.16e)", beta[0], beta[1]);
 		      printf("\n");
 		      printf("      ratio=%.4e\n", ratio);
 		      printf("iymax = %d\n", iymax);
@@ -4195,11 +4088,6 @@ double do_test_daxpby_s_x(int n, int ntests, int *seed, double thresh,
 		incx = incx_val;
 
 
-		/* zero out x */
-		for (j = 0; j < n * 2 * incx_gen; j += incx_gen) {
-		  x[j] = 0.0;
-		}
-
 		/* set x starting index */
 		ix = 0;
 		if (incx < 0)
@@ -4221,17 +4109,10 @@ double do_test_daxpby_s_x(int n, int ntests, int *seed, double thresh,
 		  incy = incy_val;
 
 
-		  /* zero out vector */
-		  for (j = 0; j < n * 2 * incy_gen; j += incy_gen) {
-		    y_ori[j] = 0.0;
-		    y_comp[j] = 0.0;
-		  }
-
 		  /* set y starting index */
 		  iy = 0;
 		  if (incy < 0)
 		    iy = -(n - 1) * incy;
-
 
 		  /* copy y_gen to y */
 		  for (j = 0; j < n * incy_gen; j += incy_gen) {
@@ -4338,20 +4219,22 @@ double do_test_daxpby_s_x(int n, int ntests, int *seed, double thresh,
 
 		      for (j = 0; j < n; j++) {
 			printf("      ");
-			printf("x[%d]=%.8e", ix, x[ix]);
+			printf("%16.8e", x[ix]);
 			printf("; ");
-			printf("y_ori[%d]=%.16e", iy, y_ori[iy]);
+			printf("%24.16e", y_ori[iy]);
 			printf("; ");
-			printf("y_comp[%d]=%.16e", iy, y_comp[iy]);
+			printf("%24.16e", y_comp[iy]);
 			printf("\n");
 			ix += incx;
 			iy += incy;
 		      }
 
 		      printf("      ");
-		      printf("alpha=%.16e", alpha);
+		      printf("alpha = ");
+		      printf("%24.16e", alpha);
 		      printf("; ");
-		      printf("beta=%.16e", beta);
+		      printf("beta = ");
+		      printf("%24.16e", beta);
 		      printf("\n");
 		      printf("      ratio=%.4e\n", ratio);
 		      printf("iymax = %d\n", iymax);
@@ -4691,12 +4574,6 @@ double do_test_zaxpby_c_x(int n, int ntests, int *seed, double thresh,
 		incx = incx_val;
 		incx *= 2;
 
-		/* zero out x */
-		for (j = 0; j < n * 2 * incx_gen; j += incx_gen) {
-		  x[j] = 0.0;
-		  x[j + 1] = 0.0;
-		}
-
 		/* set x starting index */
 		ix = 0;
 		if (incx < 0)
@@ -4720,19 +4597,10 @@ double do_test_zaxpby_c_x(int n, int ntests, int *seed, double thresh,
 		  incy = incy_val;
 		  incy *= 2;
 
-		  /* zero out vector */
-		  for (j = 0; j < n * 2 * incy_gen; j += incy_gen) {
-		    y_ori[j] = 0.0;
-		    y_ori[j + 1] = 0.0;
-		    y_comp[j] = 0.0;
-		    y_comp[j + 1] = 0.0;
-		  }
-
 		  /* set y starting index */
 		  iy = 0;
 		  if (incy < 0)
 		    iy = -(n - 1) * incy;
-
 
 		  /* copy y_gen to y */
 		  for (j = 0; j < n * incy_gen; j += incy_gen) {
@@ -4842,25 +4710,24 @@ double do_test_zaxpby_c_x(int n, int ntests, int *seed, double thresh,
 
 		      for (j = 0; j < n; j++) {
 			printf("      ");
-			printf("x[%d]=%.8e, x[%d+1]=%.8e", ix, x[ix], ix,
-			       x[ix + 1]);
+			printf("(%16.8e, %16.8e)", x[ix], x[ix + 1]);
 			printf("; ");
-			printf("y_ori[%d]=%.16e, y_ori[%d+1]=%.16e", iy,
-			       y_ori[iy], iy, y_ori[iy + 1]);
+			printf("(%24.16e, %24.16e)", y_ori[iy],
+			       y_ori[iy + 1]);
 			printf("; ");
-			printf("y_comp[%d]=%.16e, y_comp[%d+1]=%.16e", iy,
-			       y_comp[iy], iy, y_comp[iy + 1]);
+			printf("(%24.16e, %24.16e)", y_comp[iy],
+			       y_comp[iy + 1]);
 			printf("\n");
 			ix += incx;
 			iy += incy;
 		      }
 
 		      printf("      ");
-		      printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-			     alpha[1]);
+		      printf("alpha = ");
+		      printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);
 		      printf("; ");
-		      printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-			     beta[1]);
+		      printf("beta = ");
+		      printf("(%24.16e, %24.16e)", beta[0], beta[1]);
 		      printf("\n");
 		      printf("      ratio=%.4e\n", ratio);
 		      printf("iymax = %d\n", iymax);
@@ -5200,11 +5067,6 @@ double do_test_caxpby_s_x(int n, int ntests, int *seed, double thresh,
 		incx = incx_val;
 
 
-		/* zero out x */
-		for (j = 0; j < n * 2 * incx_gen; j += incx_gen) {
-		  x[j] = 0.0;
-		}
-
 		/* set x starting index */
 		ix = 0;
 		if (incx < 0)
@@ -5226,19 +5088,10 @@ double do_test_caxpby_s_x(int n, int ntests, int *seed, double thresh,
 		  incy = incy_val;
 		  incy *= 2;
 
-		  /* zero out vector */
-		  for (j = 0; j < n * 2 * incy_gen; j += incy_gen) {
-		    y_ori[j] = 0.0;
-		    y_ori[j + 1] = 0.0;
-		    y_comp[j] = 0.0;
-		    y_comp[j + 1] = 0.0;
-		  }
-
 		  /* set y starting index */
 		  iy = 0;
 		  if (incy < 0)
 		    iy = -(n - 1) * incy;
-
 
 		  /* copy y_gen to y */
 		  for (j = 0; j < n * incy_gen; j += incy_gen) {
@@ -5348,23 +5201,23 @@ double do_test_caxpby_s_x(int n, int ntests, int *seed, double thresh,
 
 		      for (j = 0; j < n; j++) {
 			printf("      ");
-			printf("x[%d]=%.8e", ix, x[ix]);
+			printf("%16.8e", x[ix]);
 			printf("; ");
-			printf("y_ori[%d]=%.8e, y_ori[%d+1]=%.8e", iy,
-			       y_ori[iy], iy, y_ori[iy + 1]);
+			printf("(%16.8e, %16.8e)", y_ori[iy], y_ori[iy + 1]);
 			printf("; ");
-			printf("y_comp[%d]=%.8e, y_comp[%d+1]=%.8e", iy,
-			       y_comp[iy], iy, y_comp[iy + 1]);
+			printf("(%16.8e, %16.8e)", y_comp[iy],
+			       y_comp[iy + 1]);
 			printf("\n");
 			ix += incx;
 			iy += incy;
 		      }
 
 		      printf("      ");
-		      printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-			     alpha[1]);
+		      printf("alpha = ");
+		      printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);
 		      printf("; ");
-		      printf("beta[0]=%.8e, beta[1]=%.8e", beta[0], beta[1]);
+		      printf("beta = ");
+		      printf("(%16.8e, %16.8e)", beta[0], beta[1]);
 		      printf("\n");
 		      printf("      ratio=%.4e\n", ratio);
 		      printf("iymax = %d\n", iymax);
@@ -5704,11 +5557,6 @@ double do_test_zaxpby_d_x(int n, int ntests, int *seed, double thresh,
 		incx = incx_val;
 
 
-		/* zero out x */
-		for (j = 0; j < n * 2 * incx_gen; j += incx_gen) {
-		  x[j] = 0.0;
-		}
-
 		/* set x starting index */
 		ix = 0;
 		if (incx < 0)
@@ -5730,19 +5578,10 @@ double do_test_zaxpby_d_x(int n, int ntests, int *seed, double thresh,
 		  incy = incy_val;
 		  incy *= 2;
 
-		  /* zero out vector */
-		  for (j = 0; j < n * 2 * incy_gen; j += incy_gen) {
-		    y_ori[j] = 0.0;
-		    y_ori[j + 1] = 0.0;
-		    y_comp[j] = 0.0;
-		    y_comp[j + 1] = 0.0;
-		  }
-
 		  /* set y starting index */
 		  iy = 0;
 		  if (incy < 0)
 		    iy = -(n - 1) * incy;
-
 
 		  /* copy y_gen to y */
 		  for (j = 0; j < n * incy_gen; j += incy_gen) {
@@ -5852,24 +5691,24 @@ double do_test_zaxpby_d_x(int n, int ntests, int *seed, double thresh,
 
 		      for (j = 0; j < n; j++) {
 			printf("      ");
-			printf("x[%d]=%.16e", ix, x[ix]);
+			printf("%24.16e", x[ix]);
 			printf("; ");
-			printf("y_ori[%d]=%.16e, y_ori[%d+1]=%.16e", iy,
-			       y_ori[iy], iy, y_ori[iy + 1]);
+			printf("(%24.16e, %24.16e)", y_ori[iy],
+			       y_ori[iy + 1]);
 			printf("; ");
-			printf("y_comp[%d]=%.16e, y_comp[%d+1]=%.16e", iy,
-			       y_comp[iy], iy, y_comp[iy + 1]);
+			printf("(%24.16e, %24.16e)", y_comp[iy],
+			       y_comp[iy + 1]);
 			printf("\n");
 			ix += incx;
 			iy += incy;
 		      }
 
 		      printf("      ");
-		      printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-			     alpha[1]);
+		      printf("alpha = ");
+		      printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);
 		      printf("; ");
-		      printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-			     beta[1]);
+		      printf("beta = ");
+		      printf("(%24.16e, %24.16e)", beta[0], beta[1]);
 		      printf("\n");
 		      printf("      ratio=%.4e\n", ratio);
 		      printf("iymax = %d\n", iymax);

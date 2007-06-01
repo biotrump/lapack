@@ -147,9 +147,6 @@ double do_test_sdot2_x(int n, int ntests, int *seed, double thresh,
   if (n * 2 * incx_gen > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2 * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-  }
   head_y = (float *) blas_malloc(n * 2 * incy_gen * sizeof(float));
   if (n * 2 * incy_gen > 0 && head_y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -158,16 +155,9 @@ double do_test_sdot2_x(int n, int ntests, int *seed, double thresh,
   if (n * 2 * incy_gen > 0 && tail_y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2 * incy_gen; i += incy_gen) {
-    head_y[i] = 0.0;
-    tail_y[i] = 0.0;
-  }
   x_gen = (float *) blas_malloc(n * incx_gen * sizeof(float));
   if (n * incx_gen > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
   }
   head_y_gen = (float *) blas_malloc(n * incy_gen * sizeof(float));
   if (n * incy_gen > 0 && head_y_gen == NULL) {
@@ -176,10 +166,6 @@ double do_test_sdot2_x(int n, int ntests, int *seed, double thresh,
   tail_y_gen = (float *) blas_malloc(n * incy_gen * sizeof(float));
   if (n * incy_gen > 0 && tail_y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n * incy_gen; i += incy_gen) {
-    head_y_gen[i] = 0.0;
-    tail_y_gen[i] = 0.0;
   }
 
   /* The debug iteration:
@@ -283,11 +269,6 @@ double do_test_sdot2_x(int n, int ntests, int *seed, double thresh,
 		  incx = incx_val;
 
 
-		  /* zero out x */
-		  for (j = 0; j < n * 2 * incx_gen; j++) {
-		    x[j] = 0.0;
-		  }
-
 		  /* set x starting index */
 		  ix = 0;
 		  if (incx < 0)
@@ -307,12 +288,6 @@ double do_test_sdot2_x(int n, int ntests, int *seed, double thresh,
 		    /* setting incy */
 		    incy = incy_val;
 
-
-		    /* zero out vector y */
-		    for (j = 0; j < n * 2 * incy_gen; j++) {
-		      head_y[j] = 0.0;
-		      tail_y[j] = 0.0;
-		    }
 
 		    /* set y starting index */
 		    iy = 0;
@@ -406,29 +381,33 @@ double do_test_sdot2_x(int n, int ntests, int *seed, double thresh,
 
 			for (j = 0; j < n; j++) {
 			  printf("      ");
-			  printf("x[%d]=%.8e", ix, x[ix]);
+			  printf("%16.8e", x[ix]);
 			  printf("\n      ");
-			  printf("head_y[%d]=%.8e", iy, head_y[iy]);
+			  printf("%16.8e", head_y[iy]);
 			  printf("\n");
-			  printf("tail_y[%d]=%.8e", iy, tail_y[iy]);
+			  printf("%16.8e", tail_y[iy]);
 			  printf("\n");
 			  ix += incx;
 			  iy += incy;
 			}
 
 			printf("      ");
-			printf("alpha=%.8e", alpha);
+			printf("alpha = ");
+			printf("%16.8e", alpha);
 			printf("\n      ");
-			printf("beta=%.8e", beta);
+			printf("beta = ");
+			printf("%16.8e", beta);
 			printf("\n");
 			printf("      ");
-			printf("r=%.8e", r);
+			printf("r = ");
+			printf("%16.8e", r);
 			printf("\n      ");
-			printf("r_comp=%.8e", r_comp);
+			printf("r_comp = ");
+			printf("%16.8e", r_comp);
 			printf("\n");
 			printf("      ");
-			printf("head_r_true=%.16e, tail_r_true=%.16e",
-			       head_r_true, tail_r_true);
+			printf("r_true = ");
+			printf("[%24.16e %24.16e]", head_r_true, tail_r_true);
 			printf("      ratio=%.4e\n", ratio);
 			p_count++;
 		      }
@@ -619,9 +598,6 @@ double do_test_ddot2_x(int n, int ntests, int *seed, double thresh,
   if (n * 2 * incx_gen > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2 * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-  }
   head_y = (double *) blas_malloc(n * 2 * incy_gen * sizeof(double));
   if (n * 2 * incy_gen > 0 && head_y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -630,16 +606,9 @@ double do_test_ddot2_x(int n, int ntests, int *seed, double thresh,
   if (n * 2 * incy_gen > 0 && tail_y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2 * incy_gen; i += incy_gen) {
-    head_y[i] = 0.0;
-    tail_y[i] = 0.0;
-  }
   x_gen = (double *) blas_malloc(n * incx_gen * sizeof(double));
   if (n * incx_gen > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
   }
   head_y_gen = (double *) blas_malloc(n * incy_gen * sizeof(double));
   if (n * incy_gen > 0 && head_y_gen == NULL) {
@@ -648,10 +617,6 @@ double do_test_ddot2_x(int n, int ntests, int *seed, double thresh,
   tail_y_gen = (double *) blas_malloc(n * incy_gen * sizeof(double));
   if (n * incy_gen > 0 && tail_y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n * incy_gen; i += incy_gen) {
-    head_y_gen[i] = 0.0;
-    tail_y_gen[i] = 0.0;
   }
 
   /* The debug iteration:
@@ -755,11 +720,6 @@ double do_test_ddot2_x(int n, int ntests, int *seed, double thresh,
 		  incx = incx_val;
 
 
-		  /* zero out x */
-		  for (j = 0; j < n * 2 * incx_gen; j++) {
-		    x[j] = 0.0;
-		  }
-
 		  /* set x starting index */
 		  ix = 0;
 		  if (incx < 0)
@@ -779,12 +739,6 @@ double do_test_ddot2_x(int n, int ntests, int *seed, double thresh,
 		    /* setting incy */
 		    incy = incy_val;
 
-
-		    /* zero out vector y */
-		    for (j = 0; j < n * 2 * incy_gen; j++) {
-		      head_y[j] = 0.0;
-		      tail_y[j] = 0.0;
-		    }
 
 		    /* set y starting index */
 		    iy = 0;
@@ -878,29 +832,33 @@ double do_test_ddot2_x(int n, int ntests, int *seed, double thresh,
 
 			for (j = 0; j < n; j++) {
 			  printf("      ");
-			  printf("x[%d]=%.16e", ix, x[ix]);
+			  printf("%24.16e", x[ix]);
 			  printf("\n      ");
-			  printf("head_y[%d]=%.16e", iy, head_y[iy]);
+			  printf("%24.16e", head_y[iy]);
 			  printf("\n");
-			  printf("tail_y[%d]=%.16e", iy, tail_y[iy]);
+			  printf("%24.16e", tail_y[iy]);
 			  printf("\n");
 			  ix += incx;
 			  iy += incy;
 			}
 
 			printf("      ");
-			printf("alpha=%.16e", alpha);
+			printf("alpha = ");
+			printf("%24.16e", alpha);
 			printf("\n      ");
-			printf("beta=%.16e", beta);
+			printf("beta = ");
+			printf("%24.16e", beta);
 			printf("\n");
 			printf("      ");
-			printf("r=%.16e", r);
+			printf("r = ");
+			printf("%24.16e", r);
 			printf("\n      ");
-			printf("r_comp=%.16e", r_comp);
+			printf("r_comp = ");
+			printf("%24.16e", r_comp);
 			printf("\n");
 			printf("      ");
-			printf("head_r_true=%.16e, tail_r_true=%.16e",
-			       head_r_true, tail_r_true);
+			printf("r_true = ");
+			printf("[%24.16e %24.16e]", head_r_true, tail_r_true);
 			printf("      ratio=%.4e\n", ratio);
 			p_count++;
 		      }
@@ -1091,10 +1049,6 @@ double do_test_cdot2_x(int n, int ntests, int *seed, double thresh,
   if (n * 2 * incx_gen > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2 * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
   head_y = (float *) blas_malloc(n * 2 * incy_gen * sizeof(float) * 2);
   if (n * 2 * incy_gen > 0 && head_y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -1103,19 +1057,9 @@ double do_test_cdot2_x(int n, int ntests, int *seed, double thresh,
   if (n * 2 * incy_gen > 0 && tail_y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2 * incy_gen; i += incy_gen) {
-    head_y[i] = 0.0;
-    head_y[i + 1] = 0.0;
-    tail_y[i] = 0.0;
-    tail_y[i + 1] = 0.0;
-  }
   x_gen = (float *) blas_malloc(n * incx_gen * sizeof(float) * 2);
   if (n * incx_gen > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
   }
   head_y_gen = (float *) blas_malloc(n * incy_gen * sizeof(float) * 2);
   if (n * incy_gen > 0 && head_y_gen == NULL) {
@@ -1124,12 +1068,6 @@ double do_test_cdot2_x(int n, int ntests, int *seed, double thresh,
   tail_y_gen = (float *) blas_malloc(n * incy_gen * sizeof(float) * 2);
   if (n * incy_gen > 0 && tail_y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n * incy_gen; i += incy_gen) {
-    head_y_gen[i] = 0.0;
-    head_y_gen[i + 1] = 0.0;
-    tail_y_gen[i] = 0.0;
-    tail_y_gen[i + 1] = 0.0;
   }
 
   /* The debug iteration:
@@ -1235,11 +1173,6 @@ double do_test_cdot2_x(int n, int ntests, int *seed, double thresh,
 		  incx = incx_val;
 		  incx *= 2;
 
-		  /* zero out x */
-		  for (j = 0; j < n * 2 * incx_gen; j++) {
-		    x[j] = 0.0;
-		  }
-
 		  /* set x starting index */
 		  ix = 0;
 		  if (incx < 0)
@@ -1260,12 +1193,6 @@ double do_test_cdot2_x(int n, int ntests, int *seed, double thresh,
 		    /* setting incy */
 		    incy = incy_val;
 		    incy *= 2;
-
-		    /* zero out vector y */
-		    for (j = 0; j < n * 2 * incy_gen; j++) {
-		      head_y[j] = 0.0;
-		      tail_y[j] = 0.0;
-		    }
 
 		    /* set y starting index */
 		    iy = 0;
@@ -1362,37 +1289,37 @@ double do_test_cdot2_x(int n, int ntests, int *seed, double thresh,
 
 			for (j = 0; j < n; j++) {
 			  printf("      ");
-			  printf("x[%d]=%.8e, x[%d+1]=%.8e", ix, x[ix], ix,
-				 x[ix + 1]);
+			  printf("(%16.8e, %16.8e)", x[ix], x[ix + 1]);
 			  printf("\n      ");
-			  printf("head_y[%d]=%.8e, head_y[%d+1]=%.8e", iy,
-				 head_y[iy], iy, head_y[iy + 1]);
+			  printf("(%16.8e, %16.8e)", head_y[iy],
+				 head_y[iy + 1]);
 			  printf("\n");
-			  printf("tail_y[%d]=%.8e, tail_y[%d+1]=%.8e", iy,
-				 tail_y[iy], iy, tail_y[iy + 1]);
+			  printf("(%16.8e, %16.8e)", tail_y[iy],
+				 tail_y[iy + 1]);
 			  printf("\n");
 			  ix += incx;
 			  iy += incy;
 			}
 
 			printf("      ");
-			printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-			       alpha[1]);
+			printf("alpha = ");
+			printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);
 			printf("\n      ");
-			printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
-			       beta[1]);
+			printf("beta = ");
+			printf("(%16.8e, %16.8e)", beta[0], beta[1]);
 			printf("\n");
 			printf("      ");
-			printf("r[0]=%.8e, r[1]=%.8e", r[0], r[1]);
+			printf("r = ");
+			printf("(%16.8e, %16.8e)", r[0], r[1]);
 			printf("\n      ");
-			printf("r_comp[0]=%.8e, r_comp[1]=%.8e", r_comp[0],
-			       r_comp[1]);
+			printf("r_comp = ");
+			printf("(%16.8e, %16.8e)", r_comp[0], r_comp[1]);
 			printf("\n");
 			printf("      ");
-			printf
-			  ("head_r_true[0]=%.16e, head_r_true[1]=%.16e,\nTAIL(r_true)[0]=%.16e, tail_r_true[1]=%.16e",
-			   head_r_true[0], head_r_true[1], tail_r_true[0],
-			   tail_r_true[1]);
+			printf("r_true = ");
+			printf("([%24.16e  %24.16e], [%24.16e %24.16e])",
+			       head_r_true[0], tail_r_true[0], head_r_true[1],
+			       tail_r_true[1]);
 			printf("      ratio=%.4e\n", ratio);
 			p_count++;
 		      }
@@ -1583,10 +1510,6 @@ double do_test_zdot2_x(int n, int ntests, int *seed, double thresh,
   if (n * 2 * incx_gen > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2 * incx_gen; i += incx_gen) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
   head_y = (double *) blas_malloc(n * 2 * incy_gen * sizeof(double) * 2);
   if (n * 2 * incy_gen > 0 && head_y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -1595,19 +1518,9 @@ double do_test_zdot2_x(int n, int ntests, int *seed, double thresh,
   if (n * 2 * incy_gen > 0 && tail_y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2 * incy_gen; i += incy_gen) {
-    head_y[i] = 0.0;
-    head_y[i + 1] = 0.0;
-    tail_y[i] = 0.0;
-    tail_y[i + 1] = 0.0;
-  }
   x_gen = (double *) blas_malloc(n * incx_gen * sizeof(double) * 2);
   if (n * incx_gen > 0 && x_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n * incx_gen; i += incx_gen) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
   }
   head_y_gen = (double *) blas_malloc(n * incy_gen * sizeof(double) * 2);
   if (n * incy_gen > 0 && head_y_gen == NULL) {
@@ -1616,12 +1529,6 @@ double do_test_zdot2_x(int n, int ntests, int *seed, double thresh,
   tail_y_gen = (double *) blas_malloc(n * incy_gen * sizeof(double) * 2);
   if (n * incy_gen > 0 && tail_y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n * incy_gen; i += incy_gen) {
-    head_y_gen[i] = 0.0;
-    head_y_gen[i + 1] = 0.0;
-    tail_y_gen[i] = 0.0;
-    tail_y_gen[i + 1] = 0.0;
   }
 
   /* The debug iteration:
@@ -1727,11 +1634,6 @@ double do_test_zdot2_x(int n, int ntests, int *seed, double thresh,
 		  incx = incx_val;
 		  incx *= 2;
 
-		  /* zero out x */
-		  for (j = 0; j < n * 2 * incx_gen; j++) {
-		    x[j] = 0.0;
-		  }
-
 		  /* set x starting index */
 		  ix = 0;
 		  if (incx < 0)
@@ -1752,12 +1654,6 @@ double do_test_zdot2_x(int n, int ntests, int *seed, double thresh,
 		    /* setting incy */
 		    incy = incy_val;
 		    incy *= 2;
-
-		    /* zero out vector y */
-		    for (j = 0; j < n * 2 * incy_gen; j++) {
-		      head_y[j] = 0.0;
-		      tail_y[j] = 0.0;
-		    }
 
 		    /* set y starting index */
 		    iy = 0;
@@ -1854,37 +1750,37 @@ double do_test_zdot2_x(int n, int ntests, int *seed, double thresh,
 
 			for (j = 0; j < n; j++) {
 			  printf("      ");
-			  printf("x[%d]=%.16e, x[%d+1]=%.16e", ix, x[ix], ix,
-				 x[ix + 1]);
+			  printf("(%24.16e, %24.16e)", x[ix], x[ix + 1]);
 			  printf("\n      ");
-			  printf("head_y[%d]=%.16e, head_y[%d+1]=%.16e", iy,
-				 head_y[iy], iy, head_y[iy + 1]);
+			  printf("(%24.16e, %24.16e)", head_y[iy],
+				 head_y[iy + 1]);
 			  printf("\n");
-			  printf("tail_y[%d]=%.16e, tail_y[%d+1]=%.16e", iy,
-				 tail_y[iy], iy, tail_y[iy + 1]);
+			  printf("(%24.16e, %24.16e)", tail_y[iy],
+				 tail_y[iy + 1]);
 			  printf("\n");
 			  ix += incx;
 			  iy += incy;
 			}
 
 			printf("      ");
-			printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-			       alpha[1]);
+			printf("alpha = ");
+			printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);
 			printf("\n      ");
-			printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-			       beta[1]);
+			printf("beta = ");
+			printf("(%24.16e, %24.16e)", beta[0], beta[1]);
 			printf("\n");
 			printf("      ");
-			printf("r[0]=%.16e, r[1]=%.16e", r[0], r[1]);
+			printf("r = ");
+			printf("(%24.16e, %24.16e)", r[0], r[1]);
 			printf("\n      ");
-			printf("r_comp[0]=%.16e, r_comp[1]=%.16e", r_comp[0],
-			       r_comp[1]);
+			printf("r_comp = ");
+			printf("(%24.16e, %24.16e)", r_comp[0], r_comp[1]);
 			printf("\n");
 			printf("      ");
-			printf
-			  ("head_r_true[0]=%.16e, head_r_true[1]=%.16e,\nTAIL(r_true)[0]=%.16e, tail_r_true[1]=%.16e",
-			   head_r_true[0], head_r_true[1], tail_r_true[0],
-			   tail_r_true[1]);
+			printf("r_true = ");
+			printf("([%24.16e  %24.16e], [%24.16e %24.16e])",
+			       head_r_true[0], tail_r_true[0], head_r_true[1],
+			       tail_r_true[1]);
 			printf("      ratio=%.4e\n", ratio);
 			p_count++;
 		      }

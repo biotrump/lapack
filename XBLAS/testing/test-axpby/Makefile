@@ -18,7 +18,9 @@ TEST_DOT_SRCS = $(TEST_DOT_PATH)/test_dot.c \
            $(TEST_DOT_PATH)/testgen_BLAS_cdot.c \
            $(TEST_DOT_PATH)/testgen_BLAS_zdot.c \
 	   $(TEST_DOT_PATH)/testgen_aux.c \
-           $(TEST_DOT_PATH)/BLAS_dot_testgen.c
+           $(TEST_DOT_PATH)/BLAS_dot_testgen.c \
+	   $(TEST_DOT_PATH)/print_vector.o \
+	   $(TEST_DOT_PATH)/copy_vector.o
 
 TEST_DOT_OBJS = $(TEST_DOT_SRCS:.c=.o)
 

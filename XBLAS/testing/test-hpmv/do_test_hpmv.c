@@ -153,47 +153,22 @@ void do_test_zhpmv_z_c
   if (3 * n_i > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
-
   a = (double *) blas_malloc(2 * n_i * n_i * sizeof(double) * 2);
   if (2 * n_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   x = (float *) blas_malloc(3 * n_i * sizeof(float) * 2);
   if (3 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
-
   a_vec = (double *) blas_malloc(n_i * sizeof(double) * 2);
   if (n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n_i * inca; i += inca) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
   }
   x_vec = (float *) blas_malloc(n_i * sizeof(float) * 2);
   if (n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-    x_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   if (n_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -294,7 +269,7 @@ void do_test_zhpmv_z_c
 
 		    /* copy generated y vector since this will be
 		       over written */
-		    zsymv_copy_vector(n, y_gen, incy, y, incy);
+		    zcopy_vector(y, n, incy, y_gen, incy);
 
 		    /* call hpmv routines to be tested */
 		    FPU_FIX_STOP;
@@ -376,29 +351,20 @@ void do_test_zhpmv_z_c
 			printf("E %d\n", prec);
 
 			/* print out info */
-			printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-			       alpha[1]);;
+			printf("alpha = ");
+			printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);;
 			printf("   ");
-			printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-			       beta[1]);;
+			printf("beta = ");
+			printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			printf("\n");
 
 			printf("a\n");
 			zprint_hpmv_matrix(a, n_i, order_type, uplo_type);
-			printf("x\n");
-			cprint_vector(x, n, incx);
-
-			printf("y_gen\n");
-			zprint_vector(y_gen, n, incy);
-
-			printf("y\n");
-			zprint_vector(y, n, incy);
-
-			printf("head_r_true\n");
-			dprint_vector(head_r_true, n, 1);
-
-			printf("ratios :\n");
-			dprint_vector(ratios, n, 1);
+			cprint_vector(x, n, incx, "x");
+			zprint_vector(y_gen, n, incy, "y_gen");
+			zprint_vector(y, n, incy, "y");
+			dprint_vector(head_r_true, n, 1, "head_r_true");
+			dprint_vector(ratios, n, 1, "ratios");
 			printf("ratio = %g\n", ratio);
 		      }
 		      bad_ratio_count++;
@@ -549,47 +515,22 @@ void do_test_zhpmv_c_z
   if (3 * n_i > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
-
   a = (float *) blas_malloc(2 * n_i * n_i * sizeof(float) * 2);
   if (2 * n_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   x = (double *) blas_malloc(3 * n_i * sizeof(double) * 2);
   if (3 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
-
   a_vec = (float *) blas_malloc(n_i * sizeof(float) * 2);
   if (n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n_i * inca; i += inca) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
   }
   x_vec = (double *) blas_malloc(n_i * sizeof(double) * 2);
   if (n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-    x_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   if (n_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -690,7 +631,7 @@ void do_test_zhpmv_c_z
 
 		    /* copy generated y vector since this will be
 		       over written */
-		    zsymv_copy_vector(n, y_gen, incy, y, incy);
+		    zcopy_vector(y, n, incy, y_gen, incy);
 
 		    /* call hpmv routines to be tested */
 		    FPU_FIX_STOP;
@@ -772,29 +713,20 @@ void do_test_zhpmv_c_z
 			printf("E %d\n", prec);
 
 			/* print out info */
-			printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-			       alpha[1]);;
+			printf("alpha = ");
+			printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);;
 			printf("   ");
-			printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-			       beta[1]);;
+			printf("beta = ");
+			printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			printf("\n");
 
 			printf("a\n");
 			cprint_hpmv_matrix(a, n_i, order_type, uplo_type);
-			printf("x\n");
-			zprint_vector(x, n, incx);
-
-			printf("y_gen\n");
-			zprint_vector(y_gen, n, incy);
-
-			printf("y\n");
-			zprint_vector(y, n, incy);
-
-			printf("head_r_true\n");
-			dprint_vector(head_r_true, n, 1);
-
-			printf("ratios :\n");
-			dprint_vector(ratios, n, 1);
+			zprint_vector(x, n, incx, "x");
+			zprint_vector(y_gen, n, incy, "y_gen");
+			zprint_vector(y, n, incy, "y");
+			dprint_vector(head_r_true, n, 1, "head_r_true");
+			dprint_vector(ratios, n, 1, "ratios");
 			printf("ratio = %g\n", ratio);
 		      }
 		      bad_ratio_count++;
@@ -945,47 +877,22 @@ void do_test_zhpmv_c_c
   if (3 * n_i > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
-
   a = (float *) blas_malloc(2 * n_i * n_i * sizeof(float) * 2);
   if (2 * n_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   x = (float *) blas_malloc(3 * n_i * sizeof(float) * 2);
   if (3 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
-
   a_vec = (float *) blas_malloc(n_i * sizeof(float) * 2);
   if (n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n_i * inca; i += inca) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
   }
   x_vec = (float *) blas_malloc(n_i * sizeof(float) * 2);
   if (n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-    x_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   if (n_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -1086,7 +993,7 @@ void do_test_zhpmv_c_c
 
 		    /* copy generated y vector since this will be
 		       over written */
-		    zsymv_copy_vector(n, y_gen, incy, y, incy);
+		    zcopy_vector(y, n, incy, y_gen, incy);
 
 		    /* call hpmv routines to be tested */
 		    FPU_FIX_STOP;
@@ -1168,29 +1075,20 @@ void do_test_zhpmv_c_c
 			printf("E %d\n", prec);
 
 			/* print out info */
-			printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-			       alpha[1]);;
+			printf("alpha = ");
+			printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);;
 			printf("   ");
-			printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-			       beta[1]);;
+			printf("beta = ");
+			printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			printf("\n");
 
 			printf("a\n");
 			cprint_hpmv_matrix(a, n_i, order_type, uplo_type);
-			printf("x\n");
-			cprint_vector(x, n, incx);
-
-			printf("y_gen\n");
-			zprint_vector(y_gen, n, incy);
-
-			printf("y\n");
-			zprint_vector(y, n, incy);
-
-			printf("head_r_true\n");
-			dprint_vector(head_r_true, n, 1);
-
-			printf("ratios :\n");
-			dprint_vector(ratios, n, 1);
+			cprint_vector(x, n, incx, "x");
+			zprint_vector(y_gen, n, incy, "y_gen");
+			zprint_vector(y, n, incy, "y");
+			dprint_vector(head_r_true, n, 1, "head_r_true");
+			dprint_vector(ratios, n, 1, "ratios");
 			printf("ratio = %g\n", ratio);
 		      }
 		      bad_ratio_count++;
@@ -1341,45 +1239,22 @@ void do_test_chpmv_c_s
   if (3 * n_i > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
-
   a = (float *) blas_malloc(2 * n_i * n_i * sizeof(float) * 2);
   if (2 * n_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   x = (float *) blas_malloc(3 * n_i * sizeof(float));
   if (3 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-  }
-
   a_vec = (float *) blas_malloc(n_i * sizeof(float) * 2);
   if (n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n_i * inca; i += inca) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
   }
   x_vec = (float *) blas_malloc(n_i * sizeof(float));
   if (n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   if (n_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -1480,7 +1355,7 @@ void do_test_chpmv_c_s
 
 		    /* copy generated y vector since this will be
 		       over written */
-		    csymv_copy_vector(n, y_gen, incy, y, incy);
+		    ccopy_vector(y, n, incy, y_gen, incy);
 
 		    /* call hpmv routines to be tested */
 		    FPU_FIX_STOP;
@@ -1562,29 +1437,20 @@ void do_test_chpmv_c_s
 			printf("E %d\n", prec);
 
 			/* print out info */
-			printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-			       alpha[1]);;
+			printf("alpha = ");
+			printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);;
 			printf("   ");
-			printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
-			       beta[1]);;
+			printf("beta = ");
+			printf("(%16.8e, %16.8e)", beta[0], beta[1]);;
 			printf("\n");
 
 			printf("a\n");
 			cprint_hpmv_matrix(a, n_i, order_type, uplo_type);
-			printf("x\n");
-			sprint_vector(x, n, incx);
-
-			printf("y_gen\n");
-			cprint_vector(y_gen, n, incy);
-
-			printf("y\n");
-			cprint_vector(y, n, incy);
-
-			printf("head_r_true\n");
-			dprint_vector(head_r_true, n, 1);
-
-			printf("ratios :\n");
-			dprint_vector(ratios, n, 1);
+			sprint_vector(x, n, incx, "x");
+			cprint_vector(y_gen, n, incy, "y_gen");
+			cprint_vector(y, n, incy, "y");
+			dprint_vector(head_r_true, n, 1, "head_r_true");
+			dprint_vector(ratios, n, 1, "ratios");
 			printf("ratio = %g\n", ratio);
 		      }
 		      bad_ratio_count++;
@@ -1735,45 +1601,22 @@ void do_test_zhpmv_z_d
   if (3 * n_i > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
-
   a = (double *) blas_malloc(2 * n_i * n_i * sizeof(double) * 2);
   if (2 * n_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   x = (double *) blas_malloc(3 * n_i * sizeof(double));
   if (3 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-  }
-
   a_vec = (double *) blas_malloc(n_i * sizeof(double) * 2);
   if (n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n_i * inca; i += inca) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
   }
   x_vec = (double *) blas_malloc(n_i * sizeof(double));
   if (n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   if (n_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -1874,7 +1717,7 @@ void do_test_zhpmv_z_d
 
 		    /* copy generated y vector since this will be
 		       over written */
-		    zsymv_copy_vector(n, y_gen, incy, y, incy);
+		    zcopy_vector(y, n, incy, y_gen, incy);
 
 		    /* call hpmv routines to be tested */
 		    FPU_FIX_STOP;
@@ -1956,29 +1799,20 @@ void do_test_zhpmv_z_d
 			printf("E %d\n", prec);
 
 			/* print out info */
-			printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-			       alpha[1]);;
+			printf("alpha = ");
+			printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);;
 			printf("   ");
-			printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-			       beta[1]);;
+			printf("beta = ");
+			printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			printf("\n");
 
 			printf("a\n");
 			zprint_hpmv_matrix(a, n_i, order_type, uplo_type);
-			printf("x\n");
-			dprint_vector(x, n, incx);
-
-			printf("y_gen\n");
-			zprint_vector(y_gen, n, incy);
-
-			printf("y\n");
-			zprint_vector(y, n, incy);
-
-			printf("head_r_true\n");
-			dprint_vector(head_r_true, n, 1);
-
-			printf("ratios :\n");
-			dprint_vector(ratios, n, 1);
+			dprint_vector(x, n, incx, "x");
+			zprint_vector(y_gen, n, incy, "y_gen");
+			zprint_vector(y, n, incy, "y");
+			dprint_vector(head_r_true, n, 1, "head_r_true");
+			dprint_vector(ratios, n, 1, "ratios");
 			printf("ratio = %g\n", ratio);
 		      }
 		      bad_ratio_count++;
@@ -2129,47 +1963,22 @@ void do_test_chpmv_x
   if (3 * n_i > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
-
   a = (float *) blas_malloc(2 * n_i * n_i * sizeof(float) * 2);
   if (2 * n_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   x = (float *) blas_malloc(3 * n_i * sizeof(float) * 2);
   if (3 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
-
   a_vec = (float *) blas_malloc(n_i * sizeof(float) * 2);
   if (n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n_i * inca; i += inca) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
   }
   x_vec = (float *) blas_malloc(n_i * sizeof(float) * 2);
   if (n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-    x_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   if (n_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -2290,7 +2099,7 @@ void do_test_chpmv_x
 
 		      /* copy generated y vector since this will be
 		         over written */
-		      csymv_copy_vector(n, y_gen, incy, y, incy);
+		      ccopy_vector(y, n, incy, y_gen, incy);
 
 		      /* call hpmv routines to be tested */
 		      FPU_FIX_STOP;
@@ -2373,29 +2182,20 @@ void do_test_chpmv_x
 			  printf("E %d\n", prec);
 
 			  /* print out info */
-			  printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-				 alpha[1]);;
+			  printf("alpha = ");
+			  printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);;
 			  printf("   ");
-			  printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
-				 beta[1]);;
+			  printf("beta = ");
+			  printf("(%16.8e, %16.8e)", beta[0], beta[1]);;
 			  printf("\n");
 
 			  printf("a\n");
 			  cprint_hpmv_matrix(a, n_i, order_type, uplo_type);
-			  printf("x\n");
-			  cprint_vector(x, n, incx);
-
-			  printf("y_gen\n");
-			  cprint_vector(y_gen, n, incy);
-
-			  printf("y\n");
-			  cprint_vector(y, n, incy);
-
-			  printf("head_r_true\n");
-			  dprint_vector(head_r_true, n, 1);
-
-			  printf("ratios :\n");
-			  dprint_vector(ratios, n, 1);
+			  cprint_vector(x, n, incx, "x");
+			  cprint_vector(y_gen, n, incy, "y_gen");
+			  cprint_vector(y, n, incy, "y");
+			  dprint_vector(head_r_true, n, 1, "head_r_true");
+			  dprint_vector(ratios, n, 1, "ratios");
 			  printf("ratio = %g\n", ratio);
 			}
 			bad_ratio_count++;
@@ -2547,47 +2347,22 @@ void do_test_zhpmv_x
   if (3 * n_i > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
-
   a = (double *) blas_malloc(2 * n_i * n_i * sizeof(double) * 2);
   if (2 * n_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   x = (double *) blas_malloc(3 * n_i * sizeof(double) * 2);
   if (3 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
-
   a_vec = (double *) blas_malloc(n_i * sizeof(double) * 2);
   if (n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n_i * inca; i += inca) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
   }
   x_vec = (double *) blas_malloc(n_i * sizeof(double) * 2);
   if (n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-    x_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   if (n_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -2708,7 +2483,7 @@ void do_test_zhpmv_x
 
 		      /* copy generated y vector since this will be
 		         over written */
-		      zsymv_copy_vector(n, y_gen, incy, y, incy);
+		      zcopy_vector(y, n, incy, y_gen, incy);
 
 		      /* call hpmv routines to be tested */
 		      FPU_FIX_STOP;
@@ -2791,29 +2566,20 @@ void do_test_zhpmv_x
 			  printf("E %d\n", prec);
 
 			  /* print out info */
-			  printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				 alpha[1]);;
+			  printf("alpha = ");
+			  printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);;
 			  printf("   ");
-			  printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				 beta[1]);;
+			  printf("beta = ");
+			  printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			  printf("\n");
 
 			  printf("a\n");
 			  zprint_hpmv_matrix(a, n_i, order_type, uplo_type);
-			  printf("x\n");
-			  zprint_vector(x, n, incx);
-
-			  printf("y_gen\n");
-			  zprint_vector(y_gen, n, incy);
-
-			  printf("y\n");
-			  zprint_vector(y, n, incy);
-
-			  printf("head_r_true\n");
-			  dprint_vector(head_r_true, n, 1);
-
-			  printf("ratios :\n");
-			  dprint_vector(ratios, n, 1);
+			  zprint_vector(x, n, incx, "x");
+			  zprint_vector(y_gen, n, incy, "y_gen");
+			  zprint_vector(y, n, incy, "y");
+			  dprint_vector(head_r_true, n, 1, "head_r_true");
+			  dprint_vector(ratios, n, 1, "ratios");
 			  printf("ratio = %g\n", ratio);
 			}
 			bad_ratio_count++;
@@ -2965,47 +2731,22 @@ void do_test_zhpmv_z_c_x
   if (3 * n_i > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
-
   a = (double *) blas_malloc(2 * n_i * n_i * sizeof(double) * 2);
   if (2 * n_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   x = (float *) blas_malloc(3 * n_i * sizeof(float) * 2);
   if (3 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
-
   a_vec = (double *) blas_malloc(n_i * sizeof(double) * 2);
   if (n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n_i * inca; i += inca) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
   }
   x_vec = (float *) blas_malloc(n_i * sizeof(float) * 2);
   if (n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-    x_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   if (n_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -3126,7 +2867,7 @@ void do_test_zhpmv_z_c_x
 
 		      /* copy generated y vector since this will be
 		         over written */
-		      zsymv_copy_vector(n, y_gen, incy, y, incy);
+		      zcopy_vector(y, n, incy, y_gen, incy);
 
 		      /* call hpmv routines to be tested */
 		      FPU_FIX_STOP;
@@ -3209,29 +2950,20 @@ void do_test_zhpmv_z_c_x
 			  printf("E %d\n", prec);
 
 			  /* print out info */
-			  printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				 alpha[1]);;
+			  printf("alpha = ");
+			  printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);;
 			  printf("   ");
-			  printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				 beta[1]);;
+			  printf("beta = ");
+			  printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			  printf("\n");
 
 			  printf("a\n");
 			  zprint_hpmv_matrix(a, n_i, order_type, uplo_type);
-			  printf("x\n");
-			  cprint_vector(x, n, incx);
-
-			  printf("y_gen\n");
-			  zprint_vector(y_gen, n, incy);
-
-			  printf("y\n");
-			  zprint_vector(y, n, incy);
-
-			  printf("head_r_true\n");
-			  dprint_vector(head_r_true, n, 1);
-
-			  printf("ratios :\n");
-			  dprint_vector(ratios, n, 1);
+			  cprint_vector(x, n, incx, "x");
+			  zprint_vector(y_gen, n, incy, "y_gen");
+			  zprint_vector(y, n, incy, "y");
+			  dprint_vector(head_r_true, n, 1, "head_r_true");
+			  dprint_vector(ratios, n, 1, "ratios");
 			  printf("ratio = %g\n", ratio);
 			}
 			bad_ratio_count++;
@@ -3383,47 +3115,22 @@ void do_test_zhpmv_c_z_x
   if (3 * n_i > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
-
   a = (float *) blas_malloc(2 * n_i * n_i * sizeof(float) * 2);
   if (2 * n_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   x = (double *) blas_malloc(3 * n_i * sizeof(double) * 2);
   if (3 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
-
   a_vec = (float *) blas_malloc(n_i * sizeof(float) * 2);
   if (n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n_i * inca; i += inca) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
   }
   x_vec = (double *) blas_malloc(n_i * sizeof(double) * 2);
   if (n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-    x_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   if (n_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -3544,7 +3251,7 @@ void do_test_zhpmv_c_z_x
 
 		      /* copy generated y vector since this will be
 		         over written */
-		      zsymv_copy_vector(n, y_gen, incy, y, incy);
+		      zcopy_vector(y, n, incy, y_gen, incy);
 
 		      /* call hpmv routines to be tested */
 		      FPU_FIX_STOP;
@@ -3627,29 +3334,20 @@ void do_test_zhpmv_c_z_x
 			  printf("E %d\n", prec);
 
 			  /* print out info */
-			  printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				 alpha[1]);;
+			  printf("alpha = ");
+			  printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);;
 			  printf("   ");
-			  printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				 beta[1]);;
+			  printf("beta = ");
+			  printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			  printf("\n");
 
 			  printf("a\n");
 			  cprint_hpmv_matrix(a, n_i, order_type, uplo_type);
-			  printf("x\n");
-			  zprint_vector(x, n, incx);
-
-			  printf("y_gen\n");
-			  zprint_vector(y_gen, n, incy);
-
-			  printf("y\n");
-			  zprint_vector(y, n, incy);
-
-			  printf("head_r_true\n");
-			  dprint_vector(head_r_true, n, 1);
-
-			  printf("ratios :\n");
-			  dprint_vector(ratios, n, 1);
+			  zprint_vector(x, n, incx, "x");
+			  zprint_vector(y_gen, n, incy, "y_gen");
+			  zprint_vector(y, n, incy, "y");
+			  dprint_vector(head_r_true, n, 1, "head_r_true");
+			  dprint_vector(ratios, n, 1, "ratios");
 			  printf("ratio = %g\n", ratio);
 			}
 			bad_ratio_count++;
@@ -3801,47 +3499,22 @@ void do_test_zhpmv_c_c_x
   if (3 * n_i > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
-
   a = (float *) blas_malloc(2 * n_i * n_i * sizeof(float) * 2);
   if (2 * n_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   x = (float *) blas_malloc(3 * n_i * sizeof(float) * 2);
   if (3 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
-
   a_vec = (float *) blas_malloc(n_i * sizeof(float) * 2);
   if (n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n_i * inca; i += inca) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
   }
   x_vec = (float *) blas_malloc(n_i * sizeof(float) * 2);
   if (n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-    x_vec[i + 1] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   if (n_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -3962,7 +3635,7 @@ void do_test_zhpmv_c_c_x
 
 		      /* copy generated y vector since this will be
 		         over written */
-		      zsymv_copy_vector(n, y_gen, incy, y, incy);
+		      zcopy_vector(y, n, incy, y_gen, incy);
 
 		      /* call hpmv routines to be tested */
 		      FPU_FIX_STOP;
@@ -4045,29 +3718,20 @@ void do_test_zhpmv_c_c_x
 			  printf("E %d\n", prec);
 
 			  /* print out info */
-			  printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				 alpha[1]);;
+			  printf("alpha = ");
+			  printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);;
 			  printf("   ");
-			  printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				 beta[1]);;
+			  printf("beta = ");
+			  printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			  printf("\n");
 
 			  printf("a\n");
 			  cprint_hpmv_matrix(a, n_i, order_type, uplo_type);
-			  printf("x\n");
-			  cprint_vector(x, n, incx);
-
-			  printf("y_gen\n");
-			  zprint_vector(y_gen, n, incy);
-
-			  printf("y\n");
-			  zprint_vector(y, n, incy);
-
-			  printf("head_r_true\n");
-			  dprint_vector(head_r_true, n, 1);
-
-			  printf("ratios :\n");
-			  dprint_vector(ratios, n, 1);
+			  cprint_vector(x, n, incx, "x");
+			  zprint_vector(y_gen, n, incy, "y_gen");
+			  zprint_vector(y, n, incy, "y");
+			  dprint_vector(head_r_true, n, 1, "head_r_true");
+			  dprint_vector(ratios, n, 1, "ratios");
 			  printf("ratio = %g\n", ratio);
 			}
 			bad_ratio_count++;
@@ -4219,45 +3883,22 @@ void do_test_chpmv_c_s_x
   if (3 * n_i > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
-
   a = (float *) blas_malloc(2 * n_i * n_i * sizeof(float) * 2);
   if (2 * n_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   x = (float *) blas_malloc(3 * n_i * sizeof(float));
   if (3 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-  }
-
   a_vec = (float *) blas_malloc(n_i * sizeof(float) * 2);
   if (n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n_i * inca; i += inca) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
   }
   x_vec = (float *) blas_malloc(n_i * sizeof(float));
   if (n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   if (n_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -4378,7 +4019,7 @@ void do_test_chpmv_c_s_x
 
 		      /* copy generated y vector since this will be
 		         over written */
-		      csymv_copy_vector(n, y_gen, incy, y, incy);
+		      ccopy_vector(y, n, incy, y_gen, incy);
 
 		      /* call hpmv routines to be tested */
 		      FPU_FIX_STOP;
@@ -4461,29 +4102,20 @@ void do_test_chpmv_c_s_x
 			  printf("E %d\n", prec);
 
 			  /* print out info */
-			  printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-				 alpha[1]);;
+			  printf("alpha = ");
+			  printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);;
 			  printf("   ");
-			  printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
-				 beta[1]);;
+			  printf("beta = ");
+			  printf("(%16.8e, %16.8e)", beta[0], beta[1]);;
 			  printf("\n");
 
 			  printf("a\n");
 			  cprint_hpmv_matrix(a, n_i, order_type, uplo_type);
-			  printf("x\n");
-			  sprint_vector(x, n, incx);
-
-			  printf("y_gen\n");
-			  cprint_vector(y_gen, n, incy);
-
-			  printf("y\n");
-			  cprint_vector(y, n, incy);
-
-			  printf("head_r_true\n");
-			  dprint_vector(head_r_true, n, 1);
-
-			  printf("ratios :\n");
-			  dprint_vector(ratios, n, 1);
+			  sprint_vector(x, n, incx, "x");
+			  cprint_vector(y_gen, n, incy, "y_gen");
+			  cprint_vector(y, n, incy, "y");
+			  dprint_vector(head_r_true, n, 1, "head_r_true");
+			  dprint_vector(ratios, n, 1, "ratios");
 			  printf("ratio = %g\n", ratio);
 			}
 			bad_ratio_count++;
@@ -4635,45 +4267,22 @@ void do_test_zhpmv_z_d_x
   if (3 * n_i > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incy; i += incy) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
-  }
-
   a = (double *) blas_malloc(2 * n_i * n_i * sizeof(double) * 2);
   if (2 * n_i * n_i > 0 && a == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * n_i * n_i * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
   }
   x = (double *) blas_malloc(3 * n_i * sizeof(double));
   if (3 * n_i > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < 3 * n_i * incx; i += incx) {
-    x[i] = 0.0;
-  }
-
   a_vec = (double *) blas_malloc(n_i * sizeof(double) * 2);
   if (n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n_i * inca; i += inca) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
   }
   x_vec = (double *) blas_malloc(n_i * sizeof(double));
   if (n_i > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n_i * incx; i += incx) {
-    x_vec[i] = 0.0;
-  }
-
   head_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   tail_r_true = (double *) blas_malloc(n_i * sizeof(double) * 2);
   if (n_i > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
@@ -4794,7 +4403,7 @@ void do_test_zhpmv_z_d_x
 
 		      /* copy generated y vector since this will be
 		         over written */
-		      zsymv_copy_vector(n, y_gen, incy, y, incy);
+		      zcopy_vector(y, n, incy, y_gen, incy);
 
 		      /* call hpmv routines to be tested */
 		      FPU_FIX_STOP;
@@ -4877,29 +4486,20 @@ void do_test_zhpmv_z_d_x
 			  printf("E %d\n", prec);
 
 			  /* print out info */
-			  printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-				 alpha[1]);;
+			  printf("alpha = ");
+			  printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);;
 			  printf("   ");
-			  printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				 beta[1]);;
+			  printf("beta = ");
+			  printf("(%24.16e, %24.16e)", beta[0], beta[1]);;
 			  printf("\n");
 
 			  printf("a\n");
 			  zprint_hpmv_matrix(a, n_i, order_type, uplo_type);
-			  printf("x\n");
-			  dprint_vector(x, n, incx);
-
-			  printf("y_gen\n");
-			  zprint_vector(y_gen, n, incy);
-
-			  printf("y\n");
-			  zprint_vector(y, n, incy);
-
-			  printf("head_r_true\n");
-			  dprint_vector(head_r_true, n, 1);
-
-			  printf("ratios :\n");
-			  dprint_vector(ratios, n, 1);
+			  dprint_vector(x, n, incx, "x");
+			  zprint_vector(y_gen, n, incy, "y_gen");
+			  zprint_vector(y, n, incy, "y");
+			  dprint_vector(head_r_true, n, 1, "head_r_true");
+			  dprint_vector(ratios, n, 1, "ratios");
 			  printf("ratio = %g\n", ratio);
 			}
 			bad_ratio_count++;

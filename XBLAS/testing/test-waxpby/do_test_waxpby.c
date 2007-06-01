@@ -191,12 +191,6 @@ double do_test_dwaxpby_d_s(int n,
   if (n * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2; i += incx_gen) {
-    x[i] = 0.0;
-  }
-  for (i = 0; i < n * 2; i += incy_gen) {
-    y[i] = 0.0;
-  }
   w = (double *) blas_malloc(n * 2 * sizeof(double));
   if (n * 2 > 0 && w == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -213,12 +207,6 @@ double do_test_dwaxpby_d_s(int n,
   y_gen = (float *) blas_malloc(n * sizeof(float));
   if (n > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n; i += incx_gen) {
-    x_gen[i] = 0.0;
-  }
-  for (i = 0; i < n; i += incy_gen) {
-    y_gen[i] = 0.0;
   }
   temp_ab = (double *) blas_malloc(2 * sizeof(double));
   if (2 > 0 && temp_ab == NULL) {
@@ -304,11 +292,6 @@ double do_test_dwaxpby_d_s(int n,
 	  incx = incx_val;
 
 
-	  /* zero out x */
-	  for (j = 0; j < n * 2 * incx_gen; j += incx_gen) {
-	    x[j] = 0.0;
-	  }
-
 	  /* set x starting index */
 	  ix = 0;
 	  if (incx < 0)
@@ -329,11 +312,6 @@ double do_test_dwaxpby_d_s(int n,
 	    /* setting incy */
 	    incy = incy_val;
 
-
-	    /* zero out vector */
-	    for (j = 0; j < n * 2 * incy_gen; j += incy_gen) {
-	      y[j] = 0.0;
-	    }
 
 	    /* set y starting index */
 	    iy = 0;
@@ -360,12 +338,6 @@ double do_test_dwaxpby_d_s(int n,
 	         at random */
 	      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
 		continue;
-
-	      /* zero out vector */
-	      for (j = 0; j < n * 2 * incw_gen; j += incw_gen) {
-		w[j] = 0.0;
-	      }
-
 
 	      /* call BLAS_dwaxpby_d_s to get w */
 	      FPU_FIX_STOP;
@@ -462,11 +434,11 @@ double do_test_dwaxpby_d_s(int n,
 
 		  for (j = 0; j < n; j++) {
 		    printf("      ");
-		    printf("x[%d]=%.16e", ix, x[ix]);
+		    printf("%24.16e", x[ix]);
 		    printf("; ");
-		    printf("y[%d]=%.8e", iy, y[iy]);
+		    printf("%16.8e", y[iy]);
 		    printf("; ");
-		    printf("w[%d]=%.16e", iw, w[iw]);
+		    printf("%24.16e", w[iw]);
 		    printf("; ");
 		    ix += incx;
 		    iy += incy;
@@ -474,9 +446,11 @@ double do_test_dwaxpby_d_s(int n,
 		  }
 
 		  printf("      ");
-		  printf("alpha=%.16e", alpha);
+		  printf("alpha = ");
+		  printf("%24.16e", alpha);
 		  printf("; ");
-		  printf("beta=%.16e", beta);
+		  printf("beta = ");
+		  printf("%24.16e", beta);
 		  printf("\n");
 		  printf("      ratio=%.4e\n", ratio);
 		  p_count++;
@@ -712,12 +686,6 @@ double do_test_dwaxpby_s_d(int n,
   if (n * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2; i += incx_gen) {
-    x[i] = 0.0;
-  }
-  for (i = 0; i < n * 2; i += incy_gen) {
-    y[i] = 0.0;
-  }
   w = (double *) blas_malloc(n * 2 * sizeof(double));
   if (n * 2 > 0 && w == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -734,12 +702,6 @@ double do_test_dwaxpby_s_d(int n,
   y_gen = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n; i += incx_gen) {
-    x_gen[i] = 0.0;
-  }
-  for (i = 0; i < n; i += incy_gen) {
-    y_gen[i] = 0.0;
   }
   temp_ab = (double *) blas_malloc(2 * sizeof(double));
   if (2 > 0 && temp_ab == NULL) {
@@ -825,11 +787,6 @@ double do_test_dwaxpby_s_d(int n,
 	  incx = incx_val;
 
 
-	  /* zero out x */
-	  for (j = 0; j < n * 2 * incx_gen; j += incx_gen) {
-	    x[j] = 0.0;
-	  }
-
 	  /* set x starting index */
 	  ix = 0;
 	  if (incx < 0)
@@ -850,11 +807,6 @@ double do_test_dwaxpby_s_d(int n,
 	    /* setting incy */
 	    incy = incy_val;
 
-
-	    /* zero out vector */
-	    for (j = 0; j < n * 2 * incy_gen; j += incy_gen) {
-	      y[j] = 0.0;
-	    }
 
 	    /* set y starting index */
 	    iy = 0;
@@ -881,12 +833,6 @@ double do_test_dwaxpby_s_d(int n,
 	         at random */
 	      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
 		continue;
-
-	      /* zero out vector */
-	      for (j = 0; j < n * 2 * incw_gen; j += incw_gen) {
-		w[j] = 0.0;
-	      }
-
 
 	      /* call BLAS_dwaxpby_s_d to get w */
 	      FPU_FIX_STOP;
@@ -983,11 +929,11 @@ double do_test_dwaxpby_s_d(int n,
 
 		  for (j = 0; j < n; j++) {
 		    printf("      ");
-		    printf("x[%d]=%.8e", ix, x[ix]);
+		    printf("%16.8e", x[ix]);
 		    printf("; ");
-		    printf("y[%d]=%.16e", iy, y[iy]);
+		    printf("%24.16e", y[iy]);
 		    printf("; ");
-		    printf("w[%d]=%.16e", iw, w[iw]);
+		    printf("%24.16e", w[iw]);
 		    printf("; ");
 		    ix += incx;
 		    iy += incy;
@@ -995,9 +941,11 @@ double do_test_dwaxpby_s_d(int n,
 		  }
 
 		  printf("      ");
-		  printf("alpha=%.16e", alpha);
+		  printf("alpha = ");
+		  printf("%24.16e", alpha);
 		  printf("; ");
-		  printf("beta=%.16e", beta);
+		  printf("beta = ");
+		  printf("%24.16e", beta);
 		  printf("\n");
 		  printf("      ratio=%.4e\n", ratio);
 		  p_count++;
@@ -1233,12 +1181,6 @@ double do_test_dwaxpby_s_s(int n,
   if (n * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2; i += incx_gen) {
-    x[i] = 0.0;
-  }
-  for (i = 0; i < n * 2; i += incy_gen) {
-    y[i] = 0.0;
-  }
   w = (double *) blas_malloc(n * 2 * sizeof(double));
   if (n * 2 > 0 && w == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -1255,12 +1197,6 @@ double do_test_dwaxpby_s_s(int n,
   y_gen = (float *) blas_malloc(n * sizeof(float));
   if (n > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n; i += incx_gen) {
-    x_gen[i] = 0.0;
-  }
-  for (i = 0; i < n; i += incy_gen) {
-    y_gen[i] = 0.0;
   }
   temp_ab = (double *) blas_malloc(2 * sizeof(double));
   if (2 > 0 && temp_ab == NULL) {
@@ -1346,11 +1282,6 @@ double do_test_dwaxpby_s_s(int n,
 	  incx = incx_val;
 
 
-	  /* zero out x */
-	  for (j = 0; j < n * 2 * incx_gen; j += incx_gen) {
-	    x[j] = 0.0;
-	  }
-
 	  /* set x starting index */
 	  ix = 0;
 	  if (incx < 0)
@@ -1371,11 +1302,6 @@ double do_test_dwaxpby_s_s(int n,
 	    /* setting incy */
 	    incy = incy_val;
 
-
-	    /* zero out vector */
-	    for (j = 0; j < n * 2 * incy_gen; j += incy_gen) {
-	      y[j] = 0.0;
-	    }
 
 	    /* set y starting index */
 	    iy = 0;
@@ -1402,12 +1328,6 @@ double do_test_dwaxpby_s_s(int n,
 	         at random */
 	      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
 		continue;
-
-	      /* zero out vector */
-	      for (j = 0; j < n * 2 * incw_gen; j += incw_gen) {
-		w[j] = 0.0;
-	      }
-
 
 	      /* call BLAS_dwaxpby_s_s to get w */
 	      FPU_FIX_STOP;
@@ -1515,11 +1435,11 @@ double do_test_dwaxpby_s_s(int n,
 
 		  for (j = 0; j < n; j++) {
 		    printf("      ");
-		    printf("x[%d]=%.8e", ix, x[ix]);
+		    printf("%16.8e", x[ix]);
 		    printf("; ");
-		    printf("y[%d]=%.8e", iy, y[iy]);
+		    printf("%16.8e", y[iy]);
 		    printf("; ");
-		    printf("w[%d]=%.16e", iw, w[iw]);
+		    printf("%24.16e", w[iw]);
 		    printf("; ");
 		    ix += incx;
 		    iy += incy;
@@ -1527,9 +1447,11 @@ double do_test_dwaxpby_s_s(int n,
 		  }
 
 		  printf("      ");
-		  printf("alpha=%.16e", alpha);
+		  printf("alpha = ");
+		  printf("%24.16e", alpha);
 		  printf("; ");
-		  printf("beta=%.16e", beta);
+		  printf("beta = ");
+		  printf("%24.16e", beta);
 		  printf("\n");
 		  printf("      ratio=%.4e\n", ratio);
 		  p_count++;
@@ -1766,14 +1688,6 @@ double do_test_zwaxpby_z_c(int n,
   if (n * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2; i += incx_gen) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
-  for (i = 0; i < n * 2; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-  }
   w = (double *) blas_malloc(n * 2 * sizeof(double) * 2);
   if (n * 2 > 0 && w == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -1790,14 +1704,6 @@ double do_test_zwaxpby_z_c(int n,
   y_gen = (float *) blas_malloc(n * sizeof(float) * 2);
   if (n > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n; i += incx_gen) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
-  }
-  for (i = 0; i < n; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
   }
   temp_ab = (double *) blas_malloc(2 * sizeof(double) * 2);
   if (2 > 0 && temp_ab == NULL) {
@@ -1895,12 +1801,6 @@ double do_test_zwaxpby_z_c(int n,
 	  incx = incx_val;
 	  incx *= 2;
 
-	  /* zero out x */
-	  for (j = 0; j < n * 2 * incx_gen; j += incx_gen) {
-	    x[j] = 0.0;
-	    x[j + 1] = 0.0;
-	  }
-
 	  /* set x starting index */
 	  ix = 0;
 	  if (incx < 0)
@@ -1923,12 +1823,6 @@ double do_test_zwaxpby_z_c(int n,
 	    /* setting incy */
 	    incy = incy_val;
 	    incy *= 2;
-
-	    /* zero out vector */
-	    for (j = 0; j < n * 2 * incy_gen; j += incy_gen) {
-	      y[j] = 0.0;
-	      y[j + 1] = 0.0;
-	    }
 
 	    /* set y starting index */
 	    iy = 0;
@@ -1957,13 +1851,6 @@ double do_test_zwaxpby_z_c(int n,
 	         at random */
 	      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
 		continue;
-
-	      /* zero out vector */
-	      for (j = 0; j < n * 2 * incw_gen; j += incw_gen) {
-		w[j] = 0.0;
-		w[j + 1] = 0.0;
-	      }
-
 
 	      /* call BLAS_zwaxpby_z_c to get w */
 	      FPU_FIX_STOP;
@@ -2060,14 +1947,11 @@ double do_test_zwaxpby_z_c(int n,
 
 		  for (j = 0; j < n; j++) {
 		    printf("      ");
-		    printf("x[%d]=%.16e, x[%d+1]=%.16e", ix, x[ix], ix,
-			   x[ix + 1]);
+		    printf("(%24.16e, %24.16e)", x[ix], x[ix + 1]);
 		    printf("; ");
-		    printf("y[%d]=%.8e, y[%d+1]=%.8e", iy, y[iy], iy,
-			   y[iy + 1]);
+		    printf("(%16.8e, %16.8e)", y[iy], y[iy + 1]);
 		    printf("; ");
-		    printf("w[%d]=%.16e, w[%d+1]=%.16e", iw, w[iw], iw,
-			   w[iw + 1]);
+		    printf("(%24.16e, %24.16e)", w[iw], w[iw + 1]);
 		    printf("; ");
 		    ix += incx;
 		    iy += incy;
@@ -2075,10 +1959,11 @@ double do_test_zwaxpby_z_c(int n,
 		  }
 
 		  printf("      ");
-		  printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-			 alpha[1]);
+		  printf("alpha = ");
+		  printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);
 		  printf("; ");
-		  printf("beta[0]=%.16e, beta[1]=%.16e", beta[0], beta[1]);
+		  printf("beta = ");
+		  printf("(%24.16e, %24.16e)", beta[0], beta[1]);
 		  printf("\n");
 		  printf("      ratio=%.4e\n", ratio);
 		  p_count++;
@@ -2315,14 +2200,6 @@ double do_test_zwaxpby_c_z(int n,
   if (n * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2; i += incx_gen) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
-  for (i = 0; i < n * 2; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-  }
   w = (double *) blas_malloc(n * 2 * sizeof(double) * 2);
   if (n * 2 > 0 && w == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -2339,14 +2216,6 @@ double do_test_zwaxpby_c_z(int n,
   y_gen = (double *) blas_malloc(n * sizeof(double) * 2);
   if (n > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n; i += incx_gen) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
-  }
-  for (i = 0; i < n; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
   }
   temp_ab = (double *) blas_malloc(2 * sizeof(double) * 2);
   if (2 > 0 && temp_ab == NULL) {
@@ -2444,12 +2313,6 @@ double do_test_zwaxpby_c_z(int n,
 	  incx = incx_val;
 	  incx *= 2;
 
-	  /* zero out x */
-	  for (j = 0; j < n * 2 * incx_gen; j += incx_gen) {
-	    x[j] = 0.0;
-	    x[j + 1] = 0.0;
-	  }
-
 	  /* set x starting index */
 	  ix = 0;
 	  if (incx < 0)
@@ -2472,12 +2335,6 @@ double do_test_zwaxpby_c_z(int n,
 	    /* setting incy */
 	    incy = incy_val;
 	    incy *= 2;
-
-	    /* zero out vector */
-	    for (j = 0; j < n * 2 * incy_gen; j += incy_gen) {
-	      y[j] = 0.0;
-	      y[j + 1] = 0.0;
-	    }
 
 	    /* set y starting index */
 	    iy = 0;
@@ -2506,13 +2363,6 @@ double do_test_zwaxpby_c_z(int n,
 	         at random */
 	      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
 		continue;
-
-	      /* zero out vector */
-	      for (j = 0; j < n * 2 * incw_gen; j += incw_gen) {
-		w[j] = 0.0;
-		w[j + 1] = 0.0;
-	      }
-
 
 	      /* call BLAS_zwaxpby_c_z to get w */
 	      FPU_FIX_STOP;
@@ -2609,14 +2459,11 @@ double do_test_zwaxpby_c_z(int n,
 
 		  for (j = 0; j < n; j++) {
 		    printf("      ");
-		    printf("x[%d]=%.8e, x[%d+1]=%.8e", ix, x[ix], ix,
-			   x[ix + 1]);
+		    printf("(%16.8e, %16.8e)", x[ix], x[ix + 1]);
 		    printf("; ");
-		    printf("y[%d]=%.16e, y[%d+1]=%.16e", iy, y[iy], iy,
-			   y[iy + 1]);
+		    printf("(%24.16e, %24.16e)", y[iy], y[iy + 1]);
 		    printf("; ");
-		    printf("w[%d]=%.16e, w[%d+1]=%.16e", iw, w[iw], iw,
-			   w[iw + 1]);
+		    printf("(%24.16e, %24.16e)", w[iw], w[iw + 1]);
 		    printf("; ");
 		    ix += incx;
 		    iy += incy;
@@ -2624,10 +2471,11 @@ double do_test_zwaxpby_c_z(int n,
 		  }
 
 		  printf("      ");
-		  printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-			 alpha[1]);
+		  printf("alpha = ");
+		  printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);
 		  printf("; ");
-		  printf("beta[0]=%.16e, beta[1]=%.16e", beta[0], beta[1]);
+		  printf("beta = ");
+		  printf("(%24.16e, %24.16e)", beta[0], beta[1]);
 		  printf("\n");
 		  printf("      ratio=%.4e\n", ratio);
 		  p_count++;
@@ -2864,14 +2712,6 @@ double do_test_zwaxpby_c_c(int n,
   if (n * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2; i += incx_gen) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
-  for (i = 0; i < n * 2; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-  }
   w = (double *) blas_malloc(n * 2 * sizeof(double) * 2);
   if (n * 2 > 0 && w == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -2888,14 +2728,6 @@ double do_test_zwaxpby_c_c(int n,
   y_gen = (float *) blas_malloc(n * sizeof(float) * 2);
   if (n > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n; i += incx_gen) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
-  }
-  for (i = 0; i < n; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
   }
   temp_ab = (double *) blas_malloc(2 * sizeof(double) * 2);
   if (2 > 0 && temp_ab == NULL) {
@@ -2993,12 +2825,6 @@ double do_test_zwaxpby_c_c(int n,
 	  incx = incx_val;
 	  incx *= 2;
 
-	  /* zero out x */
-	  for (j = 0; j < n * 2 * incx_gen; j += incx_gen) {
-	    x[j] = 0.0;
-	    x[j + 1] = 0.0;
-	  }
-
 	  /* set x starting index */
 	  ix = 0;
 	  if (incx < 0)
@@ -3021,12 +2847,6 @@ double do_test_zwaxpby_c_c(int n,
 	    /* setting incy */
 	    incy = incy_val;
 	    incy *= 2;
-
-	    /* zero out vector */
-	    for (j = 0; j < n * 2 * incy_gen; j += incy_gen) {
-	      y[j] = 0.0;
-	      y[j + 1] = 0.0;
-	    }
 
 	    /* set y starting index */
 	    iy = 0;
@@ -3055,13 +2875,6 @@ double do_test_zwaxpby_c_c(int n,
 	         at random */
 	      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
 		continue;
-
-	      /* zero out vector */
-	      for (j = 0; j < n * 2 * incw_gen; j += incw_gen) {
-		w[j] = 0.0;
-		w[j + 1] = 0.0;
-	      }
-
 
 	      /* call BLAS_zwaxpby_c_c to get w */
 	      FPU_FIX_STOP;
@@ -3176,14 +2989,11 @@ double do_test_zwaxpby_c_c(int n,
 
 		  for (j = 0; j < n; j++) {
 		    printf("      ");
-		    printf("x[%d]=%.8e, x[%d+1]=%.8e", ix, x[ix], ix,
-			   x[ix + 1]);
+		    printf("(%16.8e, %16.8e)", x[ix], x[ix + 1]);
 		    printf("; ");
-		    printf("y[%d]=%.8e, y[%d+1]=%.8e", iy, y[iy], iy,
-			   y[iy + 1]);
+		    printf("(%16.8e, %16.8e)", y[iy], y[iy + 1]);
 		    printf("; ");
-		    printf("w[%d]=%.16e, w[%d+1]=%.16e", iw, w[iw], iw,
-			   w[iw + 1]);
+		    printf("(%24.16e, %24.16e)", w[iw], w[iw + 1]);
 		    printf("; ");
 		    ix += incx;
 		    iy += incy;
@@ -3191,10 +3001,11 @@ double do_test_zwaxpby_c_c(int n,
 		  }
 
 		  printf("      ");
-		  printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-			 alpha[1]);
+		  printf("alpha = ");
+		  printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);
 		  printf("; ");
-		  printf("beta[0]=%.16e, beta[1]=%.16e", beta[0], beta[1]);
+		  printf("beta = ");
+		  printf("(%24.16e, %24.16e)", beta[0], beta[1]);
 		  printf("\n");
 		  printf("      ratio=%.4e\n", ratio);
 		  p_count++;
@@ -3431,13 +3242,6 @@ double do_test_cwaxpby_c_s(int n,
   if (n * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2; i += incx_gen) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
-  for (i = 0; i < n * 2; i += incy_gen) {
-    y[i] = 0.0;
-  }
   w = (float *) blas_malloc(n * 2 * sizeof(float) * 2);
   if (n * 2 > 0 && w == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -3454,13 +3258,6 @@ double do_test_cwaxpby_c_s(int n,
   y_gen = (float *) blas_malloc(n * sizeof(float));
   if (n > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n; i += incx_gen) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
-  }
-  for (i = 0; i < n; i += incy_gen) {
-    y_gen[i] = 0.0;
   }
   temp_ab = (float *) blas_malloc(2 * sizeof(float) * 2);
   if (2 > 0 && temp_ab == NULL) {
@@ -3570,12 +3367,6 @@ double do_test_cwaxpby_c_s(int n,
 	  incx = incx_val;
 	  incx *= 2;
 
-	  /* zero out x */
-	  for (j = 0; j < n * 2 * incx_gen; j += incx_gen) {
-	    x[j] = 0.0;
-	    x[j + 1] = 0.0;
-	  }
-
 	  /* set x starting index */
 	  ix = 0;
 	  if (incx < 0)
@@ -3598,11 +3389,6 @@ double do_test_cwaxpby_c_s(int n,
 	    /* setting incy */
 	    incy = incy_val;
 
-
-	    /* zero out vector */
-	    for (j = 0; j < n * 2 * incy_gen; j += incy_gen) {
-	      y[j] = 0.0;
-	    }
 
 	    /* set y starting index */
 	    iy = 0;
@@ -3629,13 +3415,6 @@ double do_test_cwaxpby_c_s(int n,
 	         at random */
 	      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
 		continue;
-
-	      /* zero out vector */
-	      for (j = 0; j < n * 2 * incw_gen; j += incw_gen) {
-		w[j] = 0.0;
-		w[j + 1] = 0.0;
-	      }
-
 
 	      /* call BLAS_cwaxpby_c_s to get w */
 	      FPU_FIX_STOP;
@@ -3732,13 +3511,11 @@ double do_test_cwaxpby_c_s(int n,
 
 		  for (j = 0; j < n; j++) {
 		    printf("      ");
-		    printf("x[%d]=%.8e, x[%d+1]=%.8e", ix, x[ix], ix,
-			   x[ix + 1]);
+		    printf("(%16.8e, %16.8e)", x[ix], x[ix + 1]);
 		    printf("; ");
-		    printf("y[%d]=%.8e", iy, y[iy]);
+		    printf("%16.8e", y[iy]);
 		    printf("; ");
-		    printf("w[%d]=%.8e, w[%d+1]=%.8e", iw, w[iw], iw,
-			   w[iw + 1]);
+		    printf("(%16.8e, %16.8e)", w[iw], w[iw + 1]);
 		    printf("; ");
 		    ix += incx;
 		    iy += incy;
@@ -3746,9 +3523,11 @@ double do_test_cwaxpby_c_s(int n,
 		  }
 
 		  printf("      ");
-		  printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0], alpha[1]);
+		  printf("alpha = ");
+		  printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);
 		  printf("; ");
-		  printf("beta[0]=%.8e, beta[1]=%.8e", beta[0], beta[1]);
+		  printf("beta = ");
+		  printf("(%16.8e, %16.8e)", beta[0], beta[1]);
 		  printf("\n");
 		  printf("      ratio=%.4e\n", ratio);
 		  p_count++;
@@ -3985,13 +3764,6 @@ double do_test_cwaxpby_s_c(int n,
   if (n * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2; i += incx_gen) {
-    x[i] = 0.0;
-  }
-  for (i = 0; i < n * 2; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-  }
   w = (float *) blas_malloc(n * 2 * sizeof(float) * 2);
   if (n * 2 > 0 && w == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -4008,13 +3780,6 @@ double do_test_cwaxpby_s_c(int n,
   y_gen = (float *) blas_malloc(n * sizeof(float) * 2);
   if (n > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n; i += incx_gen) {
-    x_gen[i] = 0.0;
-  }
-  for (i = 0; i < n; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
   }
   temp_ab = (float *) blas_malloc(2 * sizeof(float) * 2);
   if (2 > 0 && temp_ab == NULL) {
@@ -4125,11 +3890,6 @@ double do_test_cwaxpby_s_c(int n,
 	  incx = incx_val;
 
 
-	  /* zero out x */
-	  for (j = 0; j < n * 2 * incx_gen; j += incx_gen) {
-	    x[j] = 0.0;
-	  }
-
 	  /* set x starting index */
 	  ix = 0;
 	  if (incx < 0)
@@ -4150,12 +3910,6 @@ double do_test_cwaxpby_s_c(int n,
 	    /* setting incy */
 	    incy = incy_val;
 	    incy *= 2;
-
-	    /* zero out vector */
-	    for (j = 0; j < n * 2 * incy_gen; j += incy_gen) {
-	      y[j] = 0.0;
-	      y[j + 1] = 0.0;
-	    }
 
 	    /* set y starting index */
 	    iy = 0;
@@ -4184,13 +3938,6 @@ double do_test_cwaxpby_s_c(int n,
 	         at random */
 	      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
 		continue;
-
-	      /* zero out vector */
-	      for (j = 0; j < n * 2 * incw_gen; j += incw_gen) {
-		w[j] = 0.0;
-		w[j + 1] = 0.0;
-	      }
-
 
 	      /* call BLAS_cwaxpby_s_c to get w */
 	      FPU_FIX_STOP;
@@ -4287,13 +4034,11 @@ double do_test_cwaxpby_s_c(int n,
 
 		  for (j = 0; j < n; j++) {
 		    printf("      ");
-		    printf("x[%d]=%.8e", ix, x[ix]);
+		    printf("%16.8e", x[ix]);
 		    printf("; ");
-		    printf("y[%d]=%.8e, y[%d+1]=%.8e", iy, y[iy], iy,
-			   y[iy + 1]);
+		    printf("(%16.8e, %16.8e)", y[iy], y[iy + 1]);
 		    printf("; ");
-		    printf("w[%d]=%.8e, w[%d+1]=%.8e", iw, w[iw], iw,
-			   w[iw + 1]);
+		    printf("(%16.8e, %16.8e)", w[iw], w[iw + 1]);
 		    printf("; ");
 		    ix += incx;
 		    iy += incy;
@@ -4301,9 +4046,11 @@ double do_test_cwaxpby_s_c(int n,
 		  }
 
 		  printf("      ");
-		  printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0], alpha[1]);
+		  printf("alpha = ");
+		  printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);
 		  printf("; ");
-		  printf("beta[0]=%.8e, beta[1]=%.8e", beta[0], beta[1]);
+		  printf("beta = ");
+		  printf("(%16.8e, %16.8e)", beta[0], beta[1]);
 		  printf("\n");
 		  printf("      ratio=%.4e\n", ratio);
 		  p_count++;
@@ -4540,12 +4287,6 @@ double do_test_cwaxpby_s_s(int n,
   if (n * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2; i += incx_gen) {
-    x[i] = 0.0;
-  }
-  for (i = 0; i < n * 2; i += incy_gen) {
-    y[i] = 0.0;
-  }
   w = (float *) blas_malloc(n * 2 * sizeof(float) * 2);
   if (n * 2 > 0 && w == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -4562,12 +4303,6 @@ double do_test_cwaxpby_s_s(int n,
   y_gen = (float *) blas_malloc(n * sizeof(float));
   if (n > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n; i += incx_gen) {
-    x_gen[i] = 0.0;
-  }
-  for (i = 0; i < n; i += incy_gen) {
-    y_gen[i] = 0.0;
   }
   temp_ab = (float *) blas_malloc(2 * sizeof(float) * 2);
   if (2 > 0 && temp_ab == NULL) {
@@ -4672,11 +4407,6 @@ double do_test_cwaxpby_s_s(int n,
 	  incx = incx_val;
 
 
-	  /* zero out x */
-	  for (j = 0; j < n * 2 * incx_gen; j += incx_gen) {
-	    x[j] = 0.0;
-	  }
-
 	  /* set x starting index */
 	  ix = 0;
 	  if (incx < 0)
@@ -4697,11 +4427,6 @@ double do_test_cwaxpby_s_s(int n,
 	    /* setting incy */
 	    incy = incy_val;
 
-
-	    /* zero out vector */
-	    for (j = 0; j < n * 2 * incy_gen; j += incy_gen) {
-	      y[j] = 0.0;
-	    }
 
 	    /* set y starting index */
 	    iy = 0;
@@ -4728,13 +4453,6 @@ double do_test_cwaxpby_s_s(int n,
 	         at random */
 	      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
 		continue;
-
-	      /* zero out vector */
-	      for (j = 0; j < n * 2 * incw_gen; j += incw_gen) {
-		w[j] = 0.0;
-		w[j + 1] = 0.0;
-	      }
-
 
 	      /* call BLAS_cwaxpby_s_s to get w */
 	      FPU_FIX_STOP;
@@ -4845,12 +4563,11 @@ double do_test_cwaxpby_s_s(int n,
 
 		  for (j = 0; j < n; j++) {
 		    printf("      ");
-		    printf("x[%d]=%.8e", ix, x[ix]);
+		    printf("%16.8e", x[ix]);
 		    printf("; ");
-		    printf("y[%d]=%.8e", iy, y[iy]);
+		    printf("%16.8e", y[iy]);
 		    printf("; ");
-		    printf("w[%d]=%.8e, w[%d+1]=%.8e", iw, w[iw], iw,
-			   w[iw + 1]);
+		    printf("(%16.8e, %16.8e)", w[iw], w[iw + 1]);
 		    printf("; ");
 		    ix += incx;
 		    iy += incy;
@@ -4858,9 +4575,11 @@ double do_test_cwaxpby_s_s(int n,
 		  }
 
 		  printf("      ");
-		  printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0], alpha[1]);
+		  printf("alpha = ");
+		  printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);
 		  printf("; ");
-		  printf("beta[0]=%.8e, beta[1]=%.8e", beta[0], beta[1]);
+		  printf("beta = ");
+		  printf("(%16.8e, %16.8e)", beta[0], beta[1]);
 		  printf("\n");
 		  printf("      ratio=%.4e\n", ratio);
 		  p_count++;
@@ -5097,13 +4816,6 @@ double do_test_zwaxpby_z_d(int n,
   if (n * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2; i += incx_gen) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
-  for (i = 0; i < n * 2; i += incy_gen) {
-    y[i] = 0.0;
-  }
   w = (double *) blas_malloc(n * 2 * sizeof(double) * 2);
   if (n * 2 > 0 && w == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -5120,13 +4832,6 @@ double do_test_zwaxpby_z_d(int n,
   y_gen = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n; i += incx_gen) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
-  }
-  for (i = 0; i < n; i += incy_gen) {
-    y_gen[i] = 0.0;
   }
   temp_ab = (double *) blas_malloc(2 * sizeof(double) * 2);
   if (2 > 0 && temp_ab == NULL) {
@@ -5221,12 +4926,6 @@ double do_test_zwaxpby_z_d(int n,
 	  incx = incx_val;
 	  incx *= 2;
 
-	  /* zero out x */
-	  for (j = 0; j < n * 2 * incx_gen; j += incx_gen) {
-	    x[j] = 0.0;
-	    x[j + 1] = 0.0;
-	  }
-
 	  /* set x starting index */
 	  ix = 0;
 	  if (incx < 0)
@@ -5249,11 +4948,6 @@ double do_test_zwaxpby_z_d(int n,
 	    /* setting incy */
 	    incy = incy_val;
 
-
-	    /* zero out vector */
-	    for (j = 0; j < n * 2 * incy_gen; j += incy_gen) {
-	      y[j] = 0.0;
-	    }
 
 	    /* set y starting index */
 	    iy = 0;
@@ -5280,13 +4974,6 @@ double do_test_zwaxpby_z_d(int n,
 	         at random */
 	      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
 		continue;
-
-	      /* zero out vector */
-	      for (j = 0; j < n * 2 * incw_gen; j += incw_gen) {
-		w[j] = 0.0;
-		w[j + 1] = 0.0;
-	      }
-
 
 	      /* call BLAS_zwaxpby_z_d to get w */
 	      FPU_FIX_STOP;
@@ -5383,13 +5070,11 @@ double do_test_zwaxpby_z_d(int n,
 
 		  for (j = 0; j < n; j++) {
 		    printf("      ");
-		    printf("x[%d]=%.16e, x[%d+1]=%.16e", ix, x[ix], ix,
-			   x[ix + 1]);
+		    printf("(%24.16e, %24.16e)", x[ix], x[ix + 1]);
 		    printf("; ");
-		    printf("y[%d]=%.16e", iy, y[iy]);
+		    printf("%24.16e", y[iy]);
 		    printf("; ");
-		    printf("w[%d]=%.16e, w[%d+1]=%.16e", iw, w[iw], iw,
-			   w[iw + 1]);
+		    printf("(%24.16e, %24.16e)", w[iw], w[iw + 1]);
 		    printf("; ");
 		    ix += incx;
 		    iy += incy;
@@ -5397,10 +5082,11 @@ double do_test_zwaxpby_z_d(int n,
 		  }
 
 		  printf("      ");
-		  printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-			 alpha[1]);
+		  printf("alpha = ");
+		  printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);
 		  printf("; ");
-		  printf("beta[0]=%.16e, beta[1]=%.16e", beta[0], beta[1]);
+		  printf("beta = ");
+		  printf("(%24.16e, %24.16e)", beta[0], beta[1]);
 		  printf("\n");
 		  printf("      ratio=%.4e\n", ratio);
 		  p_count++;
@@ -5637,13 +5323,6 @@ double do_test_zwaxpby_d_z(int n,
   if (n * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2; i += incx_gen) {
-    x[i] = 0.0;
-  }
-  for (i = 0; i < n * 2; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-  }
   w = (double *) blas_malloc(n * 2 * sizeof(double) * 2);
   if (n * 2 > 0 && w == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -5660,13 +5339,6 @@ double do_test_zwaxpby_d_z(int n,
   y_gen = (double *) blas_malloc(n * sizeof(double) * 2);
   if (n > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n; i += incx_gen) {
-    x_gen[i] = 0.0;
-  }
-  for (i = 0; i < n; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
   }
   temp_ab = (double *) blas_malloc(2 * sizeof(double) * 2);
   if (2 > 0 && temp_ab == NULL) {
@@ -5761,11 +5433,6 @@ double do_test_zwaxpby_d_z(int n,
 	  incx = incx_val;
 
 
-	  /* zero out x */
-	  for (j = 0; j < n * 2 * incx_gen; j += incx_gen) {
-	    x[j] = 0.0;
-	  }
-
 	  /* set x starting index */
 	  ix = 0;
 	  if (incx < 0)
@@ -5786,12 +5453,6 @@ double do_test_zwaxpby_d_z(int n,
 	    /* setting incy */
 	    incy = incy_val;
 	    incy *= 2;
-
-	    /* zero out vector */
-	    for (j = 0; j < n * 2 * incy_gen; j += incy_gen) {
-	      y[j] = 0.0;
-	      y[j + 1] = 0.0;
-	    }
 
 	    /* set y starting index */
 	    iy = 0;
@@ -5820,13 +5481,6 @@ double do_test_zwaxpby_d_z(int n,
 	         at random */
 	      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
 		continue;
-
-	      /* zero out vector */
-	      for (j = 0; j < n * 2 * incw_gen; j += incw_gen) {
-		w[j] = 0.0;
-		w[j + 1] = 0.0;
-	      }
-
 
 	      /* call BLAS_zwaxpby_d_z to get w */
 	      FPU_FIX_STOP;
@@ -5923,13 +5577,11 @@ double do_test_zwaxpby_d_z(int n,
 
 		  for (j = 0; j < n; j++) {
 		    printf("      ");
-		    printf("x[%d]=%.16e", ix, x[ix]);
+		    printf("%24.16e", x[ix]);
 		    printf("; ");
-		    printf("y[%d]=%.16e, y[%d+1]=%.16e", iy, y[iy], iy,
-			   y[iy + 1]);
+		    printf("(%24.16e, %24.16e)", y[iy], y[iy + 1]);
 		    printf("; ");
-		    printf("w[%d]=%.16e, w[%d+1]=%.16e", iw, w[iw], iw,
-			   w[iw + 1]);
+		    printf("(%24.16e, %24.16e)", w[iw], w[iw + 1]);
 		    printf("; ");
 		    ix += incx;
 		    iy += incy;
@@ -5937,10 +5589,11 @@ double do_test_zwaxpby_d_z(int n,
 		  }
 
 		  printf("      ");
-		  printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-			 alpha[1]);
+		  printf("alpha = ");
+		  printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);
 		  printf("; ");
-		  printf("beta[0]=%.16e, beta[1]=%.16e", beta[0], beta[1]);
+		  printf("beta = ");
+		  printf("(%24.16e, %24.16e)", beta[0], beta[1]);
 		  printf("\n");
 		  printf("      ratio=%.4e\n", ratio);
 		  p_count++;
@@ -6177,12 +5830,6 @@ double do_test_zwaxpby_d_d(int n,
   if (n * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2; i += incx_gen) {
-    x[i] = 0.0;
-  }
-  for (i = 0; i < n * 2; i += incy_gen) {
-    y[i] = 0.0;
-  }
   w = (double *) blas_malloc(n * 2 * sizeof(double) * 2);
   if (n * 2 > 0 && w == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -6199,12 +5846,6 @@ double do_test_zwaxpby_d_d(int n,
   y_gen = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n; i += incx_gen) {
-    x_gen[i] = 0.0;
-  }
-  for (i = 0; i < n; i += incy_gen) {
-    y_gen[i] = 0.0;
   }
   temp_ab = (double *) blas_malloc(2 * sizeof(double) * 2);
   if (2 > 0 && temp_ab == NULL) {
@@ -6296,11 +5937,6 @@ double do_test_zwaxpby_d_d(int n,
 	  incx = incx_val;
 
 
-	  /* zero out x */
-	  for (j = 0; j < n * 2 * incx_gen; j += incx_gen) {
-	    x[j] = 0.0;
-	  }
-
 	  /* set x starting index */
 	  ix = 0;
 	  if (incx < 0)
@@ -6321,11 +5957,6 @@ double do_test_zwaxpby_d_d(int n,
 	    /* setting incy */
 	    incy = incy_val;
 
-
-	    /* zero out vector */
-	    for (j = 0; j < n * 2 * incy_gen; j += incy_gen) {
-	      y[j] = 0.0;
-	    }
 
 	    /* set y starting index */
 	    iy = 0;
@@ -6352,13 +5983,6 @@ double do_test_zwaxpby_d_d(int n,
 	         at random */
 	      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
 		continue;
-
-	      /* zero out vector */
-	      for (j = 0; j < n * 2 * incw_gen; j += incw_gen) {
-		w[j] = 0.0;
-		w[j + 1] = 0.0;
-	      }
-
 
 	      /* call BLAS_zwaxpby_d_d to get w */
 	      FPU_FIX_STOP;
@@ -6469,12 +6093,11 @@ double do_test_zwaxpby_d_d(int n,
 
 		  for (j = 0; j < n; j++) {
 		    printf("      ");
-		    printf("x[%d]=%.16e", ix, x[ix]);
+		    printf("%24.16e", x[ix]);
 		    printf("; ");
-		    printf("y[%d]=%.16e", iy, y[iy]);
+		    printf("%24.16e", y[iy]);
 		    printf("; ");
-		    printf("w[%d]=%.16e, w[%d+1]=%.16e", iw, w[iw], iw,
-			   w[iw + 1]);
+		    printf("(%24.16e, %24.16e)", w[iw], w[iw + 1]);
 		    printf("; ");
 		    ix += incx;
 		    iy += incy;
@@ -6482,10 +6105,11 @@ double do_test_zwaxpby_d_d(int n,
 		  }
 
 		  printf("      ");
-		  printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-			 alpha[1]);
+		  printf("alpha = ");
+		  printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);
 		  printf("; ");
-		  printf("beta[0]=%.16e, beta[1]=%.16e", beta[0], beta[1]);
+		  printf("beta = ");
+		  printf("(%24.16e, %24.16e)", beta[0], beta[1]);
 		  printf("\n");
 		  printf("      ratio=%.4e\n", ratio);
 		  p_count++;
@@ -6721,12 +6345,6 @@ double do_test_swaxpby_x(int n,
   if (n * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2; i += incx_gen) {
-    x[i] = 0.0;
-  }
-  for (i = 0; i < n * 2; i += incy_gen) {
-    y[i] = 0.0;
-  }
   w = (float *) blas_malloc(n * 2 * sizeof(float));
   if (n * 2 > 0 && w == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -6743,12 +6361,6 @@ double do_test_swaxpby_x(int n,
   y_gen = (float *) blas_malloc(n * sizeof(float));
   if (n > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n; i += incx_gen) {
-    x_gen[i] = 0.0;
-  }
-  for (i = 0; i < n; i += incy_gen) {
-    y_gen[i] = 0.0;
   }
   temp_ab = (float *) blas_malloc(2 * sizeof(float));
   if (2 > 0 && temp_ab == NULL) {
@@ -6849,11 +6461,6 @@ double do_test_swaxpby_x(int n,
 	    incx = incx_val;
 
 
-	    /* zero out x */
-	    for (j = 0; j < n * 2 * incx_gen; j += incx_gen) {
-	      x[j] = 0.0;
-	    }
-
 	    /* set x starting index */
 	    ix = 0;
 	    if (incx < 0)
@@ -6874,11 +6481,6 @@ double do_test_swaxpby_x(int n,
 	      /* setting incy */
 	      incy = incy_val;
 
-
-	      /* zero out vector */
-	      for (j = 0; j < n * 2 * incy_gen; j += incy_gen) {
-		y[j] = 0.0;
-	      }
 
 	      /* set y starting index */
 	      iy = 0;
@@ -6905,12 +6507,6 @@ double do_test_swaxpby_x(int n,
 		   at random */
 		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
 		  continue;
-
-		/* zero out vector */
-		for (j = 0; j < n * 2 * incw_gen; j += incw_gen) {
-		  w[j] = 0.0;
-		}
-
 
 		/* call BLAS_swaxpby_x to get w */
 		FPU_FIX_STOP;
@@ -7007,11 +6603,11 @@ double do_test_swaxpby_x(int n,
 
 		    for (j = 0; j < n; j++) {
 		      printf("      ");
-		      printf("x[%d]=%.8e", ix, x[ix]);
+		      printf("%16.8e", x[ix]);
 		      printf("; ");
-		      printf("y[%d]=%.8e", iy, y[iy]);
+		      printf("%16.8e", y[iy]);
 		      printf("; ");
-		      printf("w[%d]=%.8e", iw, w[iw]);
+		      printf("%16.8e", w[iw]);
 		      printf("; ");
 		      ix += incx;
 		      iy += incy;
@@ -7019,9 +6615,11 @@ double do_test_swaxpby_x(int n,
 		    }
 
 		    printf("      ");
-		    printf("alpha=%.8e", alpha);
+		    printf("alpha = ");
+		    printf("%16.8e", alpha);
 		    printf("; ");
-		    printf("beta=%.8e", beta);
+		    printf("beta = ");
+		    printf("%16.8e", beta);
 		    printf("\n");
 		    printf("      ratio=%.4e\n", ratio);
 		    p_count++;
@@ -7257,12 +6855,6 @@ double do_test_dwaxpby_x(int n,
   if (n * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2; i += incx_gen) {
-    x[i] = 0.0;
-  }
-  for (i = 0; i < n * 2; i += incy_gen) {
-    y[i] = 0.0;
-  }
   w = (double *) blas_malloc(n * 2 * sizeof(double));
   if (n * 2 > 0 && w == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -7279,12 +6871,6 @@ double do_test_dwaxpby_x(int n,
   y_gen = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n; i += incx_gen) {
-    x_gen[i] = 0.0;
-  }
-  for (i = 0; i < n; i += incy_gen) {
-    y_gen[i] = 0.0;
   }
   temp_ab = (double *) blas_malloc(2 * sizeof(double));
   if (2 > 0 && temp_ab == NULL) {
@@ -7385,11 +6971,6 @@ double do_test_dwaxpby_x(int n,
 	    incx = incx_val;
 
 
-	    /* zero out x */
-	    for (j = 0; j < n * 2 * incx_gen; j += incx_gen) {
-	      x[j] = 0.0;
-	    }
-
 	    /* set x starting index */
 	    ix = 0;
 	    if (incx < 0)
@@ -7410,11 +6991,6 @@ double do_test_dwaxpby_x(int n,
 	      /* setting incy */
 	      incy = incy_val;
 
-
-	      /* zero out vector */
-	      for (j = 0; j < n * 2 * incy_gen; j += incy_gen) {
-		y[j] = 0.0;
-	      }
 
 	      /* set y starting index */
 	      iy = 0;
@@ -7441,12 +7017,6 @@ double do_test_dwaxpby_x(int n,
 		   at random */
 		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
 		  continue;
-
-		/* zero out vector */
-		for (j = 0; j < n * 2 * incw_gen; j += incw_gen) {
-		  w[j] = 0.0;
-		}
-
 
 		/* call BLAS_dwaxpby_x to get w */
 		FPU_FIX_STOP;
@@ -7543,11 +7113,11 @@ double do_test_dwaxpby_x(int n,
 
 		    for (j = 0; j < n; j++) {
 		      printf("      ");
-		      printf("x[%d]=%.16e", ix, x[ix]);
+		      printf("%24.16e", x[ix]);
 		      printf("; ");
-		      printf("y[%d]=%.16e", iy, y[iy]);
+		      printf("%24.16e", y[iy]);
 		      printf("; ");
-		      printf("w[%d]=%.16e", iw, w[iw]);
+		      printf("%24.16e", w[iw]);
 		      printf("; ");
 		      ix += incx;
 		      iy += incy;
@@ -7555,9 +7125,11 @@ double do_test_dwaxpby_x(int n,
 		    }
 
 		    printf("      ");
-		    printf("alpha=%.16e", alpha);
+		    printf("alpha = ");
+		    printf("%24.16e", alpha);
 		    printf("; ");
-		    printf("beta=%.16e", beta);
+		    printf("beta = ");
+		    printf("%24.16e", beta);
 		    printf("\n");
 		    printf("      ratio=%.4e\n", ratio);
 		    p_count++;
@@ -7794,14 +7366,6 @@ double do_test_cwaxpby_x(int n,
   if (n * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2; i += incx_gen) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
-  for (i = 0; i < n * 2; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-  }
   w = (float *) blas_malloc(n * 2 * sizeof(float) * 2);
   if (n * 2 > 0 && w == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -7818,14 +7382,6 @@ double do_test_cwaxpby_x(int n,
   y_gen = (float *) blas_malloc(n * sizeof(float) * 2);
   if (n > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n; i += incx_gen) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
-  }
-  for (i = 0; i < n; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
   }
   temp_ab = (float *) blas_malloc(2 * sizeof(float) * 2);
   if (2 > 0 && temp_ab == NULL) {
@@ -7929,12 +7485,6 @@ double do_test_cwaxpby_x(int n,
 	    incx = incx_val;
 	    incx *= 2;
 
-	    /* zero out x */
-	    for (j = 0; j < n * 2 * incx_gen; j += incx_gen) {
-	      x[j] = 0.0;
-	      x[j + 1] = 0.0;
-	    }
-
 	    /* set x starting index */
 	    ix = 0;
 	    if (incx < 0)
@@ -7957,12 +7507,6 @@ double do_test_cwaxpby_x(int n,
 	      /* setting incy */
 	      incy = incy_val;
 	      incy *= 2;
-
-	      /* zero out vector */
-	      for (j = 0; j < n * 2 * incy_gen; j += incy_gen) {
-		y[j] = 0.0;
-		y[j + 1] = 0.0;
-	      }
 
 	      /* set y starting index */
 	      iy = 0;
@@ -7991,13 +7535,6 @@ double do_test_cwaxpby_x(int n,
 		   at random */
 		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
 		  continue;
-
-		/* zero out vector */
-		for (j = 0; j < n * 2 * incw_gen; j += incw_gen) {
-		  w[j] = 0.0;
-		  w[j + 1] = 0.0;
-		}
-
 
 		/* call BLAS_cwaxpby_x to get w */
 		FPU_FIX_STOP;
@@ -8094,14 +7631,11 @@ double do_test_cwaxpby_x(int n,
 
 		    for (j = 0; j < n; j++) {
 		      printf("      ");
-		      printf("x[%d]=%.8e, x[%d+1]=%.8e", ix, x[ix], ix,
-			     x[ix + 1]);
+		      printf("(%16.8e, %16.8e)", x[ix], x[ix + 1]);
 		      printf("; ");
-		      printf("y[%d]=%.8e, y[%d+1]=%.8e", iy, y[iy], iy,
-			     y[iy + 1]);
+		      printf("(%16.8e, %16.8e)", y[iy], y[iy + 1]);
 		      printf("; ");
-		      printf("w[%d]=%.8e, w[%d+1]=%.8e", iw, w[iw], iw,
-			     w[iw + 1]);
+		      printf("(%16.8e, %16.8e)", w[iw], w[iw + 1]);
 		      printf("; ");
 		      ix += incx;
 		      iy += incy;
@@ -8109,10 +7643,11 @@ double do_test_cwaxpby_x(int n,
 		    }
 
 		    printf("      ");
-		    printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-			   alpha[1]);
+		    printf("alpha = ");
+		    printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);
 		    printf("; ");
-		    printf("beta[0]=%.8e, beta[1]=%.8e", beta[0], beta[1]);
+		    printf("beta = ");
+		    printf("(%16.8e, %16.8e)", beta[0], beta[1]);
 		    printf("\n");
 		    printf("      ratio=%.4e\n", ratio);
 		    p_count++;
@@ -8349,14 +7884,6 @@ double do_test_zwaxpby_x(int n,
   if (n * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2; i += incx_gen) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
-  for (i = 0; i < n * 2; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-  }
   w = (double *) blas_malloc(n * 2 * sizeof(double) * 2);
   if (n * 2 > 0 && w == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -8373,14 +7900,6 @@ double do_test_zwaxpby_x(int n,
   y_gen = (double *) blas_malloc(n * sizeof(double) * 2);
   if (n > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n; i += incx_gen) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
-  }
-  for (i = 0; i < n; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
   }
   temp_ab = (double *) blas_malloc(2 * sizeof(double) * 2);
   if (2 > 0 && temp_ab == NULL) {
@@ -8484,12 +8003,6 @@ double do_test_zwaxpby_x(int n,
 	    incx = incx_val;
 	    incx *= 2;
 
-	    /* zero out x */
-	    for (j = 0; j < n * 2 * incx_gen; j += incx_gen) {
-	      x[j] = 0.0;
-	      x[j + 1] = 0.0;
-	    }
-
 	    /* set x starting index */
 	    ix = 0;
 	    if (incx < 0)
@@ -8512,12 +8025,6 @@ double do_test_zwaxpby_x(int n,
 	      /* setting incy */
 	      incy = incy_val;
 	      incy *= 2;
-
-	      /* zero out vector */
-	      for (j = 0; j < n * 2 * incy_gen; j += incy_gen) {
-		y[j] = 0.0;
-		y[j + 1] = 0.0;
-	      }
 
 	      /* set y starting index */
 	      iy = 0;
@@ -8546,13 +8053,6 @@ double do_test_zwaxpby_x(int n,
 		   at random */
 		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
 		  continue;
-
-		/* zero out vector */
-		for (j = 0; j < n * 2 * incw_gen; j += incw_gen) {
-		  w[j] = 0.0;
-		  w[j + 1] = 0.0;
-		}
-
 
 		/* call BLAS_zwaxpby_x to get w */
 		FPU_FIX_STOP;
@@ -8649,14 +8149,11 @@ double do_test_zwaxpby_x(int n,
 
 		    for (j = 0; j < n; j++) {
 		      printf("      ");
-		      printf("x[%d]=%.16e, x[%d+1]=%.16e", ix, x[ix], ix,
-			     x[ix + 1]);
+		      printf("(%24.16e, %24.16e)", x[ix], x[ix + 1]);
 		      printf("; ");
-		      printf("y[%d]=%.16e, y[%d+1]=%.16e", iy, y[iy], iy,
-			     y[iy + 1]);
+		      printf("(%24.16e, %24.16e)", y[iy], y[iy + 1]);
 		      printf("; ");
-		      printf("w[%d]=%.16e, w[%d+1]=%.16e", iw, w[iw], iw,
-			     w[iw + 1]);
+		      printf("(%24.16e, %24.16e)", w[iw], w[iw + 1]);
 		      printf("; ");
 		      ix += incx;
 		      iy += incy;
@@ -8664,10 +8161,11 @@ double do_test_zwaxpby_x(int n,
 		    }
 
 		    printf("      ");
-		    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-			   alpha[1]);
+		    printf("alpha = ");
+		    printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);
 		    printf("; ");
-		    printf("beta[0]=%.16e, beta[1]=%.16e", beta[0], beta[1]);
+		    printf("beta = ");
+		    printf("(%24.16e, %24.16e)", beta[0], beta[1]);
 		    printf("\n");
 		    printf("      ratio=%.4e\n", ratio);
 		    p_count++;
@@ -8903,12 +8401,6 @@ double do_test_dwaxpby_d_s_x(int n,
   if (n * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2; i += incx_gen) {
-    x[i] = 0.0;
-  }
-  for (i = 0; i < n * 2; i += incy_gen) {
-    y[i] = 0.0;
-  }
   w = (double *) blas_malloc(n * 2 * sizeof(double));
   if (n * 2 > 0 && w == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -8925,12 +8417,6 @@ double do_test_dwaxpby_d_s_x(int n,
   y_gen = (float *) blas_malloc(n * sizeof(float));
   if (n > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n; i += incx_gen) {
-    x_gen[i] = 0.0;
-  }
-  for (i = 0; i < n; i += incy_gen) {
-    y_gen[i] = 0.0;
   }
   temp_ab = (double *) blas_malloc(2 * sizeof(double));
   if (2 > 0 && temp_ab == NULL) {
@@ -9035,11 +8521,6 @@ double do_test_dwaxpby_d_s_x(int n,
 	    incx = incx_val;
 
 
-	    /* zero out x */
-	    for (j = 0; j < n * 2 * incx_gen; j += incx_gen) {
-	      x[j] = 0.0;
-	    }
-
 	    /* set x starting index */
 	    ix = 0;
 	    if (incx < 0)
@@ -9060,11 +8541,6 @@ double do_test_dwaxpby_d_s_x(int n,
 	      /* setting incy */
 	      incy = incy_val;
 
-
-	      /* zero out vector */
-	      for (j = 0; j < n * 2 * incy_gen; j += incy_gen) {
-		y[j] = 0.0;
-	      }
 
 	      /* set y starting index */
 	      iy = 0;
@@ -9091,12 +8567,6 @@ double do_test_dwaxpby_d_s_x(int n,
 		   at random */
 		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
 		  continue;
-
-		/* zero out vector */
-		for (j = 0; j < n * 2 * incw_gen; j += incw_gen) {
-		  w[j] = 0.0;
-		}
-
 
 		/* call BLAS_dwaxpby_d_s_x to get w */
 		FPU_FIX_STOP;
@@ -9194,11 +8664,11 @@ double do_test_dwaxpby_d_s_x(int n,
 
 		    for (j = 0; j < n; j++) {
 		      printf("      ");
-		      printf("x[%d]=%.16e", ix, x[ix]);
+		      printf("%24.16e", x[ix]);
 		      printf("; ");
-		      printf("y[%d]=%.8e", iy, y[iy]);
+		      printf("%16.8e", y[iy]);
 		      printf("; ");
-		      printf("w[%d]=%.16e", iw, w[iw]);
+		      printf("%24.16e", w[iw]);
 		      printf("; ");
 		      ix += incx;
 		      iy += incy;
@@ -9206,9 +8676,11 @@ double do_test_dwaxpby_d_s_x(int n,
 		    }
 
 		    printf("      ");
-		    printf("alpha=%.16e", alpha);
+		    printf("alpha = ");
+		    printf("%24.16e", alpha);
 		    printf("; ");
-		    printf("beta=%.16e", beta);
+		    printf("beta = ");
+		    printf("%24.16e", beta);
 		    printf("\n");
 		    printf("      ratio=%.4e\n", ratio);
 		    p_count++;
@@ -9444,12 +8916,6 @@ double do_test_dwaxpby_s_d_x(int n,
   if (n * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2; i += incx_gen) {
-    x[i] = 0.0;
-  }
-  for (i = 0; i < n * 2; i += incy_gen) {
-    y[i] = 0.0;
-  }
   w = (double *) blas_malloc(n * 2 * sizeof(double));
   if (n * 2 > 0 && w == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -9466,12 +8932,6 @@ double do_test_dwaxpby_s_d_x(int n,
   y_gen = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n; i += incx_gen) {
-    x_gen[i] = 0.0;
-  }
-  for (i = 0; i < n; i += incy_gen) {
-    y_gen[i] = 0.0;
   }
   temp_ab = (double *) blas_malloc(2 * sizeof(double));
   if (2 > 0 && temp_ab == NULL) {
@@ -9576,11 +9036,6 @@ double do_test_dwaxpby_s_d_x(int n,
 	    incx = incx_val;
 
 
-	    /* zero out x */
-	    for (j = 0; j < n * 2 * incx_gen; j += incx_gen) {
-	      x[j] = 0.0;
-	    }
-
 	    /* set x starting index */
 	    ix = 0;
 	    if (incx < 0)
@@ -9601,11 +9056,6 @@ double do_test_dwaxpby_s_d_x(int n,
 	      /* setting incy */
 	      incy = incy_val;
 
-
-	      /* zero out vector */
-	      for (j = 0; j < n * 2 * incy_gen; j += incy_gen) {
-		y[j] = 0.0;
-	      }
 
 	      /* set y starting index */
 	      iy = 0;
@@ -9632,12 +9082,6 @@ double do_test_dwaxpby_s_d_x(int n,
 		   at random */
 		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
 		  continue;
-
-		/* zero out vector */
-		for (j = 0; j < n * 2 * incw_gen; j += incw_gen) {
-		  w[j] = 0.0;
-		}
-
 
 		/* call BLAS_dwaxpby_s_d_x to get w */
 		FPU_FIX_STOP;
@@ -9735,11 +9179,11 @@ double do_test_dwaxpby_s_d_x(int n,
 
 		    for (j = 0; j < n; j++) {
 		      printf("      ");
-		      printf("x[%d]=%.8e", ix, x[ix]);
+		      printf("%16.8e", x[ix]);
 		      printf("; ");
-		      printf("y[%d]=%.16e", iy, y[iy]);
+		      printf("%24.16e", y[iy]);
 		      printf("; ");
-		      printf("w[%d]=%.16e", iw, w[iw]);
+		      printf("%24.16e", w[iw]);
 		      printf("; ");
 		      ix += incx;
 		      iy += incy;
@@ -9747,9 +9191,11 @@ double do_test_dwaxpby_s_d_x(int n,
 		    }
 
 		    printf("      ");
-		    printf("alpha=%.16e", alpha);
+		    printf("alpha = ");
+		    printf("%24.16e", alpha);
 		    printf("; ");
-		    printf("beta=%.16e", beta);
+		    printf("beta = ");
+		    printf("%24.16e", beta);
 		    printf("\n");
 		    printf("      ratio=%.4e\n", ratio);
 		    p_count++;
@@ -9985,12 +9431,6 @@ double do_test_dwaxpby_s_s_x(int n,
   if (n * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2; i += incx_gen) {
-    x[i] = 0.0;
-  }
-  for (i = 0; i < n * 2; i += incy_gen) {
-    y[i] = 0.0;
-  }
   w = (double *) blas_malloc(n * 2 * sizeof(double));
   if (n * 2 > 0 && w == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -10007,12 +9447,6 @@ double do_test_dwaxpby_s_s_x(int n,
   y_gen = (float *) blas_malloc(n * sizeof(float));
   if (n > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n; i += incx_gen) {
-    x_gen[i] = 0.0;
-  }
-  for (i = 0; i < n; i += incy_gen) {
-    y_gen[i] = 0.0;
   }
   temp_ab = (double *) blas_malloc(2 * sizeof(double));
   if (2 > 0 && temp_ab == NULL) {
@@ -10117,11 +9551,6 @@ double do_test_dwaxpby_s_s_x(int n,
 	    incx = incx_val;
 
 
-	    /* zero out x */
-	    for (j = 0; j < n * 2 * incx_gen; j += incx_gen) {
-	      x[j] = 0.0;
-	    }
-
 	    /* set x starting index */
 	    ix = 0;
 	    if (incx < 0)
@@ -10142,11 +9571,6 @@ double do_test_dwaxpby_s_s_x(int n,
 	      /* setting incy */
 	      incy = incy_val;
 
-
-	      /* zero out vector */
-	      for (j = 0; j < n * 2 * incy_gen; j += incy_gen) {
-		y[j] = 0.0;
-	      }
 
 	      /* set y starting index */
 	      iy = 0;
@@ -10173,12 +9597,6 @@ double do_test_dwaxpby_s_s_x(int n,
 		   at random */
 		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
 		  continue;
-
-		/* zero out vector */
-		for (j = 0; j < n * 2 * incw_gen; j += incw_gen) {
-		  w[j] = 0.0;
-		}
-
 
 		/* call BLAS_dwaxpby_s_s_x to get w */
 		FPU_FIX_STOP;
@@ -10286,11 +9704,11 @@ double do_test_dwaxpby_s_s_x(int n,
 
 		    for (j = 0; j < n; j++) {
 		      printf("      ");
-		      printf("x[%d]=%.8e", ix, x[ix]);
+		      printf("%16.8e", x[ix]);
 		      printf("; ");
-		      printf("y[%d]=%.8e", iy, y[iy]);
+		      printf("%16.8e", y[iy]);
 		      printf("; ");
-		      printf("w[%d]=%.16e", iw, w[iw]);
+		      printf("%24.16e", w[iw]);
 		      printf("; ");
 		      ix += incx;
 		      iy += incy;
@@ -10298,9 +9716,11 @@ double do_test_dwaxpby_s_s_x(int n,
 		    }
 
 		    printf("      ");
-		    printf("alpha=%.16e", alpha);
+		    printf("alpha = ");
+		    printf("%24.16e", alpha);
 		    printf("; ");
-		    printf("beta=%.16e", beta);
+		    printf("beta = ");
+		    printf("%24.16e", beta);
 		    printf("\n");
 		    printf("      ratio=%.4e\n", ratio);
 		    p_count++;
@@ -10537,14 +9957,6 @@ double do_test_zwaxpby_z_c_x(int n,
   if (n * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2; i += incx_gen) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
-  for (i = 0; i < n * 2; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-  }
   w = (double *) blas_malloc(n * 2 * sizeof(double) * 2);
   if (n * 2 > 0 && w == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -10561,14 +9973,6 @@ double do_test_zwaxpby_z_c_x(int n,
   y_gen = (float *) blas_malloc(n * sizeof(float) * 2);
   if (n > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n; i += incx_gen) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
-  }
-  for (i = 0; i < n; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
   }
   temp_ab = (double *) blas_malloc(2 * sizeof(double) * 2);
   if (2 > 0 && temp_ab == NULL) {
@@ -10685,12 +10089,6 @@ double do_test_zwaxpby_z_c_x(int n,
 	    incx = incx_val;
 	    incx *= 2;
 
-	    /* zero out x */
-	    for (j = 0; j < n * 2 * incx_gen; j += incx_gen) {
-	      x[j] = 0.0;
-	      x[j + 1] = 0.0;
-	    }
-
 	    /* set x starting index */
 	    ix = 0;
 	    if (incx < 0)
@@ -10713,12 +10111,6 @@ double do_test_zwaxpby_z_c_x(int n,
 	      /* setting incy */
 	      incy = incy_val;
 	      incy *= 2;
-
-	      /* zero out vector */
-	      for (j = 0; j < n * 2 * incy_gen; j += incy_gen) {
-		y[j] = 0.0;
-		y[j + 1] = 0.0;
-	      }
 
 	      /* set y starting index */
 	      iy = 0;
@@ -10747,13 +10139,6 @@ double do_test_zwaxpby_z_c_x(int n,
 		   at random */
 		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
 		  continue;
-
-		/* zero out vector */
-		for (j = 0; j < n * 2 * incw_gen; j += incw_gen) {
-		  w[j] = 0.0;
-		  w[j + 1] = 0.0;
-		}
-
 
 		/* call BLAS_zwaxpby_z_c_x to get w */
 		FPU_FIX_STOP;
@@ -10851,14 +10236,11 @@ double do_test_zwaxpby_z_c_x(int n,
 
 		    for (j = 0; j < n; j++) {
 		      printf("      ");
-		      printf("x[%d]=%.16e, x[%d+1]=%.16e", ix, x[ix], ix,
-			     x[ix + 1]);
+		      printf("(%24.16e, %24.16e)", x[ix], x[ix + 1]);
 		      printf("; ");
-		      printf("y[%d]=%.8e, y[%d+1]=%.8e", iy, y[iy], iy,
-			     y[iy + 1]);
+		      printf("(%16.8e, %16.8e)", y[iy], y[iy + 1]);
 		      printf("; ");
-		      printf("w[%d]=%.16e, w[%d+1]=%.16e", iw, w[iw], iw,
-			     w[iw + 1]);
+		      printf("(%24.16e, %24.16e)", w[iw], w[iw + 1]);
 		      printf("; ");
 		      ix += incx;
 		      iy += incy;
@@ -10866,10 +10248,11 @@ double do_test_zwaxpby_z_c_x(int n,
 		    }
 
 		    printf("      ");
-		    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-			   alpha[1]);
+		    printf("alpha = ");
+		    printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);
 		    printf("; ");
-		    printf("beta[0]=%.16e, beta[1]=%.16e", beta[0], beta[1]);
+		    printf("beta = ");
+		    printf("(%24.16e, %24.16e)", beta[0], beta[1]);
 		    printf("\n");
 		    printf("      ratio=%.4e\n", ratio);
 		    p_count++;
@@ -11106,14 +10489,6 @@ double do_test_zwaxpby_c_z_x(int n,
   if (n * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2; i += incx_gen) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
-  for (i = 0; i < n * 2; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-  }
   w = (double *) blas_malloc(n * 2 * sizeof(double) * 2);
   if (n * 2 > 0 && w == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -11130,14 +10505,6 @@ double do_test_zwaxpby_c_z_x(int n,
   y_gen = (double *) blas_malloc(n * sizeof(double) * 2);
   if (n > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n; i += incx_gen) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
-  }
-  for (i = 0; i < n; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
   }
   temp_ab = (double *) blas_malloc(2 * sizeof(double) * 2);
   if (2 > 0 && temp_ab == NULL) {
@@ -11254,12 +10621,6 @@ double do_test_zwaxpby_c_z_x(int n,
 	    incx = incx_val;
 	    incx *= 2;
 
-	    /* zero out x */
-	    for (j = 0; j < n * 2 * incx_gen; j += incx_gen) {
-	      x[j] = 0.0;
-	      x[j + 1] = 0.0;
-	    }
-
 	    /* set x starting index */
 	    ix = 0;
 	    if (incx < 0)
@@ -11282,12 +10643,6 @@ double do_test_zwaxpby_c_z_x(int n,
 	      /* setting incy */
 	      incy = incy_val;
 	      incy *= 2;
-
-	      /* zero out vector */
-	      for (j = 0; j < n * 2 * incy_gen; j += incy_gen) {
-		y[j] = 0.0;
-		y[j + 1] = 0.0;
-	      }
 
 	      /* set y starting index */
 	      iy = 0;
@@ -11316,13 +10671,6 @@ double do_test_zwaxpby_c_z_x(int n,
 		   at random */
 		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
 		  continue;
-
-		/* zero out vector */
-		for (j = 0; j < n * 2 * incw_gen; j += incw_gen) {
-		  w[j] = 0.0;
-		  w[j + 1] = 0.0;
-		}
-
 
 		/* call BLAS_zwaxpby_c_z_x to get w */
 		FPU_FIX_STOP;
@@ -11420,14 +10768,11 @@ double do_test_zwaxpby_c_z_x(int n,
 
 		    for (j = 0; j < n; j++) {
 		      printf("      ");
-		      printf("x[%d]=%.8e, x[%d+1]=%.8e", ix, x[ix], ix,
-			     x[ix + 1]);
+		      printf("(%16.8e, %16.8e)", x[ix], x[ix + 1]);
 		      printf("; ");
-		      printf("y[%d]=%.16e, y[%d+1]=%.16e", iy, y[iy], iy,
-			     y[iy + 1]);
+		      printf("(%24.16e, %24.16e)", y[iy], y[iy + 1]);
 		      printf("; ");
-		      printf("w[%d]=%.16e, w[%d+1]=%.16e", iw, w[iw], iw,
-			     w[iw + 1]);
+		      printf("(%24.16e, %24.16e)", w[iw], w[iw + 1]);
 		      printf("; ");
 		      ix += incx;
 		      iy += incy;
@@ -11435,10 +10780,11 @@ double do_test_zwaxpby_c_z_x(int n,
 		    }
 
 		    printf("      ");
-		    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-			   alpha[1]);
+		    printf("alpha = ");
+		    printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);
 		    printf("; ");
-		    printf("beta[0]=%.16e, beta[1]=%.16e", beta[0], beta[1]);
+		    printf("beta = ");
+		    printf("(%24.16e, %24.16e)", beta[0], beta[1]);
 		    printf("\n");
 		    printf("      ratio=%.4e\n", ratio);
 		    p_count++;
@@ -11675,14 +11021,6 @@ double do_test_zwaxpby_c_c_x(int n,
   if (n * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2; i += incx_gen) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
-  for (i = 0; i < n * 2; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-  }
   w = (double *) blas_malloc(n * 2 * sizeof(double) * 2);
   if (n * 2 > 0 && w == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -11699,14 +11037,6 @@ double do_test_zwaxpby_c_c_x(int n,
   y_gen = (float *) blas_malloc(n * sizeof(float) * 2);
   if (n > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n; i += incx_gen) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
-  }
-  for (i = 0; i < n; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
   }
   temp_ab = (double *) blas_malloc(2 * sizeof(double) * 2);
   if (2 > 0 && temp_ab == NULL) {
@@ -11823,12 +11153,6 @@ double do_test_zwaxpby_c_c_x(int n,
 	    incx = incx_val;
 	    incx *= 2;
 
-	    /* zero out x */
-	    for (j = 0; j < n * 2 * incx_gen; j += incx_gen) {
-	      x[j] = 0.0;
-	      x[j + 1] = 0.0;
-	    }
-
 	    /* set x starting index */
 	    ix = 0;
 	    if (incx < 0)
@@ -11851,12 +11175,6 @@ double do_test_zwaxpby_c_c_x(int n,
 	      /* setting incy */
 	      incy = incy_val;
 	      incy *= 2;
-
-	      /* zero out vector */
-	      for (j = 0; j < n * 2 * incy_gen; j += incy_gen) {
-		y[j] = 0.0;
-		y[j + 1] = 0.0;
-	      }
 
 	      /* set y starting index */
 	      iy = 0;
@@ -11885,13 +11203,6 @@ double do_test_zwaxpby_c_c_x(int n,
 		   at random */
 		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
 		  continue;
-
-		/* zero out vector */
-		for (j = 0; j < n * 2 * incw_gen; j += incw_gen) {
-		  w[j] = 0.0;
-		  w[j + 1] = 0.0;
-		}
-
 
 		/* call BLAS_zwaxpby_c_c_x to get w */
 		FPU_FIX_STOP;
@@ -12006,14 +11317,11 @@ double do_test_zwaxpby_c_c_x(int n,
 
 		    for (j = 0; j < n; j++) {
 		      printf("      ");
-		      printf("x[%d]=%.8e, x[%d+1]=%.8e", ix, x[ix], ix,
-			     x[ix + 1]);
+		      printf("(%16.8e, %16.8e)", x[ix], x[ix + 1]);
 		      printf("; ");
-		      printf("y[%d]=%.8e, y[%d+1]=%.8e", iy, y[iy], iy,
-			     y[iy + 1]);
+		      printf("(%16.8e, %16.8e)", y[iy], y[iy + 1]);
 		      printf("; ");
-		      printf("w[%d]=%.16e, w[%d+1]=%.16e", iw, w[iw], iw,
-			     w[iw + 1]);
+		      printf("(%24.16e, %24.16e)", w[iw], w[iw + 1]);
 		      printf("; ");
 		      ix += incx;
 		      iy += incy;
@@ -12021,10 +11329,11 @@ double do_test_zwaxpby_c_c_x(int n,
 		    }
 
 		    printf("      ");
-		    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-			   alpha[1]);
+		    printf("alpha = ");
+		    printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);
 		    printf("; ");
-		    printf("beta[0]=%.16e, beta[1]=%.16e", beta[0], beta[1]);
+		    printf("beta = ");
+		    printf("(%24.16e, %24.16e)", beta[0], beta[1]);
 		    printf("\n");
 		    printf("      ratio=%.4e\n", ratio);
 		    p_count++;
@@ -12261,13 +11570,6 @@ double do_test_cwaxpby_c_s_x(int n,
   if (n * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2; i += incx_gen) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
-  for (i = 0; i < n * 2; i += incy_gen) {
-    y[i] = 0.0;
-  }
   w = (float *) blas_malloc(n * 2 * sizeof(float) * 2);
   if (n * 2 > 0 && w == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -12284,13 +11586,6 @@ double do_test_cwaxpby_c_s_x(int n,
   y_gen = (float *) blas_malloc(n * sizeof(float));
   if (n > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n; i += incx_gen) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
-  }
-  for (i = 0; i < n; i += incy_gen) {
-    y_gen[i] = 0.0;
   }
   temp_ab = (float *) blas_malloc(2 * sizeof(float) * 2);
   if (2 > 0 && temp_ab == NULL) {
@@ -12419,12 +11714,6 @@ double do_test_cwaxpby_c_s_x(int n,
 	    incx = incx_val;
 	    incx *= 2;
 
-	    /* zero out x */
-	    for (j = 0; j < n * 2 * incx_gen; j += incx_gen) {
-	      x[j] = 0.0;
-	      x[j + 1] = 0.0;
-	    }
-
 	    /* set x starting index */
 	    ix = 0;
 	    if (incx < 0)
@@ -12447,11 +11736,6 @@ double do_test_cwaxpby_c_s_x(int n,
 	      /* setting incy */
 	      incy = incy_val;
 
-
-	      /* zero out vector */
-	      for (j = 0; j < n * 2 * incy_gen; j += incy_gen) {
-		y[j] = 0.0;
-	      }
 
 	      /* set y starting index */
 	      iy = 0;
@@ -12478,13 +11762,6 @@ double do_test_cwaxpby_c_s_x(int n,
 		   at random */
 		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
 		  continue;
-
-		/* zero out vector */
-		for (j = 0; j < n * 2 * incw_gen; j += incw_gen) {
-		  w[j] = 0.0;
-		  w[j + 1] = 0.0;
-		}
-
 
 		/* call BLAS_cwaxpby_c_s_x to get w */
 		FPU_FIX_STOP;
@@ -12582,13 +11859,11 @@ double do_test_cwaxpby_c_s_x(int n,
 
 		    for (j = 0; j < n; j++) {
 		      printf("      ");
-		      printf("x[%d]=%.8e, x[%d+1]=%.8e", ix, x[ix], ix,
-			     x[ix + 1]);
+		      printf("(%16.8e, %16.8e)", x[ix], x[ix + 1]);
 		      printf("; ");
-		      printf("y[%d]=%.8e", iy, y[iy]);
+		      printf("%16.8e", y[iy]);
 		      printf("; ");
-		      printf("w[%d]=%.8e, w[%d+1]=%.8e", iw, w[iw], iw,
-			     w[iw + 1]);
+		      printf("(%16.8e, %16.8e)", w[iw], w[iw + 1]);
 		      printf("; ");
 		      ix += incx;
 		      iy += incy;
@@ -12596,10 +11871,11 @@ double do_test_cwaxpby_c_s_x(int n,
 		    }
 
 		    printf("      ");
-		    printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-			   alpha[1]);
+		    printf("alpha = ");
+		    printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);
 		    printf("; ");
-		    printf("beta[0]=%.8e, beta[1]=%.8e", beta[0], beta[1]);
+		    printf("beta = ");
+		    printf("(%16.8e, %16.8e)", beta[0], beta[1]);
 		    printf("\n");
 		    printf("      ratio=%.4e\n", ratio);
 		    p_count++;
@@ -12836,13 +12112,6 @@ double do_test_cwaxpby_s_c_x(int n,
   if (n * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2; i += incx_gen) {
-    x[i] = 0.0;
-  }
-  for (i = 0; i < n * 2; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-  }
   w = (float *) blas_malloc(n * 2 * sizeof(float) * 2);
   if (n * 2 > 0 && w == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -12859,13 +12128,6 @@ double do_test_cwaxpby_s_c_x(int n,
   y_gen = (float *) blas_malloc(n * sizeof(float) * 2);
   if (n > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n; i += incx_gen) {
-    x_gen[i] = 0.0;
-  }
-  for (i = 0; i < n; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
   }
   temp_ab = (float *) blas_malloc(2 * sizeof(float) * 2);
   if (2 > 0 && temp_ab == NULL) {
@@ -12995,11 +12257,6 @@ double do_test_cwaxpby_s_c_x(int n,
 	    incx = incx_val;
 
 
-	    /* zero out x */
-	    for (j = 0; j < n * 2 * incx_gen; j += incx_gen) {
-	      x[j] = 0.0;
-	    }
-
 	    /* set x starting index */
 	    ix = 0;
 	    if (incx < 0)
@@ -13020,12 +12277,6 @@ double do_test_cwaxpby_s_c_x(int n,
 	      /* setting incy */
 	      incy = incy_val;
 	      incy *= 2;
-
-	      /* zero out vector */
-	      for (j = 0; j < n * 2 * incy_gen; j += incy_gen) {
-		y[j] = 0.0;
-		y[j + 1] = 0.0;
-	      }
 
 	      /* set y starting index */
 	      iy = 0;
@@ -13054,13 +12305,6 @@ double do_test_cwaxpby_s_c_x(int n,
 		   at random */
 		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
 		  continue;
-
-		/* zero out vector */
-		for (j = 0; j < n * 2 * incw_gen; j += incw_gen) {
-		  w[j] = 0.0;
-		  w[j + 1] = 0.0;
-		}
-
 
 		/* call BLAS_cwaxpby_s_c_x to get w */
 		FPU_FIX_STOP;
@@ -13158,13 +12402,11 @@ double do_test_cwaxpby_s_c_x(int n,
 
 		    for (j = 0; j < n; j++) {
 		      printf("      ");
-		      printf("x[%d]=%.8e", ix, x[ix]);
+		      printf("%16.8e", x[ix]);
 		      printf("; ");
-		      printf("y[%d]=%.8e, y[%d+1]=%.8e", iy, y[iy], iy,
-			     y[iy + 1]);
+		      printf("(%16.8e, %16.8e)", y[iy], y[iy + 1]);
 		      printf("; ");
-		      printf("w[%d]=%.8e, w[%d+1]=%.8e", iw, w[iw], iw,
-			     w[iw + 1]);
+		      printf("(%16.8e, %16.8e)", w[iw], w[iw + 1]);
 		      printf("; ");
 		      ix += incx;
 		      iy += incy;
@@ -13172,10 +12414,11 @@ double do_test_cwaxpby_s_c_x(int n,
 		    }
 
 		    printf("      ");
-		    printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-			   alpha[1]);
+		    printf("alpha = ");
+		    printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);
 		    printf("; ");
-		    printf("beta[0]=%.8e, beta[1]=%.8e", beta[0], beta[1]);
+		    printf("beta = ");
+		    printf("(%16.8e, %16.8e)", beta[0], beta[1]);
 		    printf("\n");
 		    printf("      ratio=%.4e\n", ratio);
 		    p_count++;
@@ -13412,12 +12655,6 @@ double do_test_cwaxpby_s_s_x(int n,
   if (n * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2; i += incx_gen) {
-    x[i] = 0.0;
-  }
-  for (i = 0; i < n * 2; i += incy_gen) {
-    y[i] = 0.0;
-  }
   w = (float *) blas_malloc(n * 2 * sizeof(float) * 2);
   if (n * 2 > 0 && w == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -13434,12 +12671,6 @@ double do_test_cwaxpby_s_s_x(int n,
   y_gen = (float *) blas_malloc(n * sizeof(float));
   if (n > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n; i += incx_gen) {
-    x_gen[i] = 0.0;
-  }
-  for (i = 0; i < n; i += incy_gen) {
-    y_gen[i] = 0.0;
   }
   temp_ab = (float *) blas_malloc(2 * sizeof(float) * 2);
   if (2 > 0 && temp_ab == NULL) {
@@ -13563,11 +12794,6 @@ double do_test_cwaxpby_s_s_x(int n,
 	    incx = incx_val;
 
 
-	    /* zero out x */
-	    for (j = 0; j < n * 2 * incx_gen; j += incx_gen) {
-	      x[j] = 0.0;
-	    }
-
 	    /* set x starting index */
 	    ix = 0;
 	    if (incx < 0)
@@ -13588,11 +12814,6 @@ double do_test_cwaxpby_s_s_x(int n,
 	      /* setting incy */
 	      incy = incy_val;
 
-
-	      /* zero out vector */
-	      for (j = 0; j < n * 2 * incy_gen; j += incy_gen) {
-		y[j] = 0.0;
-	      }
 
 	      /* set y starting index */
 	      iy = 0;
@@ -13619,13 +12840,6 @@ double do_test_cwaxpby_s_s_x(int n,
 		   at random */
 		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
 		  continue;
-
-		/* zero out vector */
-		for (j = 0; j < n * 2 * incw_gen; j += incw_gen) {
-		  w[j] = 0.0;
-		  w[j + 1] = 0.0;
-		}
-
 
 		/* call BLAS_cwaxpby_s_s_x to get w */
 		FPU_FIX_STOP;
@@ -13736,12 +12950,11 @@ double do_test_cwaxpby_s_s_x(int n,
 
 		    for (j = 0; j < n; j++) {
 		      printf("      ");
-		      printf("x[%d]=%.8e", ix, x[ix]);
+		      printf("%16.8e", x[ix]);
 		      printf("; ");
-		      printf("y[%d]=%.8e", iy, y[iy]);
+		      printf("%16.8e", y[iy]);
 		      printf("; ");
-		      printf("w[%d]=%.8e, w[%d+1]=%.8e", iw, w[iw], iw,
-			     w[iw + 1]);
+		      printf("(%16.8e, %16.8e)", w[iw], w[iw + 1]);
 		      printf("; ");
 		      ix += incx;
 		      iy += incy;
@@ -13749,10 +12962,11 @@ double do_test_cwaxpby_s_s_x(int n,
 		    }
 
 		    printf("      ");
-		    printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
-			   alpha[1]);
+		    printf("alpha = ");
+		    printf("(%16.8e, %16.8e)", alpha[0], alpha[1]);
 		    printf("; ");
-		    printf("beta[0]=%.8e, beta[1]=%.8e", beta[0], beta[1]);
+		    printf("beta = ");
+		    printf("(%16.8e, %16.8e)", beta[0], beta[1]);
 		    printf("\n");
 		    printf("      ratio=%.4e\n", ratio);
 		    p_count++;
@@ -13989,13 +13203,6 @@ double do_test_zwaxpby_z_d_x(int n,
   if (n * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2; i += incx_gen) {
-    x[i] = 0.0;
-    x[i + 1] = 0.0;
-  }
-  for (i = 0; i < n * 2; i += incy_gen) {
-    y[i] = 0.0;
-  }
   w = (double *) blas_malloc(n * 2 * sizeof(double) * 2);
   if (n * 2 > 0 && w == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -14012,13 +13219,6 @@ double do_test_zwaxpby_z_d_x(int n,
   y_gen = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n; i += incx_gen) {
-    x_gen[i] = 0.0;
-    x_gen[i + 1] = 0.0;
-  }
-  for (i = 0; i < n; i += incy_gen) {
-    y_gen[i] = 0.0;
   }
   temp_ab = (double *) blas_malloc(2 * sizeof(double) * 2);
   if (2 > 0 && temp_ab == NULL) {
@@ -14132,12 +13332,6 @@ double do_test_zwaxpby_z_d_x(int n,
 	    incx = incx_val;
 	    incx *= 2;
 
-	    /* zero out x */
-	    for (j = 0; j < n * 2 * incx_gen; j += incx_gen) {
-	      x[j] = 0.0;
-	      x[j + 1] = 0.0;
-	    }
-
 	    /* set x starting index */
 	    ix = 0;
 	    if (incx < 0)
@@ -14160,11 +13354,6 @@ double do_test_zwaxpby_z_d_x(int n,
 	      /* setting incy */
 	      incy = incy_val;
 
-
-	      /* zero out vector */
-	      for (j = 0; j < n * 2 * incy_gen; j += incy_gen) {
-		y[j] = 0.0;
-	      }
 
 	      /* set y starting index */
 	      iy = 0;
@@ -14191,13 +13380,6 @@ double do_test_zwaxpby_z_d_x(int n,
 		   at random */
 		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
 		  continue;
-
-		/* zero out vector */
-		for (j = 0; j < n * 2 * incw_gen; j += incw_gen) {
-		  w[j] = 0.0;
-		  w[j + 1] = 0.0;
-		}
-
 
 		/* call BLAS_zwaxpby_z_d_x to get w */
 		FPU_FIX_STOP;
@@ -14295,13 +13477,11 @@ double do_test_zwaxpby_z_d_x(int n,
 
 		    for (j = 0; j < n; j++) {
 		      printf("      ");
-		      printf("x[%d]=%.16e, x[%d+1]=%.16e", ix, x[ix], ix,
-			     x[ix + 1]);
+		      printf("(%24.16e, %24.16e)", x[ix], x[ix + 1]);
 		      printf("; ");
-		      printf("y[%d]=%.16e", iy, y[iy]);
+		      printf("%24.16e", y[iy]);
 		      printf("; ");
-		      printf("w[%d]=%.16e, w[%d+1]=%.16e", iw, w[iw], iw,
-			     w[iw + 1]);
+		      printf("(%24.16e, %24.16e)", w[iw], w[iw + 1]);
 		      printf("; ");
 		      ix += incx;
 		      iy += incy;
@@ -14309,10 +13489,11 @@ double do_test_zwaxpby_z_d_x(int n,
 		    }
 
 		    printf("      ");
-		    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-			   alpha[1]);
+		    printf("alpha = ");
+		    printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);
 		    printf("; ");
-		    printf("beta[0]=%.16e, beta[1]=%.16e", beta[0], beta[1]);
+		    printf("beta = ");
+		    printf("(%24.16e, %24.16e)", beta[0], beta[1]);
 		    printf("\n");
 		    printf("      ratio=%.4e\n", ratio);
 		    p_count++;
@@ -14549,13 +13730,6 @@ double do_test_zwaxpby_d_z_x(int n,
   if (n * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2; i += incx_gen) {
-    x[i] = 0.0;
-  }
-  for (i = 0; i < n * 2; i += incy_gen) {
-    y[i] = 0.0;
-    y[i + 1] = 0.0;
-  }
   w = (double *) blas_malloc(n * 2 * sizeof(double) * 2);
   if (n * 2 > 0 && w == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -14572,13 +13746,6 @@ double do_test_zwaxpby_d_z_x(int n,
   y_gen = (double *) blas_malloc(n * sizeof(double) * 2);
   if (n > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n; i += incx_gen) {
-    x_gen[i] = 0.0;
-  }
-  for (i = 0; i < n; i += incy_gen) {
-    y_gen[i] = 0.0;
-    y_gen[i + 1] = 0.0;
   }
   temp_ab = (double *) blas_malloc(2 * sizeof(double) * 2);
   if (2 > 0 && temp_ab == NULL) {
@@ -14692,11 +13859,6 @@ double do_test_zwaxpby_d_z_x(int n,
 	    incx = incx_val;
 
 
-	    /* zero out x */
-	    for (j = 0; j < n * 2 * incx_gen; j += incx_gen) {
-	      x[j] = 0.0;
-	    }
-
 	    /* set x starting index */
 	    ix = 0;
 	    if (incx < 0)
@@ -14717,12 +13879,6 @@ double do_test_zwaxpby_d_z_x(int n,
 	      /* setting incy */
 	      incy = incy_val;
 	      incy *= 2;
-
-	      /* zero out vector */
-	      for (j = 0; j < n * 2 * incy_gen; j += incy_gen) {
-		y[j] = 0.0;
-		y[j + 1] = 0.0;
-	      }
 
 	      /* set y starting index */
 	      iy = 0;
@@ -14751,13 +13907,6 @@ double do_test_zwaxpby_d_z_x(int n,
 		   at random */
 		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
 		  continue;
-
-		/* zero out vector */
-		for (j = 0; j < n * 2 * incw_gen; j += incw_gen) {
-		  w[j] = 0.0;
-		  w[j + 1] = 0.0;
-		}
-
 
 		/* call BLAS_zwaxpby_d_z_x to get w */
 		FPU_FIX_STOP;
@@ -14855,13 +14004,11 @@ double do_test_zwaxpby_d_z_x(int n,
 
 		    for (j = 0; j < n; j++) {
 		      printf("      ");
-		      printf("x[%d]=%.16e", ix, x[ix]);
+		      printf("%24.16e", x[ix]);
 		      printf("; ");
-		      printf("y[%d]=%.16e, y[%d+1]=%.16e", iy, y[iy], iy,
-			     y[iy + 1]);
+		      printf("(%24.16e, %24.16e)", y[iy], y[iy + 1]);
 		      printf("; ");
-		      printf("w[%d]=%.16e, w[%d+1]=%.16e", iw, w[iw], iw,
-			     w[iw + 1]);
+		      printf("(%24.16e, %24.16e)", w[iw], w[iw + 1]);
 		      printf("; ");
 		      ix += incx;
 		      iy += incy;
@@ -14869,10 +14016,11 @@ double do_test_zwaxpby_d_z_x(int n,
 		    }
 
 		    printf("      ");
-		    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-			   alpha[1]);
+		    printf("alpha = ");
+		    printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);
 		    printf("; ");
-		    printf("beta[0]=%.16e, beta[1]=%.16e", beta[0], beta[1]);
+		    printf("beta = ");
+		    printf("(%24.16e, %24.16e)", beta[0], beta[1]);
 		    printf("\n");
 		    printf("      ratio=%.4e\n", ratio);
 		    p_count++;
@@ -15109,12 +14257,6 @@ double do_test_zwaxpby_d_d_x(int n,
   if (n * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  for (i = 0; i < n * 2; i += incx_gen) {
-    x[i] = 0.0;
-  }
-  for (i = 0; i < n * 2; i += incy_gen) {
-    y[i] = 0.0;
-  }
   w = (double *) blas_malloc(n * 2 * sizeof(double) * 2);
   if (n * 2 > 0 && w == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -15131,12 +14273,6 @@ double do_test_zwaxpby_d_d_x(int n,
   y_gen = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && y_gen == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < n; i += incx_gen) {
-    x_gen[i] = 0.0;
-  }
-  for (i = 0; i < n; i += incy_gen) {
-    y_gen[i] = 0.0;
   }
   temp_ab = (double *) blas_malloc(2 * sizeof(double) * 2);
   if (2 > 0 && temp_ab == NULL) {
@@ -15247,11 +14383,6 @@ double do_test_zwaxpby_d_d_x(int n,
 	    incx = incx_val;
 
 
-	    /* zero out x */
-	    for (j = 0; j < n * 2 * incx_gen; j += incx_gen) {
-	      x[j] = 0.0;
-	    }
-
 	    /* set x starting index */
 	    ix = 0;
 	    if (incx < 0)
@@ -15272,11 +14403,6 @@ double do_test_zwaxpby_d_d_x(int n,
 	      /* setting incy */
 	      incy = incy_val;
 
-
-	      /* zero out vector */
-	      for (j = 0; j < n * 2 * incy_gen; j += incy_gen) {
-		y[j] = 0.0;
-	      }
 
 	      /* set y starting index */
 	      iy = 0;
@@ -15303,13 +14429,6 @@ double do_test_zwaxpby_d_d_x(int n,
 		   at random */
 		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
 		  continue;
-
-		/* zero out vector */
-		for (j = 0; j < n * 2 * incw_gen; j += incw_gen) {
-		  w[j] = 0.0;
-		  w[j + 1] = 0.0;
-		}
-
 
 		/* call BLAS_zwaxpby_d_d_x to get w */
 		FPU_FIX_STOP;
@@ -15420,12 +14539,11 @@ double do_test_zwaxpby_d_d_x(int n,
 
 		    for (j = 0; j < n; j++) {
 		      printf("      ");
-		      printf("x[%d]=%.16e", ix, x[ix]);
+		      printf("%24.16e", x[ix]);
 		      printf("; ");
-		      printf("y[%d]=%.16e", iy, y[iy]);
+		      printf("%24.16e", y[iy]);
 		      printf("; ");
-		      printf("w[%d]=%.16e, w[%d+1]=%.16e", iw, w[iw], iw,
-			     w[iw + 1]);
+		      printf("(%24.16e, %24.16e)", w[iw], w[iw + 1]);
 		      printf("; ");
 		      ix += incx;
 		      iy += incy;
@@ -15433,10 +14551,11 @@ double do_test_zwaxpby_d_d_x(int n,
 		    }
 
 		    printf("      ");
-		    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
-			   alpha[1]);
+		    printf("alpha = ");
+		    printf("(%24.16e, %24.16e)", alpha[0], alpha[1]);
 		    printf("; ");
-		    printf("beta[0]=%.16e, beta[1]=%.16e", beta[0], beta[1]);
+		    printf("beta = ");
+		    printf("(%24.16e, %24.16e)", beta[0], beta[1]);
 		    printf("\n");
 		    printf("      ratio=%.4e\n", ratio);
 		    p_count++;

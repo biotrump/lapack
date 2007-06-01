@@ -574,7 +574,7 @@ void sspmv_pack_matrix(enum blas_order_type order, enum blas_uplo_type uplo,
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   };
   for (row = 0; row < n; row++) {
-    ssymv_copy_row(order, uplo, n, a_full, lda, a_row, row);
+    ssy_copy_row(order, uplo, n, a_full, lda, a_row, row);
     sspmv_commit_row(order, uplo, n, a_packed, a_row, row);
   }
 
@@ -595,7 +595,7 @@ void dspmv_pack_matrix(enum blas_order_type order, enum blas_uplo_type uplo,
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   };
   for (row = 0; row < n; row++) {
-    dsymv_copy_row(order, uplo, n, a_full, lda, a_row, row);
+    dsy_copy_row(order, uplo, n, a_full, lda, a_row, row);
     dspmv_commit_row(order, uplo, n, a_packed, a_row, row);
   }
 
@@ -616,7 +616,7 @@ void cspmv_pack_matrix(enum blas_order_type order, enum blas_uplo_type uplo,
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   };
   for (row = 0; row < n; row++) {
-    csymv_copy_row(order, uplo, n, a_full, lda, a_row, row);
+    csy_copy_row(order, uplo, n, a_full, lda, a_row, row);
     cspmv_commit_row(order, uplo, n, a_packed, a_row, row);
   }
 
@@ -637,7 +637,7 @@ void zspmv_pack_matrix(enum blas_order_type order, enum blas_uplo_type uplo,
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   };
   for (row = 0; row < n; row++) {
-    zsymv_copy_row(order, uplo, n, a_full, lda, a_row, row);
+    zsy_copy_row(order, uplo, n, a_full, lda, a_row, row);
     zspmv_commit_row(order, uplo, n, a_packed, a_row, row);
   }
 
@@ -658,7 +658,7 @@ void sprint_spmv_matrix(float *a, int n,
 
     for (row = 0; row < n; row++) {
       sspmv_copy_row(order, uplo, n, a, x, row);
-      sprint_vector(x, n, 1);
+      sprint_vector(x, n, 1, NULL);
     }
     printf("\n");
     blas_free(x);
@@ -679,7 +679,7 @@ void dprint_spmv_matrix(double *a, int n,
 
     for (row = 0; row < n; row++) {
       dspmv_copy_row(order, uplo, n, a, x, row);
-      dprint_vector(x, n, 1);
+      dprint_vector(x, n, 1, NULL);
     }
     printf("\n");
     blas_free(x);
@@ -700,7 +700,7 @@ void cprint_spmv_matrix(void *a, int n,
 
     for (row = 0; row < n; row++) {
       cspmv_copy_row(order, uplo, n, a, x, row);
-      cprint_vector(x, n, 1);
+      cprint_vector(x, n, 1, NULL);
     }
     printf("\n");
     blas_free(x);
@@ -721,7 +721,7 @@ void zprint_spmv_matrix(void *a, int n,
 
     for (row = 0; row < n; row++) {
       zspmv_copy_row(order, uplo, n, a, x, row);
-      zprint_vector(x, n, 1);
+      zprint_vector(x, n, 1, NULL);
     }
     printf("\n");
     blas_free(x);

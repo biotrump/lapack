@@ -14,8 +14,6 @@
 
 
 
-
-
 void BLAS_ssymv_testgen(int norm, enum blas_order_type order,
 			enum blas_uplo_type uplo,
 			int n, int randomize,
@@ -183,21 +181,21 @@ void BLAS_ssymv_testgen(int norm, enum blas_order_type order,
     tail_r_true[ri] = tail_r_true_elem;
 
     /* Copy a_vec to first row of A */
-    ssymv_commit_row(order, uplo, n_i, a, lda, a_vec, 0);
+    ssy_commit_row(order, uplo, n_i, a, lda, a_vec, 0);
 
     /* commit x_vec to x */
-    ssymv_copy_vector(n_i, x_i, incx, x_vec, 1);
+    scopy_vector(x_vec, n_i, 1, x_i, incx);
 
     /* Fill in rest of matrix A */
     for (i = 1, yi += incyi, ri = incri; i < n_i; i++, ri += incri,
 	 yi += incyi) {
-      ssymv_copy_row(order, uplo, n_i, a, lda, a_vec, i);
+      ssy_copy_row(order, uplo, n_i, a, lda, a_vec, i);
       BLAS_sdot_testgen(n_i, i, n_i - i, norm,
 			blas_no_conj, alpha, 1,
 			beta, 1, x_vec, a_vec, seed,
 			&y_elem, &head_r_true_elem, &tail_r_true_elem);
 
-      ssymv_commit_row(order, uplo, n_i, a, lda, a_vec, i);
+      ssy_commit_row(order, uplo, n_i, a, lda, a_vec, i);
 
       /*commits an element to the generated y */
       y_i[yi] = y_elem;
@@ -215,11 +213,11 @@ void BLAS_ssymv_testgen(int norm, enum blas_order_type order,
 
     /* randomly select alpha, beta */
     if (alpha_flag == 0) {
-      y_elem = (float) drand48();
+      y_elem = xrand(seed);
       alpha_i[0] = y_elem;
     }
     if (beta_flag == 0) {
-      y_elem = (float) drand48();
+      y_elem = xrand(seed);
       beta_i[0] = y_elem;
     }
 
@@ -248,24 +246,24 @@ void BLAS_ssymv_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < n_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	a_elem = (float) drand48();
+	a_elem = xrand(seed);
 	a_i[aij] = a_elem;
       }
     }
 
     for (i = 0, xi = x_starti; i < n_i; i++, xi += incxi) {
-      x_elem = (float) drand48();
+      x_elem = xrand(seed);
       x_i[xi] = x_elem;
     }
 
     /* now compute appropriate y vector */
 
     /* get x */
-    ssymv_copy_vector(n_i, x_vec, 1, x_i, incx);
+    scopy_vector(x_i, n_i, incx, x_vec, 1);
 
 
     for (i = 0, yi = y_starti, ri = 0; i < n_i; i++, yi += incyi, ri += incri) {
-      ssymv_copy_row(order, uplo, n_i, a, lda, a_vec, i);
+      ssy_copy_row(order, uplo, n_i, a, lda, a_vec, i);
 
 
       BLAS_sdot_testgen(n_i, n_i, 0, norm, blas_no_conj, alpha, 1,
@@ -451,21 +449,21 @@ void BLAS_dsymv_testgen(int norm, enum blas_order_type order,
     tail_r_true[ri] = tail_r_true_elem;
 
     /* Copy a_vec to first row of A */
-    dsymv_commit_row(order, uplo, n_i, a, lda, a_vec, 0);
+    dsy_commit_row(order, uplo, n_i, a, lda, a_vec, 0);
 
     /* commit x_vec to x */
-    dsymv_copy_vector(n_i, x_i, incx, x_vec, 1);
+    dcopy_vector(x_vec, n_i, 1, x_i, incx);
 
     /* Fill in rest of matrix A */
     for (i = 1, yi += incyi, ri = incri; i < n_i; i++, ri += incri,
 	 yi += incyi) {
-      dsymv_copy_row(order, uplo, n_i, a, lda, a_vec, i);
+      dsy_copy_row(order, uplo, n_i, a, lda, a_vec, i);
       BLAS_ddot_testgen(n_i, i, n_i - i, norm,
 			blas_no_conj, alpha, 1,
 			beta, 1, x_vec, a_vec, seed,
 			&y_elem, &head_r_true_elem, &tail_r_true_elem);
 
-      dsymv_commit_row(order, uplo, n_i, a, lda, a_vec, i);
+      dsy_commit_row(order, uplo, n_i, a, lda, a_vec, i);
 
       /*commits an element to the generated y */
       y_i[yi] = y_elem;
@@ -483,11 +481,11 @@ void BLAS_dsymv_testgen(int norm, enum blas_order_type order,
 
     /* randomly select alpha, beta */
     if (alpha_flag == 0) {
-      y_elem = (float) drand48();
+      y_elem = xrand(seed);
       alpha_i[0] = y_elem;
     }
     if (beta_flag == 0) {
-      y_elem = (float) drand48();
+      y_elem = xrand(seed);
       beta_i[0] = y_elem;
     }
 
@@ -516,24 +514,24 @@ void BLAS_dsymv_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < n_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	a_elem = (float) drand48();
+	a_elem = xrand(seed);
 	a_i[aij] = a_elem;
       }
     }
 
     for (i = 0, xi = x_starti; i < n_i; i++, xi += incxi) {
-      x_elem = (float) drand48();
+      x_elem = xrand(seed);
       x_i[xi] = x_elem;
     }
 
     /* now compute appropriate y vector */
 
     /* get x */
-    dsymv_copy_vector(n_i, x_vec, 1, x_i, incx);
+    dcopy_vector(x_i, n_i, incx, x_vec, 1);
 
 
     for (i = 0, yi = y_starti, ri = 0; i < n_i; i++, yi += incyi, ri += incri) {
-      dsymv_copy_row(order, uplo, n_i, a, lda, a_vec, i);
+      dsy_copy_row(order, uplo, n_i, a, lda, a_vec, i);
 
 
       BLAS_ddot_testgen(n_i, n_i, 0, norm, blas_no_conj, alpha, 1,
@@ -719,21 +717,21 @@ void BLAS_dsymv_d_s_testgen(int norm, enum blas_order_type order,
     tail_r_true[ri] = tail_r_true_elem;
 
     /* Copy a_vec to first row of A */
-    dsymv_commit_row(order, uplo, n_i, a, lda, a_vec, 0);
+    dsy_commit_row(order, uplo, n_i, a, lda, a_vec, 0);
 
     /* commit x_vec to x */
-    ssymv_copy_vector(n_i, x_i, incx, x_vec, 1);
+    scopy_vector(x_vec, n_i, 1, x_i, incx);
 
     /* Fill in rest of matrix A */
     for (i = 1, yi += incyi, ri = incri; i < n_i; i++, ri += incri,
 	 yi += incyi) {
-      dsymv_copy_row(order, uplo, n_i, a, lda, a_vec, i);
+      dsy_copy_row(order, uplo, n_i, a, lda, a_vec, i);
       BLAS_ddot_s_d_testgen(n_i, i, n_i - i, norm,
 			    blas_no_conj, alpha, 1,
 			    beta, 1, x_vec, a_vec, seed,
 			    &y_elem, &head_r_true_elem, &tail_r_true_elem);
 
-      dsymv_commit_row(order, uplo, n_i, a, lda, a_vec, i);
+      dsy_commit_row(order, uplo, n_i, a, lda, a_vec, i);
 
       /*commits an element to the generated y */
       y_i[yi] = y_elem;
@@ -751,11 +749,11 @@ void BLAS_dsymv_d_s_testgen(int norm, enum blas_order_type order,
 
     /* randomly select alpha, beta */
     if (alpha_flag == 0) {
-      y_elem = (float) drand48();
+      y_elem = (float) xrand(seed);
       alpha_i[0] = y_elem;
     }
     if (beta_flag == 0) {
-      y_elem = (float) drand48();
+      y_elem = (float) xrand(seed);
       beta_i[0] = y_elem;
     }
 
@@ -784,24 +782,24 @@ void BLAS_dsymv_d_s_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < n_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	a_elem = (float) drand48();
+	a_elem = (float) xrand(seed);
 	a_i[aij] = a_elem;
       }
     }
 
     for (i = 0, xi = x_starti; i < n_i; i++, xi += incxi) {
-      x_elem = (float) drand48();
+      x_elem = (float) xrand(seed);
       x_i[xi] = x_elem;
     }
 
     /* now compute appropriate y vector */
 
     /* get x */
-    ssymv_copy_vector(n_i, x_vec, 1, x_i, incx);
+    scopy_vector(x_i, n_i, incx, x_vec, 1);
 
 
     for (i = 0, yi = y_starti, ri = 0; i < n_i; i++, yi += incyi, ri += incri) {
-      dsymv_copy_row(order, uplo, n_i, a, lda, a_vec, i);
+      dsy_copy_row(order, uplo, n_i, a, lda, a_vec, i);
 
 
       BLAS_ddot_s_d_testgen(n_i, n_i, 0, norm, blas_no_conj, alpha, 1,
@@ -987,21 +985,21 @@ void BLAS_dsymv_s_d_testgen(int norm, enum blas_order_type order,
     tail_r_true[ri] = tail_r_true_elem;
 
     /* Copy a_vec to first row of A */
-    ssymv_commit_row(order, uplo, n_i, a, lda, a_vec, 0);
+    ssy_commit_row(order, uplo, n_i, a, lda, a_vec, 0);
 
     /* commit x_vec to x */
-    dsymv_copy_vector(n_i, x_i, incx, x_vec, 1);
+    dcopy_vector(x_vec, n_i, 1, x_i, incx);
 
     /* Fill in rest of matrix A */
     for (i = 1, yi += incyi, ri = incri; i < n_i; i++, ri += incri,
 	 yi += incyi) {
-      ssymv_copy_row(order, uplo, n_i, a, lda, a_vec, i);
+      ssy_copy_row(order, uplo, n_i, a, lda, a_vec, i);
       BLAS_ddot_d_s_testgen(n_i, i, n_i - i, norm,
 			    blas_no_conj, alpha, 1,
 			    beta, 1, x_vec, a_vec, seed,
 			    &y_elem, &head_r_true_elem, &tail_r_true_elem);
 
-      ssymv_commit_row(order, uplo, n_i, a, lda, a_vec, i);
+      ssy_commit_row(order, uplo, n_i, a, lda, a_vec, i);
 
       /*commits an element to the generated y */
       y_i[yi] = y_elem;
@@ -1019,11 +1017,11 @@ void BLAS_dsymv_s_d_testgen(int norm, enum blas_order_type order,
 
     /* randomly select alpha, beta */
     if (alpha_flag == 0) {
-      y_elem = (float) drand48();
+      y_elem = (float) xrand(seed);
       alpha_i[0] = y_elem;
     }
     if (beta_flag == 0) {
-      y_elem = (float) drand48();
+      y_elem = (float) xrand(seed);
       beta_i[0] = y_elem;
     }
 
@@ -1052,24 +1050,24 @@ void BLAS_dsymv_s_d_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < n_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	a_elem = (float) drand48();
+	a_elem = (float) xrand(seed);
 	a_i[aij] = a_elem;
       }
     }
 
     for (i = 0, xi = x_starti; i < n_i; i++, xi += incxi) {
-      x_elem = (float) drand48();
+      x_elem = (float) xrand(seed);
       x_i[xi] = x_elem;
     }
 
     /* now compute appropriate y vector */
 
     /* get x */
-    dsymv_copy_vector(n_i, x_vec, 1, x_i, incx);
+    dcopy_vector(x_i, n_i, incx, x_vec, 1);
 
 
     for (i = 0, yi = y_starti, ri = 0; i < n_i; i++, yi += incyi, ri += incri) {
-      ssymv_copy_row(order, uplo, n_i, a, lda, a_vec, i);
+      ssy_copy_row(order, uplo, n_i, a, lda, a_vec, i);
 
 
       BLAS_ddot_d_s_testgen(n_i, n_i, 0, norm, blas_no_conj, alpha, 1,
@@ -1255,21 +1253,21 @@ void BLAS_dsymv_s_s_testgen(int norm, enum blas_order_type order,
     tail_r_true[ri] = tail_r_true_elem;
 
     /* Copy a_vec to first row of A */
-    ssymv_commit_row(order, uplo, n_i, a, lda, a_vec, 0);
+    ssy_commit_row(order, uplo, n_i, a, lda, a_vec, 0);
 
     /* commit x_vec to x */
-    ssymv_copy_vector(n_i, x_i, incx, x_vec, 1);
+    scopy_vector(x_vec, n_i, 1, x_i, incx);
 
     /* Fill in rest of matrix A */
     for (i = 1, yi += incyi, ri = incri; i < n_i; i++, ri += incri,
 	 yi += incyi) {
-      ssymv_copy_row(order, uplo, n_i, a, lda, a_vec, i);
+      ssy_copy_row(order, uplo, n_i, a, lda, a_vec, i);
       BLAS_ddot_s_s_testgen(n_i, i, n_i - i, norm,
 			    blas_no_conj, alpha, 1,
 			    beta, 1, x_vec, a_vec, seed,
 			    &y_elem, &head_r_true_elem, &tail_r_true_elem);
 
-      ssymv_commit_row(order, uplo, n_i, a, lda, a_vec, i);
+      ssy_commit_row(order, uplo, n_i, a, lda, a_vec, i);
 
       /*commits an element to the generated y */
       y_i[yi] = y_elem;
@@ -1287,11 +1285,11 @@ void BLAS_dsymv_s_s_testgen(int norm, enum blas_order_type order,
 
     /* randomly select alpha, beta */
     if (alpha_flag == 0) {
-      y_elem = (float) drand48();
+      y_elem = (float) xrand(seed);
       alpha_i[0] = y_elem;
     }
     if (beta_flag == 0) {
-      y_elem = (float) drand48();
+      y_elem = (float) xrand(seed);
       beta_i[0] = y_elem;
     }
 
@@ -1320,24 +1318,24 @@ void BLAS_dsymv_s_s_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < n_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	a_elem = (float) drand48();
+	a_elem = (float) xrand(seed);
 	a_i[aij] = a_elem;
       }
     }
 
     for (i = 0, xi = x_starti; i < n_i; i++, xi += incxi) {
-      x_elem = (float) drand48();
+      x_elem = (float) xrand(seed);
       x_i[xi] = x_elem;
     }
 
     /* now compute appropriate y vector */
 
     /* get x */
-    ssymv_copy_vector(n_i, x_vec, 1, x_i, incx);
+    scopy_vector(x_i, n_i, incx, x_vec, 1);
 
 
     for (i = 0, yi = y_starti, ri = 0; i < n_i; i++, yi += incyi, ri += incri) {
-      ssymv_copy_row(order, uplo, n_i, a, lda, a_vec, i);
+      ssy_copy_row(order, uplo, n_i, a, lda, a_vec, i);
 
 
       BLAS_ddot_s_s_testgen(n_i, n_i, 0, norm, blas_no_conj, alpha, 1,
@@ -1529,21 +1527,21 @@ void BLAS_csymv_testgen(int norm, enum blas_order_type order,
     tail_r_true[ri + 1] = tail_r_true_elem[1];
 
     /* Copy a_vec to first row of A */
-    csymv_commit_row(order, uplo, n_i, a, lda, a_vec, 0);
+    csy_commit_row(order, uplo, n_i, a, lda, a_vec, 0);
 
     /* commit x_vec to x */
-    csymv_copy_vector(n_i, x_i, incx, x_vec, 1);
+    ccopy_vector(x_vec, n_i, 1, x_i, incx);
 
     /* Fill in rest of matrix A */
     for (i = 1, yi += incyi, ri = incri; i < n_i; i++, ri += incri,
 	 yi += incyi) {
-      csymv_copy_row(order, uplo, n_i, a, lda, a_vec, i);
+      csy_copy_row(order, uplo, n_i, a, lda, a_vec, i);
       BLAS_cdot_testgen(n_i, i, n_i - i, norm,
 			blas_no_conj, alpha, 1,
 			beta, 1, x_vec, a_vec, seed,
 			y_elem, head_r_true_elem, tail_r_true_elem);
 
-      csymv_commit_row(order, uplo, n_i, a, lda, a_vec, i);
+      csy_commit_row(order, uplo, n_i, a, lda, a_vec, i);
 
       /*commits an element to the generated y */
       y_i[yi] = y_elem[0];
@@ -1564,14 +1562,14 @@ void BLAS_csymv_testgen(int norm, enum blas_order_type order,
 
     /* randomly select alpha, beta */
     if (alpha_flag == 0) {
-      ((float *) y_elem)[0] = (float) drand48();
-      ((float *) y_elem)[1] = (float) drand48();
+      y_elem[0] = xrand(seed);
+      y_elem[1] = xrand(seed);
       alpha_i[0] = y_elem[0];
       alpha_i[0 + 1] = y_elem[1];
     }
     if (beta_flag == 0) {
-      ((float *) y_elem)[0] = (float) drand48();
-      ((float *) y_elem)[1] = (float) drand48();
+      y_elem[0] = xrand(seed);
+      y_elem[1] = xrand(seed);
       beta_i[0] = y_elem[0];
       beta_i[0 + 1] = y_elem[1];
     }
@@ -1601,16 +1599,16 @@ void BLAS_csymv_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < n_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	((float *) a_elem)[0] = (float) drand48();
-	((float *) a_elem)[1] = (float) drand48();
+	a_elem[0] = xrand(seed);
+	a_elem[1] = xrand(seed);
 	a_i[aij] = a_elem[0];
 	a_i[aij + 1] = a_elem[1];
       }
     }
 
     for (i = 0, xi = x_starti; i < n_i; i++, xi += incxi) {
-      ((float *) x_elem)[0] = (float) drand48();
-      ((float *) x_elem)[1] = (float) drand48();
+      x_elem[0] = xrand(seed);
+      x_elem[1] = xrand(seed);
       x_i[xi] = x_elem[0];
       x_i[xi + 1] = x_elem[1];
     }
@@ -1618,11 +1616,11 @@ void BLAS_csymv_testgen(int norm, enum blas_order_type order,
     /* now compute appropriate y vector */
 
     /* get x */
-    csymv_copy_vector(n_i, x_vec, 1, x_i, incx);
+    ccopy_vector(x_i, n_i, incx, x_vec, 1);
 
 
     for (i = 0, yi = y_starti, ri = 0; i < n_i; i++, yi += incyi, ri += incri) {
-      csymv_copy_row(order, uplo, n_i, a, lda, a_vec, i);
+      csy_copy_row(order, uplo, n_i, a, lda, a_vec, i);
 
 
       BLAS_cdot_testgen(n_i, n_i, 0, norm, blas_no_conj, alpha, 1,
@@ -1816,21 +1814,21 @@ void BLAS_zsymv_testgen(int norm, enum blas_order_type order,
     tail_r_true[ri + 1] = tail_r_true_elem[1];
 
     /* Copy a_vec to first row of A */
-    zsymv_commit_row(order, uplo, n_i, a, lda, a_vec, 0);
+    zsy_commit_row(order, uplo, n_i, a, lda, a_vec, 0);
 
     /* commit x_vec to x */
-    zsymv_copy_vector(n_i, x_i, incx, x_vec, 1);
+    zcopy_vector(x_vec, n_i, 1, x_i, incx);
 
     /* Fill in rest of matrix A */
     for (i = 1, yi += incyi, ri = incri; i < n_i; i++, ri += incri,
 	 yi += incyi) {
-      zsymv_copy_row(order, uplo, n_i, a, lda, a_vec, i);
+      zsy_copy_row(order, uplo, n_i, a, lda, a_vec, i);
       BLAS_zdot_testgen(n_i, i, n_i - i, norm,
 			blas_no_conj, alpha, 1,
 			beta, 1, x_vec, a_vec, seed,
 			y_elem, head_r_true_elem, tail_r_true_elem);
 
-      zsymv_commit_row(order, uplo, n_i, a, lda, a_vec, i);
+      zsy_commit_row(order, uplo, n_i, a, lda, a_vec, i);
 
       /*commits an element to the generated y */
       y_i[yi] = y_elem[0];
@@ -1851,14 +1849,14 @@ void BLAS_zsymv_testgen(int norm, enum blas_order_type order,
 
     /* randomly select alpha, beta */
     if (alpha_flag == 0) {
-      ((double *) y_elem)[0] = (float) drand48();
-      ((double *) y_elem)[1] = (float) drand48();
+      y_elem[0] = xrand(seed);
+      y_elem[1] = xrand(seed);
       alpha_i[0] = y_elem[0];
       alpha_i[0 + 1] = y_elem[1];
     }
     if (beta_flag == 0) {
-      ((double *) y_elem)[0] = (float) drand48();
-      ((double *) y_elem)[1] = (float) drand48();
+      y_elem[0] = xrand(seed);
+      y_elem[1] = xrand(seed);
       beta_i[0] = y_elem[0];
       beta_i[0 + 1] = y_elem[1];
     }
@@ -1888,16 +1886,16 @@ void BLAS_zsymv_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < n_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	((double *) a_elem)[0] = (float) drand48();
-	((double *) a_elem)[1] = (float) drand48();
+	a_elem[0] = xrand(seed);
+	a_elem[1] = xrand(seed);
 	a_i[aij] = a_elem[0];
 	a_i[aij + 1] = a_elem[1];
       }
     }
 
     for (i = 0, xi = x_starti; i < n_i; i++, xi += incxi) {
-      ((double *) x_elem)[0] = (float) drand48();
-      ((double *) x_elem)[1] = (float) drand48();
+      x_elem[0] = xrand(seed);
+      x_elem[1] = xrand(seed);
       x_i[xi] = x_elem[0];
       x_i[xi + 1] = x_elem[1];
     }
@@ -1905,11 +1903,11 @@ void BLAS_zsymv_testgen(int norm, enum blas_order_type order,
     /* now compute appropriate y vector */
 
     /* get x */
-    zsymv_copy_vector(n_i, x_vec, 1, x_i, incx);
+    zcopy_vector(x_i, n_i, incx, x_vec, 1);
 
 
     for (i = 0, yi = y_starti, ri = 0; i < n_i; i++, yi += incyi, ri += incri) {
-      zsymv_copy_row(order, uplo, n_i, a, lda, a_vec, i);
+      zsy_copy_row(order, uplo, n_i, a, lda, a_vec, i);
 
 
       BLAS_zdot_testgen(n_i, n_i, 0, norm, blas_no_conj, alpha, 1,
@@ -2103,21 +2101,21 @@ void BLAS_zsymv_c_z_testgen(int norm, enum blas_order_type order,
     tail_r_true[ri + 1] = tail_r_true_elem[1];
 
     /* Copy a_vec to first row of A */
-    csymv_commit_row(order, uplo, n_i, a, lda, a_vec, 0);
+    csy_commit_row(order, uplo, n_i, a, lda, a_vec, 0);
 
     /* commit x_vec to x */
-    zsymv_copy_vector(n_i, x_i, incx, x_vec, 1);
+    zcopy_vector(x_vec, n_i, 1, x_i, incx);
 
     /* Fill in rest of matrix A */
     for (i = 1, yi += incyi, ri = incri; i < n_i; i++, ri += incri,
 	 yi += incyi) {
-      csymv_copy_row(order, uplo, n_i, a, lda, a_vec, i);
+      csy_copy_row(order, uplo, n_i, a, lda, a_vec, i);
       BLAS_zdot_z_c_testgen(n_i, i, n_i - i, norm,
 			    blas_no_conj, alpha, 1,
 			    beta, 1, x_vec, a_vec, seed,
 			    y_elem, head_r_true_elem, tail_r_true_elem);
 
-      csymv_commit_row(order, uplo, n_i, a, lda, a_vec, i);
+      csy_commit_row(order, uplo, n_i, a, lda, a_vec, i);
 
       /*commits an element to the generated y */
       y_i[yi] = y_elem[0];
@@ -2138,14 +2136,14 @@ void BLAS_zsymv_c_z_testgen(int norm, enum blas_order_type order,
 
     /* randomly select alpha, beta */
     if (alpha_flag == 0) {
-      ((double *) y_elem)[0] = (float) drand48();
-      ((double *) y_elem)[1] = (float) drand48();
+      y_elem[0] = (float) xrand(seed);
+      y_elem[1] = (float) xrand(seed);
       alpha_i[0] = y_elem[0];
       alpha_i[0 + 1] = y_elem[1];
     }
     if (beta_flag == 0) {
-      ((double *) y_elem)[0] = (float) drand48();
-      ((double *) y_elem)[1] = (float) drand48();
+      y_elem[0] = (float) xrand(seed);
+      y_elem[1] = (float) xrand(seed);
       beta_i[0] = y_elem[0];
       beta_i[0 + 1] = y_elem[1];
     }
@@ -2175,16 +2173,16 @@ void BLAS_zsymv_c_z_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < n_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	((float *) a_elem)[0] = (float) drand48();
-	((float *) a_elem)[1] = (float) drand48();
+	a_elem[0] = (float) xrand(seed);
+	a_elem[1] = (float) xrand(seed);
 	a_i[aij] = a_elem[0];
 	a_i[aij + 1] = a_elem[1];
       }
     }
 
     for (i = 0, xi = x_starti; i < n_i; i++, xi += incxi) {
-      ((double *) x_elem)[0] = (float) drand48();
-      ((double *) x_elem)[1] = (float) drand48();
+      x_elem[0] = (float) xrand(seed);
+      x_elem[1] = (float) xrand(seed);
       x_i[xi] = x_elem[0];
       x_i[xi + 1] = x_elem[1];
     }
@@ -2192,11 +2190,11 @@ void BLAS_zsymv_c_z_testgen(int norm, enum blas_order_type order,
     /* now compute appropriate y vector */
 
     /* get x */
-    zsymv_copy_vector(n_i, x_vec, 1, x_i, incx);
+    zcopy_vector(x_i, n_i, incx, x_vec, 1);
 
 
     for (i = 0, yi = y_starti, ri = 0; i < n_i; i++, yi += incyi, ri += incri) {
-      csymv_copy_row(order, uplo, n_i, a, lda, a_vec, i);
+      csy_copy_row(order, uplo, n_i, a, lda, a_vec, i);
 
 
       BLAS_zdot_z_c_testgen(n_i, n_i, 0, norm, blas_no_conj, alpha, 1,
@@ -2390,21 +2388,21 @@ void BLAS_zsymv_z_c_testgen(int norm, enum blas_order_type order,
     tail_r_true[ri + 1] = tail_r_true_elem[1];
 
     /* Copy a_vec to first row of A */
-    zsymv_commit_row(order, uplo, n_i, a, lda, a_vec, 0);
+    zsy_commit_row(order, uplo, n_i, a, lda, a_vec, 0);
 
     /* commit x_vec to x */
-    csymv_copy_vector(n_i, x_i, incx, x_vec, 1);
+    ccopy_vector(x_vec, n_i, 1, x_i, incx);
 
     /* Fill in rest of matrix A */
     for (i = 1, yi += incyi, ri = incri; i < n_i; i++, ri += incri,
 	 yi += incyi) {
-      zsymv_copy_row(order, uplo, n_i, a, lda, a_vec, i);
+      zsy_copy_row(order, uplo, n_i, a, lda, a_vec, i);
       BLAS_zdot_c_z_testgen(n_i, i, n_i - i, norm,
 			    blas_no_conj, alpha, 1,
 			    beta, 1, x_vec, a_vec, seed,
 			    y_elem, head_r_true_elem, tail_r_true_elem);
 
-      zsymv_commit_row(order, uplo, n_i, a, lda, a_vec, i);
+      zsy_commit_row(order, uplo, n_i, a, lda, a_vec, i);
 
       /*commits an element to the generated y */
       y_i[yi] = y_elem[0];
@@ -2425,14 +2423,14 @@ void BLAS_zsymv_z_c_testgen(int norm, enum blas_order_type order,
 
     /* randomly select alpha, beta */
     if (alpha_flag == 0) {
-      ((double *) y_elem)[0] = (float) drand48();
-      ((double *) y_elem)[1] = (float) drand48();
+      y_elem[0] = (float) xrand(seed);
+      y_elem[1] = (float) xrand(seed);
       alpha_i[0] = y_elem[0];
       alpha_i[0 + 1] = y_elem[1];
     }
     if (beta_flag == 0) {
-      ((double *) y_elem)[0] = (float) drand48();
-      ((double *) y_elem)[1] = (float) drand48();
+      y_elem[0] = (float) xrand(seed);
+      y_elem[1] = (float) xrand(seed);
       beta_i[0] = y_elem[0];
       beta_i[0 + 1] = y_elem[1];
     }
@@ -2462,16 +2460,16 @@ void BLAS_zsymv_z_c_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < n_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	((double *) a_elem)[0] = (float) drand48();
-	((double *) a_elem)[1] = (float) drand48();
+	a_elem[0] = (float) xrand(seed);
+	a_elem[1] = (float) xrand(seed);
 	a_i[aij] = a_elem[0];
 	a_i[aij + 1] = a_elem[1];
       }
     }
 
     for (i = 0, xi = x_starti; i < n_i; i++, xi += incxi) {
-      ((float *) x_elem)[0] = (float) drand48();
-      ((float *) x_elem)[1] = (float) drand48();
+      x_elem[0] = (float) xrand(seed);
+      x_elem[1] = (float) xrand(seed);
       x_i[xi] = x_elem[0];
       x_i[xi + 1] = x_elem[1];
     }
@@ -2479,11 +2477,11 @@ void BLAS_zsymv_z_c_testgen(int norm, enum blas_order_type order,
     /* now compute appropriate y vector */
 
     /* get x */
-    csymv_copy_vector(n_i, x_vec, 1, x_i, incx);
+    ccopy_vector(x_i, n_i, incx, x_vec, 1);
 
 
     for (i = 0, yi = y_starti, ri = 0; i < n_i; i++, yi += incyi, ri += incri) {
-      zsymv_copy_row(order, uplo, n_i, a, lda, a_vec, i);
+      zsy_copy_row(order, uplo, n_i, a, lda, a_vec, i);
 
 
       BLAS_zdot_c_z_testgen(n_i, n_i, 0, norm, blas_no_conj, alpha, 1,
@@ -2677,21 +2675,21 @@ void BLAS_zsymv_c_c_testgen(int norm, enum blas_order_type order,
     tail_r_true[ri + 1] = tail_r_true_elem[1];
 
     /* Copy a_vec to first row of A */
-    csymv_commit_row(order, uplo, n_i, a, lda, a_vec, 0);
+    csy_commit_row(order, uplo, n_i, a, lda, a_vec, 0);
 
     /* commit x_vec to x */
-    csymv_copy_vector(n_i, x_i, incx, x_vec, 1);
+    ccopy_vector(x_vec, n_i, 1, x_i, incx);
 
     /* Fill in rest of matrix A */
     for (i = 1, yi += incyi, ri = incri; i < n_i; i++, ri += incri,
 	 yi += incyi) {
-      csymv_copy_row(order, uplo, n_i, a, lda, a_vec, i);
+      csy_copy_row(order, uplo, n_i, a, lda, a_vec, i);
       BLAS_zdot_c_c_testgen(n_i, i, n_i - i, norm,
 			    blas_no_conj, alpha, 1,
 			    beta, 1, x_vec, a_vec, seed,
 			    y_elem, head_r_true_elem, tail_r_true_elem);
 
-      csymv_commit_row(order, uplo, n_i, a, lda, a_vec, i);
+      csy_commit_row(order, uplo, n_i, a, lda, a_vec, i);
 
       /*commits an element to the generated y */
       y_i[yi] = y_elem[0];
@@ -2712,14 +2710,14 @@ void BLAS_zsymv_c_c_testgen(int norm, enum blas_order_type order,
 
     /* randomly select alpha, beta */
     if (alpha_flag == 0) {
-      ((double *) y_elem)[0] = (float) drand48();
-      ((double *) y_elem)[1] = (float) drand48();
+      y_elem[0] = (float) xrand(seed);
+      y_elem[1] = (float) xrand(seed);
       alpha_i[0] = y_elem[0];
       alpha_i[0 + 1] = y_elem[1];
     }
     if (beta_flag == 0) {
-      ((double *) y_elem)[0] = (float) drand48();
-      ((double *) y_elem)[1] = (float) drand48();
+      y_elem[0] = (float) xrand(seed);
+      y_elem[1] = (float) xrand(seed);
       beta_i[0] = y_elem[0];
       beta_i[0 + 1] = y_elem[1];
     }
@@ -2749,16 +2747,16 @@ void BLAS_zsymv_c_c_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < n_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	((float *) a_elem)[0] = (float) drand48();
-	((float *) a_elem)[1] = (float) drand48();
+	a_elem[0] = (float) xrand(seed);
+	a_elem[1] = (float) xrand(seed);
 	a_i[aij] = a_elem[0];
 	a_i[aij + 1] = a_elem[1];
       }
     }
 
     for (i = 0, xi = x_starti; i < n_i; i++, xi += incxi) {
-      ((float *) x_elem)[0] = (float) drand48();
-      ((float *) x_elem)[1] = (float) drand48();
+      x_elem[0] = (float) xrand(seed);
+      x_elem[1] = (float) xrand(seed);
       x_i[xi] = x_elem[0];
       x_i[xi + 1] = x_elem[1];
     }
@@ -2766,11 +2764,11 @@ void BLAS_zsymv_c_c_testgen(int norm, enum blas_order_type order,
     /* now compute appropriate y vector */
 
     /* get x */
-    csymv_copy_vector(n_i, x_vec, 1, x_i, incx);
+    ccopy_vector(x_i, n_i, incx, x_vec, 1);
 
 
     for (i = 0, yi = y_starti, ri = 0; i < n_i; i++, yi += incyi, ri += incri) {
-      csymv_copy_row(order, uplo, n_i, a, lda, a_vec, i);
+      csy_copy_row(order, uplo, n_i, a, lda, a_vec, i);
 
 
       BLAS_zdot_c_c_testgen(n_i, n_i, 0, norm, blas_no_conj, alpha, 1,
@@ -2964,21 +2962,21 @@ void BLAS_zsymv_z_d_testgen(int norm, enum blas_order_type order,
     tail_r_true[ri + 1] = tail_r_true_elem[1];
 
     /* Copy a_vec to first row of A */
-    zsymv_commit_row(order, uplo, n_i, a, lda, a_vec, 0);
+    zsy_commit_row(order, uplo, n_i, a, lda, a_vec, 0);
 
     /* commit x_vec to x */
-    dsymv_copy_vector(n_i, x_i, incx, x_vec, 1);
+    dcopy_vector(x_vec, n_i, 1, x_i, incx);
 
     /* Fill in rest of matrix A */
     for (i = 1, yi += incyi, ri = incri; i < n_i; i++, ri += incri,
 	 yi += incyi) {
-      zsymv_copy_row(order, uplo, n_i, a, lda, a_vec, i);
+      zsy_copy_row(order, uplo, n_i, a, lda, a_vec, i);
       BLAS_zdot_d_z_testgen(n_i, i, n_i - i, norm,
 			    blas_no_conj, alpha, 1,
 			    beta, 1, x_vec, a_vec, seed,
 			    y_elem, head_r_true_elem, tail_r_true_elem);
 
-      zsymv_commit_row(order, uplo, n_i, a, lda, a_vec, i);
+      zsy_commit_row(order, uplo, n_i, a, lda, a_vec, i);
 
       /*commits an element to the generated y */
       y_i[yi] = y_elem[0];
@@ -3002,14 +3000,14 @@ void BLAS_zsymv_z_d_testgen(int norm, enum blas_order_type order,
 
     /* randomly select alpha, beta */
     if (alpha_flag == 0) {
-      ((double *) y_elem)[0] = (float) drand48();
-      ((double *) y_elem)[1] = (float) drand48();
+      y_elem[0] = xrand(seed);
+      y_elem[1] = xrand(seed);
       alpha_i[0] = y_elem[0];
       alpha_i[0 + 1] = y_elem[1];
     }
     if (beta_flag == 0) {
-      ((double *) y_elem)[0] = (float) drand48();
-      ((double *) y_elem)[1] = (float) drand48();
+      y_elem[0] = xrand(seed);
+      y_elem[1] = xrand(seed);
       beta_i[0] = y_elem[0];
       beta_i[0 + 1] = y_elem[1];
     }
@@ -3039,22 +3037,22 @@ void BLAS_zsymv_z_d_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < n_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	((double *) a_elem)[0] = (float) drand48();
-	((double *) a_elem)[1] = (float) drand48();
+	a_elem[0] = xrand(seed);
+	a_elem[1] = xrand(seed);
 	a_i[aij] = a_elem[0];
 	a_i[aij + 1] = a_elem[1];
       }
     }
 
     for (i = 0, xi = x_starti; i < n_i; i++, xi += incxi) {
-      x_elem = (float) drand48();
+      x_elem = xrand(seed);
       x_i[xi] = x_elem;
     }
 
     /* now compute appropriate y vector */
 
     /* get x */
-    dsymv_copy_vector(n_i, x_vec, 1, x_i, incx);
+    dcopy_vector(x_i, n_i, incx, x_vec, 1);
     {
       /* promote to complex */
       int r;
@@ -3065,7 +3063,7 @@ void BLAS_zsymv_z_d_testgen(int norm, enum blas_order_type order,
     }
 
     for (i = 0, yi = y_starti, ri = 0; i < n_i; i++, yi += incyi, ri += incri) {
-      zsymv_copy_row(order, uplo, n_i, a, lda, a_vec, i);
+      zsy_copy_row(order, uplo, n_i, a, lda, a_vec, i);
 
 
       BLAS_zdot_testgen(n_i, n_i, 0, norm, blas_no_conj, alpha, 1,
@@ -3260,21 +3258,21 @@ void BLAS_zsymv_d_z_testgen(int norm, enum blas_order_type order,
     tail_r_true[ri + 1] = tail_r_true_elem[1];
 
     /* Copy a_vec to first row of A */
-    dsymv_commit_row(order, uplo, n_i, a, lda, a_vec, 0);
+    dsy_commit_row(order, uplo, n_i, a, lda, a_vec, 0);
 
     /* commit x_vec to x */
-    zsymv_copy_vector(n_i, x_i, incx, x_vec, 1);
+    zcopy_vector(x_vec, n_i, 1, x_i, incx);
 
     /* Fill in rest of matrix A */
     for (i = 1, yi += incyi, ri = incri; i < n_i; i++, ri += incri,
 	 yi += incyi) {
-      dsymv_copy_row(order, uplo, n_i, a, lda, a_vec, i);
+      dsy_copy_row(order, uplo, n_i, a, lda, a_vec, i);
       BLAS_zdot_z_d_testgen(n_i, i, n_i - i, norm,
 			    blas_no_conj, alpha, 1,
 			    beta, 1, x_vec, a_vec, seed,
 			    y_elem, head_r_true_elem, tail_r_true_elem);
 
-      dsymv_commit_row(order, uplo, n_i, a, lda, a_vec, i);
+      dsy_commit_row(order, uplo, n_i, a, lda, a_vec, i);
 
       /*commits an element to the generated y */
       y_i[yi] = y_elem[0];
@@ -3298,14 +3296,14 @@ void BLAS_zsymv_d_z_testgen(int norm, enum blas_order_type order,
 
     /* randomly select alpha, beta */
     if (alpha_flag == 0) {
-      ((double *) y_elem)[0] = (float) drand48();
-      ((double *) y_elem)[1] = (float) drand48();
+      y_elem[0] = (float) xrand(seed);
+      y_elem[1] = (float) xrand(seed);
       alpha_i[0] = y_elem[0];
       alpha_i[0 + 1] = y_elem[1];
     }
     if (beta_flag == 0) {
-      ((double *) y_elem)[0] = (float) drand48();
-      ((double *) y_elem)[1] = (float) drand48();
+      y_elem[0] = (float) xrand(seed);
+      y_elem[1] = (float) xrand(seed);
       beta_i[0] = y_elem[0];
       beta_i[0 + 1] = y_elem[1];
     }
@@ -3335,14 +3333,14 @@ void BLAS_zsymv_d_z_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < n_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	a_elem = (float) drand48();
+	a_elem = (float) xrand(seed);
 	a_i[aij] = a_elem;
       }
     }
 
     for (i = 0, xi = x_starti; i < n_i; i++, xi += incxi) {
-      ((double *) x_elem)[0] = (float) drand48();
-      ((double *) x_elem)[1] = (float) drand48();
+      x_elem[0] = (float) xrand(seed);
+      x_elem[1] = (float) xrand(seed);
       x_i[xi] = x_elem[0];
       x_i[xi + 1] = x_elem[1];
     }
@@ -3350,11 +3348,11 @@ void BLAS_zsymv_d_z_testgen(int norm, enum blas_order_type order,
     /* now compute appropriate y vector */
 
     /* get x */
-    zsymv_copy_vector(n_i, x_vec, 1, x_i, incx);
+    zcopy_vector(x_i, n_i, incx, x_vec, 1);
 
 
     for (i = 0, yi = y_starti, ri = 0; i < n_i; i++, yi += incyi, ri += incri) {
-      dsymv_copy_row(order, uplo, n_i, a, lda, a_vec, i);
+      dsy_copy_row(order, uplo, n_i, a, lda, a_vec, i);
       {
 	/* promote to complex */
 	int r;
@@ -3555,21 +3553,21 @@ void BLAS_zsymv_d_d_testgen(int norm, enum blas_order_type order,
     tail_r_true[ri + 1] = tail_r_true_elem[1];
 
     /* Copy a_vec to first row of A */
-    dsymv_commit_row(order, uplo, n_i, a, lda, a_vec, 0);
+    dsy_commit_row(order, uplo, n_i, a, lda, a_vec, 0);
 
     /* commit x_vec to x */
-    dsymv_copy_vector(n_i, x_i, incx, x_vec, 1);
+    dcopy_vector(x_vec, n_i, 1, x_i, incx);
 
     /* Fill in rest of matrix A */
     for (i = 1, yi += incyi, ri = incri; i < n_i; i++, ri += incri,
 	 yi += incyi) {
-      dsymv_copy_row(order, uplo, n_i, a, lda, a_vec, i);
+      dsy_copy_row(order, uplo, n_i, a, lda, a_vec, i);
       BLAS_zdot_d_d_testgen(n_i, i, n_i - i, norm,
 			    blas_no_conj, alpha, 1,
 			    beta, 1, x_vec, a_vec, seed,
 			    y_elem, head_r_true_elem, tail_r_true_elem);
 
-      dsymv_commit_row(order, uplo, n_i, a, lda, a_vec, i);
+      dsy_commit_row(order, uplo, n_i, a, lda, a_vec, i);
 
       /*commits an element to the generated y */
       y_i[yi] = y_elem[0];
@@ -3596,14 +3594,14 @@ void BLAS_zsymv_d_d_testgen(int norm, enum blas_order_type order,
 
     /* randomly select alpha, beta */
     if (alpha_flag == 0) {
-      ((double *) y_elem)[0] = (float) drand48();
-      ((double *) y_elem)[1] = (float) drand48();
+      y_elem[0] = (float) xrand(seed);
+      y_elem[1] = (float) xrand(seed);
       alpha_i[0] = y_elem[0];
       alpha_i[0 + 1] = y_elem[1];
     }
     if (beta_flag == 0) {
-      ((double *) y_elem)[0] = (float) drand48();
-      ((double *) y_elem)[1] = (float) drand48();
+      y_elem[0] = (float) xrand(seed);
+      y_elem[1] = (float) xrand(seed);
       beta_i[0] = y_elem[0];
       beta_i[0 + 1] = y_elem[1];
     }
@@ -3633,20 +3631,20 @@ void BLAS_zsymv_d_d_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < n_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	a_elem = (float) drand48();
+	a_elem = (float) xrand(seed);
 	a_i[aij] = a_elem;
       }
     }
 
     for (i = 0, xi = x_starti; i < n_i; i++, xi += incxi) {
-      x_elem = (float) drand48();
+      x_elem = (float) xrand(seed);
       x_i[xi] = x_elem;
     }
 
     /* now compute appropriate y vector */
 
     /* get x */
-    dsymv_copy_vector(n_i, x_vec, 1, x_i, incx);
+    dcopy_vector(x_i, n_i, incx, x_vec, 1);
     {
       /* promote to complex */
       int r;
@@ -3657,7 +3655,7 @@ void BLAS_zsymv_d_d_testgen(int norm, enum blas_order_type order,
     }
 
     for (i = 0, yi = y_starti, ri = 0; i < n_i; i++, yi += incyi, ri += incri) {
-      dsymv_copy_row(order, uplo, n_i, a, lda, a_vec, i);
+      dsy_copy_row(order, uplo, n_i, a, lda, a_vec, i);
       {
 	/* promote to complex */
 	int r;
@@ -3860,21 +3858,21 @@ void BLAS_csymv_c_s_testgen(int norm, enum blas_order_type order,
     tail_r_true[ri + 1] = tail_r_true_elem[1];
 
     /* Copy a_vec to first row of A */
-    csymv_commit_row(order, uplo, n_i, a, lda, a_vec, 0);
+    csy_commit_row(order, uplo, n_i, a, lda, a_vec, 0);
 
     /* commit x_vec to x */
-    ssymv_copy_vector(n_i, x_i, incx, x_vec, 1);
+    scopy_vector(x_vec, n_i, 1, x_i, incx);
 
     /* Fill in rest of matrix A */
     for (i = 1, yi += incyi, ri = incri; i < n_i; i++, ri += incri,
 	 yi += incyi) {
-      csymv_copy_row(order, uplo, n_i, a, lda, a_vec, i);
+      csy_copy_row(order, uplo, n_i, a, lda, a_vec, i);
       BLAS_cdot_s_c_testgen(n_i, i, n_i - i, norm,
 			    blas_no_conj, alpha, 1,
 			    beta, 1, x_vec, a_vec, seed,
 			    y_elem, head_r_true_elem, tail_r_true_elem);
 
-      csymv_commit_row(order, uplo, n_i, a, lda, a_vec, i);
+      csy_commit_row(order, uplo, n_i, a, lda, a_vec, i);
 
       /*commits an element to the generated y */
       y_i[yi] = y_elem[0];
@@ -3898,14 +3896,14 @@ void BLAS_csymv_c_s_testgen(int norm, enum blas_order_type order,
 
     /* randomly select alpha, beta */
     if (alpha_flag == 0) {
-      ((float *) y_elem)[0] = (float) drand48();
-      ((float *) y_elem)[1] = (float) drand48();
+      y_elem[0] = xrand(seed);
+      y_elem[1] = xrand(seed);
       alpha_i[0] = y_elem[0];
       alpha_i[0 + 1] = y_elem[1];
     }
     if (beta_flag == 0) {
-      ((float *) y_elem)[0] = (float) drand48();
-      ((float *) y_elem)[1] = (float) drand48();
+      y_elem[0] = xrand(seed);
+      y_elem[1] = xrand(seed);
       beta_i[0] = y_elem[0];
       beta_i[0 + 1] = y_elem[1];
     }
@@ -3935,22 +3933,22 @@ void BLAS_csymv_c_s_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < n_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	((float *) a_elem)[0] = (float) drand48();
-	((float *) a_elem)[1] = (float) drand48();
+	a_elem[0] = xrand(seed);
+	a_elem[1] = xrand(seed);
 	a_i[aij] = a_elem[0];
 	a_i[aij + 1] = a_elem[1];
       }
     }
 
     for (i = 0, xi = x_starti; i < n_i; i++, xi += incxi) {
-      x_elem = (float) drand48();
+      x_elem = xrand(seed);
       x_i[xi] = x_elem;
     }
 
     /* now compute appropriate y vector */
 
     /* get x */
-    ssymv_copy_vector(n_i, x_vec, 1, x_i, incx);
+    scopy_vector(x_i, n_i, incx, x_vec, 1);
     {
       /* promote to complex */
       int r;
@@ -3961,7 +3959,7 @@ void BLAS_csymv_c_s_testgen(int norm, enum blas_order_type order,
     }
 
     for (i = 0, yi = y_starti, ri = 0; i < n_i; i++, yi += incyi, ri += incri) {
-      csymv_copy_row(order, uplo, n_i, a, lda, a_vec, i);
+      csy_copy_row(order, uplo, n_i, a, lda, a_vec, i);
 
 
       BLAS_cdot_testgen(n_i, n_i, 0, norm, blas_no_conj, alpha, 1,
@@ -4156,21 +4154,21 @@ void BLAS_csymv_s_c_testgen(int norm, enum blas_order_type order,
     tail_r_true[ri + 1] = tail_r_true_elem[1];
 
     /* Copy a_vec to first row of A */
-    ssymv_commit_row(order, uplo, n_i, a, lda, a_vec, 0);
+    ssy_commit_row(order, uplo, n_i, a, lda, a_vec, 0);
 
     /* commit x_vec to x */
-    csymv_copy_vector(n_i, x_i, incx, x_vec, 1);
+    ccopy_vector(x_vec, n_i, 1, x_i, incx);
 
     /* Fill in rest of matrix A */
     for (i = 1, yi += incyi, ri = incri; i < n_i; i++, ri += incri,
 	 yi += incyi) {
-      ssymv_copy_row(order, uplo, n_i, a, lda, a_vec, i);
+      ssy_copy_row(order, uplo, n_i, a, lda, a_vec, i);
       BLAS_cdot_c_s_testgen(n_i, i, n_i - i, norm,
 			    blas_no_conj, alpha, 1,
 			    beta, 1, x_vec, a_vec, seed,
 			    y_elem, head_r_true_elem, tail_r_true_elem);
 
-      ssymv_commit_row(order, uplo, n_i, a, lda, a_vec, i);
+      ssy_commit_row(order, uplo, n_i, a, lda, a_vec, i);
 
       /*commits an element to the generated y */
       y_i[yi] = y_elem[0];
@@ -4194,14 +4192,14 @@ void BLAS_csymv_s_c_testgen(int norm, enum blas_order_type order,
 
     /* randomly select alpha, beta */
     if (alpha_flag == 0) {
-      ((float *) y_elem)[0] = (float) drand48();
-      ((float *) y_elem)[1] = (float) drand48();
+      y_elem[0] = (float) xrand(seed);
+      y_elem[1] = (float) xrand(seed);
       alpha_i[0] = y_elem[0];
       alpha_i[0 + 1] = y_elem[1];
     }
     if (beta_flag == 0) {
-      ((float *) y_elem)[0] = (float) drand48();
-      ((float *) y_elem)[1] = (float) drand48();
+      y_elem[0] = (float) xrand(seed);
+      y_elem[1] = (float) xrand(seed);
       beta_i[0] = y_elem[0];
       beta_i[0 + 1] = y_elem[1];
     }
@@ -4231,14 +4229,14 @@ void BLAS_csymv_s_c_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < n_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	a_elem = (float) drand48();
+	a_elem = (float) xrand(seed);
 	a_i[aij] = a_elem;
       }
     }
 
     for (i = 0, xi = x_starti; i < n_i; i++, xi += incxi) {
-      ((float *) x_elem)[0] = (float) drand48();
-      ((float *) x_elem)[1] = (float) drand48();
+      x_elem[0] = (float) xrand(seed);
+      x_elem[1] = (float) xrand(seed);
       x_i[xi] = x_elem[0];
       x_i[xi + 1] = x_elem[1];
     }
@@ -4246,11 +4244,11 @@ void BLAS_csymv_s_c_testgen(int norm, enum blas_order_type order,
     /* now compute appropriate y vector */
 
     /* get x */
-    csymv_copy_vector(n_i, x_vec, 1, x_i, incx);
+    ccopy_vector(x_i, n_i, incx, x_vec, 1);
 
 
     for (i = 0, yi = y_starti, ri = 0; i < n_i; i++, yi += incyi, ri += incri) {
-      ssymv_copy_row(order, uplo, n_i, a, lda, a_vec, i);
+      ssy_copy_row(order, uplo, n_i, a, lda, a_vec, i);
       {
 	/* promote to complex */
 	int r;
@@ -4451,21 +4449,21 @@ void BLAS_csymv_s_s_testgen(int norm, enum blas_order_type order,
     tail_r_true[ri + 1] = tail_r_true_elem[1];
 
     /* Copy a_vec to first row of A */
-    ssymv_commit_row(order, uplo, n_i, a, lda, a_vec, 0);
+    ssy_commit_row(order, uplo, n_i, a, lda, a_vec, 0);
 
     /* commit x_vec to x */
-    ssymv_copy_vector(n_i, x_i, incx, x_vec, 1);
+    scopy_vector(x_vec, n_i, 1, x_i, incx);
 
     /* Fill in rest of matrix A */
     for (i = 1, yi += incyi, ri = incri; i < n_i; i++, ri += incri,
 	 yi += incyi) {
-      ssymv_copy_row(order, uplo, n_i, a, lda, a_vec, i);
+      ssy_copy_row(order, uplo, n_i, a, lda, a_vec, i);
       BLAS_cdot_s_s_testgen(n_i, i, n_i - i, norm,
 			    blas_no_conj, alpha, 1,
 			    beta, 1, x_vec, a_vec, seed,
 			    y_elem, head_r_true_elem, tail_r_true_elem);
 
-      ssymv_commit_row(order, uplo, n_i, a, lda, a_vec, i);
+      ssy_commit_row(order, uplo, n_i, a, lda, a_vec, i);
 
       /*commits an element to the generated y */
       y_i[yi] = y_elem[0];
@@ -4492,14 +4490,14 @@ void BLAS_csymv_s_s_testgen(int norm, enum blas_order_type order,
 
     /* randomly select alpha, beta */
     if (alpha_flag == 0) {
-      ((float *) y_elem)[0] = (float) drand48();
-      ((float *) y_elem)[1] = (float) drand48();
+      y_elem[0] = (float) xrand(seed);
+      y_elem[1] = (float) xrand(seed);
       alpha_i[0] = y_elem[0];
       alpha_i[0 + 1] = y_elem[1];
     }
     if (beta_flag == 0) {
-      ((float *) y_elem)[0] = (float) drand48();
-      ((float *) y_elem)[1] = (float) drand48();
+      y_elem[0] = (float) xrand(seed);
+      y_elem[1] = (float) xrand(seed);
       beta_i[0] = y_elem[0];
       beta_i[0 + 1] = y_elem[1];
     }
@@ -4529,20 +4527,20 @@ void BLAS_csymv_s_s_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < n_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < n_i; j++, aij += incaij) {
-	a_elem = (float) drand48();
+	a_elem = (float) xrand(seed);
 	a_i[aij] = a_elem;
       }
     }
 
     for (i = 0, xi = x_starti; i < n_i; i++, xi += incxi) {
-      x_elem = (float) drand48();
+      x_elem = (float) xrand(seed);
       x_i[xi] = x_elem;
     }
 
     /* now compute appropriate y vector */
 
     /* get x */
-    ssymv_copy_vector(n_i, x_vec, 1, x_i, incx);
+    scopy_vector(x_i, n_i, incx, x_vec, 1);
     {
       /* promote to complex */
       int r;
@@ -4553,7 +4551,7 @@ void BLAS_csymv_s_s_testgen(int norm, enum blas_order_type order,
     }
 
     for (i = 0, yi = y_starti, ri = 0; i < n_i; i++, yi += incyi, ri += incri) {
-      ssymv_copy_row(order, uplo, n_i, a, lda, a_vec, i);
+      ssy_copy_row(order, uplo, n_i, a, lda, a_vec, i);
       {
 	/* promote to complex */
 	int r;

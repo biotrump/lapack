@@ -12,8 +12,6 @@
 
 
 
-
-
 void BLAS_ssymm_testgen(int norm, enum blas_order_type order,
 			enum blas_uplo_type uplo, enum blas_side_type side,
 			int m, int n, int randomize,
@@ -178,26 +176,26 @@ void BLAS_ssymm_testgen(int norm, enum blas_order_type order,
     tail_r_true[cij] = tail_r_true_elem;
 
     /* Copy a_vec to first row of A */
-    ssymm_commit_row(order, uplo, side, m_i, a, lda, a_vec, 0);
+    ssy_commit_row(order, uplo, m_i, a, lda, a_vec, 0);
 
     /* set every column of B to be b_vec */
     for (j = 0; j < n_i; j++) {
       if (side == blas_left_side)
-	sgemm_commit_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	sge_commit_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
       else
-	sgemm_commit_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	sge_commit_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
     }
 
     /* Fill in rest of matrix A */
     cij = incci;
     for (i = 1; i < m_i; i++, cij += incci) {
-      ssymm_copy_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      ssy_copy_row(order, uplo, m_i, a, lda, a_vec, i);
       BLAS_sdot_testgen(m_i, i, m_i - i, norm,
 			blas_no_conj, alpha, 1,
 			beta, 1, b_vec, a_vec, seed,
 			&c_elem, &head_r_true_elem, &tail_r_true_elem);
 
-      ssymm_commit_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      ssy_commit_row(order, uplo, m_i, a, lda, a_vec, i);
 
       c_i[cij] = c_elem;
       head_r_true[cij] = head_r_true_elem;
@@ -222,11 +220,11 @@ void BLAS_ssymm_testgen(int norm, enum blas_order_type order,
 
 
     if (alpha_flag == 0) {
-      c_elem = (float) drand48();
+      c_elem = xrand(seed);
       alpha_i[0] = c_elem;
     }
     if (beta_flag == 0) {
-      c_elem = (float) drand48();
+      c_elem = xrand(seed);
       beta_i[0] = c_elem;
     }
 
@@ -248,28 +246,28 @@ void BLAS_ssymm_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < m_i; j++, aij += incaij) {
-	a_elem = (float) drand48();
+	a_elem = xrand(seed);
 	a_i[aij] = a_elem;
       }
     }
 
     for (i = 0, bi = 0; i < m_i; i++, bi += incbi) {
       for (j = 0, bij = bi; j < n_i; j++, bij += incbij) {
-	b_elem = (float) drand48();
+	b_elem = xrand(seed);
 	b_i[bij] = b_elem;
       }
     }
 
     for (i = 0, ci = 0; i < m_i; i++, ci += incci) {
-      ssymm_copy_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      ssy_copy_row(order, uplo, m_i, a, lda, a_vec, i);
 
 
       for (j = 0, cij = ci; j < n_i; j++, cij += inccij) {
 
 	if (side == blas_left_side)
-	  sgemm_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	  sge_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
 	else
-	  sgemm_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	  sge_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
 
 
 
@@ -454,26 +452,26 @@ void BLAS_dsymm_testgen(int norm, enum blas_order_type order,
     tail_r_true[cij] = tail_r_true_elem;
 
     /* Copy a_vec to first row of A */
-    dsymm_commit_row(order, uplo, side, m_i, a, lda, a_vec, 0);
+    dsy_commit_row(order, uplo, m_i, a, lda, a_vec, 0);
 
     /* set every column of B to be b_vec */
     for (j = 0; j < n_i; j++) {
       if (side == blas_left_side)
-	dgemm_commit_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	dge_commit_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
       else
-	dgemm_commit_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	dge_commit_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
     }
 
     /* Fill in rest of matrix A */
     cij = incci;
     for (i = 1; i < m_i; i++, cij += incci) {
-      dsymm_copy_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      dsy_copy_row(order, uplo, m_i, a, lda, a_vec, i);
       BLAS_ddot_testgen(m_i, i, m_i - i, norm,
 			blas_no_conj, alpha, 1,
 			beta, 1, b_vec, a_vec, seed,
 			&c_elem, &head_r_true_elem, &tail_r_true_elem);
 
-      dsymm_commit_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      dsy_commit_row(order, uplo, m_i, a, lda, a_vec, i);
 
       c_i[cij] = c_elem;
       head_r_true[cij] = head_r_true_elem;
@@ -498,11 +496,11 @@ void BLAS_dsymm_testgen(int norm, enum blas_order_type order,
 
 
     if (alpha_flag == 0) {
-      c_elem = (float) drand48();
+      c_elem = xrand(seed);
       alpha_i[0] = c_elem;
     }
     if (beta_flag == 0) {
-      c_elem = (float) drand48();
+      c_elem = xrand(seed);
       beta_i[0] = c_elem;
     }
 
@@ -524,28 +522,28 @@ void BLAS_dsymm_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < m_i; j++, aij += incaij) {
-	a_elem = (float) drand48();
+	a_elem = xrand(seed);
 	a_i[aij] = a_elem;
       }
     }
 
     for (i = 0, bi = 0; i < m_i; i++, bi += incbi) {
       for (j = 0, bij = bi; j < n_i; j++, bij += incbij) {
-	b_elem = (float) drand48();
+	b_elem = xrand(seed);
 	b_i[bij] = b_elem;
       }
     }
 
     for (i = 0, ci = 0; i < m_i; i++, ci += incci) {
-      dsymm_copy_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      dsy_copy_row(order, uplo, m_i, a, lda, a_vec, i);
 
 
       for (j = 0, cij = ci; j < n_i; j++, cij += inccij) {
 
 	if (side == blas_left_side)
-	  dgemm_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	  dge_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
 	else
-	  dgemm_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	  dge_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
 
 
 
@@ -730,26 +728,26 @@ void BLAS_dsymm_d_s_testgen(int norm, enum blas_order_type order,
     tail_r_true[cij] = tail_r_true_elem;
 
     /* Copy a_vec to first row of A */
-    dsymm_commit_row(order, uplo, side, m_i, a, lda, a_vec, 0);
+    dsy_commit_row(order, uplo, m_i, a, lda, a_vec, 0);
 
     /* set every column of B to be b_vec */
     for (j = 0; j < n_i; j++) {
       if (side == blas_left_side)
-	sgemm_commit_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	sge_commit_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
       else
-	sgemm_commit_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	sge_commit_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
     }
 
     /* Fill in rest of matrix A */
     cij = incci;
     for (i = 1; i < m_i; i++, cij += incci) {
-      dsymm_copy_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      dsy_copy_row(order, uplo, m_i, a, lda, a_vec, i);
       BLAS_ddot_s_d_testgen(m_i, i, m_i - i, norm,
 			    blas_no_conj, alpha, 1,
 			    beta, 1, b_vec, a_vec, seed,
 			    &c_elem, &head_r_true_elem, &tail_r_true_elem);
 
-      dsymm_commit_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      dsy_commit_row(order, uplo, m_i, a, lda, a_vec, i);
 
       c_i[cij] = c_elem;
       head_r_true[cij] = head_r_true_elem;
@@ -774,11 +772,11 @@ void BLAS_dsymm_d_s_testgen(int norm, enum blas_order_type order,
 
 
     if (alpha_flag == 0) {
-      c_elem = (float) drand48();
+      c_elem = (float) xrand(seed);
       alpha_i[0] = c_elem;
     }
     if (beta_flag == 0) {
-      c_elem = (float) drand48();
+      c_elem = (float) xrand(seed);
       beta_i[0] = c_elem;
     }
 
@@ -800,28 +798,28 @@ void BLAS_dsymm_d_s_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < m_i; j++, aij += incaij) {
-	a_elem = (float) drand48();
+	a_elem = (float) xrand(seed);
 	a_i[aij] = a_elem;
       }
     }
 
     for (i = 0, bi = 0; i < m_i; i++, bi += incbi) {
       for (j = 0, bij = bi; j < n_i; j++, bij += incbij) {
-	b_elem = (float) drand48();
+	b_elem = (float) xrand(seed);
 	b_i[bij] = b_elem;
       }
     }
 
     for (i = 0, ci = 0; i < m_i; i++, ci += incci) {
-      dsymm_copy_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      dsy_copy_row(order, uplo, m_i, a, lda, a_vec, i);
 
 
       for (j = 0, cij = ci; j < n_i; j++, cij += inccij) {
 
 	if (side == blas_left_side)
-	  sgemm_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	  sge_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
 	else
-	  sgemm_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	  sge_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
 
 
 
@@ -1006,26 +1004,26 @@ void BLAS_dsymm_s_d_testgen(int norm, enum blas_order_type order,
     tail_r_true[cij] = tail_r_true_elem;
 
     /* Copy a_vec to first row of A */
-    ssymm_commit_row(order, uplo, side, m_i, a, lda, a_vec, 0);
+    ssy_commit_row(order, uplo, m_i, a, lda, a_vec, 0);
 
     /* set every column of B to be b_vec */
     for (j = 0; j < n_i; j++) {
       if (side == blas_left_side)
-	dgemm_commit_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	dge_commit_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
       else
-	dgemm_commit_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	dge_commit_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
     }
 
     /* Fill in rest of matrix A */
     cij = incci;
     for (i = 1; i < m_i; i++, cij += incci) {
-      ssymm_copy_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      ssy_copy_row(order, uplo, m_i, a, lda, a_vec, i);
       BLAS_ddot_d_s_testgen(m_i, i, m_i - i, norm,
 			    blas_no_conj, alpha, 1,
 			    beta, 1, b_vec, a_vec, seed,
 			    &c_elem, &head_r_true_elem, &tail_r_true_elem);
 
-      ssymm_commit_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      ssy_commit_row(order, uplo, m_i, a, lda, a_vec, i);
 
       c_i[cij] = c_elem;
       head_r_true[cij] = head_r_true_elem;
@@ -1050,11 +1048,11 @@ void BLAS_dsymm_s_d_testgen(int norm, enum blas_order_type order,
 
 
     if (alpha_flag == 0) {
-      c_elem = (float) drand48();
+      c_elem = (float) xrand(seed);
       alpha_i[0] = c_elem;
     }
     if (beta_flag == 0) {
-      c_elem = (float) drand48();
+      c_elem = (float) xrand(seed);
       beta_i[0] = c_elem;
     }
 
@@ -1076,28 +1074,28 @@ void BLAS_dsymm_s_d_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < m_i; j++, aij += incaij) {
-	a_elem = (float) drand48();
+	a_elem = (float) xrand(seed);
 	a_i[aij] = a_elem;
       }
     }
 
     for (i = 0, bi = 0; i < m_i; i++, bi += incbi) {
       for (j = 0, bij = bi; j < n_i; j++, bij += incbij) {
-	b_elem = (float) drand48();
+	b_elem = (float) xrand(seed);
 	b_i[bij] = b_elem;
       }
     }
 
     for (i = 0, ci = 0; i < m_i; i++, ci += incci) {
-      ssymm_copy_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      ssy_copy_row(order, uplo, m_i, a, lda, a_vec, i);
 
 
       for (j = 0, cij = ci; j < n_i; j++, cij += inccij) {
 
 	if (side == blas_left_side)
-	  dgemm_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	  dge_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
 	else
-	  dgemm_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	  dge_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
 
 
 
@@ -1282,26 +1280,26 @@ void BLAS_dsymm_s_s_testgen(int norm, enum blas_order_type order,
     tail_r_true[cij] = tail_r_true_elem;
 
     /* Copy a_vec to first row of A */
-    ssymm_commit_row(order, uplo, side, m_i, a, lda, a_vec, 0);
+    ssy_commit_row(order, uplo, m_i, a, lda, a_vec, 0);
 
     /* set every column of B to be b_vec */
     for (j = 0; j < n_i; j++) {
       if (side == blas_left_side)
-	sgemm_commit_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	sge_commit_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
       else
-	sgemm_commit_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	sge_commit_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
     }
 
     /* Fill in rest of matrix A */
     cij = incci;
     for (i = 1; i < m_i; i++, cij += incci) {
-      ssymm_copy_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      ssy_copy_row(order, uplo, m_i, a, lda, a_vec, i);
       BLAS_ddot_s_s_testgen(m_i, i, m_i - i, norm,
 			    blas_no_conj, alpha, 1,
 			    beta, 1, b_vec, a_vec, seed,
 			    &c_elem, &head_r_true_elem, &tail_r_true_elem);
 
-      ssymm_commit_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      ssy_commit_row(order, uplo, m_i, a, lda, a_vec, i);
 
       c_i[cij] = c_elem;
       head_r_true[cij] = head_r_true_elem;
@@ -1326,11 +1324,11 @@ void BLAS_dsymm_s_s_testgen(int norm, enum blas_order_type order,
 
 
     if (alpha_flag == 0) {
-      c_elem = (float) drand48();
+      c_elem = (float) xrand(seed);
       alpha_i[0] = c_elem;
     }
     if (beta_flag == 0) {
-      c_elem = (float) drand48();
+      c_elem = (float) xrand(seed);
       beta_i[0] = c_elem;
     }
 
@@ -1352,28 +1350,28 @@ void BLAS_dsymm_s_s_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < m_i; j++, aij += incaij) {
-	a_elem = (float) drand48();
+	a_elem = (float) xrand(seed);
 	a_i[aij] = a_elem;
       }
     }
 
     for (i = 0, bi = 0; i < m_i; i++, bi += incbi) {
       for (j = 0, bij = bi; j < n_i; j++, bij += incbij) {
-	b_elem = (float) drand48();
+	b_elem = (float) xrand(seed);
 	b_i[bij] = b_elem;
       }
     }
 
     for (i = 0, ci = 0; i < m_i; i++, ci += incci) {
-      ssymm_copy_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      ssy_copy_row(order, uplo, m_i, a, lda, a_vec, i);
 
 
       for (j = 0, cij = ci; j < n_i; j++, cij += inccij) {
 
 	if (side == blas_left_side)
-	  sgemm_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	  sge_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
 	else
-	  sgemm_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	  sge_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
 
 
 
@@ -1564,26 +1562,26 @@ void BLAS_csymm_testgen(int norm, enum blas_order_type order,
     tail_r_true[cij + 1] = tail_r_true_elem[1];
 
     /* Copy a_vec to first row of A */
-    csymm_commit_row(order, uplo, side, m_i, a, lda, a_vec, 0);
+    csy_commit_row(order, uplo, m_i, a, lda, a_vec, 0);
 
     /* set every column of B to be b_vec */
     for (j = 0; j < n_i; j++) {
       if (side == blas_left_side)
-	cgemm_commit_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	cge_commit_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
       else
-	cgemm_commit_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	cge_commit_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
     }
 
     /* Fill in rest of matrix A */
     cij = incci;
     for (i = 1; i < m_i; i++, cij += incci) {
-      csymm_copy_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      csy_copy_row(order, uplo, m_i, a, lda, a_vec, i);
       BLAS_cdot_testgen(m_i, i, m_i - i, norm,
 			blas_no_conj, alpha, 1,
 			beta, 1, b_vec, a_vec, seed,
 			c_elem, head_r_true_elem, tail_r_true_elem);
 
-      csymm_commit_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      csy_commit_row(order, uplo, m_i, a, lda, a_vec, i);
 
       c_i[cij] = c_elem[0];
       c_i[cij + 1] = c_elem[1];
@@ -1615,14 +1613,14 @@ void BLAS_csymm_testgen(int norm, enum blas_order_type order,
 
 
     if (alpha_flag == 0) {
-      ((float *) c_elem)[0] = (float) drand48();
-      ((float *) c_elem)[1] = (float) drand48();
+      c_elem[0] = xrand(seed);
+      c_elem[1] = xrand(seed);
       alpha_i[0] = c_elem[0];
       alpha_i[0 + 1] = c_elem[1];
     }
     if (beta_flag == 0) {
-      ((float *) c_elem)[0] = (float) drand48();
-      ((float *) c_elem)[1] = (float) drand48();
+      c_elem[0] = xrand(seed);
+      c_elem[1] = xrand(seed);
       beta_i[0] = c_elem[0];
       beta_i[0 + 1] = c_elem[1];
     }
@@ -1645,8 +1643,8 @@ void BLAS_csymm_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < m_i; j++, aij += incaij) {
-	((float *) a_elem)[0] = (float) drand48();
-	((float *) a_elem)[1] = (float) drand48();
+	a_elem[0] = xrand(seed);
+	a_elem[1] = xrand(seed);
 	a_i[aij] = a_elem[0];
 	a_i[aij + 1] = a_elem[1];
       }
@@ -1654,23 +1652,23 @@ void BLAS_csymm_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, bi = 0; i < m_i; i++, bi += incbi) {
       for (j = 0, bij = bi; j < n_i; j++, bij += incbij) {
-	((float *) b_elem)[0] = (float) drand48();
-	((float *) b_elem)[1] = (float) drand48();
+	b_elem[0] = xrand(seed);
+	b_elem[1] = xrand(seed);
 	b_i[bij] = b_elem[0];
 	b_i[bij + 1] = b_elem[1];
       }
     }
 
     for (i = 0, ci = 0; i < m_i; i++, ci += incci) {
-      csymm_copy_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      csy_copy_row(order, uplo, m_i, a, lda, a_vec, i);
 
 
       for (j = 0, cij = ci; j < n_i; j++, cij += inccij) {
 
 	if (side == blas_left_side)
-	  cgemm_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	  cge_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
 	else
-	  cgemm_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	  cge_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
 
 
 
@@ -1863,26 +1861,26 @@ void BLAS_zsymm_testgen(int norm, enum blas_order_type order,
     tail_r_true[cij + 1] = tail_r_true_elem[1];
 
     /* Copy a_vec to first row of A */
-    zsymm_commit_row(order, uplo, side, m_i, a, lda, a_vec, 0);
+    zsy_commit_row(order, uplo, m_i, a, lda, a_vec, 0);
 
     /* set every column of B to be b_vec */
     for (j = 0; j < n_i; j++) {
       if (side == blas_left_side)
-	zgemm_commit_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	zge_commit_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
       else
-	zgemm_commit_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	zge_commit_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
     }
 
     /* Fill in rest of matrix A */
     cij = incci;
     for (i = 1; i < m_i; i++, cij += incci) {
-      zsymm_copy_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      zsy_copy_row(order, uplo, m_i, a, lda, a_vec, i);
       BLAS_zdot_testgen(m_i, i, m_i - i, norm,
 			blas_no_conj, alpha, 1,
 			beta, 1, b_vec, a_vec, seed,
 			c_elem, head_r_true_elem, tail_r_true_elem);
 
-      zsymm_commit_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      zsy_commit_row(order, uplo, m_i, a, lda, a_vec, i);
 
       c_i[cij] = c_elem[0];
       c_i[cij + 1] = c_elem[1];
@@ -1914,14 +1912,14 @@ void BLAS_zsymm_testgen(int norm, enum blas_order_type order,
 
 
     if (alpha_flag == 0) {
-      ((double *) c_elem)[0] = (float) drand48();
-      ((double *) c_elem)[1] = (float) drand48();
+      c_elem[0] = xrand(seed);
+      c_elem[1] = xrand(seed);
       alpha_i[0] = c_elem[0];
       alpha_i[0 + 1] = c_elem[1];
     }
     if (beta_flag == 0) {
-      ((double *) c_elem)[0] = (float) drand48();
-      ((double *) c_elem)[1] = (float) drand48();
+      c_elem[0] = xrand(seed);
+      c_elem[1] = xrand(seed);
       beta_i[0] = c_elem[0];
       beta_i[0 + 1] = c_elem[1];
     }
@@ -1944,8 +1942,8 @@ void BLAS_zsymm_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < m_i; j++, aij += incaij) {
-	((double *) a_elem)[0] = (float) drand48();
-	((double *) a_elem)[1] = (float) drand48();
+	a_elem[0] = xrand(seed);
+	a_elem[1] = xrand(seed);
 	a_i[aij] = a_elem[0];
 	a_i[aij + 1] = a_elem[1];
       }
@@ -1953,23 +1951,23 @@ void BLAS_zsymm_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, bi = 0; i < m_i; i++, bi += incbi) {
       for (j = 0, bij = bi; j < n_i; j++, bij += incbij) {
-	((double *) b_elem)[0] = (float) drand48();
-	((double *) b_elem)[1] = (float) drand48();
+	b_elem[0] = xrand(seed);
+	b_elem[1] = xrand(seed);
 	b_i[bij] = b_elem[0];
 	b_i[bij + 1] = b_elem[1];
       }
     }
 
     for (i = 0, ci = 0; i < m_i; i++, ci += incci) {
-      zsymm_copy_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      zsy_copy_row(order, uplo, m_i, a, lda, a_vec, i);
 
 
       for (j = 0, cij = ci; j < n_i; j++, cij += inccij) {
 
 	if (side == blas_left_side)
-	  zgemm_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	  zge_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
 	else
-	  zgemm_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	  zge_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
 
 
 
@@ -2162,26 +2160,26 @@ void BLAS_zsymm_c_z_testgen(int norm, enum blas_order_type order,
     tail_r_true[cij + 1] = tail_r_true_elem[1];
 
     /* Copy a_vec to first row of A */
-    csymm_commit_row(order, uplo, side, m_i, a, lda, a_vec, 0);
+    csy_commit_row(order, uplo, m_i, a, lda, a_vec, 0);
 
     /* set every column of B to be b_vec */
     for (j = 0; j < n_i; j++) {
       if (side == blas_left_side)
-	zgemm_commit_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	zge_commit_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
       else
-	zgemm_commit_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	zge_commit_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
     }
 
     /* Fill in rest of matrix A */
     cij = incci;
     for (i = 1; i < m_i; i++, cij += incci) {
-      csymm_copy_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      csy_copy_row(order, uplo, m_i, a, lda, a_vec, i);
       BLAS_zdot_z_c_testgen(m_i, i, m_i - i, norm,
 			    blas_no_conj, alpha, 1,
 			    beta, 1, b_vec, a_vec, seed,
 			    c_elem, head_r_true_elem, tail_r_true_elem);
 
-      csymm_commit_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      csy_commit_row(order, uplo, m_i, a, lda, a_vec, i);
 
       c_i[cij] = c_elem[0];
       c_i[cij + 1] = c_elem[1];
@@ -2213,14 +2211,14 @@ void BLAS_zsymm_c_z_testgen(int norm, enum blas_order_type order,
 
 
     if (alpha_flag == 0) {
-      ((double *) c_elem)[0] = (float) drand48();
-      ((double *) c_elem)[1] = (float) drand48();
+      c_elem[0] = (float) xrand(seed);
+      c_elem[1] = (float) xrand(seed);
       alpha_i[0] = c_elem[0];
       alpha_i[0 + 1] = c_elem[1];
     }
     if (beta_flag == 0) {
-      ((double *) c_elem)[0] = (float) drand48();
-      ((double *) c_elem)[1] = (float) drand48();
+      c_elem[0] = (float) xrand(seed);
+      c_elem[1] = (float) xrand(seed);
       beta_i[0] = c_elem[0];
       beta_i[0 + 1] = c_elem[1];
     }
@@ -2243,8 +2241,8 @@ void BLAS_zsymm_c_z_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < m_i; j++, aij += incaij) {
-	((float *) a_elem)[0] = (float) drand48();
-	((float *) a_elem)[1] = (float) drand48();
+	a_elem[0] = (float) xrand(seed);
+	a_elem[1] = (float) xrand(seed);
 	a_i[aij] = a_elem[0];
 	a_i[aij + 1] = a_elem[1];
       }
@@ -2252,23 +2250,23 @@ void BLAS_zsymm_c_z_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, bi = 0; i < m_i; i++, bi += incbi) {
       for (j = 0, bij = bi; j < n_i; j++, bij += incbij) {
-	((double *) b_elem)[0] = (float) drand48();
-	((double *) b_elem)[1] = (float) drand48();
+	b_elem[0] = (float) xrand(seed);
+	b_elem[1] = (float) xrand(seed);
 	b_i[bij] = b_elem[0];
 	b_i[bij + 1] = b_elem[1];
       }
     }
 
     for (i = 0, ci = 0; i < m_i; i++, ci += incci) {
-      csymm_copy_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      csy_copy_row(order, uplo, m_i, a, lda, a_vec, i);
 
 
       for (j = 0, cij = ci; j < n_i; j++, cij += inccij) {
 
 	if (side == blas_left_side)
-	  zgemm_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	  zge_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
 	else
-	  zgemm_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	  zge_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
 
 
 
@@ -2461,26 +2459,26 @@ void BLAS_zsymm_z_c_testgen(int norm, enum blas_order_type order,
     tail_r_true[cij + 1] = tail_r_true_elem[1];
 
     /* Copy a_vec to first row of A */
-    zsymm_commit_row(order, uplo, side, m_i, a, lda, a_vec, 0);
+    zsy_commit_row(order, uplo, m_i, a, lda, a_vec, 0);
 
     /* set every column of B to be b_vec */
     for (j = 0; j < n_i; j++) {
       if (side == blas_left_side)
-	cgemm_commit_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	cge_commit_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
       else
-	cgemm_commit_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	cge_commit_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
     }
 
     /* Fill in rest of matrix A */
     cij = incci;
     for (i = 1; i < m_i; i++, cij += incci) {
-      zsymm_copy_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      zsy_copy_row(order, uplo, m_i, a, lda, a_vec, i);
       BLAS_zdot_c_z_testgen(m_i, i, m_i - i, norm,
 			    blas_no_conj, alpha, 1,
 			    beta, 1, b_vec, a_vec, seed,
 			    c_elem, head_r_true_elem, tail_r_true_elem);
 
-      zsymm_commit_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      zsy_commit_row(order, uplo, m_i, a, lda, a_vec, i);
 
       c_i[cij] = c_elem[0];
       c_i[cij + 1] = c_elem[1];
@@ -2512,14 +2510,14 @@ void BLAS_zsymm_z_c_testgen(int norm, enum blas_order_type order,
 
 
     if (alpha_flag == 0) {
-      ((double *) c_elem)[0] = (float) drand48();
-      ((double *) c_elem)[1] = (float) drand48();
+      c_elem[0] = (float) xrand(seed);
+      c_elem[1] = (float) xrand(seed);
       alpha_i[0] = c_elem[0];
       alpha_i[0 + 1] = c_elem[1];
     }
     if (beta_flag == 0) {
-      ((double *) c_elem)[0] = (float) drand48();
-      ((double *) c_elem)[1] = (float) drand48();
+      c_elem[0] = (float) xrand(seed);
+      c_elem[1] = (float) xrand(seed);
       beta_i[0] = c_elem[0];
       beta_i[0 + 1] = c_elem[1];
     }
@@ -2542,8 +2540,8 @@ void BLAS_zsymm_z_c_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < m_i; j++, aij += incaij) {
-	((double *) a_elem)[0] = (float) drand48();
-	((double *) a_elem)[1] = (float) drand48();
+	a_elem[0] = (float) xrand(seed);
+	a_elem[1] = (float) xrand(seed);
 	a_i[aij] = a_elem[0];
 	a_i[aij + 1] = a_elem[1];
       }
@@ -2551,23 +2549,23 @@ void BLAS_zsymm_z_c_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, bi = 0; i < m_i; i++, bi += incbi) {
       for (j = 0, bij = bi; j < n_i; j++, bij += incbij) {
-	((float *) b_elem)[0] = (float) drand48();
-	((float *) b_elem)[1] = (float) drand48();
+	b_elem[0] = (float) xrand(seed);
+	b_elem[1] = (float) xrand(seed);
 	b_i[bij] = b_elem[0];
 	b_i[bij + 1] = b_elem[1];
       }
     }
 
     for (i = 0, ci = 0; i < m_i; i++, ci += incci) {
-      zsymm_copy_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      zsy_copy_row(order, uplo, m_i, a, lda, a_vec, i);
 
 
       for (j = 0, cij = ci; j < n_i; j++, cij += inccij) {
 
 	if (side == blas_left_side)
-	  cgemm_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	  cge_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
 	else
-	  cgemm_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	  cge_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
 
 
 
@@ -2760,26 +2758,26 @@ void BLAS_zsymm_c_c_testgen(int norm, enum blas_order_type order,
     tail_r_true[cij + 1] = tail_r_true_elem[1];
 
     /* Copy a_vec to first row of A */
-    csymm_commit_row(order, uplo, side, m_i, a, lda, a_vec, 0);
+    csy_commit_row(order, uplo, m_i, a, lda, a_vec, 0);
 
     /* set every column of B to be b_vec */
     for (j = 0; j < n_i; j++) {
       if (side == blas_left_side)
-	cgemm_commit_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	cge_commit_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
       else
-	cgemm_commit_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	cge_commit_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
     }
 
     /* Fill in rest of matrix A */
     cij = incci;
     for (i = 1; i < m_i; i++, cij += incci) {
-      csymm_copy_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      csy_copy_row(order, uplo, m_i, a, lda, a_vec, i);
       BLAS_zdot_c_c_testgen(m_i, i, m_i - i, norm,
 			    blas_no_conj, alpha, 1,
 			    beta, 1, b_vec, a_vec, seed,
 			    c_elem, head_r_true_elem, tail_r_true_elem);
 
-      csymm_commit_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      csy_commit_row(order, uplo, m_i, a, lda, a_vec, i);
 
       c_i[cij] = c_elem[0];
       c_i[cij + 1] = c_elem[1];
@@ -2811,14 +2809,14 @@ void BLAS_zsymm_c_c_testgen(int norm, enum blas_order_type order,
 
 
     if (alpha_flag == 0) {
-      ((double *) c_elem)[0] = (float) drand48();
-      ((double *) c_elem)[1] = (float) drand48();
+      c_elem[0] = (float) xrand(seed);
+      c_elem[1] = (float) xrand(seed);
       alpha_i[0] = c_elem[0];
       alpha_i[0 + 1] = c_elem[1];
     }
     if (beta_flag == 0) {
-      ((double *) c_elem)[0] = (float) drand48();
-      ((double *) c_elem)[1] = (float) drand48();
+      c_elem[0] = (float) xrand(seed);
+      c_elem[1] = (float) xrand(seed);
       beta_i[0] = c_elem[0];
       beta_i[0 + 1] = c_elem[1];
     }
@@ -2841,8 +2839,8 @@ void BLAS_zsymm_c_c_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < m_i; j++, aij += incaij) {
-	((float *) a_elem)[0] = (float) drand48();
-	((float *) a_elem)[1] = (float) drand48();
+	a_elem[0] = (float) xrand(seed);
+	a_elem[1] = (float) xrand(seed);
 	a_i[aij] = a_elem[0];
 	a_i[aij + 1] = a_elem[1];
       }
@@ -2850,23 +2848,23 @@ void BLAS_zsymm_c_c_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, bi = 0; i < m_i; i++, bi += incbi) {
       for (j = 0, bij = bi; j < n_i; j++, bij += incbij) {
-	((float *) b_elem)[0] = (float) drand48();
-	((float *) b_elem)[1] = (float) drand48();
+	b_elem[0] = (float) xrand(seed);
+	b_elem[1] = (float) xrand(seed);
 	b_i[bij] = b_elem[0];
 	b_i[bij + 1] = b_elem[1];
       }
     }
 
     for (i = 0, ci = 0; i < m_i; i++, ci += incci) {
-      csymm_copy_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      csy_copy_row(order, uplo, m_i, a, lda, a_vec, i);
 
 
       for (j = 0, cij = ci; j < n_i; j++, cij += inccij) {
 
 	if (side == blas_left_side)
-	  cgemm_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	  cge_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
 	else
-	  cgemm_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	  cge_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
 
 
 
@@ -3059,26 +3057,26 @@ void BLAS_zsymm_z_d_testgen(int norm, enum blas_order_type order,
     tail_r_true[cij + 1] = tail_r_true_elem[1];
 
     /* Copy a_vec to first row of A */
-    zsymm_commit_row(order, uplo, side, m_i, a, lda, a_vec, 0);
+    zsy_commit_row(order, uplo, m_i, a, lda, a_vec, 0);
 
     /* set every column of B to be b_vec */
     for (j = 0; j < n_i; j++) {
       if (side == blas_left_side)
-	dgemm_commit_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	dge_commit_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
       else
-	dgemm_commit_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	dge_commit_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
     }
 
     /* Fill in rest of matrix A */
     cij = incci;
     for (i = 1; i < m_i; i++, cij += incci) {
-      zsymm_copy_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      zsy_copy_row(order, uplo, m_i, a, lda, a_vec, i);
       BLAS_zdot_d_z_testgen(m_i, i, m_i - i, norm,
 			    blas_no_conj, alpha, 1,
 			    beta, 1, b_vec, a_vec, seed,
 			    c_elem, head_r_true_elem, tail_r_true_elem);
 
-      zsymm_commit_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      zsy_commit_row(order, uplo, m_i, a, lda, a_vec, i);
 
       c_i[cij] = c_elem[0];
       c_i[cij + 1] = c_elem[1];
@@ -3113,14 +3111,14 @@ void BLAS_zsymm_z_d_testgen(int norm, enum blas_order_type order,
     }
 
     if (alpha_flag == 0) {
-      ((double *) c_elem)[0] = (float) drand48();
-      ((double *) c_elem)[1] = (float) drand48();
+      c_elem[0] = xrand(seed);
+      c_elem[1] = xrand(seed);
       alpha_i[0] = c_elem[0];
       alpha_i[0 + 1] = c_elem[1];
     }
     if (beta_flag == 0) {
-      ((double *) c_elem)[0] = (float) drand48();
-      ((double *) c_elem)[1] = (float) drand48();
+      c_elem[0] = xrand(seed);
+      c_elem[1] = xrand(seed);
       beta_i[0] = c_elem[0];
       beta_i[0 + 1] = c_elem[1];
     }
@@ -3143,8 +3141,8 @@ void BLAS_zsymm_z_d_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < m_i; j++, aij += incaij) {
-	((double *) a_elem)[0] = (float) drand48();
-	((double *) a_elem)[1] = (float) drand48();
+	a_elem[0] = xrand(seed);
+	a_elem[1] = xrand(seed);
 	a_i[aij] = a_elem[0];
 	a_i[aij + 1] = a_elem[1];
       }
@@ -3152,21 +3150,21 @@ void BLAS_zsymm_z_d_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, bi = 0; i < m_i; i++, bi += incbi) {
       for (j = 0, bij = bi; j < n_i; j++, bij += incbij) {
-	b_elem = (float) drand48();
+	b_elem = xrand(seed);
 	b_i[bij] = b_elem;
       }
     }
 
     for (i = 0, ci = 0; i < m_i; i++, ci += incci) {
-      zsymm_copy_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      zsy_copy_row(order, uplo, m_i, a, lda, a_vec, i);
 
 
       for (j = 0, cij = ci; j < n_i; j++, cij += inccij) {
 
 	if (side == blas_left_side)
-	  dgemm_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	  dge_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
 	else
-	  dgemm_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	  dge_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
 	{
 	  int r;
 	  for (r = 0; r < m_i; r++) {
@@ -3366,26 +3364,26 @@ void BLAS_zsymm_d_z_testgen(int norm, enum blas_order_type order,
     tail_r_true[cij + 1] = tail_r_true_elem[1];
 
     /* Copy a_vec to first row of A */
-    dsymm_commit_row(order, uplo, side, m_i, a, lda, a_vec, 0);
+    dsy_commit_row(order, uplo, m_i, a, lda, a_vec, 0);
 
     /* set every column of B to be b_vec */
     for (j = 0; j < n_i; j++) {
       if (side == blas_left_side)
-	zgemm_commit_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	zge_commit_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
       else
-	zgemm_commit_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	zge_commit_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
     }
 
     /* Fill in rest of matrix A */
     cij = incci;
     for (i = 1; i < m_i; i++, cij += incci) {
-      dsymm_copy_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      dsy_copy_row(order, uplo, m_i, a, lda, a_vec, i);
       BLAS_zdot_z_d_testgen(m_i, i, m_i - i, norm,
 			    blas_no_conj, alpha, 1,
 			    beta, 1, b_vec, a_vec, seed,
 			    c_elem, head_r_true_elem, tail_r_true_elem);
 
-      dsymm_commit_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      dsy_commit_row(order, uplo, m_i, a, lda, a_vec, i);
 
       c_i[cij] = c_elem[0];
       c_i[cij + 1] = c_elem[1];
@@ -3420,14 +3418,14 @@ void BLAS_zsymm_d_z_testgen(int norm, enum blas_order_type order,
 
 
     if (alpha_flag == 0) {
-      ((double *) c_elem)[0] = (float) drand48();
-      ((double *) c_elem)[1] = (float) drand48();
+      c_elem[0] = (float) xrand(seed);
+      c_elem[1] = (float) xrand(seed);
       alpha_i[0] = c_elem[0];
       alpha_i[0 + 1] = c_elem[1];
     }
     if (beta_flag == 0) {
-      ((double *) c_elem)[0] = (float) drand48();
-      ((double *) c_elem)[1] = (float) drand48();
+      c_elem[0] = (float) xrand(seed);
+      c_elem[1] = (float) xrand(seed);
       beta_i[0] = c_elem[0];
       beta_i[0 + 1] = c_elem[1];
     }
@@ -3450,22 +3448,22 @@ void BLAS_zsymm_d_z_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < m_i; j++, aij += incaij) {
-	a_elem = (float) drand48();
+	a_elem = (float) xrand(seed);
 	a_i[aij] = a_elem;
       }
     }
 
     for (i = 0, bi = 0; i < m_i; i++, bi += incbi) {
       for (j = 0, bij = bi; j < n_i; j++, bij += incbij) {
-	((double *) b_elem)[0] = (float) drand48();
-	((double *) b_elem)[1] = (float) drand48();
+	b_elem[0] = (float) xrand(seed);
+	b_elem[1] = (float) xrand(seed);
 	b_i[bij] = b_elem[0];
 	b_i[bij + 1] = b_elem[1];
       }
     }
 
     for (i = 0, ci = 0; i < m_i; i++, ci += incci) {
-      dsymm_copy_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      dsy_copy_row(order, uplo, m_i, a, lda, a_vec, i);
       {
 	int r;
 	for (r = 0; r < m_i; r++) {
@@ -3477,9 +3475,9 @@ void BLAS_zsymm_d_z_testgen(int norm, enum blas_order_type order,
       for (j = 0, cij = ci; j < n_i; j++, cij += inccij) {
 
 	if (side == blas_left_side)
-	  zgemm_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	  zge_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
 	else
-	  zgemm_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	  zge_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
 
 
 
@@ -3672,26 +3670,26 @@ void BLAS_zsymm_d_d_testgen(int norm, enum blas_order_type order,
     tail_r_true[cij + 1] = tail_r_true_elem[1];
 
     /* Copy a_vec to first row of A */
-    dsymm_commit_row(order, uplo, side, m_i, a, lda, a_vec, 0);
+    dsy_commit_row(order, uplo, m_i, a, lda, a_vec, 0);
 
     /* set every column of B to be b_vec */
     for (j = 0; j < n_i; j++) {
       if (side == blas_left_side)
-	dgemm_commit_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	dge_commit_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
       else
-	dgemm_commit_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	dge_commit_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
     }
 
     /* Fill in rest of matrix A */
     cij = incci;
     for (i = 1; i < m_i; i++, cij += incci) {
-      dsymm_copy_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      dsy_copy_row(order, uplo, m_i, a, lda, a_vec, i);
       BLAS_zdot_d_d_testgen(m_i, i, m_i - i, norm,
 			    blas_no_conj, alpha, 1,
 			    beta, 1, b_vec, a_vec, seed,
 			    c_elem, head_r_true_elem, tail_r_true_elem);
 
-      dsymm_commit_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      dsy_commit_row(order, uplo, m_i, a, lda, a_vec, i);
 
       c_i[cij] = c_elem[0];
       c_i[cij + 1] = c_elem[1];
@@ -3729,14 +3727,14 @@ void BLAS_zsymm_d_d_testgen(int norm, enum blas_order_type order,
     }
 
     if (alpha_flag == 0) {
-      ((double *) c_elem)[0] = (float) drand48();
-      ((double *) c_elem)[1] = (float) drand48();
+      c_elem[0] = (float) xrand(seed);
+      c_elem[1] = (float) xrand(seed);
       alpha_i[0] = c_elem[0];
       alpha_i[0 + 1] = c_elem[1];
     }
     if (beta_flag == 0) {
-      ((double *) c_elem)[0] = (float) drand48();
-      ((double *) c_elem)[1] = (float) drand48();
+      c_elem[0] = (float) xrand(seed);
+      c_elem[1] = (float) xrand(seed);
       beta_i[0] = c_elem[0];
       beta_i[0 + 1] = c_elem[1];
     }
@@ -3759,20 +3757,20 @@ void BLAS_zsymm_d_d_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < m_i; j++, aij += incaij) {
-	a_elem = (float) drand48();
+	a_elem = (float) xrand(seed);
 	a_i[aij] = a_elem;
       }
     }
 
     for (i = 0, bi = 0; i < m_i; i++, bi += incbi) {
       for (j = 0, bij = bi; j < n_i; j++, bij += incbij) {
-	b_elem = (float) drand48();
+	b_elem = (float) xrand(seed);
 	b_i[bij] = b_elem;
       }
     }
 
     for (i = 0, ci = 0; i < m_i; i++, ci += incci) {
-      dsymm_copy_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      dsy_copy_row(order, uplo, m_i, a, lda, a_vec, i);
       {
 	int r;
 	for (r = 0; r < m_i; r++) {
@@ -3784,9 +3782,9 @@ void BLAS_zsymm_d_d_testgen(int norm, enum blas_order_type order,
       for (j = 0, cij = ci; j < n_i; j++, cij += inccij) {
 
 	if (side == blas_left_side)
-	  dgemm_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	  dge_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
 	else
-	  dgemm_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	  dge_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
 	{
 	  int r;
 	  for (r = 0; r < m_i; r++) {
@@ -3987,26 +3985,26 @@ void BLAS_csymm_c_s_testgen(int norm, enum blas_order_type order,
     tail_r_true[cij + 1] = tail_r_true_elem[1];
 
     /* Copy a_vec to first row of A */
-    csymm_commit_row(order, uplo, side, m_i, a, lda, a_vec, 0);
+    csy_commit_row(order, uplo, m_i, a, lda, a_vec, 0);
 
     /* set every column of B to be b_vec */
     for (j = 0; j < n_i; j++) {
       if (side == blas_left_side)
-	sgemm_commit_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	sge_commit_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
       else
-	sgemm_commit_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	sge_commit_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
     }
 
     /* Fill in rest of matrix A */
     cij = incci;
     for (i = 1; i < m_i; i++, cij += incci) {
-      csymm_copy_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      csy_copy_row(order, uplo, m_i, a, lda, a_vec, i);
       BLAS_cdot_s_c_testgen(m_i, i, m_i - i, norm,
 			    blas_no_conj, alpha, 1,
 			    beta, 1, b_vec, a_vec, seed,
 			    c_elem, head_r_true_elem, tail_r_true_elem);
 
-      csymm_commit_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      csy_commit_row(order, uplo, m_i, a, lda, a_vec, i);
 
       c_i[cij] = c_elem[0];
       c_i[cij + 1] = c_elem[1];
@@ -4041,14 +4039,14 @@ void BLAS_csymm_c_s_testgen(int norm, enum blas_order_type order,
     }
 
     if (alpha_flag == 0) {
-      ((float *) c_elem)[0] = (float) drand48();
-      ((float *) c_elem)[1] = (float) drand48();
+      c_elem[0] = xrand(seed);
+      c_elem[1] = xrand(seed);
       alpha_i[0] = c_elem[0];
       alpha_i[0 + 1] = c_elem[1];
     }
     if (beta_flag == 0) {
-      ((float *) c_elem)[0] = (float) drand48();
-      ((float *) c_elem)[1] = (float) drand48();
+      c_elem[0] = xrand(seed);
+      c_elem[1] = xrand(seed);
       beta_i[0] = c_elem[0];
       beta_i[0 + 1] = c_elem[1];
     }
@@ -4071,8 +4069,8 @@ void BLAS_csymm_c_s_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < m_i; j++, aij += incaij) {
-	((float *) a_elem)[0] = (float) drand48();
-	((float *) a_elem)[1] = (float) drand48();
+	a_elem[0] = xrand(seed);
+	a_elem[1] = xrand(seed);
 	a_i[aij] = a_elem[0];
 	a_i[aij + 1] = a_elem[1];
       }
@@ -4080,21 +4078,21 @@ void BLAS_csymm_c_s_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, bi = 0; i < m_i; i++, bi += incbi) {
       for (j = 0, bij = bi; j < n_i; j++, bij += incbij) {
-	b_elem = (float) drand48();
+	b_elem = xrand(seed);
 	b_i[bij] = b_elem;
       }
     }
 
     for (i = 0, ci = 0; i < m_i; i++, ci += incci) {
-      csymm_copy_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      csy_copy_row(order, uplo, m_i, a, lda, a_vec, i);
 
 
       for (j = 0, cij = ci; j < n_i; j++, cij += inccij) {
 
 	if (side == blas_left_side)
-	  sgemm_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	  sge_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
 	else
-	  sgemm_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	  sge_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
 	{
 	  int r;
 	  for (r = 0; r < m_i; r++) {
@@ -4294,26 +4292,26 @@ void BLAS_csymm_s_c_testgen(int norm, enum blas_order_type order,
     tail_r_true[cij + 1] = tail_r_true_elem[1];
 
     /* Copy a_vec to first row of A */
-    ssymm_commit_row(order, uplo, side, m_i, a, lda, a_vec, 0);
+    ssy_commit_row(order, uplo, m_i, a, lda, a_vec, 0);
 
     /* set every column of B to be b_vec */
     for (j = 0; j < n_i; j++) {
       if (side == blas_left_side)
-	cgemm_commit_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	cge_commit_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
       else
-	cgemm_commit_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	cge_commit_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
     }
 
     /* Fill in rest of matrix A */
     cij = incci;
     for (i = 1; i < m_i; i++, cij += incci) {
-      ssymm_copy_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      ssy_copy_row(order, uplo, m_i, a, lda, a_vec, i);
       BLAS_cdot_c_s_testgen(m_i, i, m_i - i, norm,
 			    blas_no_conj, alpha, 1,
 			    beta, 1, b_vec, a_vec, seed,
 			    c_elem, head_r_true_elem, tail_r_true_elem);
 
-      ssymm_commit_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      ssy_commit_row(order, uplo, m_i, a, lda, a_vec, i);
 
       c_i[cij] = c_elem[0];
       c_i[cij + 1] = c_elem[1];
@@ -4348,14 +4346,14 @@ void BLAS_csymm_s_c_testgen(int norm, enum blas_order_type order,
 
 
     if (alpha_flag == 0) {
-      ((float *) c_elem)[0] = (float) drand48();
-      ((float *) c_elem)[1] = (float) drand48();
+      c_elem[0] = (float) xrand(seed);
+      c_elem[1] = (float) xrand(seed);
       alpha_i[0] = c_elem[0];
       alpha_i[0 + 1] = c_elem[1];
     }
     if (beta_flag == 0) {
-      ((float *) c_elem)[0] = (float) drand48();
-      ((float *) c_elem)[1] = (float) drand48();
+      c_elem[0] = (float) xrand(seed);
+      c_elem[1] = (float) xrand(seed);
       beta_i[0] = c_elem[0];
       beta_i[0 + 1] = c_elem[1];
     }
@@ -4378,22 +4376,22 @@ void BLAS_csymm_s_c_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < m_i; j++, aij += incaij) {
-	a_elem = (float) drand48();
+	a_elem = (float) xrand(seed);
 	a_i[aij] = a_elem;
       }
     }
 
     for (i = 0, bi = 0; i < m_i; i++, bi += incbi) {
       for (j = 0, bij = bi; j < n_i; j++, bij += incbij) {
-	((float *) b_elem)[0] = (float) drand48();
-	((float *) b_elem)[1] = (float) drand48();
+	b_elem[0] = (float) xrand(seed);
+	b_elem[1] = (float) xrand(seed);
 	b_i[bij] = b_elem[0];
 	b_i[bij + 1] = b_elem[1];
       }
     }
 
     for (i = 0, ci = 0; i < m_i; i++, ci += incci) {
-      ssymm_copy_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      ssy_copy_row(order, uplo, m_i, a, lda, a_vec, i);
       {
 	int r;
 	for (r = 0; r < m_i; r++) {
@@ -4405,9 +4403,9 @@ void BLAS_csymm_s_c_testgen(int norm, enum blas_order_type order,
       for (j = 0, cij = ci; j < n_i; j++, cij += inccij) {
 
 	if (side == blas_left_side)
-	  cgemm_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	  cge_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
 	else
-	  cgemm_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	  cge_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
 
 
 
@@ -4600,26 +4598,26 @@ void BLAS_csymm_s_s_testgen(int norm, enum blas_order_type order,
     tail_r_true[cij + 1] = tail_r_true_elem[1];
 
     /* Copy a_vec to first row of A */
-    ssymm_commit_row(order, uplo, side, m_i, a, lda, a_vec, 0);
+    ssy_commit_row(order, uplo, m_i, a, lda, a_vec, 0);
 
     /* set every column of B to be b_vec */
     for (j = 0; j < n_i; j++) {
       if (side == blas_left_side)
-	sgemm_commit_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	sge_commit_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
       else
-	sgemm_commit_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	sge_commit_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
     }
 
     /* Fill in rest of matrix A */
     cij = incci;
     for (i = 1; i < m_i; i++, cij += incci) {
-      ssymm_copy_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      ssy_copy_row(order, uplo, m_i, a, lda, a_vec, i);
       BLAS_cdot_s_s_testgen(m_i, i, m_i - i, norm,
 			    blas_no_conj, alpha, 1,
 			    beta, 1, b_vec, a_vec, seed,
 			    c_elem, head_r_true_elem, tail_r_true_elem);
 
-      ssymm_commit_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      ssy_commit_row(order, uplo, m_i, a, lda, a_vec, i);
 
       c_i[cij] = c_elem[0];
       c_i[cij + 1] = c_elem[1];
@@ -4657,14 +4655,14 @@ void BLAS_csymm_s_s_testgen(int norm, enum blas_order_type order,
     }
 
     if (alpha_flag == 0) {
-      ((float *) c_elem)[0] = (float) drand48();
-      ((float *) c_elem)[1] = (float) drand48();
+      c_elem[0] = (float) xrand(seed);
+      c_elem[1] = (float) xrand(seed);
       alpha_i[0] = c_elem[0];
       alpha_i[0 + 1] = c_elem[1];
     }
     if (beta_flag == 0) {
-      ((float *) c_elem)[0] = (float) drand48();
-      ((float *) c_elem)[1] = (float) drand48();
+      c_elem[0] = (float) xrand(seed);
+      c_elem[1] = (float) xrand(seed);
       beta_i[0] = c_elem[0];
       beta_i[0 + 1] = c_elem[1];
     }
@@ -4687,20 +4685,20 @@ void BLAS_csymm_s_s_testgen(int norm, enum blas_order_type order,
 
     for (i = 0, ai = 0; i < m_i; i++, ai += incai) {
       for (j = 0, aij = ai; j < m_i; j++, aij += incaij) {
-	a_elem = (float) drand48();
+	a_elem = (float) xrand(seed);
 	a_i[aij] = a_elem;
       }
     }
 
     for (i = 0, bi = 0; i < m_i; i++, bi += incbi) {
       for (j = 0, bij = bi; j < n_i; j++, bij += incbij) {
-	b_elem = (float) drand48();
+	b_elem = (float) xrand(seed);
 	b_i[bij] = b_elem;
       }
     }
 
     for (i = 0, ci = 0; i < m_i; i++, ci += incci) {
-      ssymm_copy_row(order, uplo, side, m_i, a, lda, a_vec, i);
+      ssy_copy_row(order, uplo, m_i, a, lda, a_vec, i);
       {
 	int r;
 	for (r = 0; r < m_i; r++) {
@@ -4712,9 +4710,9 @@ void BLAS_csymm_s_s_testgen(int norm, enum blas_order_type order,
       for (j = 0, cij = ci; j < n_i; j++, cij += inccij) {
 
 	if (side == blas_left_side)
-	  sgemm_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	  sge_copy_col(order, blas_no_trans, m, n, b, ldb, b_vec, j);
 	else
-	  sgemm_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
+	  sge_copy_row(order, blas_no_trans, m, n, b, ldb, b_vec, j);
 	{
 	  int r;
 	  for (r = 0; r < m_i; r++) {

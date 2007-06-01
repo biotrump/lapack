@@ -4,9 +4,10 @@ include ../../$(MAKEINC)
 LIB_PATH = ../../$(OUTPUT_DIR)
 HEADER_PATH = -I../../src -I..
 
-TEST_SRCS = do_test_dot.c test_dot.c BLAS_dot_testgen.c testgen_aux.c\
-	    testgen_BLAS_sdot.c testgen_BLAS_ddot.c\
-	    testgen_BLAS_cdot.c testgen_BLAS_zdot.c
+TEST_SRCS = do_test_dot.c test_dot.c BLAS_dot_testgen.c testgen_aux.c \
+	    testgen_BLAS_sdot.c testgen_BLAS_ddot.c \
+	    testgen_BLAS_cdot.c testgen_BLAS_zdot.c \
+	    print_vector.c copy_vector.c
 TEST_OBJS = $(TEST_SRCS:.c=.o)
 COMMON_OBJS = ../common/dummy_main.o
 

@@ -5,7 +5,6 @@
 
 
 
-
 void BLAS_sgbmv_testgen(int norm, enum blas_order_type order,
 			enum blas_trans_type trans, int m, int n, int kl,
 			int ku, float *alpha, int alpha_flag, float *AB,
