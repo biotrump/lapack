@@ -77,6 +77,7 @@ void BLAS_sgbmv_testgen(int norm, enum blas_order_type order,
  *
  */
 {
+  float *x_i = x;
   float *y_i = y;
   int n_fix2;
   int n_mix;
@@ -86,11 +87,12 @@ void BLAS_sgbmv_testgen(int norm, enum blas_order_type order,
   float *temp;
   int m_i, n_i;
   int max_mn;
-  int incy, incAB;
+  int incy, incAB, incx;
   float y_elem;
 
   max_mn = MAX(m, n);
-  incy = incAB = 1;
+  incx = incy = incAB = 1;
+
 
 
 
@@ -130,6 +132,11 @@ void BLAS_sgbmv_testgen(int norm, enum blas_order_type order,
 
     /* copy temp to AB */
     sgbmv_commit(order, trans, m, n, kl, ku, AB, lda, temp, i);
+  }
+
+  /* Zero out trailing part of x */
+  for (i = ysize; i < n_i; i++) {
+    x_i[i * incx] = 0.0;
   }
 
   blas_free(temp);
@@ -208,6 +215,7 @@ void BLAS_dgbmv_testgen(int norm, enum blas_order_type order,
  *
  */
 {
+  double *x_i = x;
   double *y_i = y;
   int n_fix2;
   int n_mix;
@@ -217,11 +225,12 @@ void BLAS_dgbmv_testgen(int norm, enum blas_order_type order,
   double *temp;
   int m_i, n_i;
   int max_mn;
-  int incy, incAB;
+  int incy, incAB, incx;
   double y_elem;
 
   max_mn = MAX(m, n);
-  incy = incAB = 1;
+  incx = incy = incAB = 1;
+
 
 
 
@@ -261,6 +270,11 @@ void BLAS_dgbmv_testgen(int norm, enum blas_order_type order,
 
     /* copy temp to AB */
     dgbmv_commit(order, trans, m, n, kl, ku, AB, lda, temp, i);
+  }
+
+  /* Zero out trailing part of x */
+  for (i = ysize; i < n_i; i++) {
+    x_i[i * incx] = 0.0;
   }
 
   blas_free(temp);
@@ -338,6 +352,7 @@ void BLAS_cgbmv_testgen(int norm, enum blas_order_type order,
  *
  */
 {
+  float *x_i = (float *) x;
   float *y_i = (float *) y;
   int n_fix2;
   int n_mix;
@@ -347,13 +362,14 @@ void BLAS_cgbmv_testgen(int norm, enum blas_order_type order,
   float *temp;
   int m_i, n_i;
   int max_mn;
-  int incy, incAB;
+  int incy, incAB, incx;
   float y_elem[2];
 
   max_mn = MAX(m, n);
-  incy = incAB = 1;
+  incx = incy = incAB = 1;
   incy *= 2;
   incAB *= 2;
+  incx *= 2;
 
   if (trans == blas_no_trans) {
     m_i = m;
@@ -396,6 +412,12 @@ void BLAS_cgbmv_testgen(int norm, enum blas_order_type order,
 
     /* copy temp to AB */
     cgbmv_commit(order, trans, m, n, kl, ku, AB, lda, temp, i);
+  }
+
+  /* Zero out trailing part of x */
+  for (i = ysize; i < n_i; i++) {
+    x_i[i * incx] = 0.0;
+    x_i[i * incx + 1] = 0.0;
   }
 
   blas_free(temp);
@@ -473,6 +495,7 @@ void BLAS_zgbmv_testgen(int norm, enum blas_order_type order,
  *
  */
 {
+  double *x_i = (double *) x;
   double *y_i = (double *) y;
   int n_fix2;
   int n_mix;
@@ -482,13 +505,14 @@ void BLAS_zgbmv_testgen(int norm, enum blas_order_type order,
   double *temp;
   int m_i, n_i;
   int max_mn;
-  int incy, incAB;
+  int incy, incAB, incx;
   double y_elem[2];
 
   max_mn = MAX(m, n);
-  incy = incAB = 1;
+  incx = incy = incAB = 1;
   incy *= 2;
   incAB *= 2;
+  incx *= 2;
 
   if (trans == blas_no_trans) {
     m_i = m;
@@ -531,6 +555,12 @@ void BLAS_zgbmv_testgen(int norm, enum blas_order_type order,
 
     /* copy temp to AB */
     zgbmv_commit(order, trans, m, n, kl, ku, AB, lda, temp, i);
+  }
+
+  /* Zero out trailing part of x */
+  for (i = ysize; i < n_i; i++) {
+    x_i[i * incx] = 0.0;
+    x_i[i * incx + 1] = 0.0;
   }
 
   blas_free(temp);
@@ -609,6 +639,7 @@ void BLAS_cgbmv_s_s_testgen(int norm, enum blas_order_type order,
  *
  */
 {
+  float *x_i = x;
   float *y_i = (float *) y;
   int n_fix2;
   int n_mix;
@@ -618,12 +649,13 @@ void BLAS_cgbmv_s_s_testgen(int norm, enum blas_order_type order,
   float *temp;
   int m_i, n_i;
   int max_mn;
-  int incy, incAB;
+  int incy, incAB, incx;
   float y_elem[2];
 
   max_mn = MAX(m, n);
-  incy = incAB = 1;
+  incx = incy = incAB = 1;
   incy *= 2;
+
 
 
   if (trans == blas_no_trans) {
@@ -663,6 +695,11 @@ void BLAS_cgbmv_s_s_testgen(int norm, enum blas_order_type order,
 
     /* copy temp to AB */
     sgbmv_commit(order, trans, m, n, kl, ku, AB, lda, temp, i);
+  }
+
+  /* Zero out trailing part of x */
+  for (i = ysize; i < n_i; i++) {
+    x_i[i * incx] = 0.0;
   }
 
   blas_free(temp);
@@ -741,6 +778,7 @@ void BLAS_cgbmv_s_c_testgen(int norm, enum blas_order_type order,
  *
  */
 {
+  float *x_i = (float *) x;
   float *y_i = (float *) y;
   int n_fix2;
   int n_mix;
@@ -750,13 +788,14 @@ void BLAS_cgbmv_s_c_testgen(int norm, enum blas_order_type order,
   float *temp;
   int m_i, n_i;
   int max_mn;
-  int incy, incAB;
+  int incy, incAB, incx;
   float y_elem[2];
 
   max_mn = MAX(m, n);
-  incy = incAB = 1;
+  incx = incy = incAB = 1;
   incy *= 2;
 
+  incx *= 2;
 
   if (trans == blas_no_trans) {
     m_i = m;
@@ -795,6 +834,12 @@ void BLAS_cgbmv_s_c_testgen(int norm, enum blas_order_type order,
 
     /* copy temp to AB */
     sgbmv_commit(order, trans, m, n, kl, ku, AB, lda, temp, i);
+  }
+
+  /* Zero out trailing part of x */
+  for (i = ysize; i < n_i; i++) {
+    x_i[i * incx] = 0.0;
+    x_i[i * incx + 1] = 0.0;
   }
 
   blas_free(temp);
@@ -873,6 +918,7 @@ void BLAS_cgbmv_c_s_testgen(int norm, enum blas_order_type order,
  *
  */
 {
+  float *x_i = x;
   float *y_i = (float *) y;
   int n_fix2;
   int n_mix;
@@ -882,13 +928,14 @@ void BLAS_cgbmv_c_s_testgen(int norm, enum blas_order_type order,
   float *temp;
   int m_i, n_i;
   int max_mn;
-  int incy, incAB;
+  int incy, incAB, incx;
   float y_elem[2];
 
   max_mn = MAX(m, n);
-  incy = incAB = 1;
+  incx = incy = incAB = 1;
   incy *= 2;
   incAB *= 2;
+
 
   if (trans == blas_no_trans) {
     m_i = m;
@@ -931,6 +978,11 @@ void BLAS_cgbmv_c_s_testgen(int norm, enum blas_order_type order,
 
     /* copy temp to AB */
     cgbmv_commit(order, trans, m, n, kl, ku, AB, lda, temp, i);
+  }
+
+  /* Zero out trailing part of x */
+  for (i = ysize; i < n_i; i++) {
+    x_i[i * incx] = 0.0;
   }
 
   blas_free(temp);
@@ -1009,6 +1061,7 @@ void BLAS_zgbmv_d_d_testgen(int norm, enum blas_order_type order,
  *
  */
 {
+  double *x_i = x;
   double *y_i = (double *) y;
   int n_fix2;
   int n_mix;
@@ -1018,12 +1071,13 @@ void BLAS_zgbmv_d_d_testgen(int norm, enum blas_order_type order,
   double *temp;
   int m_i, n_i;
   int max_mn;
-  int incy, incAB;
+  int incy, incAB, incx;
   double y_elem[2];
 
   max_mn = MAX(m, n);
-  incy = incAB = 1;
+  incx = incy = incAB = 1;
   incy *= 2;
+
 
 
   if (trans == blas_no_trans) {
@@ -1063,6 +1117,11 @@ void BLAS_zgbmv_d_d_testgen(int norm, enum blas_order_type order,
 
     /* copy temp to AB */
     dgbmv_commit(order, trans, m, n, kl, ku, AB, lda, temp, i);
+  }
+
+  /* Zero out trailing part of x */
+  for (i = ysize; i < n_i; i++) {
+    x_i[i * incx] = 0.0;
   }
 
   blas_free(temp);
@@ -1141,6 +1200,7 @@ void BLAS_zgbmv_d_z_testgen(int norm, enum blas_order_type order,
  *
  */
 {
+  double *x_i = (double *) x;
   double *y_i = (double *) y;
   int n_fix2;
   int n_mix;
@@ -1150,13 +1210,14 @@ void BLAS_zgbmv_d_z_testgen(int norm, enum blas_order_type order,
   double *temp;
   int m_i, n_i;
   int max_mn;
-  int incy, incAB;
+  int incy, incAB, incx;
   double y_elem[2];
 
   max_mn = MAX(m, n);
-  incy = incAB = 1;
+  incx = incy = incAB = 1;
   incy *= 2;
 
+  incx *= 2;
 
   if (trans == blas_no_trans) {
     m_i = m;
@@ -1195,6 +1256,12 @@ void BLAS_zgbmv_d_z_testgen(int norm, enum blas_order_type order,
 
     /* copy temp to AB */
     dgbmv_commit(order, trans, m, n, kl, ku, AB, lda, temp, i);
+  }
+
+  /* Zero out trailing part of x */
+  for (i = ysize; i < n_i; i++) {
+    x_i[i * incx] = 0.0;
+    x_i[i * incx + 1] = 0.0;
   }
 
   blas_free(temp);
@@ -1273,6 +1340,7 @@ void BLAS_zgbmv_z_d_testgen(int norm, enum blas_order_type order,
  *
  */
 {
+  double *x_i = x;
   double *y_i = (double *) y;
   int n_fix2;
   int n_mix;
@@ -1282,13 +1350,14 @@ void BLAS_zgbmv_z_d_testgen(int norm, enum blas_order_type order,
   double *temp;
   int m_i, n_i;
   int max_mn;
-  int incy, incAB;
+  int incy, incAB, incx;
   double y_elem[2];
 
   max_mn = MAX(m, n);
-  incy = incAB = 1;
+  incx = incy = incAB = 1;
   incy *= 2;
   incAB *= 2;
+
 
   if (trans == blas_no_trans) {
     m_i = m;
@@ -1331,6 +1400,11 @@ void BLAS_zgbmv_z_d_testgen(int norm, enum blas_order_type order,
 
     /* copy temp to AB */
     zgbmv_commit(order, trans, m, n, kl, ku, AB, lda, temp, i);
+  }
+
+  /* Zero out trailing part of x */
+  for (i = ysize; i < n_i; i++) {
+    x_i[i * incx] = 0.0;
   }
 
   blas_free(temp);
@@ -1409,6 +1483,7 @@ void BLAS_dgbmv_s_s_testgen(int norm, enum blas_order_type order,
  *
  */
 {
+  float *x_i = x;
   double *y_i = y;
   int n_fix2;
   int n_mix;
@@ -1418,11 +1493,12 @@ void BLAS_dgbmv_s_s_testgen(int norm, enum blas_order_type order,
   float *temp;
   int m_i, n_i;
   int max_mn;
-  int incy, incAB;
+  int incy, incAB, incx;
   double y_elem;
 
   max_mn = MAX(m, n);
-  incy = incAB = 1;
+  incx = incy = incAB = 1;
+
 
 
 
@@ -1462,6 +1538,11 @@ void BLAS_dgbmv_s_s_testgen(int norm, enum blas_order_type order,
 
     /* copy temp to AB */
     sgbmv_commit(order, trans, m, n, kl, ku, AB, lda, temp, i);
+  }
+
+  /* Zero out trailing part of x */
+  for (i = ysize; i < n_i; i++) {
+    x_i[i * incx] = 0.0;
   }
 
   blas_free(temp);
@@ -1540,6 +1621,7 @@ void BLAS_dgbmv_s_d_testgen(int norm, enum blas_order_type order,
  *
  */
 {
+  double *x_i = x;
   double *y_i = y;
   int n_fix2;
   int n_mix;
@@ -1549,11 +1631,12 @@ void BLAS_dgbmv_s_d_testgen(int norm, enum blas_order_type order,
   float *temp;
   int m_i, n_i;
   int max_mn;
-  int incy, incAB;
+  int incy, incAB, incx;
   double y_elem;
 
   max_mn = MAX(m, n);
-  incy = incAB = 1;
+  incx = incy = incAB = 1;
+
 
 
 
@@ -1593,6 +1676,11 @@ void BLAS_dgbmv_s_d_testgen(int norm, enum blas_order_type order,
 
     /* copy temp to AB */
     sgbmv_commit(order, trans, m, n, kl, ku, AB, lda, temp, i);
+  }
+
+  /* Zero out trailing part of x */
+  for (i = ysize; i < n_i; i++) {
+    x_i[i * incx] = 0.0;
   }
 
   blas_free(temp);
@@ -1671,6 +1759,7 @@ void BLAS_dgbmv_d_s_testgen(int norm, enum blas_order_type order,
  *
  */
 {
+  float *x_i = x;
   double *y_i = y;
   int n_fix2;
   int n_mix;
@@ -1680,11 +1769,12 @@ void BLAS_dgbmv_d_s_testgen(int norm, enum blas_order_type order,
   double *temp;
   int m_i, n_i;
   int max_mn;
-  int incy, incAB;
+  int incy, incAB, incx;
   double y_elem;
 
   max_mn = MAX(m, n);
-  incy = incAB = 1;
+  incx = incy = incAB = 1;
+
 
 
 
@@ -1724,6 +1814,11 @@ void BLAS_dgbmv_d_s_testgen(int norm, enum blas_order_type order,
 
     /* copy temp to AB */
     dgbmv_commit(order, trans, m, n, kl, ku, AB, lda, temp, i);
+  }
+
+  /* Zero out trailing part of x */
+  for (i = ysize; i < n_i; i++) {
+    x_i[i * incx] = 0.0;
   }
 
   blas_free(temp);
@@ -1802,6 +1897,7 @@ void BLAS_zgbmv_c_c_testgen(int norm, enum blas_order_type order,
  *
  */
 {
+  float *x_i = (float *) x;
   double *y_i = (double *) y;
   int n_fix2;
   int n_mix;
@@ -1811,13 +1907,14 @@ void BLAS_zgbmv_c_c_testgen(int norm, enum blas_order_type order,
   float *temp;
   int m_i, n_i;
   int max_mn;
-  int incy, incAB;
+  int incy, incAB, incx;
   double y_elem[2];
 
   max_mn = MAX(m, n);
-  incy = incAB = 1;
+  incx = incy = incAB = 1;
   incy *= 2;
   incAB *= 2;
+  incx *= 2;
 
   if (trans == blas_no_trans) {
     m_i = m;
@@ -1860,6 +1957,12 @@ void BLAS_zgbmv_c_c_testgen(int norm, enum blas_order_type order,
 
     /* copy temp to AB */
     cgbmv_commit(order, trans, m, n, kl, ku, AB, lda, temp, i);
+  }
+
+  /* Zero out trailing part of x */
+  for (i = ysize; i < n_i; i++) {
+    x_i[i * incx] = 0.0;
+    x_i[i * incx + 1] = 0.0;
   }
 
   blas_free(temp);
@@ -1938,6 +2041,7 @@ void BLAS_zgbmv_c_z_testgen(int norm, enum blas_order_type order,
  *
  */
 {
+  double *x_i = (double *) x;
   double *y_i = (double *) y;
   int n_fix2;
   int n_mix;
@@ -1947,13 +2051,14 @@ void BLAS_zgbmv_c_z_testgen(int norm, enum blas_order_type order,
   float *temp;
   int m_i, n_i;
   int max_mn;
-  int incy, incAB;
+  int incy, incAB, incx;
   double y_elem[2];
 
   max_mn = MAX(m, n);
-  incy = incAB = 1;
+  incx = incy = incAB = 1;
   incy *= 2;
   incAB *= 2;
+  incx *= 2;
 
   if (trans == blas_no_trans) {
     m_i = m;
@@ -1996,6 +2101,12 @@ void BLAS_zgbmv_c_z_testgen(int norm, enum blas_order_type order,
 
     /* copy temp to AB */
     cgbmv_commit(order, trans, m, n, kl, ku, AB, lda, temp, i);
+  }
+
+  /* Zero out trailing part of x */
+  for (i = ysize; i < n_i; i++) {
+    x_i[i * incx] = 0.0;
+    x_i[i * incx + 1] = 0.0;
   }
 
   blas_free(temp);
@@ -2074,6 +2185,7 @@ void BLAS_zgbmv_z_c_testgen(int norm, enum blas_order_type order,
  *
  */
 {
+  float *x_i = (float *) x;
   double *y_i = (double *) y;
   int n_fix2;
   int n_mix;
@@ -2083,13 +2195,14 @@ void BLAS_zgbmv_z_c_testgen(int norm, enum blas_order_type order,
   double *temp;
   int m_i, n_i;
   int max_mn;
-  int incy, incAB;
+  int incy, incAB, incx;
   double y_elem[2];
 
   max_mn = MAX(m, n);
-  incy = incAB = 1;
+  incx = incy = incAB = 1;
   incy *= 2;
   incAB *= 2;
+  incx *= 2;
 
   if (trans == blas_no_trans) {
     m_i = m;
@@ -2132,6 +2245,12 @@ void BLAS_zgbmv_z_c_testgen(int norm, enum blas_order_type order,
 
     /* copy temp to AB */
     zgbmv_commit(order, trans, m, n, kl, ku, AB, lda, temp, i);
+  }
+
+  /* Zero out trailing part of x */
+  for (i = ysize; i < n_i; i++) {
+    x_i[i * incx] = 0.0;
+    x_i[i * incx + 1] = 0.0;
   }
 
   blas_free(temp);
