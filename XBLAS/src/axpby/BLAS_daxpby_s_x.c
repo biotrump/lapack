@@ -48,51 +48,6 @@ void BLAS_daxpby_s_x(int n, double alpha, const float *x, int incx,
 
   switch (prec) {
   case blas_prec_single:
-    {
-      int i, ix = 0, iy = 0;
-      const float *x_i = x;
-      double *y_i = y;
-      double alpha_i = alpha;
-      double beta_i = beta;
-      float x_ii;
-      double y_ii;
-      double tmpx;
-      double tmpy;
-
-
-      /* Test the input parameters. */
-      if (incx == 0)
-	BLAS_error(routine_name, -4, incx, NULL);
-      else if (incy == 0)
-	BLAS_error(routine_name, -7, incy, NULL);
-
-      /* Immediate return */
-      if (n <= 0 || (alpha_i == 0.0 && beta_i == 1.0))
-	return;
-
-
-
-
-
-      if (incx < 0)
-	ix = (-n + 1) * incx;
-      if (incy < 0)
-	iy = (-n + 1) * incy;
-
-      for (i = 0; i < n; ++i) {
-	x_ii = x_i[ix];
-	y_ii = y_i[iy];
-	tmpx = alpha_i * x_ii;	/* tmpx  = alpha * x[ix] */
-	tmpy = beta_i * y_ii;	/* tmpy = beta * y[iy] */
-	tmpy = tmpy + tmpx;
-	y_i[iy] = tmpy;
-	ix += incx;
-	iy += incy;
-      }				/* endfor */
-
-
-    }
-    break;
   case blas_prec_double:
   case blas_prec_indigenous:
     {

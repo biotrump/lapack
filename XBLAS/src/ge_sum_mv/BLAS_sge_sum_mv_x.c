@@ -62,8 +62,7 @@ void BLAS_sge_sum_mv_x(enum blas_order_type order, int m, int n,
   /* Routine name */
   static const char routine_name[] = "BLAS_sge_sum_mv";
   switch (prec) {
-  case blas_prec_single:
-    {
+  case blas_prec_single:{
       int i, j;
       int xi, yi;
       int x_starti, y_starti, incxi, incyi;
@@ -371,9 +370,9 @@ void BLAS_sge_sum_mv_x(enum blas_order_type order, int m, int n,
 	}
       }
 
-    }
-    break;
 
+      break;
+    }
   case blas_prec_indigenous:
   case blas_prec_double:
     {

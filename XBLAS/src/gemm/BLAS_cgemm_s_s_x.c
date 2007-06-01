@@ -383,7 +383,6 @@ void BLAS_cgemm_s_s_x(enum blas_order_type order, enum blas_trans_type transa,
 
       break;
     }
-
   case blas_prec_double:
   case blas_prec_indigenous:{
 

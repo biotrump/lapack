@@ -46,8 +46,8 @@ void BLAS_saxpby_x(int n, float alpha, const float *x, int incx,
   static const char routine_name[] = "BLAS_saxpby_x";
 
   switch (prec) {
-  case blas_prec_single:
-    {
+  case blas_prec_single:{
+
       int i, ix = 0, iy = 0;
       const float *x_i = x;
       float *y_i = y;
@@ -90,8 +90,9 @@ void BLAS_saxpby_x(int n, float alpha, const float *x, int incx,
       }				/* endfor */
 
 
+
+      break;
     }
-    break;
   case blas_prec_double:
   case blas_prec_indigenous:
     {

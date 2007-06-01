@@ -375,7 +375,6 @@ void BLAS_chemm_x(enum blas_order_type order, enum blas_side_type side,
 
       break;
     }
-
   case blas_prec_double:
   case blas_prec_indigenous:{
 

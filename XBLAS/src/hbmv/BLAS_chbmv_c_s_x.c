@@ -620,7 +620,6 @@ void BLAS_chbmv_c_s_x(enum blas_order_type order,
 
       break;
     }
-
   case blas_prec_indigenous:
   case blas_prec_double:{
 

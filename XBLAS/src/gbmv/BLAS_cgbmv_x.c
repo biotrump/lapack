@@ -108,8 +108,8 @@ void BLAS_cgbmv_x(enum blas_order_type order, enum blas_trans_type trans,
   static const char routine_name[] = "BLAS_cgbmv_x";
 
   switch (prec) {
-  case blas_prec_single:
-    {
+  case blas_prec_single:{
+
       int ky, iy, kx, jx, j, i, rbound, lbound, ra, la, lenx, leny;
       int incaij, aij, incai1, incai2, astart, ai;
       float *y_i = (float *) y;
@@ -283,8 +283,9 @@ void BLAS_cgbmv_x(enum blas_order_type order, enum blas_trans_type trans,
       }
 
 
+
+      break;
     }
-    break;
   case blas_prec_double:
   case blas_prec_indigenous:
     {

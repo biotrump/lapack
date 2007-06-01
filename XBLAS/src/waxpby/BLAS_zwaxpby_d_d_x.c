@@ -53,72 +53,7 @@ void BLAS_zwaxpby_d_d_x(int n, const void *alpha, const double *x, int incx,
 {
   char *routine_name = "BLAS_zwaxpby_d_d_x";
   switch (prec) {
-  case blas_prec_single:{
-
-      int i, ix = 0, iy = 0, iw = 0;
-      double *w_i = (double *) w;
-      const double *x_i = x;
-      const double *y_i = y;
-      double *alpha_i = (double *) alpha;
-      double *beta_i = (double *) beta;
-      double x_ii;
-      double y_ii;
-      double tmpx[2];
-      double tmpy[2];
-
-
-
-      /* Test the input parameters. */
-      if (incx == 0)
-	BLAS_error(routine_name, -4, incx, NULL);
-      else if (incy == 0)
-	BLAS_error(routine_name, -7, incy, NULL);
-      else if (incw == 0)
-	BLAS_error(routine_name, -9, incw, NULL);
-
-
-      /* Immediate return */
-      if (n <= 0) {
-	return;
-      }
-
-
-
-
-
-      incw *= 2;
-      if (incx < 0)
-	ix = (-n + 1) * incx;
-      if (incy < 0)
-	iy = (-n + 1) * incy;
-      if (incw < 0)
-	iw = (-n + 1) * incw;
-
-      for (i = 0; i < n; ++i) {
-	x_ii = x_i[ix];
-	y_ii = y_i[iy];
-	{
-	  tmpx[0] = alpha_i[0] * x_ii;
-	  tmpx[1] = alpha_i[1] * x_ii;
-	}			/* tmpx  = alpha * x[ix] */
-	{
-	  tmpy[0] = beta_i[0] * y_ii;
-	  tmpy[1] = beta_i[1] * y_ii;
-	}			/* tmpy = beta * y[iy] */
-	tmpy[0] = tmpy[0] + tmpx[0];
-	tmpy[1] = tmpy[1] + tmpx[1];
-	w_i[iw] = tmpy[0];
-	w_i[iw + 1] = tmpy[1];
-	ix += incx;
-	iy += incy;
-	iw += incw;
-      }				/* endfor */
-
-
-
-      break;
-    }
-
+  case blas_prec_single:
   case blas_prec_double:
   case blas_prec_indigenous:{
 

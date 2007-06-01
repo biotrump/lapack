@@ -118,7 +118,6 @@ void BLAS_cwaxpby_s_s_x(int n, const void *alpha, const float *x, int incx,
 
       break;
     }
-
   case blas_prec_double:
   case blas_prec_indigenous:{
 

@@ -37,51 +37,7 @@ void BLAS_csum_x(int n, const void *x, int incx,
 {
   static const char routine_name[] = "BLAS_csum_x";
   switch (prec) {
-  case blas_prec_single:{
-
-      int i, xi;
-      float *sum_i = (float *) sum;
-      const float *x_i = (float *) x;
-      float x_elem[2];
-      float tmp[2];
-
-
-      /* Test the input parameters. */
-      if (n < 0)
-	BLAS_error(routine_name, -1, n, NULL);
-      if (incx == 0)
-	BLAS_error(routine_name, -3, incx, NULL);
-
-      /* Immediate return. */
-      if (n <= 0) {
-	sum_i[0] = sum_i[1] = 0.0;
-	return;
-      }
-
-
-
-      tmp[0] = tmp[1] = 0.0;
-
-      incx *= 2;
-      if (incx < 0)
-	xi = -(n - 1) * incx;
-      else
-	xi = 0;
-
-      for (i = 0; i < n; i++, xi += incx) {
-	x_elem[0] = x_i[xi];
-	x_elem[1] = x_i[xi + 1];
-	tmp[0] = tmp[0] + x_elem[0];
-	tmp[1] = tmp[1] + x_elem[1];
-      }
-      ((float *) sum)[0] = tmp[0];
-      ((float *) sum)[1] = tmp[1];
-
-
-
-      break;
-    }
-
+  case blas_prec_single:
   case blas_prec_double:
   case blas_prec_indigenous:{
 

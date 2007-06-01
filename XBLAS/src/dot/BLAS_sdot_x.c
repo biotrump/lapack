@@ -53,8 +53,8 @@ void BLAS_sdot_x(enum blas_conj_type conj, int n, float alpha,
   static const char routine_name[] = "BLAS_sdot_x";
 
   switch (prec) {
-  case blas_prec_single:
-    {
+  case blas_prec_single:{
+
       int i, ix = 0, iy = 0;
       float *r_i = r;
       const float *x_i = x;
@@ -110,8 +110,9 @@ void BLAS_sdot_x(enum blas_conj_type conj, int n, float alpha,
       *r = tmp1;		/* r = tmp1 */
 
 
+
+      break;
     }
-    break;
   case blas_prec_double:
   case blas_prec_indigenous:
     {

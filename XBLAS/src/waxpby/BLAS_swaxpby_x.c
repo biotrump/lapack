@@ -110,7 +110,6 @@ void BLAS_swaxpby_x(int n, float alpha, const float *x, int incx,
 
       break;
     }
-
   case blas_prec_double:
   case blas_prec_indigenous:{
 

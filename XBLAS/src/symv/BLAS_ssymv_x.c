@@ -243,7 +243,6 @@ void BLAS_ssymv_x(enum blas_order_type order, enum blas_uplo_type uplo,
 
       break;
     }
-
   case blas_prec_double:
   case blas_prec_indigenous:{
 

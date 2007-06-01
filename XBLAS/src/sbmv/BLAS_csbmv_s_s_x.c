@@ -395,7 +395,6 @@ void BLAS_csbmv_s_s_x(enum blas_order_type order, enum blas_uplo_type uplo,
 
       break;
     }
-
   case blas_prec_indigenous:
   case blas_prec_double:{
 

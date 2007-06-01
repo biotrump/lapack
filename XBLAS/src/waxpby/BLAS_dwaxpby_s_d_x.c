@@ -53,64 +53,7 @@ void BLAS_dwaxpby_s_d_x(int n, double alpha, const float *x, int incx,
 {
   char *routine_name = "BLAS_dwaxpby_s_d_x";
   switch (prec) {
-  case blas_prec_single:{
-
-      int i, ix = 0, iy = 0, iw = 0;
-      double *w_i = w;
-      const float *x_i = x;
-      const double *y_i = y;
-      double alpha_i = alpha;
-      double beta_i = beta;
-      float x_ii;
-      double y_ii;
-      double tmpx;
-      double tmpy;
-
-
-
-      /* Test the input parameters. */
-      if (incx == 0)
-	BLAS_error(routine_name, -4, incx, NULL);
-      else if (incy == 0)
-	BLAS_error(routine_name, -7, incy, NULL);
-      else if (incw == 0)
-	BLAS_error(routine_name, -9, incw, NULL);
-
-
-      /* Immediate return */
-      if (n <= 0) {
-	return;
-      }
-
-
-
-
-
-
-      if (incx < 0)
-	ix = (-n + 1) * incx;
-      if (incy < 0)
-	iy = (-n + 1) * incy;
-      if (incw < 0)
-	iw = (-n + 1) * incw;
-
-      for (i = 0; i < n; ++i) {
-	x_ii = x_i[ix];
-	y_ii = y_i[iy];
-	tmpx = alpha_i * x_ii;	/* tmpx  = alpha * x[ix] */
-	tmpy = beta_i * y_ii;	/* tmpy = beta * y[iy] */
-	tmpy = tmpy + tmpx;
-	w_i[iw] = tmpy;
-	ix += incx;
-	iy += incy;
-	iw += incw;
-      }				/* endfor */
-
-
-
-      break;
-    }
-
+  case blas_prec_single:
   case blas_prec_double:
   case blas_prec_indigenous:{
 
