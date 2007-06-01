@@ -71,7 +71,7 @@ test-lib: $(TEST_OBJS)
 
 warning:
 	@echo WARNING -- Not Completely tested.
-	@echo Please see warning in /m4/test-ge_sum_mv/WARNING
+	@echo Please see warning in XBLAS/testing/test-ge_sum_mv/WARNING
 
 .c.o:
 	$(CC) $(CFLAGS) -I$(HEADER_PATH) -c -o $@ $<
