@@ -10,9 +10,10 @@
 #
 #  Modified:	    
 ############################################################################
-include ../../../make.inc
+include ../../make.conf
+include ../../$(MAKEINC)
 
-LIB_PATH = ../..
+LIB_PATH = ../../$(OUTPUT_DIR)
 SRC_PATH = .
 HEADER_PATH = ..
 

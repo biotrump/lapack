@@ -10,12 +10,13 @@
 #
 #  Modified:	    January 12, 2001, Version 1.0
 ############################################################################
-include ../../../make.inc
+include ../../make.conf
+include ../../$(MAKEINC)
 
 DOT_PATH = ../../src/dot
 TEST_DOT_PATH = ../test-dot
 TEST_SYMV_PATH = ../test-symv
-LIB_PATH = ../..
+LIB_PATH = ../../$(OUTPUT_DIR)
 HEADER_PATH = ../../src
 
 DOT_OBJS = $(DOT_PATH)/BLAS_sdot_x.o $(DOT_PATH)/BLAS_ddot_x.o

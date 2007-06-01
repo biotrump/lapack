@@ -19,7 +19,8 @@
 #
 # To clean out all the object files, type make clean
 #
-include ../make.inc
+include make.conf
+include $(MAKEINC)
 
 LIB = dot-lib sum-lib axpby-lib waxpby-lib gemv-lib ge_sum_mv-lib gbmv-lib symv-lib spmv-lib sbmv-lib hemv-lib hpmv-lib hbmv-lib trmv-lib tpmv-lib trsv-lib tbsv-lib gemm-lib symm-lib hemm-lib gemv2-lib
 TESTS = dot-test sum-test axpby-test waxpby-test gemv-test ge_sum_mv-test gbmv-test symv-test spmv-test sbmv-test hemv-test hpmv-test hbmv-test trmv-test tpmv-test trsv-test tbsv-test gemm-test symm-test hemm-test gemv2-test

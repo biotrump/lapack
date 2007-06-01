@@ -10,11 +10,12 @@
 #
 #  Modified:	    
 ############################################################################
-include ../../../make.inc
+include ../../make.conf
+include ../../$(MAKEINC)
 
 TEST_DOT_PATH = ../test-dot
 TEST_DOT2_PATH = ../test-dot2
-LIB_PATH = ../..
+LIB_PATH = ../../$(OUTPUT_DIR)
 HEADER_PATH = ../../src
 
 TEST_DOT_OBJS = $(TEST_DOT_PATH)/testgen_aux.o

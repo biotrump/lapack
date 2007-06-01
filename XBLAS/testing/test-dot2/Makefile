@@ -9,8 +9,10 @@
 #  Creation date:   July 28, 2005, Version 1.0
 #
 ############################################################################
-include ../../../make.inc
-LIB_PATH = ../..
+include ../../make.conf
+include ../../$(MAKEINC)
+
+LIB_PATH = ../../$(OUTPUT_DIR)
 HEADER_PATH = ../../src
 
 TEST_SRCS = do_test_dot2.c test_dot2.c BLAS_dot2_testgen.c \

@@ -10,8 +10,10 @@
 #
 #  Modified:	    June 1, 2000, Version 1.0
 ############################################################################
-include ../../../make.inc
-LIB_PATH = ../..
+include ../../make.conf
+include ../../$(MAKEINC)
+
+LIB_PATH = ../../$(OUTPUT_DIR)
 HEADER_PATH = ../../src
 
 TEST_SRCS = do_test_dot.c test_dot.c BLAS_dot_testgen.c testgen_aux.c\

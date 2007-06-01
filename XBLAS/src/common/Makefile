@@ -10,9 +10,10 @@
 #
 #  Modified:	    
 ############################################################################
-include ../../../make.inc
+include ../../make.conf
+include ../../$(MAKEINC)
 
-LIB_PATH = ../..
+LIB_PATH = ../../$(OUTPUT_DIR)
 HEADER_PATH = ..
 COMM_OBJS = BLAS_error.o blas_malloc.o BLAS_fpinfo_x.o BLAS_fpinfo_x-f2c.o
 

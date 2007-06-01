@@ -10,11 +10,12 @@
 #
 #  Modified:	    
 ############################################################################
-include ../../../make.inc
+include ../../make.conf
+include ../../$(MAKEINC)
 
 DOT_PATH = ../../src/dot
 TEST_DOT_PATH = ../test-dot
-LIB_PATH = ../..
+LIB_PATH = ../../$(OUTPUT_DIR)
 HEADER_PATH = ../../src
 TEST_GBMV_PATH = ../test-gbmv
 TEST_TRSV_PATH = ../test-trsv

@@ -10,13 +10,14 @@
 #
 #  Modified:	    
 ############################################################################
-include ../../../make.inc
+include ../../make.conf
+include ../../$(MAKEINC)
 
 DOT_PATH = ../../src/dot
 TEST_DOT_PATH = ../test-dot
 TEST_GEMM_PATH = ../test-gemm
 TEST_SYMM_PATH = ../test-symm
-LIB_PATH = ../..
+LIB_PATH = ../../$(OUTPUT_DIR)
 HEADER_PATH = ../../src
 
 DOT_OBJS = $(DOT_PATH)/BLAS_sdot_x.o $(DOT_PATH)/BLAS_ddot_x.o

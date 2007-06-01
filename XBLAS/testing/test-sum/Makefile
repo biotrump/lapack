@@ -10,9 +10,10 @@
 #
 #  Modified:	    
 ############################################################################
-include ../../../make.inc
+include ../../make.conf
+include ../../$(MAKEINC)
 
-LIB_PATH = ../..
+LIB_PATH = ../../$(OUTPUT_DIR)
 HEADER_PATH = ../../src
 DOT_PATH = ../../src/dot
 TEST_DOT_PATH = ../test-dot
