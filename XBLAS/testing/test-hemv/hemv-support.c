@@ -26,10 +26,6 @@
 
 
 
-
-
-
-
 void chemv_copy_row(enum blas_order_type order, enum blas_uplo_type uplo,
 		    int n, void *a, int lda, void *a_vec, int row)
 
@@ -268,8 +264,6 @@ void zprint_hemv_matrix(void *a, int n, int lda,
   }
 
 }
-
-
 
 void sskew_commit_row_hemv(enum blas_order_type order,
 			   enum blas_uplo_type uplo, int n, float *a, int lda,

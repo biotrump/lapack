@@ -3,7 +3,6 @@
 #include "cblas_test.h"
 
 
-
 void BLAS_ssum_testgen(int n, int norm, float *x, int *seed,
 		       double *sum_true_l, double *sum_true_t)
 
@@ -68,7 +67,7 @@ void BLAS_ssum_testgen(int n, int norm, float *x, int *seed,
 		      &alpha, 1, &beta, 1,
 		      tmp, x_i, seed, &r, sum_true_l, sum_true_t);
 
-    free(tmp);
+    blas_free(tmp);
   }
 }
 void BLAS_dsum_testgen(int n, int norm, double *x, int *seed,
@@ -135,7 +134,7 @@ void BLAS_dsum_testgen(int n, int norm, double *x, int *seed,
 		      &alpha, 1, &beta, 1,
 		      tmp, x_i, seed, &r, sum_true_l, sum_true_t);
 
-    free(tmp);
+    blas_free(tmp);
   }
 }
 void BLAS_csum_testgen(int n, int norm, void *x, int *seed,
@@ -205,7 +204,7 @@ void BLAS_csum_testgen(int n, int norm, void *x, int *seed,
 		      alpha, 1, beta, 1,
 		      tmp, x_i, seed, &r, sum_true_l, sum_true_t);
 
-    free(tmp);
+    blas_free(tmp);
   }
 }
 void BLAS_zsum_testgen(int n, int norm, void *x, int *seed,
@@ -275,6 +274,6 @@ void BLAS_zsum_testgen(int n, int norm, void *x, int *seed,
 		      alpha, 1, beta, 1,
 		      tmp, x_i, seed, &r, sum_true_l, sum_true_t);
 
-    free(tmp);
+    blas_free(tmp);
   }
 }

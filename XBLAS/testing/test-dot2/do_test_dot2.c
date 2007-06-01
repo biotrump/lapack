@@ -105,7 +105,7 @@ double do_test_sdot2_x(int n, int ntests, int *seed, double thresh,
   int conj_val;
   enum blas_conj_type conj_type;
   int prec_val;
-  enum blas_prec_type prec_type;
+  enum blas_prec_type prec;
   int saved_seed;		/* for saving the original seed */
   int count = 0, old_count = 0;	/* used for counting the number of
 				   testgen calls * 2 */
@@ -193,6 +193,7 @@ double do_test_sdot2_x(int n, int ntests, int *seed, double thresh,
 
     /* varying alpha */
     for (alpha_val = 1; alpha_val < 3; alpha_val++) {
+      alpha_flag = 0;
       switch (alpha_val) {
       case 0:
 	alpha = 0.0;
@@ -202,14 +203,11 @@ double do_test_sdot2_x(int n, int ntests, int *seed, double thresh,
 	alpha = 1.0;
 	alpha_flag = 1;
 	break;
-      case 2:
-      default:
-	alpha_flag = 0;
-	break;
       }
 
       /* varying beta */
       for (beta_val = 0; beta_val < 3; beta_val++) {
+	beta_flag = 0;
 	switch (beta_val) {
 	case 0:
 	  beta = 0.0;
@@ -219,35 +217,30 @@ double do_test_sdot2_x(int n, int ntests, int *seed, double thresh,
 	  beta = 1.0;
 	  beta_flag = 1;
 	  break;
-	case 2:
-	default:
-	  beta_flag = 0;
-	  break;
 	}
 
 
 	/* varying extra precs */
-	for (prec_val = 0; prec_val < 3; prec_val++) {
+	for (prec_val = 0; prec_val <= 2; prec_val++) {
 	  switch (prec_val) {
 	  case 0:
 	    eps_int = power(2, -BITS_S);
-	    un_int =
-	      pow((double) BLAS_fpinfo_x(blas_base, blas_prec_single),
-		  (double) BLAS_fpinfo_x(blas_emin, blas_prec_single));
-	    prec_type = blas_prec_single;
+	    un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_single),
+			 (double) BLAS_fpinfo_x(blas_emin, blas_prec_single));
+	    prec = blas_prec_single;
 	    break;
 	  case 1:
 	    eps_int = power(2, -BITS_D);
-	    un_int =
-	      pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-		  (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
-	    prec_type = blas_prec_double;
+	    un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+			 (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+	    prec = blas_prec_double;
 	    break;
 	  case 2:
 	  default:
 	    eps_int = power(2, -BITS_E);
-	    un_int = power(2, -1022 + 53 + 1);
-	    prec_type = blas_prec_extra;
+	    un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_extra),
+			 (double) BLAS_fpinfo_x(blas_emin, blas_prec_extra));
+	    prec = blas_prec_extra;
 	    break;
 	  }
 
@@ -338,8 +331,7 @@ double do_test_sdot2_x(int n, int ntests, int *seed, double thresh,
 
 		    FPU_FIX_STOP;
 		    BLAS_sdot2_x(conj_type, n, alpha, x, incx_val, beta,
-				 head_y, tail_y, incy_val, &r_comp,
-				 prec_type);
+				 head_y, tail_y, incy_val, &r_comp, prec);
 		    FPU_FIX_START;
 
 		    /* computing the ratio */
@@ -369,39 +361,37 @@ double do_test_sdot2_x(int n, int ntests, int *seed, double thresh,
 			   fname, n, ntests, thresh);
 
 			/* Print test info */
-			switch (prec_type) {
+			switch (prec) {
 			case blas_prec_single:
-			  printf("      Single, ");
+			  printf("single ");
 			  break;
 			case blas_prec_double:
-			  printf("      Double, ");
+			  printf("double ");
 			  break;
 			case blas_prec_indigenous:
-			  printf("      Indigenous, ");
+			  printf("indigenous ");
 			  break;
 			case blas_prec_extra:
-			  printf("      Extra, ");
+			  printf("extra ");
 			  break;
 			}
-
 			switch (norm) {
 			case -1:
-			  printf("Near Underflow, ");
+			  printf("near_underflow ");
 			  break;
 			case 0:
-			  printf("Near One, ");
+			  printf("near_one ");
 			  break;
 			case 1:
-			  printf("Near Overflow, ");
+			  printf("near_overflow ");
 			  break;
 			}
-
 			switch (conj_type) {
 			case blas_no_conj:
-			  printf("No Conj, ");
+			  printf("no_conj ");
 			  break;
 			case blas_conj:
-			  printf("Conj, ");
+			  printf("conj ");
 			  break;
 			}
 
@@ -439,7 +429,6 @@ double do_test_sdot2_x(int n, int ntests, int *seed, double thresh,
 			printf("      ");
 			printf("head_r_true=%.16e, tail_r_true=%.16e",
 			       head_r_true, tail_r_true);
-			printf("\n");
 			printf("      ratio=%.4e\n", ratio);
 			p_count++;
 		      }
@@ -474,12 +463,12 @@ double do_test_sdot2_x(int n, int ntests, int *seed, double thresh,
        ratio_min, ratio_max);
   }
 
-  free(x);
-  free(head_y);
-  free(tail_y);
-  free(x_gen);
-  free(head_y_gen);
-  free(tail_y_gen);
+  blas_free(x);
+  blas_free(head_y);
+  blas_free(tail_y);
+  blas_free(x_gen);
+  blas_free(head_y_gen);
+  blas_free(tail_y_gen);
 
   *min_ratio = ratio_min;
   *num_bad_ratio = bad_ratios;
@@ -588,7 +577,7 @@ double do_test_ddot2_x(int n, int ntests, int *seed, double thresh,
   int conj_val;
   enum blas_conj_type conj_type;
   int prec_val;
-  enum blas_prec_type prec_type;
+  enum blas_prec_type prec;
   int saved_seed;		/* for saving the original seed */
   int count = 0, old_count = 0;	/* used for counting the number of
 				   testgen calls * 2 */
@@ -676,6 +665,7 @@ double do_test_ddot2_x(int n, int ntests, int *seed, double thresh,
 
     /* varying alpha */
     for (alpha_val = 1; alpha_val < 3; alpha_val++) {
+      alpha_flag = 0;
       switch (alpha_val) {
       case 0:
 	alpha = 0.0;
@@ -685,14 +675,11 @@ double do_test_ddot2_x(int n, int ntests, int *seed, double thresh,
 	alpha = 1.0;
 	alpha_flag = 1;
 	break;
-      case 2:
-      default:
-	alpha_flag = 0;
-	break;
       }
 
       /* varying beta */
       for (beta_val = 0; beta_val < 3; beta_val++) {
+	beta_flag = 0;
 	switch (beta_val) {
 	case 0:
 	  beta = 0.0;
@@ -702,35 +689,30 @@ double do_test_ddot2_x(int n, int ntests, int *seed, double thresh,
 	  beta = 1.0;
 	  beta_flag = 1;
 	  break;
-	case 2:
-	default:
-	  beta_flag = 0;
-	  break;
 	}
 
 
 	/* varying extra precs */
-	for (prec_val = 0; prec_val < 3; prec_val++) {
+	for (prec_val = 0; prec_val <= 2; prec_val++) {
 	  switch (prec_val) {
 	  case 0:
 	    eps_int = power(2, -BITS_D);
-	    un_int =
-	      pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-		  (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
-	    prec_type = blas_prec_double;
+	    un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+			 (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+	    prec = blas_prec_double;
 	    break;
 	  case 1:
 	    eps_int = power(2, -BITS_D);
-	    un_int =
-	      pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-		  (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
-	    prec_type = blas_prec_double;
+	    un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+			 (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+	    prec = blas_prec_double;
 	    break;
 	  case 2:
 	  default:
 	    eps_int = power(2, -BITS_E);
-	    un_int = power(2, -1022 + 53 + 1);
-	    prec_type = blas_prec_extra;
+	    un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_extra),
+			 (double) BLAS_fpinfo_x(blas_emin, blas_prec_extra));
+	    prec = blas_prec_extra;
 	    break;
 	  }
 
@@ -821,8 +803,7 @@ double do_test_ddot2_x(int n, int ntests, int *seed, double thresh,
 
 		    FPU_FIX_STOP;
 		    BLAS_ddot2_x(conj_type, n, alpha, x, incx_val, beta,
-				 head_y, tail_y, incy_val, &r_comp,
-				 prec_type);
+				 head_y, tail_y, incy_val, &r_comp, prec);
 		    FPU_FIX_START;
 
 		    /* computing the ratio */
@@ -852,39 +833,37 @@ double do_test_ddot2_x(int n, int ntests, int *seed, double thresh,
 			   fname, n, ntests, thresh);
 
 			/* Print test info */
-			switch (prec_type) {
+			switch (prec) {
 			case blas_prec_single:
-			  printf("      Single, ");
+			  printf("single ");
 			  break;
 			case blas_prec_double:
-			  printf("      Double, ");
+			  printf("double ");
 			  break;
 			case blas_prec_indigenous:
-			  printf("      Indigenous, ");
+			  printf("indigenous ");
 			  break;
 			case blas_prec_extra:
-			  printf("      Extra, ");
+			  printf("extra ");
 			  break;
 			}
-
 			switch (norm) {
 			case -1:
-			  printf("Near Underflow, ");
+			  printf("near_underflow ");
 			  break;
 			case 0:
-			  printf("Near One, ");
+			  printf("near_one ");
 			  break;
 			case 1:
-			  printf("Near Overflow, ");
+			  printf("near_overflow ");
 			  break;
 			}
-
 			switch (conj_type) {
 			case blas_no_conj:
-			  printf("No Conj, ");
+			  printf("no_conj ");
 			  break;
 			case blas_conj:
-			  printf("Conj, ");
+			  printf("conj ");
 			  break;
 			}
 
@@ -922,7 +901,6 @@ double do_test_ddot2_x(int n, int ntests, int *seed, double thresh,
 			printf("      ");
 			printf("head_r_true=%.16e, tail_r_true=%.16e",
 			       head_r_true, tail_r_true);
-			printf("\n");
 			printf("      ratio=%.4e\n", ratio);
 			p_count++;
 		      }
@@ -957,12 +935,12 @@ double do_test_ddot2_x(int n, int ntests, int *seed, double thresh,
        ratio_min, ratio_max);
   }
 
-  free(x);
-  free(head_y);
-  free(tail_y);
-  free(x_gen);
-  free(head_y_gen);
-  free(tail_y_gen);
+  blas_free(x);
+  blas_free(head_y);
+  blas_free(tail_y);
+  blas_free(x_gen);
+  blas_free(head_y_gen);
+  blas_free(tail_y_gen);
 
   *min_ratio = ratio_min;
   *num_bad_ratio = bad_ratios;
@@ -1071,7 +1049,7 @@ double do_test_cdot2_x(int n, int ntests, int *seed, double thresh,
   int conj_val;
   enum blas_conj_type conj_type;
   int prec_val;
-  enum blas_prec_type prec_type;
+  enum blas_prec_type prec;
   int saved_seed;		/* for saving the original seed */
   int count = 0, old_count = 0;	/* used for counting the number of
 				   testgen calls * 2 */
@@ -1165,6 +1143,7 @@ double do_test_cdot2_x(int n, int ntests, int *seed, double thresh,
 
     /* varying alpha */
     for (alpha_val = 1; alpha_val < 3; alpha_val++) {
+      alpha_flag = 0;
       switch (alpha_val) {
       case 0:
 	alpha[0] = alpha[1] = 0.0;
@@ -1175,14 +1154,11 @@ double do_test_cdot2_x(int n, int ntests, int *seed, double thresh,
 	alpha[1] = 0.0;
 	alpha_flag = 1;
 	break;
-      case 2:
-      default:
-	alpha_flag = 0;
-	break;
       }
 
       /* varying beta */
       for (beta_val = 0; beta_val < 3; beta_val++) {
+	beta_flag = 0;
 	switch (beta_val) {
 	case 0:
 	  beta[0] = beta[1] = 0.0;
@@ -1193,35 +1169,30 @@ double do_test_cdot2_x(int n, int ntests, int *seed, double thresh,
 	  beta[1] = 0.0;
 	  beta_flag = 1;
 	  break;
-	case 2:
-	default:
-	  beta_flag = 0;
-	  break;
 	}
 
 
 	/* varying extra precs */
-	for (prec_val = 0; prec_val < 3; prec_val++) {
+	for (prec_val = 0; prec_val <= 2; prec_val++) {
 	  switch (prec_val) {
 	  case 0:
 	    eps_int = power(2, -BITS_S);
-	    un_int =
-	      pow((double) BLAS_fpinfo_x(blas_base, blas_prec_single),
-		  (double) BLAS_fpinfo_x(blas_emin, blas_prec_single));
-	    prec_type = blas_prec_single;
+	    un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_single),
+			 (double) BLAS_fpinfo_x(blas_emin, blas_prec_single));
+	    prec = blas_prec_single;
 	    break;
 	  case 1:
 	    eps_int = power(2, -BITS_D);
-	    un_int =
-	      pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-		  (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
-	    prec_type = blas_prec_double;
+	    un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+			 (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+	    prec = blas_prec_double;
 	    break;
 	  case 2:
 	  default:
 	    eps_int = power(2, -BITS_E);
-	    un_int = power(2, -1022 + 53 + 1);
-	    prec_type = blas_prec_extra;
+	    un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_extra),
+			 (double) BLAS_fpinfo_x(blas_emin, blas_prec_extra));
+	    prec = blas_prec_extra;
 	    break;
 	  }
 
@@ -1316,8 +1287,7 @@ double do_test_cdot2_x(int n, int ntests, int *seed, double thresh,
 
 		    FPU_FIX_STOP;
 		    BLAS_cdot2_x(conj_type, n, alpha, x, incx_val, beta,
-				 head_y, tail_y, incy_val, &r_comp,
-				 prec_type);
+				 head_y, tail_y, incy_val, &r_comp, prec);
 		    FPU_FIX_START;
 
 		    /* computing the ratio */
@@ -1347,39 +1317,37 @@ double do_test_cdot2_x(int n, int ntests, int *seed, double thresh,
 			   fname, n, ntests, thresh);
 
 			/* Print test info */
-			switch (prec_type) {
+			switch (prec) {
 			case blas_prec_single:
-			  printf("      Single, ");
+			  printf("single ");
 			  break;
 			case blas_prec_double:
-			  printf("      Double, ");
+			  printf("double ");
 			  break;
 			case blas_prec_indigenous:
-			  printf("      Indigenous, ");
+			  printf("indigenous ");
 			  break;
 			case blas_prec_extra:
-			  printf("      Extra, ");
+			  printf("extra ");
 			  break;
 			}
-
 			switch (norm) {
 			case -1:
-			  printf("Near Underflow, ");
+			  printf("near_underflow ");
 			  break;
 			case 0:
-			  printf("Near One, ");
+			  printf("near_one ");
 			  break;
 			case 1:
-			  printf("Near Overflow, ");
+			  printf("near_overflow ");
 			  break;
 			}
-
 			switch (conj_type) {
 			case blas_no_conj:
-			  printf("No Conj, ");
+			  printf("no_conj ");
 			  break;
 			case blas_conj:
-			  printf("Conj, ");
+			  printf("conj ");
 			  break;
 			}
 
@@ -1394,14 +1362,14 @@ double do_test_cdot2_x(int n, int ntests, int *seed, double thresh,
 
 			for (j = 0; j < n; j++) {
 			  printf("      ");
-			  printf("x[%d]=%.8e, x[%d]=%.8e", ix, x[ix], ix + 1,
+			  printf("x[%d]=%.8e, x[%d+1]=%.8e", ix, x[ix], ix,
 				 x[ix + 1]);
 			  printf("\n      ");
-			  printf("head_y[%d]=%.8e, head_y[%d]=%.8e", iy,
-				 head_y[iy], iy + 1, head_y[iy + 1]);
+			  printf("head_y[%d]=%.8e, head_y[%d+1]=%.8e", iy,
+				 head_y[iy], iy, head_y[iy + 1]);
 			  printf("\n");
-			  printf("tail_y[%d]=%.8e, tail_y[%d]=%.8e", iy,
-				 tail_y[iy], iy + 1, tail_y[iy + 1]);
+			  printf("tail_y[%d]=%.8e, tail_y[%d+1]=%.8e", iy,
+				 tail_y[iy], iy, tail_y[iy + 1]);
 			  printf("\n");
 			  ix += incx;
 			  iy += incy;
@@ -1422,10 +1390,9 @@ double do_test_cdot2_x(int n, int ntests, int *seed, double thresh,
 			printf("\n");
 			printf("      ");
 			printf
-			  ("head_r_true[0]=%.16e, head_r_true[1]=%.16e,\n      tail_r_true[0]=%.16e, tail_r_true[1]=%.16e",
+			  ("head_r_true[0]=%.16e, head_r_true[1]=%.16e,\nTAIL(r_true)[0]=%.16e, tail_r_true[1]=%.16e",
 			   head_r_true[0], head_r_true[1], tail_r_true[0],
 			   tail_r_true[1]);
-			printf("\n");
 			printf("      ratio=%.4e\n", ratio);
 			p_count++;
 		      }
@@ -1460,12 +1427,12 @@ double do_test_cdot2_x(int n, int ntests, int *seed, double thresh,
        ratio_min, ratio_max);
   }
 
-  free(x);
-  free(head_y);
-  free(tail_y);
-  free(x_gen);
-  free(head_y_gen);
-  free(tail_y_gen);
+  blas_free(x);
+  blas_free(head_y);
+  blas_free(tail_y);
+  blas_free(x_gen);
+  blas_free(head_y_gen);
+  blas_free(tail_y_gen);
 
   *min_ratio = ratio_min;
   *num_bad_ratio = bad_ratios;
@@ -1574,7 +1541,7 @@ double do_test_zdot2_x(int n, int ntests, int *seed, double thresh,
   int conj_val;
   enum blas_conj_type conj_type;
   int prec_val;
-  enum blas_prec_type prec_type;
+  enum blas_prec_type prec;
   int saved_seed;		/* for saving the original seed */
   int count = 0, old_count = 0;	/* used for counting the number of
 				   testgen calls * 2 */
@@ -1668,6 +1635,7 @@ double do_test_zdot2_x(int n, int ntests, int *seed, double thresh,
 
     /* varying alpha */
     for (alpha_val = 1; alpha_val < 3; alpha_val++) {
+      alpha_flag = 0;
       switch (alpha_val) {
       case 0:
 	alpha[0] = alpha[1] = 0.0;
@@ -1678,14 +1646,11 @@ double do_test_zdot2_x(int n, int ntests, int *seed, double thresh,
 	alpha[1] = 0.0;
 	alpha_flag = 1;
 	break;
-      case 2:
-      default:
-	alpha_flag = 0;
-	break;
       }
 
       /* varying beta */
       for (beta_val = 0; beta_val < 3; beta_val++) {
+	beta_flag = 0;
 	switch (beta_val) {
 	case 0:
 	  beta[0] = beta[1] = 0.0;
@@ -1696,35 +1661,30 @@ double do_test_zdot2_x(int n, int ntests, int *seed, double thresh,
 	  beta[1] = 0.0;
 	  beta_flag = 1;
 	  break;
-	case 2:
-	default:
-	  beta_flag = 0;
-	  break;
 	}
 
 
 	/* varying extra precs */
-	for (prec_val = 0; prec_val < 3; prec_val++) {
+	for (prec_val = 0; prec_val <= 2; prec_val++) {
 	  switch (prec_val) {
 	  case 0:
 	    eps_int = power(2, -BITS_D);
-	    un_int =
-	      pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-		  (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
-	    prec_type = blas_prec_double;
+	    un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+			 (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+	    prec = blas_prec_double;
 	    break;
 	  case 1:
 	    eps_int = power(2, -BITS_D);
-	    un_int =
-	      pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-		  (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
-	    prec_type = blas_prec_double;
+	    un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+			 (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+	    prec = blas_prec_double;
 	    break;
 	  case 2:
 	  default:
 	    eps_int = power(2, -BITS_E);
-	    un_int = power(2, -1022 + 53 + 1);
-	    prec_type = blas_prec_extra;
+	    un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_extra),
+			 (double) BLAS_fpinfo_x(blas_emin, blas_prec_extra));
+	    prec = blas_prec_extra;
 	    break;
 	  }
 
@@ -1819,8 +1779,7 @@ double do_test_zdot2_x(int n, int ntests, int *seed, double thresh,
 
 		    FPU_FIX_STOP;
 		    BLAS_zdot2_x(conj_type, n, alpha, x, incx_val, beta,
-				 head_y, tail_y, incy_val, &r_comp,
-				 prec_type);
+				 head_y, tail_y, incy_val, &r_comp, prec);
 		    FPU_FIX_START;
 
 		    /* computing the ratio */
@@ -1850,39 +1809,37 @@ double do_test_zdot2_x(int n, int ntests, int *seed, double thresh,
 			   fname, n, ntests, thresh);
 
 			/* Print test info */
-			switch (prec_type) {
+			switch (prec) {
 			case blas_prec_single:
-			  printf("      Single, ");
+			  printf("single ");
 			  break;
 			case blas_prec_double:
-			  printf("      Double, ");
+			  printf("double ");
 			  break;
 			case blas_prec_indigenous:
-			  printf("      Indigenous, ");
+			  printf("indigenous ");
 			  break;
 			case blas_prec_extra:
-			  printf("      Extra, ");
+			  printf("extra ");
 			  break;
 			}
-
 			switch (norm) {
 			case -1:
-			  printf("Near Underflow, ");
+			  printf("near_underflow ");
 			  break;
 			case 0:
-			  printf("Near One, ");
+			  printf("near_one ");
 			  break;
 			case 1:
-			  printf("Near Overflow, ");
+			  printf("near_overflow ");
 			  break;
 			}
-
 			switch (conj_type) {
 			case blas_no_conj:
-			  printf("No Conj, ");
+			  printf("no_conj ");
 			  break;
 			case blas_conj:
-			  printf("Conj, ");
+			  printf("conj ");
 			  break;
 			}
 
@@ -1897,14 +1854,14 @@ double do_test_zdot2_x(int n, int ntests, int *seed, double thresh,
 
 			for (j = 0; j < n; j++) {
 			  printf("      ");
-			  printf("x[%d]=%.16e, x[%d]=%.16e", ix, x[ix],
-				 ix + 1, x[ix + 1]);
+			  printf("x[%d]=%.16e, x[%d+1]=%.16e", ix, x[ix], ix,
+				 x[ix + 1]);
 			  printf("\n      ");
-			  printf("head_y[%d]=%.16e, head_y[%d]=%.16e", iy,
-				 head_y[iy], iy + 1, head_y[iy + 1]);
+			  printf("head_y[%d]=%.16e, head_y[%d+1]=%.16e", iy,
+				 head_y[iy], iy, head_y[iy + 1]);
 			  printf("\n");
-			  printf("tail_y[%d]=%.16e, tail_y[%d]=%.16e", iy,
-				 tail_y[iy], iy + 1, tail_y[iy + 1]);
+			  printf("tail_y[%d]=%.16e, tail_y[%d+1]=%.16e", iy,
+				 tail_y[iy], iy, tail_y[iy + 1]);
 			  printf("\n");
 			  ix += incx;
 			  iy += incy;
@@ -1925,10 +1882,9 @@ double do_test_zdot2_x(int n, int ntests, int *seed, double thresh,
 			printf("\n");
 			printf("      ");
 			printf
-			  ("head_r_true[0]=%.16e, head_r_true[1]=%.16e,\n      tail_r_true[0]=%.16e, tail_r_true[1]=%.16e",
+			  ("head_r_true[0]=%.16e, head_r_true[1]=%.16e,\nTAIL(r_true)[0]=%.16e, tail_r_true[1]=%.16e",
 			   head_r_true[0], head_r_true[1], tail_r_true[0],
 			   tail_r_true[1]);
-			printf("\n");
 			printf("      ratio=%.4e\n", ratio);
 			p_count++;
 		      }
@@ -1963,12 +1919,12 @@ double do_test_zdot2_x(int n, int ntests, int *seed, double thresh,
        ratio_min, ratio_max);
   }
 
-  free(x);
-  free(head_y);
-  free(tail_y);
-  free(x_gen);
-  free(head_y_gen);
-  free(tail_y_gen);
+  blas_free(x);
+  blas_free(head_y);
+  blas_free(tail_y);
+  blas_free(x_gen);
+  blas_free(head_y_gen);
+  blas_free(tail_y_gen);
 
   *min_ratio = ratio_min;
   *num_bad_ratio = bad_ratios;

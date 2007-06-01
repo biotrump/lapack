@@ -15,7 +15,7 @@ void BLAS_strmv_testgen(int norm, enum blas_order_type order,
 			enum blas_uplo_type uplo, enum blas_trans_type trans,
 			enum blas_diag_type diag, int n, float *alpha,
 			int alpha_flag, float *T, int ldt, float *x,
-			int *seed, double *r_true_l, double *r_true_t)
+			int *seed, double *head_r_true, double *tail_r_true)
 
 /*
  * Purpose
@@ -58,10 +58,10 @@ void BLAS_strmv_testgen(int norm, enum blas_order_type order,
  *
  * seed         (input/output) int
  *
- * r_true_l     (output) double*
+ * head_r_true     (output) double*
  *              The leading part of the truth in double-double.
  *
- * r_true_t     (output) double*
+ * tail_r_true     (output) double*
  *              The trailing part of the truth in double-double.
  *
  */
@@ -73,8 +73,7 @@ void BLAS_strmv_testgen(int norm, enum blas_order_type order,
   float *t_vec;
   float beta;
   float r;
-  double r_true_t_elem;
-  double r_true_l_elem;
+  double head_r_true_elem, tail_r_true_elem;
   float x_elem;
   float t_elem;
 
@@ -163,7 +162,7 @@ void BLAS_strmv_testgen(int norm, enum blas_order_type order,
       }
       BLAS_sdot_testgen(i, 0, i, norm, blas_no_conj, alpha_i,
 			1, alpha_i, 1, x_vec, t_vec,
-			seed, &r, &r_true_l_elem, &r_true_t_elem);
+			seed, &r, &head_r_true_elem, &tail_r_true_elem);
 
       /* Copy generated t_vec to T. */
       tvec_j = 0;
@@ -187,7 +186,7 @@ void BLAS_strmv_testgen(int norm, enum blas_order_type order,
     } else {
       BLAS_sdot_testgen(i + 1, 0, i, norm, blas_no_conj, alpha,
 			(i == 0 ? alpha_flag : 1), &beta, 1, x_vec, t_vec,
-			seed, &r, &r_true_l_elem, &r_true_t_elem);
+			seed, &r, &head_r_true_elem, &tail_r_true_elem);
 
       /* Copy generated t_vec to T. */
       tvec_j = 0;
@@ -206,8 +205,8 @@ void BLAS_strmv_testgen(int norm, enum blas_order_type order,
     }
 
     /* Copy r_true */
-    r_true_l[xi] = r_true_l_elem;
-    r_true_t[xi] = r_true_t_elem;
+    head_r_true[xi] = head_r_true_elem;
+    tail_r_true[xi] = tail_r_true_elem;
 
     xvec_i += inc_xvec;
     xi += inc_xi;
@@ -226,7 +225,7 @@ void BLAS_dtrmv_testgen(int norm, enum blas_order_type order,
 			enum blas_uplo_type uplo, enum blas_trans_type trans,
 			enum blas_diag_type diag, int n, double *alpha,
 			int alpha_flag, double *T, int ldt, double *x,
-			int *seed, double *r_true_l, double *r_true_t)
+			int *seed, double *head_r_true, double *tail_r_true)
 
 /*
  * Purpose
@@ -269,10 +268,10 @@ void BLAS_dtrmv_testgen(int norm, enum blas_order_type order,
  *
  * seed         (input/output) int
  *
- * r_true_l     (output) double*
+ * head_r_true     (output) double*
  *              The leading part of the truth in double-double.
  *
- * r_true_t     (output) double*
+ * tail_r_true     (output) double*
  *              The trailing part of the truth in double-double.
  *
  */
@@ -284,8 +283,7 @@ void BLAS_dtrmv_testgen(int norm, enum blas_order_type order,
   double *t_vec;
   double beta;
   double r;
-  double r_true_t_elem;
-  double r_true_l_elem;
+  double head_r_true_elem, tail_r_true_elem;
   double x_elem;
   double t_elem;
 
@@ -374,7 +372,7 @@ void BLAS_dtrmv_testgen(int norm, enum blas_order_type order,
       }
       BLAS_ddot_testgen(i, 0, i, norm, blas_no_conj, alpha_i,
 			1, alpha_i, 1, x_vec, t_vec,
-			seed, &r, &r_true_l_elem, &r_true_t_elem);
+			seed, &r, &head_r_true_elem, &tail_r_true_elem);
 
       /* Copy generated t_vec to T. */
       tvec_j = 0;
@@ -398,7 +396,7 @@ void BLAS_dtrmv_testgen(int norm, enum blas_order_type order,
     } else {
       BLAS_ddot_testgen(i + 1, 0, i, norm, blas_no_conj, alpha,
 			(i == 0 ? alpha_flag : 1), &beta, 1, x_vec, t_vec,
-			seed, &r, &r_true_l_elem, &r_true_t_elem);
+			seed, &r, &head_r_true_elem, &tail_r_true_elem);
 
       /* Copy generated t_vec to T. */
       tvec_j = 0;
@@ -417,8 +415,8 @@ void BLAS_dtrmv_testgen(int norm, enum blas_order_type order,
     }
 
     /* Copy r_true */
-    r_true_l[xi] = r_true_l_elem;
-    r_true_t[xi] = r_true_t_elem;
+    head_r_true[xi] = head_r_true_elem;
+    tail_r_true[xi] = tail_r_true_elem;
 
     xvec_i += inc_xvec;
     xi += inc_xi;
@@ -438,7 +436,7 @@ void BLAS_dtrmv_s_testgen(int norm, enum blas_order_type order,
 			  enum blas_trans_type trans,
 			  enum blas_diag_type diag, int n, double *alpha,
 			  int alpha_flag, float *T, int ldt, double *x,
-			  int *seed, double *r_true_l, double *r_true_t)
+			  int *seed, double *head_r_true, double *tail_r_true)
 
 /*
  * Purpose
@@ -481,10 +479,10 @@ void BLAS_dtrmv_s_testgen(int norm, enum blas_order_type order,
  *
  * seed         (input/output) int
  *
- * r_true_l     (output) double*
+ * head_r_true     (output) double*
  *              The leading part of the truth in double-double.
  *
- * r_true_t     (output) double*
+ * tail_r_true     (output) double*
  *              The trailing part of the truth in double-double.
  *
  */
@@ -496,8 +494,7 @@ void BLAS_dtrmv_s_testgen(int norm, enum blas_order_type order,
   float *t_vec;
   double beta;
   double r;
-  double r_true_t_elem;
-  double r_true_l_elem;
+  double head_r_true_elem, tail_r_true_elem;
   double x_elem;
   float t_elem;
 
@@ -586,7 +583,7 @@ void BLAS_dtrmv_s_testgen(int norm, enum blas_order_type order,
       }
       BLAS_ddot_d_s_testgen(i, 0, i, norm, blas_no_conj, alpha_i,
 			    1, alpha_i, 1, x_vec, t_vec,
-			    seed, &r, &r_true_l_elem, &r_true_t_elem);
+			    seed, &r, &head_r_true_elem, &tail_r_true_elem);
 
       /* Copy generated t_vec to T. */
       tvec_j = 0;
@@ -610,7 +607,7 @@ void BLAS_dtrmv_s_testgen(int norm, enum blas_order_type order,
     } else {
       BLAS_ddot_d_s_testgen(i + 1, 0, i, norm, blas_no_conj, alpha,
 			    (i == 0 ? alpha_flag : 1), &beta, 1, x_vec, t_vec,
-			    seed, &r, &r_true_l_elem, &r_true_t_elem);
+			    seed, &r, &head_r_true_elem, &tail_r_true_elem);
 
       /* Copy generated t_vec to T. */
       tvec_j = 0;
@@ -629,8 +626,8 @@ void BLAS_dtrmv_s_testgen(int norm, enum blas_order_type order,
     }
 
     /* Copy r_true */
-    r_true_l[xi] = r_true_l_elem;
-    r_true_t[xi] = r_true_t_elem;
+    head_r_true[xi] = head_r_true_elem;
+    tail_r_true[xi] = tail_r_true_elem;
 
     xvec_i += inc_xvec;
     xi += inc_xi;
@@ -649,7 +646,7 @@ void BLAS_ctrmv_testgen(int norm, enum blas_order_type order,
 			enum blas_uplo_type uplo, enum blas_trans_type trans,
 			enum blas_diag_type diag, int n, void *alpha,
 			int alpha_flag, void *T, int ldt, void *x,
-			int *seed, double *r_true_l, double *r_true_t)
+			int *seed, double *head_r_true, double *tail_r_true)
 
 /*
  * Purpose
@@ -692,10 +689,10 @@ void BLAS_ctrmv_testgen(int norm, enum blas_order_type order,
  *
  * seed         (input/output) int
  *
- * r_true_l     (output) double*
+ * head_r_true     (output) double*
  *              The leading part of the truth in double-double.
  *
- * r_true_t     (output) double*
+ * tail_r_true     (output) double*
  *              The trailing part of the truth in double-double.
  *
  */
@@ -707,8 +704,7 @@ void BLAS_ctrmv_testgen(int norm, enum blas_order_type order,
   float *t_vec;
   float beta[2];
   float r[2];
-  double r_true_t_elem[2];
-  double r_true_l_elem[2];
+  double head_r_true_elem[2], tail_r_true_elem[2];
   float x_elem[2];
   float t_elem[2];
 
@@ -798,7 +794,7 @@ void BLAS_ctrmv_testgen(int norm, enum blas_order_type order,
       }
       BLAS_cdot_testgen(i, 0, i, norm, blas_no_conj, alpha_i,
 			1, alpha_i, 1, x_vec, t_vec,
-			seed, r, r_true_l_elem, r_true_t_elem);
+			seed, r, head_r_true_elem, tail_r_true_elem);
 
       /* Copy generated t_vec to T. */
       tvec_j = 0;
@@ -831,7 +827,7 @@ void BLAS_ctrmv_testgen(int norm, enum blas_order_type order,
     } else {
       BLAS_cdot_testgen(i + 1, 0, i, norm, blas_no_conj, alpha,
 			(i == 0 ? alpha_flag : 1), beta, 1, x_vec, t_vec,
-			seed, r, r_true_l_elem, r_true_t_elem);
+			seed, r, head_r_true_elem, tail_r_true_elem);
 
       /* Copy generated t_vec to T. */
       tvec_j = 0;
@@ -857,10 +853,10 @@ void BLAS_ctrmv_testgen(int norm, enum blas_order_type order,
     }
 
     /* Copy r_true */
-    r_true_l[xi] = r_true_l_elem[0];
-    r_true_l[xi + 1] = r_true_l_elem[1];
-    r_true_t[xi] = r_true_t_elem[0];
-    r_true_t[xi + 1] = r_true_t_elem[1];
+    head_r_true[xi] = head_r_true_elem[0];
+    head_r_true[xi + 1] = head_r_true_elem[1];
+    tail_r_true[xi] = tail_r_true_elem[0];
+    tail_r_true[xi + 1] = tail_r_true_elem[1];
 
     xvec_i += inc_xvec;
     xi += inc_xi;
@@ -880,7 +876,7 @@ void BLAS_ztrmv_c_testgen(int norm, enum blas_order_type order,
 			  enum blas_trans_type trans,
 			  enum blas_diag_type diag, int n, void *alpha,
 			  int alpha_flag, void *T, int ldt, void *x,
-			  int *seed, double *r_true_l, double *r_true_t)
+			  int *seed, double *head_r_true, double *tail_r_true)
 
 /*
  * Purpose
@@ -923,10 +919,10 @@ void BLAS_ztrmv_c_testgen(int norm, enum blas_order_type order,
  *
  * seed         (input/output) int
  *
- * r_true_l     (output) double*
+ * head_r_true     (output) double*
  *              The leading part of the truth in double-double.
  *
- * r_true_t     (output) double*
+ * tail_r_true     (output) double*
  *              The trailing part of the truth in double-double.
  *
  */
@@ -938,8 +934,7 @@ void BLAS_ztrmv_c_testgen(int norm, enum blas_order_type order,
   float *t_vec;
   double beta[2];
   double r[2];
-  double r_true_t_elem[2];
-  double r_true_l_elem[2];
+  double head_r_true_elem[2], tail_r_true_elem[2];
   double x_elem[2];
   float t_elem[2];
 
@@ -1029,7 +1024,7 @@ void BLAS_ztrmv_c_testgen(int norm, enum blas_order_type order,
       }
       BLAS_zdot_z_c_testgen(i, 0, i, norm, blas_no_conj, alpha_i,
 			    1, alpha_i, 1, x_vec, t_vec,
-			    seed, r, r_true_l_elem, r_true_t_elem);
+			    seed, r, head_r_true_elem, tail_r_true_elem);
 
       /* Copy generated t_vec to T. */
       tvec_j = 0;
@@ -1062,7 +1057,7 @@ void BLAS_ztrmv_c_testgen(int norm, enum blas_order_type order,
     } else {
       BLAS_zdot_z_c_testgen(i + 1, 0, i, norm, blas_no_conj, alpha,
 			    (i == 0 ? alpha_flag : 1), beta, 1, x_vec, t_vec,
-			    seed, r, r_true_l_elem, r_true_t_elem);
+			    seed, r, head_r_true_elem, tail_r_true_elem);
 
       /* Copy generated t_vec to T. */
       tvec_j = 0;
@@ -1088,10 +1083,10 @@ void BLAS_ztrmv_c_testgen(int norm, enum blas_order_type order,
     }
 
     /* Copy r_true */
-    r_true_l[xi] = r_true_l_elem[0];
-    r_true_l[xi + 1] = r_true_l_elem[1];
-    r_true_t[xi] = r_true_t_elem[0];
-    r_true_t[xi + 1] = r_true_t_elem[1];
+    head_r_true[xi] = head_r_true_elem[0];
+    head_r_true[xi + 1] = head_r_true_elem[1];
+    tail_r_true[xi] = tail_r_true_elem[0];
+    tail_r_true[xi + 1] = tail_r_true_elem[1];
 
     xvec_i += inc_xvec;
     xi += inc_xi;
@@ -1110,7 +1105,7 @@ void BLAS_ztrmv_testgen(int norm, enum blas_order_type order,
 			enum blas_uplo_type uplo, enum blas_trans_type trans,
 			enum blas_diag_type diag, int n, void *alpha,
 			int alpha_flag, void *T, int ldt, void *x,
-			int *seed, double *r_true_l, double *r_true_t)
+			int *seed, double *head_r_true, double *tail_r_true)
 
 /*
  * Purpose
@@ -1153,10 +1148,10 @@ void BLAS_ztrmv_testgen(int norm, enum blas_order_type order,
  *
  * seed         (input/output) int
  *
- * r_true_l     (output) double*
+ * head_r_true     (output) double*
  *              The leading part of the truth in double-double.
  *
- * r_true_t     (output) double*
+ * tail_r_true     (output) double*
  *              The trailing part of the truth in double-double.
  *
  */
@@ -1168,8 +1163,7 @@ void BLAS_ztrmv_testgen(int norm, enum blas_order_type order,
   double *t_vec;
   double beta[2];
   double r[2];
-  double r_true_t_elem[2];
-  double r_true_l_elem[2];
+  double head_r_true_elem[2], tail_r_true_elem[2];
   double x_elem[2];
   double t_elem[2];
 
@@ -1259,7 +1253,7 @@ void BLAS_ztrmv_testgen(int norm, enum blas_order_type order,
       }
       BLAS_zdot_testgen(i, 0, i, norm, blas_no_conj, alpha_i,
 			1, alpha_i, 1, x_vec, t_vec,
-			seed, r, r_true_l_elem, r_true_t_elem);
+			seed, r, head_r_true_elem, tail_r_true_elem);
 
       /* Copy generated t_vec to T. */
       tvec_j = 0;
@@ -1292,7 +1286,7 @@ void BLAS_ztrmv_testgen(int norm, enum blas_order_type order,
     } else {
       BLAS_zdot_testgen(i + 1, 0, i, norm, blas_no_conj, alpha,
 			(i == 0 ? alpha_flag : 1), beta, 1, x_vec, t_vec,
-			seed, r, r_true_l_elem, r_true_t_elem);
+			seed, r, head_r_true_elem, tail_r_true_elem);
 
       /* Copy generated t_vec to T. */
       tvec_j = 0;
@@ -1318,10 +1312,10 @@ void BLAS_ztrmv_testgen(int norm, enum blas_order_type order,
     }
 
     /* Copy r_true */
-    r_true_l[xi] = r_true_l_elem[0];
-    r_true_l[xi + 1] = r_true_l_elem[1];
-    r_true_t[xi] = r_true_t_elem[0];
-    r_true_t[xi + 1] = r_true_t_elem[1];
+    head_r_true[xi] = head_r_true_elem[0];
+    head_r_true[xi + 1] = head_r_true_elem[1];
+    tail_r_true[xi] = tail_r_true_elem[0];
+    tail_r_true[xi + 1] = tail_r_true_elem[1];
 
     xvec_i += inc_xvec;
     xi += inc_xi;
@@ -1341,7 +1335,7 @@ void BLAS_ctrmv_s_testgen(int norm, enum blas_order_type order,
 			  enum blas_trans_type trans,
 			  enum blas_diag_type diag, int n, void *alpha,
 			  int alpha_flag, float *T, int ldt, void *x,
-			  int *seed, double *r_true_l, double *r_true_t)
+			  int *seed, double *head_r_true, double *tail_r_true)
 
 /*
  * Purpose
@@ -1384,10 +1378,10 @@ void BLAS_ctrmv_s_testgen(int norm, enum blas_order_type order,
  *
  * seed         (input/output) int
  *
- * r_true_l     (output) double*
+ * head_r_true     (output) double*
  *              The leading part of the truth in double-double.
  *
- * r_true_t     (output) double*
+ * tail_r_true     (output) double*
  *              The trailing part of the truth in double-double.
  *
  */
@@ -1399,8 +1393,7 @@ void BLAS_ctrmv_s_testgen(int norm, enum blas_order_type order,
   float *t_vec;
   float beta[2];
   float r[2];
-  double r_true_t_elem[2];
-  double r_true_l_elem[2];
+  double head_r_true_elem[2], tail_r_true_elem[2];
   float x_elem[2];
   float t_elem;
 
@@ -1490,7 +1483,7 @@ void BLAS_ctrmv_s_testgen(int norm, enum blas_order_type order,
       }
       BLAS_cdot_c_s_testgen(i, 0, i, norm, blas_no_conj, alpha_i,
 			    1, alpha_i, 1, x_vec, t_vec,
-			    seed, r, r_true_l_elem, r_true_t_elem);
+			    seed, r, head_r_true_elem, tail_r_true_elem);
 
       /* Copy generated t_vec to T. */
       tvec_j = 0;
@@ -1516,7 +1509,7 @@ void BLAS_ctrmv_s_testgen(int norm, enum blas_order_type order,
     } else {
       BLAS_cdot_c_s_testgen(i + 1, 0, i, norm, blas_no_conj, alpha,
 			    (i == 0 ? alpha_flag : 1), beta, 1, x_vec, t_vec,
-			    seed, r, r_true_l_elem, r_true_t_elem);
+			    seed, r, head_r_true_elem, tail_r_true_elem);
 
       /* Copy generated t_vec to T. */
       tvec_j = 0;
@@ -1537,10 +1530,10 @@ void BLAS_ctrmv_s_testgen(int norm, enum blas_order_type order,
     }
 
     /* Copy r_true */
-    r_true_l[xi] = r_true_l_elem[0];
-    r_true_l[xi + 1] = r_true_l_elem[1];
-    r_true_t[xi] = r_true_t_elem[0];
-    r_true_t[xi + 1] = r_true_t_elem[1];
+    head_r_true[xi] = head_r_true_elem[0];
+    head_r_true[xi + 1] = head_r_true_elem[1];
+    tail_r_true[xi] = tail_r_true_elem[0];
+    tail_r_true[xi + 1] = tail_r_true_elem[1];
 
     xvec_i += inc_xvec;
     xi += inc_xi;
@@ -1560,7 +1553,7 @@ void BLAS_ztrmv_d_testgen(int norm, enum blas_order_type order,
 			  enum blas_trans_type trans,
 			  enum blas_diag_type diag, int n, void *alpha,
 			  int alpha_flag, double *T, int ldt, void *x,
-			  int *seed, double *r_true_l, double *r_true_t)
+			  int *seed, double *head_r_true, double *tail_r_true)
 
 /*
  * Purpose
@@ -1603,10 +1596,10 @@ void BLAS_ztrmv_d_testgen(int norm, enum blas_order_type order,
  *
  * seed         (input/output) int
  *
- * r_true_l     (output) double*
+ * head_r_true     (output) double*
  *              The leading part of the truth in double-double.
  *
- * r_true_t     (output) double*
+ * tail_r_true     (output) double*
  *              The trailing part of the truth in double-double.
  *
  */
@@ -1618,8 +1611,7 @@ void BLAS_ztrmv_d_testgen(int norm, enum blas_order_type order,
   double *t_vec;
   double beta[2];
   double r[2];
-  double r_true_t_elem[2];
-  double r_true_l_elem[2];
+  double head_r_true_elem[2], tail_r_true_elem[2];
   double x_elem[2];
   double t_elem;
 
@@ -1709,7 +1701,7 @@ void BLAS_ztrmv_d_testgen(int norm, enum blas_order_type order,
       }
       BLAS_zdot_z_d_testgen(i, 0, i, norm, blas_no_conj, alpha_i,
 			    1, alpha_i, 1, x_vec, t_vec,
-			    seed, r, r_true_l_elem, r_true_t_elem);
+			    seed, r, head_r_true_elem, tail_r_true_elem);
 
       /* Copy generated t_vec to T. */
       tvec_j = 0;
@@ -1735,7 +1727,7 @@ void BLAS_ztrmv_d_testgen(int norm, enum blas_order_type order,
     } else {
       BLAS_zdot_z_d_testgen(i + 1, 0, i, norm, blas_no_conj, alpha,
 			    (i == 0 ? alpha_flag : 1), beta, 1, x_vec, t_vec,
-			    seed, r, r_true_l_elem, r_true_t_elem);
+			    seed, r, head_r_true_elem, tail_r_true_elem);
 
       /* Copy generated t_vec to T. */
       tvec_j = 0;
@@ -1756,10 +1748,10 @@ void BLAS_ztrmv_d_testgen(int norm, enum blas_order_type order,
     }
 
     /* Copy r_true */
-    r_true_l[xi] = r_true_l_elem[0];
-    r_true_l[xi + 1] = r_true_l_elem[1];
-    r_true_t[xi] = r_true_t_elem[0];
-    r_true_t[xi + 1] = r_true_t_elem[1];
+    head_r_true[xi] = head_r_true_elem[0];
+    head_r_true[xi + 1] = head_r_true_elem[1];
+    tail_r_true[xi] = tail_r_true_elem[0];
+    tail_r_true[xi + 1] = tail_r_true_elem[1];
 
     xvec_i += inc_xvec;
     xi += inc_xi;

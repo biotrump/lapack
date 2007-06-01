@@ -26,15 +26,13 @@
 
 
 
-
-
 void BLAS_sskew_testgen_hbmv(int norm, enum blas_order_type order,
 			     enum blas_uplo_type uplo,
 			     int n, int randomize,
 			     float *alpha, float *beta,
 			     float *a, int k, int lda, float *x, int incx,
-			     float *y, int incy, int *seed, double *r_true_l,
-			     double *r_true_t)
+			     float *y, int incy, int *seed,
+			     double *head_r_true, double *tail_r_true)
 
 /*
  * Purpose
@@ -94,10 +92,10 @@ void BLAS_sskew_testgen_hbmv(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * r_true_l  (output) double *
+ * head_r_true  (output) double *
  *         the leading part of the truth in double-double.
  *
- * r_true_t  (output) double *
+ * tail_r_true  (output) double *
  *         the trailing part of the truth in double-double
  *
  */
@@ -112,9 +110,7 @@ void BLAS_sskew_testgen_hbmv(int norm, enum blas_order_type order,
   int n_i;
 
   float y_elem;
-  double r_true_t_elem;
-  double r_true_l_elem;
-
+  double head_r_true_elem, tail_r_true_elem;
 
   float *a_vec;
   float *x_vec;
@@ -152,8 +148,6 @@ void BLAS_sskew_testgen_hbmv(int norm, enum blas_order_type order,
     y_starti = 0;
   }
 
-
-
   incri = 1;
 
 
@@ -179,17 +173,15 @@ void BLAS_sskew_testgen_hbmv(int norm, enum blas_order_type order,
 			norm,
 			blas_no_conj, alpha_i, 1,
 			beta_i, 1, x_vec, a_vec, seed,
-			&y_elem, &r_true_l_elem, &r_true_t_elem);
-
+			&y_elem, &head_r_true_elem, &tail_r_true_elem);
 
       sskew_commit_row_hbmv(order, uplo, n_i, a_i, k, lda, a_vec, i);
 
 
       /*commits an element to the generated y */
       y_i[yi] = y_elem;
-      r_true_l[ri] = r_true_l_elem;
-      r_true_t[ri] = r_true_t_elem;
-
+      head_r_true[ri] = head_r_true_elem;
+      tail_r_true[ri] = tail_r_true_elem;
     }
 
   } else {
@@ -197,16 +189,16 @@ void BLAS_sskew_testgen_hbmv(int norm, enum blas_order_type order,
     fflush(stdout);
   }
 
-  free(a_vec);
-  free(x_vec);
+  blas_free(a_vec);
+  blas_free(x_vec);
 }
 void BLAS_dskew_testgen_hbmv(int norm, enum blas_order_type order,
 			     enum blas_uplo_type uplo,
 			     int n, int randomize,
 			     double *alpha, double *beta,
 			     double *a, int k, int lda, double *x, int incx,
-			     double *y, int incy, int *seed, double *r_true_l,
-			     double *r_true_t)
+			     double *y, int incy, int *seed,
+			     double *head_r_true, double *tail_r_true)
 
 /*
  * Purpose
@@ -266,10 +258,10 @@ void BLAS_dskew_testgen_hbmv(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * r_true_l  (output) double *
+ * head_r_true  (output) double *
  *         the leading part of the truth in double-double.
  *
- * r_true_t  (output) double *
+ * tail_r_true  (output) double *
  *         the trailing part of the truth in double-double
  *
  */
@@ -284,9 +276,7 @@ void BLAS_dskew_testgen_hbmv(int norm, enum blas_order_type order,
   int n_i;
 
   double y_elem;
-  double r_true_t_elem;
-  double r_true_l_elem;
-
+  double head_r_true_elem, tail_r_true_elem;
 
   double *a_vec;
   double *x_vec;
@@ -323,8 +313,6 @@ void BLAS_dskew_testgen_hbmv(int norm, enum blas_order_type order,
   } else {
     y_starti = 0;
   }
-
-
 
   incri = 1;
 
@@ -351,17 +339,15 @@ void BLAS_dskew_testgen_hbmv(int norm, enum blas_order_type order,
 			norm,
 			blas_no_conj, alpha_i, 1,
 			beta_i, 1, x_vec, a_vec, seed,
-			&y_elem, &r_true_l_elem, &r_true_t_elem);
-
+			&y_elem, &head_r_true_elem, &tail_r_true_elem);
 
       dskew_commit_row_hbmv(order, uplo, n_i, a_i, k, lda, a_vec, i);
 
 
       /*commits an element to the generated y */
       y_i[yi] = y_elem;
-      r_true_l[ri] = r_true_l_elem;
-      r_true_t[ri] = r_true_t_elem;
-
+      head_r_true[ri] = head_r_true_elem;
+      tail_r_true[ri] = tail_r_true_elem;
     }
 
   } else {
@@ -369,8 +355,8 @@ void BLAS_dskew_testgen_hbmv(int norm, enum blas_order_type order,
     fflush(stdout);
   }
 
-  free(a_vec);
-  free(x_vec);
+  blas_free(a_vec);
+  blas_free(x_vec);
 }
 void BLAS_dskew_testgen_hbmv_d_s(int norm, enum blas_order_type order,
 				 enum blas_uplo_type uplo,
@@ -378,7 +364,7 @@ void BLAS_dskew_testgen_hbmv_d_s(int norm, enum blas_order_type order,
 				 double *alpha, double *beta,
 				 double *a, int k, int lda, float *x,
 				 int incx, double *y, int incy, int *seed,
-				 double *r_true_l, double *r_true_t)
+				 double *head_r_true, double *tail_r_true)
 
 /*
  * Purpose
@@ -438,10 +424,10 @@ void BLAS_dskew_testgen_hbmv_d_s(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * r_true_l  (output) double *
+ * head_r_true  (output) double *
  *         the leading part of the truth in double-double.
  *
- * r_true_t  (output) double *
+ * tail_r_true  (output) double *
  *         the trailing part of the truth in double-double
  *
  */
@@ -456,9 +442,7 @@ void BLAS_dskew_testgen_hbmv_d_s(int norm, enum blas_order_type order,
   int n_i;
 
   double y_elem;
-  double r_true_t_elem;
-  double r_true_l_elem;
-
+  double head_r_true_elem, tail_r_true_elem;
 
   double *a_vec;
   float *x_vec;
@@ -496,8 +480,6 @@ void BLAS_dskew_testgen_hbmv_d_s(int norm, enum blas_order_type order,
     y_starti = 0;
   }
 
-
-
   incri = 1;
 
 
@@ -523,17 +505,15 @@ void BLAS_dskew_testgen_hbmv_d_s(int norm, enum blas_order_type order,
 			    norm,
 			    blas_no_conj, alpha_i, 1,
 			    beta_i, 1, x_vec, a_vec, seed,
-			    &y_elem, &r_true_l_elem, &r_true_t_elem);
-
+			    &y_elem, &head_r_true_elem, &tail_r_true_elem);
 
       dskew_commit_row_hbmv(order, uplo, n_i, a_i, k, lda, a_vec, i);
 
 
       /*commits an element to the generated y */
       y_i[yi] = y_elem;
-      r_true_l[ri] = r_true_l_elem;
-      r_true_t[ri] = r_true_t_elem;
-
+      head_r_true[ri] = head_r_true_elem;
+      tail_r_true[ri] = tail_r_true_elem;
     }
 
   } else {
@@ -541,8 +521,8 @@ void BLAS_dskew_testgen_hbmv_d_s(int norm, enum blas_order_type order,
     fflush(stdout);
   }
 
-  free(a_vec);
-  free(x_vec);
+  blas_free(a_vec);
+  blas_free(x_vec);
 }
 void BLAS_dskew_testgen_hbmv_s_d(int norm, enum blas_order_type order,
 				 enum blas_uplo_type uplo,
@@ -550,7 +530,7 @@ void BLAS_dskew_testgen_hbmv_s_d(int norm, enum blas_order_type order,
 				 double *alpha, double *beta,
 				 float *a, int k, int lda, double *x,
 				 int incx, double *y, int incy, int *seed,
-				 double *r_true_l, double *r_true_t)
+				 double *head_r_true, double *tail_r_true)
 
 /*
  * Purpose
@@ -610,10 +590,10 @@ void BLAS_dskew_testgen_hbmv_s_d(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * r_true_l  (output) double *
+ * head_r_true  (output) double *
  *         the leading part of the truth in double-double.
  *
- * r_true_t  (output) double *
+ * tail_r_true  (output) double *
  *         the trailing part of the truth in double-double
  *
  */
@@ -628,9 +608,7 @@ void BLAS_dskew_testgen_hbmv_s_d(int norm, enum blas_order_type order,
   int n_i;
 
   double y_elem;
-  double r_true_t_elem;
-  double r_true_l_elem;
-
+  double head_r_true_elem, tail_r_true_elem;
 
   float *a_vec;
   double *x_vec;
@@ -668,8 +646,6 @@ void BLAS_dskew_testgen_hbmv_s_d(int norm, enum blas_order_type order,
     y_starti = 0;
   }
 
-
-
   incri = 1;
 
 
@@ -695,17 +671,15 @@ void BLAS_dskew_testgen_hbmv_s_d(int norm, enum blas_order_type order,
 			    norm,
 			    blas_no_conj, alpha_i, 1,
 			    beta_i, 1, x_vec, a_vec, seed,
-			    &y_elem, &r_true_l_elem, &r_true_t_elem);
-
+			    &y_elem, &head_r_true_elem, &tail_r_true_elem);
 
       sskew_commit_row_hbmv(order, uplo, n_i, a_i, k, lda, a_vec, i);
 
 
       /*commits an element to the generated y */
       y_i[yi] = y_elem;
-      r_true_l[ri] = r_true_l_elem;
-      r_true_t[ri] = r_true_t_elem;
-
+      head_r_true[ri] = head_r_true_elem;
+      tail_r_true[ri] = tail_r_true_elem;
     }
 
   } else {
@@ -713,8 +687,8 @@ void BLAS_dskew_testgen_hbmv_s_d(int norm, enum blas_order_type order,
     fflush(stdout);
   }
 
-  free(a_vec);
-  free(x_vec);
+  blas_free(a_vec);
+  blas_free(x_vec);
 }
 void BLAS_dskew_testgen_hbmv_s_s(int norm, enum blas_order_type order,
 				 enum blas_uplo_type uplo,
@@ -722,7 +696,7 @@ void BLAS_dskew_testgen_hbmv_s_s(int norm, enum blas_order_type order,
 				 double *alpha, double *beta,
 				 float *a, int k, int lda, float *x, int incx,
 				 double *y, int incy, int *seed,
-				 double *r_true_l, double *r_true_t)
+				 double *head_r_true, double *tail_r_true)
 
 /*
  * Purpose
@@ -782,10 +756,10 @@ void BLAS_dskew_testgen_hbmv_s_s(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * r_true_l  (output) double *
+ * head_r_true  (output) double *
  *         the leading part of the truth in double-double.
  *
- * r_true_t  (output) double *
+ * tail_r_true  (output) double *
  *         the trailing part of the truth in double-double
  *
  */
@@ -800,9 +774,7 @@ void BLAS_dskew_testgen_hbmv_s_s(int norm, enum blas_order_type order,
   int n_i;
 
   double y_elem;
-  double r_true_t_elem;
-  double r_true_l_elem;
-
+  double head_r_true_elem, tail_r_true_elem;
 
   float *a_vec;
   float *x_vec;
@@ -840,8 +812,6 @@ void BLAS_dskew_testgen_hbmv_s_s(int norm, enum blas_order_type order,
     y_starti = 0;
   }
 
-
-
   incri = 1;
 
 
@@ -867,17 +837,15 @@ void BLAS_dskew_testgen_hbmv_s_s(int norm, enum blas_order_type order,
 			    norm,
 			    blas_no_conj, alpha_i, 1,
 			    beta_i, 1, x_vec, a_vec, seed,
-			    &y_elem, &r_true_l_elem, &r_true_t_elem);
-
+			    &y_elem, &head_r_true_elem, &tail_r_true_elem);
 
       sskew_commit_row_hbmv(order, uplo, n_i, a_i, k, lda, a_vec, i);
 
 
       /*commits an element to the generated y */
       y_i[yi] = y_elem;
-      r_true_l[ri] = r_true_l_elem;
-      r_true_t[ri] = r_true_t_elem;
-
+      head_r_true[ri] = head_r_true_elem;
+      tail_r_true[ri] = tail_r_true_elem;
     }
 
   } else {
@@ -885,8 +853,8 @@ void BLAS_dskew_testgen_hbmv_s_s(int norm, enum blas_order_type order,
     fflush(stdout);
   }
 
-  free(a_vec);
-  free(x_vec);
+  blas_free(a_vec);
+  blas_free(x_vec);
 }
 
 void BLAS_chbmv_testgen(int norm, enum blas_order_type order,
@@ -895,7 +863,7 @@ void BLAS_chbmv_testgen(int norm, enum blas_order_type order,
 			void *alpha, int alpha_flag, void *beta,
 			int beta_flag, void *a, int k, int lda, void *x,
 			int incx, void *y, int incy, int *seed,
-			double *r_true_l, double *r_true_t)
+			double *head_r_true, double *tail_r_true)
 
 /*
  * Purpose
@@ -965,10 +933,10 @@ void BLAS_chbmv_testgen(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * r_true_l  (output) double *
+ * head_r_true  (output) double *
  *         the leading part of the truth in double-double.
  *
- * r_true_t  (output) double *
+ * tail_r_true  (output) double *
  *         the trailing part of the truth in double-double
  *
  */
@@ -1004,10 +972,8 @@ void BLAS_chbmv_testgen(int norm, enum blas_order_type order,
     float *y2;
     float *x0;
 
-    double *r1_true_l;
-    double *r1_true_t;
-    double *r2_true_l;
-    double *r2_true_t;
+    double *head_r1_true, *tail_r1_true;
+    double *head_r2_true, *tail_r2_true;
 
     double head_r_elem1, tail_r_elem1;
     double head_r_elem2, tail_r_elem2;
@@ -1113,20 +1079,14 @@ void BLAS_chbmv_testgen(int norm, enum blas_order_type order,
 	y1[i] = y2[i] = 0.0;
 	x0[i] = 0.0;
       }
-      r1_true_l = (double *) blas_malloc(n_i * sizeof(double));
-      if (n_i > 0 && r1_true_l == NULL) {
+      head_r1_true = (double *) blas_malloc(n_i * sizeof(double));
+      tail_r1_true = (double *) blas_malloc(n_i * sizeof(double));
+      if (n_i > 0 && (head_r1_true == NULL || tail_r1_true == NULL)) {
 	BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
       };
-      r1_true_t = (double *) blas_malloc(n_i * sizeof(double));
-      if (n_i > 0 && r1_true_t == NULL) {
-	BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-      };
-      r2_true_l = (double *) blas_malloc(n_i * sizeof(double));
-      if (n_i > 0 && r2_true_l == NULL) {
-	BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-      };
-      r2_true_t = (double *) blas_malloc(n_i * sizeof(double));
-      if (n_i > 0 && r2_true_t == NULL) {
+      head_r2_true = (double *) blas_malloc(n_i * sizeof(double));
+      tail_r2_true = (double *) blas_malloc(n_i * sizeof(double));
+      if (n_i > 0 && (head_r2_true == NULL || tail_r2_true == NULL)) {
 	BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
       };
 
@@ -1137,13 +1097,14 @@ void BLAS_chbmv_testgen(int norm, enum blas_order_type order,
 			 alpha_i, alpha_flag,
 			 beta_i, beta_flag,
 			 a1, k, lda,
-			 x0, incx0, y1, incy1, seed, r1_true_l, r1_true_t);
+			 x0, incx0, y1, incy1,
+			 seed, head_r1_true, tail_r1_true);
 
       /* x0 is now fixed and is input to this call */
       BLAS_sskew_testgen_hbmv
 	(norm, order, uplo, n_i, 0, alpha_i,
 	 beta_i, a2, k, lda, x0,
-	 incx0, y2, incy2, seed, r2_true_l, r2_true_t);
+	 incx0, y2, incy2, seed, head_r2_true, tail_r2_true);
 
 
 
@@ -1225,17 +1186,17 @@ void BLAS_chbmv_testgen(int norm, enum blas_order_type order,
       /* Fill in the truth */
       for (i = 0, ri = 0, mi = 0; i < n_i; i++, ri += incri, mi += incmi) {
 
-	head_r_elem1 = r1_true_l[mi];
-	tail_r_elem1 = r1_true_t[mi];
+	head_r_elem1 = head_r1_true[mi];
+	tail_r_elem1 = tail_r1_true[mi];
 
-	head_r_elem2 = r2_true_l[mi];
-	tail_r_elem2 = r2_true_t[mi];
+	head_r_elem2 = head_r2_true[mi];
+	tail_r_elem2 = tail_r2_true[mi];
 
 	if (ab == 0) {
-	  r_true_l[ri] = -head_r_elem2;
-	  r_true_t[ri] = -tail_r_elem2;
-	  r_true_l[ri + 1] = head_r_elem1;
-	  r_true_t[ri + 1] = tail_r_elem1;
+	  head_r_true[ri] = -head_r_elem2;
+	  tail_r_true[ri] = -tail_r_elem2;
+	  head_r_true[ri + 1] = head_r_elem1;
+	  tail_r_true[ri + 1] = tail_r_elem1;
 	} else if (ab == 1) {
 	  {
 	    /* Compute double-double = double-double + double-double. */
@@ -1266,8 +1227,8 @@ void BLAS_chbmv_testgen(int norm, enum blas_order_type order,
 	  }
 
 	  /* Set the imaginary part to  R1 + R2 */
-	  r_true_t[ri + 1] = tail_r_elem;
-	  r_true_l[ri + 1] = head_r_elem;
+	  tail_r_true[ri + 1] = tail_r_elem;
+	  head_r_true[ri + 1] = head_r_elem;
 
 	  /* Set the real part to R1 - R2. */
 	  {
@@ -1302,8 +1263,8 @@ void BLAS_chbmv_testgen(int norm, enum blas_order_type order,
 	      tail_r_elem = t2 - (head_r_elem - t1);
 	    }
 	  }
-	  r_true_t[ri] = tail_r_elem;
-	  r_true_l[ri] = head_r_elem;
+	  tail_r_true[ri] = tail_r_elem;
+	  head_r_true[ri] = head_r_elem;
 	} else {
 
 	  /* Real part */
@@ -1330,8 +1291,8 @@ void BLAS_chbmv_testgen(int norm, enum blas_order_type order,
 	    head_r_elem = t1 + t2;
 	    tail_r_elem = t2 - (head_r_elem - t1);
 	  }
-	  r_true_l[ri] = head_r_elem;
-	  r_true_t[ri] = tail_r_elem;
+	  head_r_true[ri] = head_r_elem;
+	  tail_r_true[ri] = tail_r_elem;
 
 	  /* Imaginary Part */
 	  {
@@ -1357,8 +1318,8 @@ void BLAS_chbmv_testgen(int norm, enum blas_order_type order,
 	    head_r_elem = t1 + t2;
 	    tail_r_elem = t2 - (head_r_elem - t1);
 	  }
-	  r_true_l[ri + 1] = head_r_elem;
-	  r_true_t[ri + 1] = tail_r_elem;
+	  head_r_true[ri + 1] = head_r_elem;
+	  tail_r_true[ri + 1] = tail_r_elem;
 	}
       }
 
@@ -1369,17 +1330,16 @@ void BLAS_chbmv_testgen(int norm, enum blas_order_type order,
       blas_free(y1);
       blas_free(y2);
       blas_free(x0);
-      blas_free(r1_true_l);
-      blas_free(r1_true_t);
-      blas_free(r2_true_l);
-      blas_free(r2_true_t);
+      blas_free(head_r1_true);
+      blas_free(tail_r1_true);
+      blas_free(head_r2_true);
+      blas_free(tail_r2_true);
     } else {
       /* get random A, x, then compute y for some cancellation. */
       float a_elem[2];
       float x_elem[2];
       float y_elem[2];
-      double r_true_t_elem[2];
-      double r_true_l_elem[2];
+      double head_r_true_elem[2], tail_r_true_elem[2];
 
       /* Since mixed real/complex test generator for dot
          scales the vectors, we need to used the non-mixed
@@ -1434,22 +1394,22 @@ void BLAS_chbmv_testgen(int norm, enum blas_order_type order,
 	BLAS_cdot_testgen(n_i, n_i, 0,
 			  norm, blas_no_conj,
 			  alpha_i, 1, beta_i, 1, a_vec,
-			  x_vec, seed, y_elem, r_true_l_elem, r_true_t_elem);
+			  x_vec, seed,
+			  y_elem, head_r_true_elem, tail_r_true_elem);
 
 	y_i[yi] = y_elem[0];
 	y_i[yi + 1] = y_elem[1];
-	r_true_l[ri] = r_true_l_elem[0];
-	r_true_l[ri + 1] = r_true_l_elem[1];
-	r_true_t[ri] = r_true_t_elem[0];
-	r_true_t[ri + 1] = r_true_t_elem[1];
+	head_r_true[ri] = head_r_true_elem[0];
+	head_r_true[ri + 1] = head_r_true_elem[1];
+	tail_r_true[ri] = tail_r_true_elem[0];
+	tail_r_true[ri + 1] = tail_r_true_elem[1];
       }
 
 
     }
 
-    blas_free(a_vec);
-    blas_free(x_vec);
-
+    blas_free(a_vec);;
+    blas_free(x_vec);;
 
   }
 }				/* end BLAS_chbmv_testgen */
@@ -1459,7 +1419,7 @@ void BLAS_zhbmv_testgen(int norm, enum blas_order_type order,
 			void *alpha, int alpha_flag, void *beta,
 			int beta_flag, void *a, int k, int lda, void *x,
 			int incx, void *y, int incy, int *seed,
-			double *r_true_l, double *r_true_t)
+			double *head_r_true, double *tail_r_true)
 
 /*
  * Purpose
@@ -1529,10 +1489,10 @@ void BLAS_zhbmv_testgen(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * r_true_l  (output) double *
+ * head_r_true  (output) double *
  *         the leading part of the truth in double-double.
  *
- * r_true_t  (output) double *
+ * tail_r_true  (output) double *
  *         the trailing part of the truth in double-double
  *
  */
@@ -1568,10 +1528,8 @@ void BLAS_zhbmv_testgen(int norm, enum blas_order_type order,
     double *y2;
     double *x0;
 
-    double *r1_true_l;
-    double *r1_true_t;
-    double *r2_true_l;
-    double *r2_true_t;
+    double *head_r1_true, *tail_r1_true;
+    double *head_r2_true, *tail_r2_true;
 
     double head_r_elem1, tail_r_elem1;
     double head_r_elem2, tail_r_elem2;
@@ -1677,20 +1635,14 @@ void BLAS_zhbmv_testgen(int norm, enum blas_order_type order,
 	y1[i] = y2[i] = 0.0;
 	x0[i] = 0.0;
       }
-      r1_true_l = (double *) blas_malloc(n_i * sizeof(double));
-      if (n_i > 0 && r1_true_l == NULL) {
+      head_r1_true = (double *) blas_malloc(n_i * sizeof(double));
+      tail_r1_true = (double *) blas_malloc(n_i * sizeof(double));
+      if (n_i > 0 && (head_r1_true == NULL || tail_r1_true == NULL)) {
 	BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
       };
-      r1_true_t = (double *) blas_malloc(n_i * sizeof(double));
-      if (n_i > 0 && r1_true_t == NULL) {
-	BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-      };
-      r2_true_l = (double *) blas_malloc(n_i * sizeof(double));
-      if (n_i > 0 && r2_true_l == NULL) {
-	BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-      };
-      r2_true_t = (double *) blas_malloc(n_i * sizeof(double));
-      if (n_i > 0 && r2_true_t == NULL) {
+      head_r2_true = (double *) blas_malloc(n_i * sizeof(double));
+      tail_r2_true = (double *) blas_malloc(n_i * sizeof(double));
+      if (n_i > 0 && (head_r2_true == NULL || tail_r2_true == NULL)) {
 	BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
       };
 
@@ -1701,13 +1653,14 @@ void BLAS_zhbmv_testgen(int norm, enum blas_order_type order,
 			 alpha_i, alpha_flag,
 			 beta_i, beta_flag,
 			 a1, k, lda,
-			 x0, incx0, y1, incy1, seed, r1_true_l, r1_true_t);
+			 x0, incx0, y1, incy1,
+			 seed, head_r1_true, tail_r1_true);
 
       /* x0 is now fixed and is input to this call */
       BLAS_dskew_testgen_hbmv
 	(norm, order, uplo, n_i, 0, alpha_i,
 	 beta_i, a2, k, lda, x0,
-	 incx0, y2, incy2, seed, r2_true_l, r2_true_t);
+	 incx0, y2, incy2, seed, head_r2_true, tail_r2_true);
 
 
 
@@ -1789,17 +1742,17 @@ void BLAS_zhbmv_testgen(int norm, enum blas_order_type order,
       /* Fill in the truth */
       for (i = 0, ri = 0, mi = 0; i < n_i; i++, ri += incri, mi += incmi) {
 
-	head_r_elem1 = r1_true_l[mi];
-	tail_r_elem1 = r1_true_t[mi];
+	head_r_elem1 = head_r1_true[mi];
+	tail_r_elem1 = tail_r1_true[mi];
 
-	head_r_elem2 = r2_true_l[mi];
-	tail_r_elem2 = r2_true_t[mi];
+	head_r_elem2 = head_r2_true[mi];
+	tail_r_elem2 = tail_r2_true[mi];
 
 	if (ab == 0) {
-	  r_true_l[ri] = -head_r_elem2;
-	  r_true_t[ri] = -tail_r_elem2;
-	  r_true_l[ri + 1] = head_r_elem1;
-	  r_true_t[ri + 1] = tail_r_elem1;
+	  head_r_true[ri] = -head_r_elem2;
+	  tail_r_true[ri] = -tail_r_elem2;
+	  head_r_true[ri + 1] = head_r_elem1;
+	  tail_r_true[ri + 1] = tail_r_elem1;
 	} else if (ab == 1) {
 	  {
 	    /* Compute double-double = double-double + double-double. */
@@ -1830,8 +1783,8 @@ void BLAS_zhbmv_testgen(int norm, enum blas_order_type order,
 	  }
 
 	  /* Set the imaginary part to  R1 + R2 */
-	  r_true_t[ri + 1] = tail_r_elem;
-	  r_true_l[ri + 1] = head_r_elem;
+	  tail_r_true[ri + 1] = tail_r_elem;
+	  head_r_true[ri + 1] = head_r_elem;
 
 	  /* Set the real part to R1 - R2. */
 	  {
@@ -1866,8 +1819,8 @@ void BLAS_zhbmv_testgen(int norm, enum blas_order_type order,
 	      tail_r_elem = t2 - (head_r_elem - t1);
 	    }
 	  }
-	  r_true_t[ri] = tail_r_elem;
-	  r_true_l[ri] = head_r_elem;
+	  tail_r_true[ri] = tail_r_elem;
+	  head_r_true[ri] = head_r_elem;
 	} else {
 
 	  /* Real part */
@@ -1894,8 +1847,8 @@ void BLAS_zhbmv_testgen(int norm, enum blas_order_type order,
 	    head_r_elem = t1 + t2;
 	    tail_r_elem = t2 - (head_r_elem - t1);
 	  }
-	  r_true_l[ri] = head_r_elem;
-	  r_true_t[ri] = tail_r_elem;
+	  head_r_true[ri] = head_r_elem;
+	  tail_r_true[ri] = tail_r_elem;
 
 	  /* Imaginary Part */
 	  {
@@ -1921,8 +1874,8 @@ void BLAS_zhbmv_testgen(int norm, enum blas_order_type order,
 	    head_r_elem = t1 + t2;
 	    tail_r_elem = t2 - (head_r_elem - t1);
 	  }
-	  r_true_l[ri + 1] = head_r_elem;
-	  r_true_t[ri + 1] = tail_r_elem;
+	  head_r_true[ri + 1] = head_r_elem;
+	  tail_r_true[ri + 1] = tail_r_elem;
 	}
       }
 
@@ -1933,17 +1886,16 @@ void BLAS_zhbmv_testgen(int norm, enum blas_order_type order,
       blas_free(y1);
       blas_free(y2);
       blas_free(x0);
-      blas_free(r1_true_l);
-      blas_free(r1_true_t);
-      blas_free(r2_true_l);
-      blas_free(r2_true_t);
+      blas_free(head_r1_true);
+      blas_free(tail_r1_true);
+      blas_free(head_r2_true);
+      blas_free(tail_r2_true);
     } else {
       /* get random A, x, then compute y for some cancellation. */
       double a_elem[2];
       double x_elem[2];
       double y_elem[2];
-      double r_true_t_elem[2];
-      double r_true_l_elem[2];
+      double head_r_true_elem[2], tail_r_true_elem[2];
 
       /* Since mixed real/complex test generator for dot
          scales the vectors, we need to used the non-mixed
@@ -1998,22 +1950,22 @@ void BLAS_zhbmv_testgen(int norm, enum blas_order_type order,
 	BLAS_zdot_testgen(n_i, n_i, 0,
 			  norm, blas_no_conj,
 			  alpha_i, 1, beta_i, 1, a_vec,
-			  x_vec, seed, y_elem, r_true_l_elem, r_true_t_elem);
+			  x_vec, seed,
+			  y_elem, head_r_true_elem, tail_r_true_elem);
 
 	y_i[yi] = y_elem[0];
 	y_i[yi + 1] = y_elem[1];
-	r_true_l[ri] = r_true_l_elem[0];
-	r_true_l[ri + 1] = r_true_l_elem[1];
-	r_true_t[ri] = r_true_t_elem[0];
-	r_true_t[ri + 1] = r_true_t_elem[1];
+	head_r_true[ri] = head_r_true_elem[0];
+	head_r_true[ri + 1] = head_r_true_elem[1];
+	tail_r_true[ri] = tail_r_true_elem[0];
+	tail_r_true[ri + 1] = tail_r_true_elem[1];
       }
 
 
     }
 
-    blas_free(a_vec);
-    blas_free(x_vec);
-
+    blas_free(a_vec);;
+    blas_free(x_vec);;
 
   }
 }				/* end BLAS_zhbmv_testgen */
@@ -2023,7 +1975,7 @@ void BLAS_zhbmv_c_z_testgen(int norm, enum blas_order_type order,
 			    void *alpha, int alpha_flag, void *beta,
 			    int beta_flag, void *a, int k, int lda, void *x,
 			    int incx, void *y, int incy, int *seed,
-			    double *r_true_l, double *r_true_t)
+			    double *head_r_true, double *tail_r_true)
 
 /*
  * Purpose
@@ -2093,10 +2045,10 @@ void BLAS_zhbmv_c_z_testgen(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * r_true_l  (output) double *
+ * head_r_true  (output) double *
  *         the leading part of the truth in double-double.
  *
- * r_true_t  (output) double *
+ * tail_r_true  (output) double *
  *         the trailing part of the truth in double-double
  *
  */
@@ -2132,10 +2084,8 @@ void BLAS_zhbmv_c_z_testgen(int norm, enum blas_order_type order,
     double *y2;
     double *x0;
 
-    double *r1_true_l;
-    double *r1_true_t;
-    double *r2_true_l;
-    double *r2_true_t;
+    double *head_r1_true, *tail_r1_true;
+    double *head_r2_true, *tail_r2_true;
 
     double head_r_elem1, tail_r_elem1;
     double head_r_elem2, tail_r_elem2;
@@ -2241,20 +2191,14 @@ void BLAS_zhbmv_c_z_testgen(int norm, enum blas_order_type order,
 	y1[i] = y2[i] = 0.0;
 	x0[i] = 0.0;
       }
-      r1_true_l = (double *) blas_malloc(n_i * sizeof(double));
-      if (n_i > 0 && r1_true_l == NULL) {
+      head_r1_true = (double *) blas_malloc(n_i * sizeof(double));
+      tail_r1_true = (double *) blas_malloc(n_i * sizeof(double));
+      if (n_i > 0 && (head_r1_true == NULL || tail_r1_true == NULL)) {
 	BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
       };
-      r1_true_t = (double *) blas_malloc(n_i * sizeof(double));
-      if (n_i > 0 && r1_true_t == NULL) {
-	BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-      };
-      r2_true_l = (double *) blas_malloc(n_i * sizeof(double));
-      if (n_i > 0 && r2_true_l == NULL) {
-	BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-      };
-      r2_true_t = (double *) blas_malloc(n_i * sizeof(double));
-      if (n_i > 0 && r2_true_t == NULL) {
+      head_r2_true = (double *) blas_malloc(n_i * sizeof(double));
+      tail_r2_true = (double *) blas_malloc(n_i * sizeof(double));
+      if (n_i > 0 && (head_r2_true == NULL || tail_r2_true == NULL)) {
 	BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
       };
 
@@ -2266,13 +2210,13 @@ void BLAS_zhbmv_c_z_testgen(int norm, enum blas_order_type order,
 			     beta_i, beta_flag,
 			     a1, k, lda,
 			     x0, incx0, y1, incy1,
-			     seed, r1_true_l, r1_true_t);
+			     seed, head_r1_true, tail_r1_true);
 
       /* x0 is now fixed and is input to this call */
       BLAS_dskew_testgen_hbmv_s_d
 	(norm, order, uplo, n_i, 0, alpha_i,
 	 beta_i, a2, k, lda, x0,
-	 incx0, y2, incy2, seed, r2_true_l, r2_true_t);
+	 incx0, y2, incy2, seed, head_r2_true, tail_r2_true);
 
 
 
@@ -2354,17 +2298,17 @@ void BLAS_zhbmv_c_z_testgen(int norm, enum blas_order_type order,
       /* Fill in the truth */
       for (i = 0, ri = 0, mi = 0; i < n_i; i++, ri += incri, mi += incmi) {
 
-	head_r_elem1 = r1_true_l[mi];
-	tail_r_elem1 = r1_true_t[mi];
+	head_r_elem1 = head_r1_true[mi];
+	tail_r_elem1 = tail_r1_true[mi];
 
-	head_r_elem2 = r2_true_l[mi];
-	tail_r_elem2 = r2_true_t[mi];
+	head_r_elem2 = head_r2_true[mi];
+	tail_r_elem2 = tail_r2_true[mi];
 
 	if (ab == 0) {
-	  r_true_l[ri] = -head_r_elem2;
-	  r_true_t[ri] = -tail_r_elem2;
-	  r_true_l[ri + 1] = head_r_elem1;
-	  r_true_t[ri + 1] = tail_r_elem1;
+	  head_r_true[ri] = -head_r_elem2;
+	  tail_r_true[ri] = -tail_r_elem2;
+	  head_r_true[ri + 1] = head_r_elem1;
+	  tail_r_true[ri + 1] = tail_r_elem1;
 	} else if (ab == 1) {
 	  {
 	    /* Compute double-double = double-double + double-double. */
@@ -2395,8 +2339,8 @@ void BLAS_zhbmv_c_z_testgen(int norm, enum blas_order_type order,
 	  }
 
 	  /* Set the imaginary part to  R1 + R2 */
-	  r_true_t[ri + 1] = tail_r_elem;
-	  r_true_l[ri + 1] = head_r_elem;
+	  tail_r_true[ri + 1] = tail_r_elem;
+	  head_r_true[ri + 1] = head_r_elem;
 
 	  /* Set the real part to R1 - R2. */
 	  {
@@ -2431,8 +2375,8 @@ void BLAS_zhbmv_c_z_testgen(int norm, enum blas_order_type order,
 	      tail_r_elem = t2 - (head_r_elem - t1);
 	    }
 	  }
-	  r_true_t[ri] = tail_r_elem;
-	  r_true_l[ri] = head_r_elem;
+	  tail_r_true[ri] = tail_r_elem;
+	  head_r_true[ri] = head_r_elem;
 	} else {
 
 	  /* Real part */
@@ -2459,8 +2403,8 @@ void BLAS_zhbmv_c_z_testgen(int norm, enum blas_order_type order,
 	    head_r_elem = t1 + t2;
 	    tail_r_elem = t2 - (head_r_elem - t1);
 	  }
-	  r_true_l[ri] = head_r_elem;
-	  r_true_t[ri] = tail_r_elem;
+	  head_r_true[ri] = head_r_elem;
+	  tail_r_true[ri] = tail_r_elem;
 
 	  /* Imaginary Part */
 	  {
@@ -2486,8 +2430,8 @@ void BLAS_zhbmv_c_z_testgen(int norm, enum blas_order_type order,
 	    head_r_elem = t1 + t2;
 	    tail_r_elem = t2 - (head_r_elem - t1);
 	  }
-	  r_true_l[ri + 1] = head_r_elem;
-	  r_true_t[ri + 1] = tail_r_elem;
+	  head_r_true[ri + 1] = head_r_elem;
+	  tail_r_true[ri + 1] = tail_r_elem;
 	}
       }
 
@@ -2498,17 +2442,16 @@ void BLAS_zhbmv_c_z_testgen(int norm, enum blas_order_type order,
       blas_free(y1);
       blas_free(y2);
       blas_free(x0);
-      blas_free(r1_true_l);
-      blas_free(r1_true_t);
-      blas_free(r2_true_l);
-      blas_free(r2_true_t);
+      blas_free(head_r1_true);
+      blas_free(tail_r1_true);
+      blas_free(head_r2_true);
+      blas_free(tail_r2_true);
     } else {
       /* get random A, x, then compute y for some cancellation. */
       float a_elem[2];
       double x_elem[2];
       double y_elem[2];
-      double r_true_t_elem[2];
-      double r_true_l_elem[2];
+      double head_r_true_elem[2], tail_r_true_elem[2];
 
       /* Since mixed real/complex test generator for dot
          scales the vectors, we need to used the non-mixed
@@ -2564,22 +2507,21 @@ void BLAS_zhbmv_c_z_testgen(int norm, enum blas_order_type order,
 			      norm, blas_no_conj,
 			      alpha_i, 1, beta_i, 1, a_vec,
 			      x_vec, seed,
-			      y_elem, r_true_l_elem, r_true_t_elem);
+			      y_elem, head_r_true_elem, tail_r_true_elem);
 
 	y_i[yi] = y_elem[0];
 	y_i[yi + 1] = y_elem[1];
-	r_true_l[ri] = r_true_l_elem[0];
-	r_true_l[ri + 1] = r_true_l_elem[1];
-	r_true_t[ri] = r_true_t_elem[0];
-	r_true_t[ri + 1] = r_true_t_elem[1];
+	head_r_true[ri] = head_r_true_elem[0];
+	head_r_true[ri + 1] = head_r_true_elem[1];
+	tail_r_true[ri] = tail_r_true_elem[0];
+	tail_r_true[ri + 1] = tail_r_true_elem[1];
       }
 
 
     }
 
-    blas_free(a_vec);
-    blas_free(x_vec);
-
+    blas_free(a_vec);;
+    blas_free(x_vec);;
 
   }
 }				/* end BLAS_zhbmv_c_z_testgen */
@@ -2589,7 +2531,7 @@ void BLAS_zhbmv_z_c_testgen(int norm, enum blas_order_type order,
 			    void *alpha, int alpha_flag, void *beta,
 			    int beta_flag, void *a, int k, int lda, void *x,
 			    int incx, void *y, int incy, int *seed,
-			    double *r_true_l, double *r_true_t)
+			    double *head_r_true, double *tail_r_true)
 
 /*
  * Purpose
@@ -2659,10 +2601,10 @@ void BLAS_zhbmv_z_c_testgen(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * r_true_l  (output) double *
+ * head_r_true  (output) double *
  *         the leading part of the truth in double-double.
  *
- * r_true_t  (output) double *
+ * tail_r_true  (output) double *
  *         the trailing part of the truth in double-double
  *
  */
@@ -2698,10 +2640,8 @@ void BLAS_zhbmv_z_c_testgen(int norm, enum blas_order_type order,
     double *y2;
     float *x0;
 
-    double *r1_true_l;
-    double *r1_true_t;
-    double *r2_true_l;
-    double *r2_true_t;
+    double *head_r1_true, *tail_r1_true;
+    double *head_r2_true, *tail_r2_true;
 
     double head_r_elem1, tail_r_elem1;
     double head_r_elem2, tail_r_elem2;
@@ -2807,20 +2747,14 @@ void BLAS_zhbmv_z_c_testgen(int norm, enum blas_order_type order,
 	y1[i] = y2[i] = 0.0;
 	x0[i] = 0.0;
       }
-      r1_true_l = (double *) blas_malloc(n_i * sizeof(double));
-      if (n_i > 0 && r1_true_l == NULL) {
+      head_r1_true = (double *) blas_malloc(n_i * sizeof(double));
+      tail_r1_true = (double *) blas_malloc(n_i * sizeof(double));
+      if (n_i > 0 && (head_r1_true == NULL || tail_r1_true == NULL)) {
 	BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
       };
-      r1_true_t = (double *) blas_malloc(n_i * sizeof(double));
-      if (n_i > 0 && r1_true_t == NULL) {
-	BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-      };
-      r2_true_l = (double *) blas_malloc(n_i * sizeof(double));
-      if (n_i > 0 && r2_true_l == NULL) {
-	BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-      };
-      r2_true_t = (double *) blas_malloc(n_i * sizeof(double));
-      if (n_i > 0 && r2_true_t == NULL) {
+      head_r2_true = (double *) blas_malloc(n_i * sizeof(double));
+      tail_r2_true = (double *) blas_malloc(n_i * sizeof(double));
+      if (n_i > 0 && (head_r2_true == NULL || tail_r2_true == NULL)) {
 	BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
       };
 
@@ -2832,13 +2766,13 @@ void BLAS_zhbmv_z_c_testgen(int norm, enum blas_order_type order,
 			     beta_i, beta_flag,
 			     a1, k, lda,
 			     x0, incx0, y1, incy1,
-			     seed, r1_true_l, r1_true_t);
+			     seed, head_r1_true, tail_r1_true);
 
       /* x0 is now fixed and is input to this call */
       BLAS_dskew_testgen_hbmv_d_s
 	(norm, order, uplo, n_i, 0, alpha_i,
 	 beta_i, a2, k, lda, x0,
-	 incx0, y2, incy2, seed, r2_true_l, r2_true_t);
+	 incx0, y2, incy2, seed, head_r2_true, tail_r2_true);
 
 
 
@@ -2920,17 +2854,17 @@ void BLAS_zhbmv_z_c_testgen(int norm, enum blas_order_type order,
       /* Fill in the truth */
       for (i = 0, ri = 0, mi = 0; i < n_i; i++, ri += incri, mi += incmi) {
 
-	head_r_elem1 = r1_true_l[mi];
-	tail_r_elem1 = r1_true_t[mi];
+	head_r_elem1 = head_r1_true[mi];
+	tail_r_elem1 = tail_r1_true[mi];
 
-	head_r_elem2 = r2_true_l[mi];
-	tail_r_elem2 = r2_true_t[mi];
+	head_r_elem2 = head_r2_true[mi];
+	tail_r_elem2 = tail_r2_true[mi];
 
 	if (ab == 0) {
-	  r_true_l[ri] = -head_r_elem2;
-	  r_true_t[ri] = -tail_r_elem2;
-	  r_true_l[ri + 1] = head_r_elem1;
-	  r_true_t[ri + 1] = tail_r_elem1;
+	  head_r_true[ri] = -head_r_elem2;
+	  tail_r_true[ri] = -tail_r_elem2;
+	  head_r_true[ri + 1] = head_r_elem1;
+	  tail_r_true[ri + 1] = tail_r_elem1;
 	} else if (ab == 1) {
 	  {
 	    /* Compute double-double = double-double + double-double. */
@@ -2961,8 +2895,8 @@ void BLAS_zhbmv_z_c_testgen(int norm, enum blas_order_type order,
 	  }
 
 	  /* Set the imaginary part to  R1 + R2 */
-	  r_true_t[ri + 1] = tail_r_elem;
-	  r_true_l[ri + 1] = head_r_elem;
+	  tail_r_true[ri + 1] = tail_r_elem;
+	  head_r_true[ri + 1] = head_r_elem;
 
 	  /* Set the real part to R1 - R2. */
 	  {
@@ -2997,8 +2931,8 @@ void BLAS_zhbmv_z_c_testgen(int norm, enum blas_order_type order,
 	      tail_r_elem = t2 - (head_r_elem - t1);
 	    }
 	  }
-	  r_true_t[ri] = tail_r_elem;
-	  r_true_l[ri] = head_r_elem;
+	  tail_r_true[ri] = tail_r_elem;
+	  head_r_true[ri] = head_r_elem;
 	} else {
 
 	  /* Real part */
@@ -3025,8 +2959,8 @@ void BLAS_zhbmv_z_c_testgen(int norm, enum blas_order_type order,
 	    head_r_elem = t1 + t2;
 	    tail_r_elem = t2 - (head_r_elem - t1);
 	  }
-	  r_true_l[ri] = head_r_elem;
-	  r_true_t[ri] = tail_r_elem;
+	  head_r_true[ri] = head_r_elem;
+	  tail_r_true[ri] = tail_r_elem;
 
 	  /* Imaginary Part */
 	  {
@@ -3052,8 +2986,8 @@ void BLAS_zhbmv_z_c_testgen(int norm, enum blas_order_type order,
 	    head_r_elem = t1 + t2;
 	    tail_r_elem = t2 - (head_r_elem - t1);
 	  }
-	  r_true_l[ri + 1] = head_r_elem;
-	  r_true_t[ri + 1] = tail_r_elem;
+	  head_r_true[ri + 1] = head_r_elem;
+	  tail_r_true[ri + 1] = tail_r_elem;
 	}
       }
 
@@ -3064,17 +2998,16 @@ void BLAS_zhbmv_z_c_testgen(int norm, enum blas_order_type order,
       blas_free(y1);
       blas_free(y2);
       blas_free(x0);
-      blas_free(r1_true_l);
-      blas_free(r1_true_t);
-      blas_free(r2_true_l);
-      blas_free(r2_true_t);
+      blas_free(head_r1_true);
+      blas_free(tail_r1_true);
+      blas_free(head_r2_true);
+      blas_free(tail_r2_true);
     } else {
       /* get random A, x, then compute y for some cancellation. */
       double a_elem[2];
       float x_elem[2];
       double y_elem[2];
-      double r_true_t_elem[2];
-      double r_true_l_elem[2];
+      double head_r_true_elem[2], tail_r_true_elem[2];
 
       /* Since mixed real/complex test generator for dot
          scales the vectors, we need to used the non-mixed
@@ -3130,22 +3063,21 @@ void BLAS_zhbmv_z_c_testgen(int norm, enum blas_order_type order,
 			      norm, blas_no_conj,
 			      alpha_i, 1, beta_i, 1, a_vec,
 			      x_vec, seed,
-			      y_elem, r_true_l_elem, r_true_t_elem);
+			      y_elem, head_r_true_elem, tail_r_true_elem);
 
 	y_i[yi] = y_elem[0];
 	y_i[yi + 1] = y_elem[1];
-	r_true_l[ri] = r_true_l_elem[0];
-	r_true_l[ri + 1] = r_true_l_elem[1];
-	r_true_t[ri] = r_true_t_elem[0];
-	r_true_t[ri + 1] = r_true_t_elem[1];
+	head_r_true[ri] = head_r_true_elem[0];
+	head_r_true[ri + 1] = head_r_true_elem[1];
+	tail_r_true[ri] = tail_r_true_elem[0];
+	tail_r_true[ri + 1] = tail_r_true_elem[1];
       }
 
 
     }
 
-    blas_free(a_vec);
-    blas_free(x_vec);
-
+    blas_free(a_vec);;
+    blas_free(x_vec);;
 
   }
 }				/* end BLAS_zhbmv_z_c_testgen */
@@ -3155,7 +3087,7 @@ void BLAS_zhbmv_c_c_testgen(int norm, enum blas_order_type order,
 			    void *alpha, int alpha_flag, void *beta,
 			    int beta_flag, void *a, int k, int lda, void *x,
 			    int incx, void *y, int incy, int *seed,
-			    double *r_true_l, double *r_true_t)
+			    double *head_r_true, double *tail_r_true)
 
 /*
  * Purpose
@@ -3225,10 +3157,10 @@ void BLAS_zhbmv_c_c_testgen(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * r_true_l  (output) double *
+ * head_r_true  (output) double *
  *         the leading part of the truth in double-double.
  *
- * r_true_t  (output) double *
+ * tail_r_true  (output) double *
  *         the trailing part of the truth in double-double
  *
  */
@@ -3264,10 +3196,8 @@ void BLAS_zhbmv_c_c_testgen(int norm, enum blas_order_type order,
     double *y2;
     float *x0;
 
-    double *r1_true_l;
-    double *r1_true_t;
-    double *r2_true_l;
-    double *r2_true_t;
+    double *head_r1_true, *tail_r1_true;
+    double *head_r2_true, *tail_r2_true;
 
     double head_r_elem1, tail_r_elem1;
     double head_r_elem2, tail_r_elem2;
@@ -3373,20 +3303,14 @@ void BLAS_zhbmv_c_c_testgen(int norm, enum blas_order_type order,
 	y1[i] = y2[i] = 0.0;
 	x0[i] = 0.0;
       }
-      r1_true_l = (double *) blas_malloc(n_i * sizeof(double));
-      if (n_i > 0 && r1_true_l == NULL) {
+      head_r1_true = (double *) blas_malloc(n_i * sizeof(double));
+      tail_r1_true = (double *) blas_malloc(n_i * sizeof(double));
+      if (n_i > 0 && (head_r1_true == NULL || tail_r1_true == NULL)) {
 	BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
       };
-      r1_true_t = (double *) blas_malloc(n_i * sizeof(double));
-      if (n_i > 0 && r1_true_t == NULL) {
-	BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-      };
-      r2_true_l = (double *) blas_malloc(n_i * sizeof(double));
-      if (n_i > 0 && r2_true_l == NULL) {
-	BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-      };
-      r2_true_t = (double *) blas_malloc(n_i * sizeof(double));
-      if (n_i > 0 && r2_true_t == NULL) {
+      head_r2_true = (double *) blas_malloc(n_i * sizeof(double));
+      tail_r2_true = (double *) blas_malloc(n_i * sizeof(double));
+      if (n_i > 0 && (head_r2_true == NULL || tail_r2_true == NULL)) {
 	BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
       };
 
@@ -3398,13 +3322,13 @@ void BLAS_zhbmv_c_c_testgen(int norm, enum blas_order_type order,
 			     beta_i, beta_flag,
 			     a1, k, lda,
 			     x0, incx0, y1, incy1,
-			     seed, r1_true_l, r1_true_t);
+			     seed, head_r1_true, tail_r1_true);
 
       /* x0 is now fixed and is input to this call */
       BLAS_dskew_testgen_hbmv_s_s
 	(norm, order, uplo, n_i, 0, alpha_i,
 	 beta_i, a2, k, lda, x0,
-	 incx0, y2, incy2, seed, r2_true_l, r2_true_t);
+	 incx0, y2, incy2, seed, head_r2_true, tail_r2_true);
 
 
 
@@ -3486,17 +3410,17 @@ void BLAS_zhbmv_c_c_testgen(int norm, enum blas_order_type order,
       /* Fill in the truth */
       for (i = 0, ri = 0, mi = 0; i < n_i; i++, ri += incri, mi += incmi) {
 
-	head_r_elem1 = r1_true_l[mi];
-	tail_r_elem1 = r1_true_t[mi];
+	head_r_elem1 = head_r1_true[mi];
+	tail_r_elem1 = tail_r1_true[mi];
 
-	head_r_elem2 = r2_true_l[mi];
-	tail_r_elem2 = r2_true_t[mi];
+	head_r_elem2 = head_r2_true[mi];
+	tail_r_elem2 = tail_r2_true[mi];
 
 	if (ab == 0) {
-	  r_true_l[ri] = -head_r_elem2;
-	  r_true_t[ri] = -tail_r_elem2;
-	  r_true_l[ri + 1] = head_r_elem1;
-	  r_true_t[ri + 1] = tail_r_elem1;
+	  head_r_true[ri] = -head_r_elem2;
+	  tail_r_true[ri] = -tail_r_elem2;
+	  head_r_true[ri + 1] = head_r_elem1;
+	  tail_r_true[ri + 1] = tail_r_elem1;
 	} else if (ab == 1) {
 	  {
 	    /* Compute double-double = double-double + double-double. */
@@ -3527,8 +3451,8 @@ void BLAS_zhbmv_c_c_testgen(int norm, enum blas_order_type order,
 	  }
 
 	  /* Set the imaginary part to  R1 + R2 */
-	  r_true_t[ri + 1] = tail_r_elem;
-	  r_true_l[ri + 1] = head_r_elem;
+	  tail_r_true[ri + 1] = tail_r_elem;
+	  head_r_true[ri + 1] = head_r_elem;
 
 	  /* Set the real part to R1 - R2. */
 	  {
@@ -3563,8 +3487,8 @@ void BLAS_zhbmv_c_c_testgen(int norm, enum blas_order_type order,
 	      tail_r_elem = t2 - (head_r_elem - t1);
 	    }
 	  }
-	  r_true_t[ri] = tail_r_elem;
-	  r_true_l[ri] = head_r_elem;
+	  tail_r_true[ri] = tail_r_elem;
+	  head_r_true[ri] = head_r_elem;
 	} else {
 
 	  /* Real part */
@@ -3591,8 +3515,8 @@ void BLAS_zhbmv_c_c_testgen(int norm, enum blas_order_type order,
 	    head_r_elem = t1 + t2;
 	    tail_r_elem = t2 - (head_r_elem - t1);
 	  }
-	  r_true_l[ri] = head_r_elem;
-	  r_true_t[ri] = tail_r_elem;
+	  head_r_true[ri] = head_r_elem;
+	  tail_r_true[ri] = tail_r_elem;
 
 	  /* Imaginary Part */
 	  {
@@ -3618,8 +3542,8 @@ void BLAS_zhbmv_c_c_testgen(int norm, enum blas_order_type order,
 	    head_r_elem = t1 + t2;
 	    tail_r_elem = t2 - (head_r_elem - t1);
 	  }
-	  r_true_l[ri + 1] = head_r_elem;
-	  r_true_t[ri + 1] = tail_r_elem;
+	  head_r_true[ri + 1] = head_r_elem;
+	  tail_r_true[ri + 1] = tail_r_elem;
 	}
       }
 
@@ -3630,17 +3554,16 @@ void BLAS_zhbmv_c_c_testgen(int norm, enum blas_order_type order,
       blas_free(y1);
       blas_free(y2);
       blas_free(x0);
-      blas_free(r1_true_l);
-      blas_free(r1_true_t);
-      blas_free(r2_true_l);
-      blas_free(r2_true_t);
+      blas_free(head_r1_true);
+      blas_free(tail_r1_true);
+      blas_free(head_r2_true);
+      blas_free(tail_r2_true);
     } else {
       /* get random A, x, then compute y for some cancellation. */
       float a_elem[2];
       float x_elem[2];
       double y_elem[2];
-      double r_true_t_elem[2];
-      double r_true_l_elem[2];
+      double head_r_true_elem[2], tail_r_true_elem[2];
 
       /* Since mixed real/complex test generator for dot
          scales the vectors, we need to used the non-mixed
@@ -3696,22 +3619,21 @@ void BLAS_zhbmv_c_c_testgen(int norm, enum blas_order_type order,
 			      norm, blas_no_conj,
 			      alpha_i, 1, beta_i, 1, a_vec,
 			      x_vec, seed,
-			      y_elem, r_true_l_elem, r_true_t_elem);
+			      y_elem, head_r_true_elem, tail_r_true_elem);
 
 	y_i[yi] = y_elem[0];
 	y_i[yi + 1] = y_elem[1];
-	r_true_l[ri] = r_true_l_elem[0];
-	r_true_l[ri + 1] = r_true_l_elem[1];
-	r_true_t[ri] = r_true_t_elem[0];
-	r_true_t[ri + 1] = r_true_t_elem[1];
+	head_r_true[ri] = head_r_true_elem[0];
+	head_r_true[ri + 1] = head_r_true_elem[1];
+	tail_r_true[ri] = tail_r_true_elem[0];
+	tail_r_true[ri + 1] = tail_r_true_elem[1];
       }
 
 
     }
 
-    blas_free(a_vec);
-    blas_free(x_vec);
-
+    blas_free(a_vec);;
+    blas_free(x_vec);;
 
   }
 }				/* end BLAS_zhbmv_c_c_testgen */
@@ -3721,7 +3643,7 @@ void BLAS_zhbmv_z_d_testgen(int norm, enum blas_order_type order,
 			    void *alpha, int alpha_flag, void *beta,
 			    int beta_flag, void *a, int k, int lda, double *x,
 			    int incx, void *y, int incy, int *seed,
-			    double *r_true_l, double *r_true_t)
+			    double *head_r_true, double *tail_r_true)
 
 /*
  * Purpose
@@ -3791,10 +3713,10 @@ void BLAS_zhbmv_z_d_testgen(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * r_true_l  (output) double *
+ * head_r_true  (output) double *
  *         the leading part of the truth in double-double.
  *
- * r_true_t  (output) double *
+ * tail_r_true  (output) double *
  *         the trailing part of the truth in double-double
  *
  */
@@ -3830,10 +3752,8 @@ void BLAS_zhbmv_z_d_testgen(int norm, enum blas_order_type order,
     double *y2;
     double *x0;
 
-    double *r1_true_l;
-    double *r1_true_t;
-    double *r2_true_l;
-    double *r2_true_t;
+    double *head_r1_true, *tail_r1_true;
+    double *head_r2_true, *tail_r2_true;
 
     double head_r_elem1, tail_r_elem1;
     double head_r_elem2, tail_r_elem2;
@@ -3938,20 +3858,14 @@ void BLAS_zhbmv_z_d_testgen(int norm, enum blas_order_type order,
 	y1[i] = y2[i] = 0.0;
 	x0[i] = 0.0;
       }
-      r1_true_l = (double *) blas_malloc(n_i * sizeof(double));
-      if (n_i > 0 && r1_true_l == NULL) {
+      head_r1_true = (double *) blas_malloc(n_i * sizeof(double));
+      tail_r1_true = (double *) blas_malloc(n_i * sizeof(double));
+      if (n_i > 0 && (head_r1_true == NULL || tail_r1_true == NULL)) {
 	BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
       };
-      r1_true_t = (double *) blas_malloc(n_i * sizeof(double));
-      if (n_i > 0 && r1_true_t == NULL) {
-	BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-      };
-      r2_true_l = (double *) blas_malloc(n_i * sizeof(double));
-      if (n_i > 0 && r2_true_l == NULL) {
-	BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-      };
-      r2_true_t = (double *) blas_malloc(n_i * sizeof(double));
-      if (n_i > 0 && r2_true_t == NULL) {
+      head_r2_true = (double *) blas_malloc(n_i * sizeof(double));
+      tail_r2_true = (double *) blas_malloc(n_i * sizeof(double));
+      if (n_i > 0 && (head_r2_true == NULL || tail_r2_true == NULL)) {
 	BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
       };
 
@@ -3962,13 +3876,14 @@ void BLAS_zhbmv_z_d_testgen(int norm, enum blas_order_type order,
 			 alpha_i, alpha_flag,
 			 beta_i, beta_flag,
 			 a1, k, lda,
-			 x0, incx0, y1, incy1, seed, r1_true_l, r1_true_t);
+			 x0, incx0, y1, incy1,
+			 seed, head_r1_true, tail_r1_true);
 
       /* x0 is now fixed and is input to this call */
       BLAS_dskew_testgen_hbmv
 	(norm, order, uplo, n_i, 0, alpha_i,
 	 beta_i, a2, k, lda, x0,
-	 incx0, y2, incy2, seed, r2_true_l, r2_true_t);
+	 incx0, y2, incy2, seed, head_r2_true, tail_r2_true);
 
 
 
@@ -4041,21 +3956,21 @@ void BLAS_zhbmv_z_d_testgen(int norm, enum blas_order_type order,
       /* Fill in truth */
       for (i = 0, ri = 0, mi = 0; i < n_i; i++, ri += incri, mi += incmi) {
 	if (ab == 0 || ab == 1) {
-	  r_true_l[ri] = r1_true_l[mi];
-	  r_true_t[ri] = r1_true_t[mi];
-	  r_true_l[ri + 1] = r2_true_l[mi];
-	  r_true_t[ri + 1] = r2_true_t[mi];
+	  head_r_true[ri] = head_r1_true[mi];
+	  tail_r_true[ri] = tail_r1_true[mi];
+	  head_r_true[ri + 1] = head_r2_true[mi];
+	  tail_r_true[ri + 1] = tail_r2_true[mi];
 	} else if (ab == 2) {
-	  r_true_l[ri] = -r2_true_l[mi];
-	  r_true_t[ri] = -r2_true_t[mi];
-	  r_true_l[ri + 1] = r1_true_l[mi];
-	  r_true_t[ri + 1] = r1_true_t[mi];
+	  head_r_true[ri] = -head_r2_true[mi];
+	  tail_r_true[ri] = -tail_r2_true[mi];
+	  head_r_true[ri + 1] = head_r1_true[mi];
+	  tail_r_true[ri + 1] = tail_r1_true[mi];
 	} else {
-	  head_r_elem1 = r1_true_l[mi];
-	  tail_r_elem1 = r1_true_t[mi];
+	  head_r_elem1 = head_r1_true[mi];
+	  tail_r_elem1 = tail_r1_true[mi];
 
-	  head_r_elem2 = r2_true_l[mi];
-	  tail_r_elem2 = r2_true_t[mi];
+	  head_r_elem2 = head_r2_true[mi];
+	  tail_r_elem2 = tail_r2_true[mi];
 
 	  {
 	    /* Compute double-double = double-double + double-double. */
@@ -4086,8 +4001,8 @@ void BLAS_zhbmv_z_d_testgen(int norm, enum blas_order_type order,
 	  }
 
 	  /* Set the imaginary part to  R1 + R2 */
-	  r_true_t[ri + 1] = tail_r_elem;
-	  r_true_l[ri + 1] = head_r_elem;
+	  tail_r_true[ri + 1] = tail_r_elem;
+	  head_r_true[ri + 1] = head_r_elem;
 
 	  /* Set the real part to R1 - R2. */
 	  {
@@ -4122,8 +4037,8 @@ void BLAS_zhbmv_z_d_testgen(int norm, enum blas_order_type order,
 	      tail_r_elem = t2 - (head_r_elem - t1);
 	    }
 	  }
-	  r_true_t[ri] = tail_r_elem;
-	  r_true_l[ri] = head_r_elem;
+	  tail_r_true[ri] = tail_r_elem;
+	  head_r_true[ri] = head_r_elem;
 	}
       }
 
@@ -4133,17 +4048,16 @@ void BLAS_zhbmv_z_d_testgen(int norm, enum blas_order_type order,
       blas_free(y1);
       blas_free(y2);
       blas_free(x0);
-      blas_free(r1_true_l);
-      blas_free(r1_true_t);
-      blas_free(r2_true_l);
-      blas_free(r2_true_t);
+      blas_free(head_r1_true);
+      blas_free(tail_r1_true);
+      blas_free(head_r2_true);
+      blas_free(tail_r2_true);
     } else {
       /* get random A, x, then compute y for some cancellation. */
       double a_elem[2];
       double x_elem;
       double y_elem[2];
-      double r_true_t_elem[2];
-      double r_true_l_elem[2];
+      double head_r_true_elem[2], tail_r_true_elem[2];
 
       /* Since mixed real/complex test generator for dot
          scales the vectors, we need to used the non-mixed
@@ -4209,22 +4123,22 @@ void BLAS_zhbmv_z_d_testgen(int norm, enum blas_order_type order,
 	BLAS_zdot_testgen(n_i, n_i, 0,
 			  norm, blas_no_conj,
 			  alpha_i, 1, beta_i, 1, a_vec,
-			  xx_vec, seed, y_elem, r_true_l_elem, r_true_t_elem);
+			  xx_vec, seed,
+			  y_elem, head_r_true_elem, tail_r_true_elem);
 
 	y_i[yi] = y_elem[0];
 	y_i[yi + 1] = y_elem[1];
-	r_true_l[ri] = r_true_l_elem[0];
-	r_true_l[ri + 1] = r_true_l_elem[1];
-	r_true_t[ri] = r_true_t_elem[0];
-	r_true_t[ri + 1] = r_true_t_elem[1];
+	head_r_true[ri] = head_r_true_elem[0];
+	head_r_true[ri + 1] = head_r_true_elem[1];
+	tail_r_true[ri] = tail_r_true_elem[0];
+	tail_r_true[ri + 1] = tail_r_true_elem[1];
       }
 
-      blas_free(xx_vec);
+      blas_free(xx_vec);;
     }
 
-    blas_free(a_vec);
-    blas_free(x_vec);
-
+    blas_free(a_vec);;
+    blas_free(x_vec);;
 
   }
 }				/* end BLAS_zhbmv_z_d_testgen */
@@ -4234,7 +4148,7 @@ void BLAS_chbmv_c_s_testgen(int norm, enum blas_order_type order,
 			    void *alpha, int alpha_flag, void *beta,
 			    int beta_flag, void *a, int k, int lda, float *x,
 			    int incx, void *y, int incy, int *seed,
-			    double *r_true_l, double *r_true_t)
+			    double *head_r_true, double *tail_r_true)
 
 /*
  * Purpose
@@ -4304,10 +4218,10 @@ void BLAS_chbmv_c_s_testgen(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * r_true_l  (output) double *
+ * head_r_true  (output) double *
  *         the leading part of the truth in double-double.
  *
- * r_true_t  (output) double *
+ * tail_r_true  (output) double *
  *         the trailing part of the truth in double-double
  *
  */
@@ -4343,10 +4257,8 @@ void BLAS_chbmv_c_s_testgen(int norm, enum blas_order_type order,
     float *y2;
     float *x0;
 
-    double *r1_true_l;
-    double *r1_true_t;
-    double *r2_true_l;
-    double *r2_true_t;
+    double *head_r1_true, *tail_r1_true;
+    double *head_r2_true, *tail_r2_true;
 
     double head_r_elem1, tail_r_elem1;
     double head_r_elem2, tail_r_elem2;
@@ -4451,20 +4363,14 @@ void BLAS_chbmv_c_s_testgen(int norm, enum blas_order_type order,
 	y1[i] = y2[i] = 0.0;
 	x0[i] = 0.0;
       }
-      r1_true_l = (double *) blas_malloc(n_i * sizeof(double));
-      if (n_i > 0 && r1_true_l == NULL) {
+      head_r1_true = (double *) blas_malloc(n_i * sizeof(double));
+      tail_r1_true = (double *) blas_malloc(n_i * sizeof(double));
+      if (n_i > 0 && (head_r1_true == NULL || tail_r1_true == NULL)) {
 	BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
       };
-      r1_true_t = (double *) blas_malloc(n_i * sizeof(double));
-      if (n_i > 0 && r1_true_t == NULL) {
-	BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-      };
-      r2_true_l = (double *) blas_malloc(n_i * sizeof(double));
-      if (n_i > 0 && r2_true_l == NULL) {
-	BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-      };
-      r2_true_t = (double *) blas_malloc(n_i * sizeof(double));
-      if (n_i > 0 && r2_true_t == NULL) {
+      head_r2_true = (double *) blas_malloc(n_i * sizeof(double));
+      tail_r2_true = (double *) blas_malloc(n_i * sizeof(double));
+      if (n_i > 0 && (head_r2_true == NULL || tail_r2_true == NULL)) {
 	BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
       };
 
@@ -4475,13 +4381,14 @@ void BLAS_chbmv_c_s_testgen(int norm, enum blas_order_type order,
 			 alpha_i, alpha_flag,
 			 beta_i, beta_flag,
 			 a1, k, lda,
-			 x0, incx0, y1, incy1, seed, r1_true_l, r1_true_t);
+			 x0, incx0, y1, incy1,
+			 seed, head_r1_true, tail_r1_true);
 
       /* x0 is now fixed and is input to this call */
       BLAS_sskew_testgen_hbmv
 	(norm, order, uplo, n_i, 0, alpha_i,
 	 beta_i, a2, k, lda, x0,
-	 incx0, y2, incy2, seed, r2_true_l, r2_true_t);
+	 incx0, y2, incy2, seed, head_r2_true, tail_r2_true);
 
 
 
@@ -4554,21 +4461,21 @@ void BLAS_chbmv_c_s_testgen(int norm, enum blas_order_type order,
       /* Fill in truth */
       for (i = 0, ri = 0, mi = 0; i < n_i; i++, ri += incri, mi += incmi) {
 	if (ab == 0 || ab == 1) {
-	  r_true_l[ri] = r1_true_l[mi];
-	  r_true_t[ri] = r1_true_t[mi];
-	  r_true_l[ri + 1] = r2_true_l[mi];
-	  r_true_t[ri + 1] = r2_true_t[mi];
+	  head_r_true[ri] = head_r1_true[mi];
+	  tail_r_true[ri] = tail_r1_true[mi];
+	  head_r_true[ri + 1] = head_r2_true[mi];
+	  tail_r_true[ri + 1] = tail_r2_true[mi];
 	} else if (ab == 2) {
-	  r_true_l[ri] = -r2_true_l[mi];
-	  r_true_t[ri] = -r2_true_t[mi];
-	  r_true_l[ri + 1] = r1_true_l[mi];
-	  r_true_t[ri + 1] = r1_true_t[mi];
+	  head_r_true[ri] = -head_r2_true[mi];
+	  tail_r_true[ri] = -tail_r2_true[mi];
+	  head_r_true[ri + 1] = head_r1_true[mi];
+	  tail_r_true[ri + 1] = tail_r1_true[mi];
 	} else {
-	  head_r_elem1 = r1_true_l[mi];
-	  tail_r_elem1 = r1_true_t[mi];
+	  head_r_elem1 = head_r1_true[mi];
+	  tail_r_elem1 = tail_r1_true[mi];
 
-	  head_r_elem2 = r2_true_l[mi];
-	  tail_r_elem2 = r2_true_t[mi];
+	  head_r_elem2 = head_r2_true[mi];
+	  tail_r_elem2 = tail_r2_true[mi];
 
 	  {
 	    /* Compute double-double = double-double + double-double. */
@@ -4599,8 +4506,8 @@ void BLAS_chbmv_c_s_testgen(int norm, enum blas_order_type order,
 	  }
 
 	  /* Set the imaginary part to  R1 + R2 */
-	  r_true_t[ri + 1] = tail_r_elem;
-	  r_true_l[ri + 1] = head_r_elem;
+	  tail_r_true[ri + 1] = tail_r_elem;
+	  head_r_true[ri + 1] = head_r_elem;
 
 	  /* Set the real part to R1 - R2. */
 	  {
@@ -4635,8 +4542,8 @@ void BLAS_chbmv_c_s_testgen(int norm, enum blas_order_type order,
 	      tail_r_elem = t2 - (head_r_elem - t1);
 	    }
 	  }
-	  r_true_t[ri] = tail_r_elem;
-	  r_true_l[ri] = head_r_elem;
+	  tail_r_true[ri] = tail_r_elem;
+	  head_r_true[ri] = head_r_elem;
 	}
       }
 
@@ -4646,17 +4553,16 @@ void BLAS_chbmv_c_s_testgen(int norm, enum blas_order_type order,
       blas_free(y1);
       blas_free(y2);
       blas_free(x0);
-      blas_free(r1_true_l);
-      blas_free(r1_true_t);
-      blas_free(r2_true_l);
-      blas_free(r2_true_t);
+      blas_free(head_r1_true);
+      blas_free(tail_r1_true);
+      blas_free(head_r2_true);
+      blas_free(tail_r2_true);
     } else {
       /* get random A, x, then compute y for some cancellation. */
       float a_elem[2];
       float x_elem;
       float y_elem[2];
-      double r_true_t_elem[2];
-      double r_true_l_elem[2];
+      double head_r_true_elem[2], tail_r_true_elem[2];
 
       /* Since mixed real/complex test generator for dot
          scales the vectors, we need to used the non-mixed
@@ -4722,22 +4628,22 @@ void BLAS_chbmv_c_s_testgen(int norm, enum blas_order_type order,
 	BLAS_cdot_testgen(n_i, n_i, 0,
 			  norm, blas_no_conj,
 			  alpha_i, 1, beta_i, 1, a_vec,
-			  xx_vec, seed, y_elem, r_true_l_elem, r_true_t_elem);
+			  xx_vec, seed,
+			  y_elem, head_r_true_elem, tail_r_true_elem);
 
 	y_i[yi] = y_elem[0];
 	y_i[yi + 1] = y_elem[1];
-	r_true_l[ri] = r_true_l_elem[0];
-	r_true_l[ri + 1] = r_true_l_elem[1];
-	r_true_t[ri] = r_true_t_elem[0];
-	r_true_t[ri + 1] = r_true_t_elem[1];
+	head_r_true[ri] = head_r_true_elem[0];
+	head_r_true[ri + 1] = head_r_true_elem[1];
+	tail_r_true[ri] = tail_r_true_elem[0];
+	tail_r_true[ri + 1] = tail_r_true_elem[1];
       }
 
-      blas_free(xx_vec);
+      blas_free(xx_vec);;
     }
 
-    blas_free(a_vec);
-    blas_free(x_vec);
-
+    blas_free(a_vec);;
+    blas_free(x_vec);;
 
   }
 }				/* end BLAS_chbmv_c_s_testgen */

@@ -16,14 +16,13 @@
 
 
 
-
 void BLAS_ssymv_testgen(int norm, enum blas_order_type order,
 			enum blas_uplo_type uplo,
 			int n, int randomize,
 			float *alpha, int alpha_flag, float *beta,
 			int beta_flag, float *a, int lda, float *x, int incx,
-			float *y, int incy, int *seed, double *r_true_l,
-			double *r_true_t)
+			float *y, int incy, int *seed, double *head_r_true,
+			double *tail_r_true)
 
 /*
  * Purpose
@@ -90,10 +89,10 @@ void BLAS_ssymv_testgen(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * double  (output) *r_true_l
+ * double  (output) *head_r_true
  *         the leading part of the truth in double-double.
  *
- * double  (output) *r_true_t
+ * double  (output) *tail_r_true
  *         the trailing part of the truth in double-double
  *
  */
@@ -112,8 +111,7 @@ void BLAS_ssymv_testgen(int norm, enum blas_order_type order,
   float y_elem;
   float a_elem;
   float x_elem;
-  double r_true_t_elem;
-  double r_true_l_elem;
+  double head_r_true_elem, tail_r_true_elem;
 
   float *a_vec;
   float *x_vec;
@@ -176,13 +174,13 @@ void BLAS_ssymv_testgen(int norm, enum blas_order_type order,
     BLAS_sdot_testgen(n_i, 0, 0, norm, blas_no_conj,
 		      alpha, alpha_flag, beta, beta_flag,
 		      x_vec, a_vec, seed, &y_elem,
-		      &r_true_l_elem, &r_true_t_elem);
+		      &head_r_true_elem, &tail_r_true_elem);
 
     yi = y_starti;
     ri = 0;
     y_i[yi] = y_elem;
-    r_true_l[ri] = r_true_l_elem;
-    r_true_t[ri] = r_true_t_elem;
+    head_r_true[ri] = head_r_true_elem;
+    tail_r_true[ri] = tail_r_true_elem;
 
     /* Copy a_vec to first row of A */
     ssymv_commit_row(order, uplo, n_i, a, lda, a_vec, 0);
@@ -197,15 +195,14 @@ void BLAS_ssymv_testgen(int norm, enum blas_order_type order,
       BLAS_sdot_testgen(n_i, i, n_i - i, norm,
 			blas_no_conj, alpha, 1,
 			beta, 1, x_vec, a_vec, seed,
-			&y_elem, &r_true_l_elem, &r_true_t_elem);
-
+			&y_elem, &head_r_true_elem, &tail_r_true_elem);
 
       ssymv_commit_row(order, uplo, n_i, a, lda, a_vec, i);
 
       /*commits an element to the generated y */
       y_i[yi] = y_elem;
-      r_true_l[ri] = r_true_l_elem;
-      r_true_t[ri] = r_true_t_elem;
+      head_r_true[ri] = head_r_true_elem;
+      tail_r_true[ri] = tail_r_true_elem;
     }
 
   } else {
@@ -273,19 +270,19 @@ void BLAS_ssymv_testgen(int norm, enum blas_order_type order,
 
       BLAS_sdot_testgen(n_i, n_i, 0, norm, blas_no_conj, alpha, 1,
 			beta, 1, x_vec, a_vec, seed,
-			&y_elem, &r_true_l_elem, &r_true_t_elem);
+			&y_elem, &head_r_true_elem, &tail_r_true_elem);
 
       y_i[yi] = y_elem;
-      r_true_l[ri] = r_true_l_elem;
-      r_true_t[ri] = r_true_t_elem;
+      head_r_true[ri] = head_r_true_elem;
+      tail_r_true[ri] = tail_r_true_elem;
     }
 
 
 
   }
 
-  free(a_vec);
-  free(x_vec);
+  blas_free(a_vec);
+  blas_free(x_vec);
 }
 void BLAS_dsymv_testgen(int norm, enum blas_order_type order,
 			enum blas_uplo_type uplo,
@@ -293,7 +290,7 @@ void BLAS_dsymv_testgen(int norm, enum blas_order_type order,
 			double *alpha, int alpha_flag, double *beta,
 			int beta_flag, double *a, int lda, double *x,
 			int incx, double *y, int incy, int *seed,
-			double *r_true_l, double *r_true_t)
+			double *head_r_true, double *tail_r_true)
 
 /*
  * Purpose
@@ -360,10 +357,10 @@ void BLAS_dsymv_testgen(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * double  (output) *r_true_l
+ * double  (output) *head_r_true
  *         the leading part of the truth in double-double.
  *
- * double  (output) *r_true_t
+ * double  (output) *tail_r_true
  *         the trailing part of the truth in double-double
  *
  */
@@ -382,8 +379,7 @@ void BLAS_dsymv_testgen(int norm, enum blas_order_type order,
   double y_elem;
   double a_elem;
   double x_elem;
-  double r_true_t_elem;
-  double r_true_l_elem;
+  double head_r_true_elem, tail_r_true_elem;
 
   double *a_vec;
   double *x_vec;
@@ -446,13 +442,13 @@ void BLAS_dsymv_testgen(int norm, enum blas_order_type order,
     BLAS_ddot_testgen(n_i, 0, 0, norm, blas_no_conj,
 		      alpha, alpha_flag, beta, beta_flag,
 		      x_vec, a_vec, seed, &y_elem,
-		      &r_true_l_elem, &r_true_t_elem);
+		      &head_r_true_elem, &tail_r_true_elem);
 
     yi = y_starti;
     ri = 0;
     y_i[yi] = y_elem;
-    r_true_l[ri] = r_true_l_elem;
-    r_true_t[ri] = r_true_t_elem;
+    head_r_true[ri] = head_r_true_elem;
+    tail_r_true[ri] = tail_r_true_elem;
 
     /* Copy a_vec to first row of A */
     dsymv_commit_row(order, uplo, n_i, a, lda, a_vec, 0);
@@ -467,15 +463,14 @@ void BLAS_dsymv_testgen(int norm, enum blas_order_type order,
       BLAS_ddot_testgen(n_i, i, n_i - i, norm,
 			blas_no_conj, alpha, 1,
 			beta, 1, x_vec, a_vec, seed,
-			&y_elem, &r_true_l_elem, &r_true_t_elem);
-
+			&y_elem, &head_r_true_elem, &tail_r_true_elem);
 
       dsymv_commit_row(order, uplo, n_i, a, lda, a_vec, i);
 
       /*commits an element to the generated y */
       y_i[yi] = y_elem;
-      r_true_l[ri] = r_true_l_elem;
-      r_true_t[ri] = r_true_t_elem;
+      head_r_true[ri] = head_r_true_elem;
+      tail_r_true[ri] = tail_r_true_elem;
     }
 
   } else {
@@ -543,19 +538,19 @@ void BLAS_dsymv_testgen(int norm, enum blas_order_type order,
 
       BLAS_ddot_testgen(n_i, n_i, 0, norm, blas_no_conj, alpha, 1,
 			beta, 1, x_vec, a_vec, seed,
-			&y_elem, &r_true_l_elem, &r_true_t_elem);
+			&y_elem, &head_r_true_elem, &tail_r_true_elem);
 
       y_i[yi] = y_elem;
-      r_true_l[ri] = r_true_l_elem;
-      r_true_t[ri] = r_true_t_elem;
+      head_r_true[ri] = head_r_true_elem;
+      tail_r_true[ri] = tail_r_true_elem;
     }
 
 
 
   }
 
-  free(a_vec);
-  free(x_vec);
+  blas_free(a_vec);
+  blas_free(x_vec);
 }
 void BLAS_dsymv_d_s_testgen(int norm, enum blas_order_type order,
 			    enum blas_uplo_type uplo,
@@ -563,7 +558,7 @@ void BLAS_dsymv_d_s_testgen(int norm, enum blas_order_type order,
 			    double *alpha, int alpha_flag, double *beta,
 			    int beta_flag, double *a, int lda, float *x,
 			    int incx, double *y, int incy, int *seed,
-			    double *r_true_l, double *r_true_t)
+			    double *head_r_true, double *tail_r_true)
 
 /*
  * Purpose
@@ -630,10 +625,10 @@ void BLAS_dsymv_d_s_testgen(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * double  (output) *r_true_l
+ * double  (output) *head_r_true
  *         the leading part of the truth in double-double.
  *
- * double  (output) *r_true_t
+ * double  (output) *tail_r_true
  *         the trailing part of the truth in double-double
  *
  */
@@ -652,8 +647,7 @@ void BLAS_dsymv_d_s_testgen(int norm, enum blas_order_type order,
   double y_elem;
   double a_elem;
   float x_elem;
-  double r_true_t_elem;
-  double r_true_l_elem;
+  double head_r_true_elem, tail_r_true_elem;
 
   double *a_vec;
   float *x_vec;
@@ -716,13 +710,13 @@ void BLAS_dsymv_d_s_testgen(int norm, enum blas_order_type order,
     BLAS_ddot_s_d_testgen(n_i, 0, 0, norm, blas_no_conj,
 			  alpha, alpha_flag, beta, beta_flag,
 			  x_vec, a_vec, seed, &y_elem,
-			  &r_true_l_elem, &r_true_t_elem);
+			  &head_r_true_elem, &tail_r_true_elem);
 
     yi = y_starti;
     ri = 0;
     y_i[yi] = y_elem;
-    r_true_l[ri] = r_true_l_elem;
-    r_true_t[ri] = r_true_t_elem;
+    head_r_true[ri] = head_r_true_elem;
+    tail_r_true[ri] = tail_r_true_elem;
 
     /* Copy a_vec to first row of A */
     dsymv_commit_row(order, uplo, n_i, a, lda, a_vec, 0);
@@ -737,15 +731,14 @@ void BLAS_dsymv_d_s_testgen(int norm, enum blas_order_type order,
       BLAS_ddot_s_d_testgen(n_i, i, n_i - i, norm,
 			    blas_no_conj, alpha, 1,
 			    beta, 1, x_vec, a_vec, seed,
-			    &y_elem, &r_true_l_elem, &r_true_t_elem);
-
+			    &y_elem, &head_r_true_elem, &tail_r_true_elem);
 
       dsymv_commit_row(order, uplo, n_i, a, lda, a_vec, i);
 
       /*commits an element to the generated y */
       y_i[yi] = y_elem;
-      r_true_l[ri] = r_true_l_elem;
-      r_true_t[ri] = r_true_t_elem;
+      head_r_true[ri] = head_r_true_elem;
+      tail_r_true[ri] = tail_r_true_elem;
     }
 
   } else {
@@ -813,19 +806,19 @@ void BLAS_dsymv_d_s_testgen(int norm, enum blas_order_type order,
 
       BLAS_ddot_s_d_testgen(n_i, n_i, 0, norm, blas_no_conj, alpha, 1,
 			    beta, 1, x_vec, a_vec, seed,
-			    &y_elem, &r_true_l_elem, &r_true_t_elem);
+			    &y_elem, &head_r_true_elem, &tail_r_true_elem);
 
       y_i[yi] = y_elem;
-      r_true_l[ri] = r_true_l_elem;
-      r_true_t[ri] = r_true_t_elem;
+      head_r_true[ri] = head_r_true_elem;
+      tail_r_true[ri] = tail_r_true_elem;
     }
 
 
 
   }
 
-  free(a_vec);
-  free(x_vec);
+  blas_free(a_vec);
+  blas_free(x_vec);
 }
 void BLAS_dsymv_s_d_testgen(int norm, enum blas_order_type order,
 			    enum blas_uplo_type uplo,
@@ -833,7 +826,7 @@ void BLAS_dsymv_s_d_testgen(int norm, enum blas_order_type order,
 			    double *alpha, int alpha_flag, double *beta,
 			    int beta_flag, float *a, int lda, double *x,
 			    int incx, double *y, int incy, int *seed,
-			    double *r_true_l, double *r_true_t)
+			    double *head_r_true, double *tail_r_true)
 
 /*
  * Purpose
@@ -900,10 +893,10 @@ void BLAS_dsymv_s_d_testgen(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * double  (output) *r_true_l
+ * double  (output) *head_r_true
  *         the leading part of the truth in double-double.
  *
- * double  (output) *r_true_t
+ * double  (output) *tail_r_true
  *         the trailing part of the truth in double-double
  *
  */
@@ -922,8 +915,7 @@ void BLAS_dsymv_s_d_testgen(int norm, enum blas_order_type order,
   double y_elem;
   float a_elem;
   double x_elem;
-  double r_true_t_elem;
-  double r_true_l_elem;
+  double head_r_true_elem, tail_r_true_elem;
 
   float *a_vec;
   double *x_vec;
@@ -986,13 +978,13 @@ void BLAS_dsymv_s_d_testgen(int norm, enum blas_order_type order,
     BLAS_ddot_d_s_testgen(n_i, 0, 0, norm, blas_no_conj,
 			  alpha, alpha_flag, beta, beta_flag,
 			  x_vec, a_vec, seed, &y_elem,
-			  &r_true_l_elem, &r_true_t_elem);
+			  &head_r_true_elem, &tail_r_true_elem);
 
     yi = y_starti;
     ri = 0;
     y_i[yi] = y_elem;
-    r_true_l[ri] = r_true_l_elem;
-    r_true_t[ri] = r_true_t_elem;
+    head_r_true[ri] = head_r_true_elem;
+    tail_r_true[ri] = tail_r_true_elem;
 
     /* Copy a_vec to first row of A */
     ssymv_commit_row(order, uplo, n_i, a, lda, a_vec, 0);
@@ -1007,15 +999,14 @@ void BLAS_dsymv_s_d_testgen(int norm, enum blas_order_type order,
       BLAS_ddot_d_s_testgen(n_i, i, n_i - i, norm,
 			    blas_no_conj, alpha, 1,
 			    beta, 1, x_vec, a_vec, seed,
-			    &y_elem, &r_true_l_elem, &r_true_t_elem);
-
+			    &y_elem, &head_r_true_elem, &tail_r_true_elem);
 
       ssymv_commit_row(order, uplo, n_i, a, lda, a_vec, i);
 
       /*commits an element to the generated y */
       y_i[yi] = y_elem;
-      r_true_l[ri] = r_true_l_elem;
-      r_true_t[ri] = r_true_t_elem;
+      head_r_true[ri] = head_r_true_elem;
+      tail_r_true[ri] = tail_r_true_elem;
     }
 
   } else {
@@ -1083,19 +1074,19 @@ void BLAS_dsymv_s_d_testgen(int norm, enum blas_order_type order,
 
       BLAS_ddot_d_s_testgen(n_i, n_i, 0, norm, blas_no_conj, alpha, 1,
 			    beta, 1, x_vec, a_vec, seed,
-			    &y_elem, &r_true_l_elem, &r_true_t_elem);
+			    &y_elem, &head_r_true_elem, &tail_r_true_elem);
 
       y_i[yi] = y_elem;
-      r_true_l[ri] = r_true_l_elem;
-      r_true_t[ri] = r_true_t_elem;
+      head_r_true[ri] = head_r_true_elem;
+      tail_r_true[ri] = tail_r_true_elem;
     }
 
 
 
   }
 
-  free(a_vec);
-  free(x_vec);
+  blas_free(a_vec);
+  blas_free(x_vec);
 }
 void BLAS_dsymv_s_s_testgen(int norm, enum blas_order_type order,
 			    enum blas_uplo_type uplo,
@@ -1103,7 +1094,7 @@ void BLAS_dsymv_s_s_testgen(int norm, enum blas_order_type order,
 			    double *alpha, int alpha_flag, double *beta,
 			    int beta_flag, float *a, int lda, float *x,
 			    int incx, double *y, int incy, int *seed,
-			    double *r_true_l, double *r_true_t)
+			    double *head_r_true, double *tail_r_true)
 
 /*
  * Purpose
@@ -1170,10 +1161,10 @@ void BLAS_dsymv_s_s_testgen(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * double  (output) *r_true_l
+ * double  (output) *head_r_true
  *         the leading part of the truth in double-double.
  *
- * double  (output) *r_true_t
+ * double  (output) *tail_r_true
  *         the trailing part of the truth in double-double
  *
  */
@@ -1192,8 +1183,7 @@ void BLAS_dsymv_s_s_testgen(int norm, enum blas_order_type order,
   double y_elem;
   float a_elem;
   float x_elem;
-  double r_true_t_elem;
-  double r_true_l_elem;
+  double head_r_true_elem, tail_r_true_elem;
 
   float *a_vec;
   float *x_vec;
@@ -1256,13 +1246,13 @@ void BLAS_dsymv_s_s_testgen(int norm, enum blas_order_type order,
     BLAS_ddot_s_s_testgen(n_i, 0, 0, norm, blas_no_conj,
 			  alpha, alpha_flag, beta, beta_flag,
 			  x_vec, a_vec, seed, &y_elem,
-			  &r_true_l_elem, &r_true_t_elem);
+			  &head_r_true_elem, &tail_r_true_elem);
 
     yi = y_starti;
     ri = 0;
     y_i[yi] = y_elem;
-    r_true_l[ri] = r_true_l_elem;
-    r_true_t[ri] = r_true_t_elem;
+    head_r_true[ri] = head_r_true_elem;
+    tail_r_true[ri] = tail_r_true_elem;
 
     /* Copy a_vec to first row of A */
     ssymv_commit_row(order, uplo, n_i, a, lda, a_vec, 0);
@@ -1277,15 +1267,14 @@ void BLAS_dsymv_s_s_testgen(int norm, enum blas_order_type order,
       BLAS_ddot_s_s_testgen(n_i, i, n_i - i, norm,
 			    blas_no_conj, alpha, 1,
 			    beta, 1, x_vec, a_vec, seed,
-			    &y_elem, &r_true_l_elem, &r_true_t_elem);
-
+			    &y_elem, &head_r_true_elem, &tail_r_true_elem);
 
       ssymv_commit_row(order, uplo, n_i, a, lda, a_vec, i);
 
       /*commits an element to the generated y */
       y_i[yi] = y_elem;
-      r_true_l[ri] = r_true_l_elem;
-      r_true_t[ri] = r_true_t_elem;
+      head_r_true[ri] = head_r_true_elem;
+      tail_r_true[ri] = tail_r_true_elem;
     }
 
   } else {
@@ -1353,19 +1342,19 @@ void BLAS_dsymv_s_s_testgen(int norm, enum blas_order_type order,
 
       BLAS_ddot_s_s_testgen(n_i, n_i, 0, norm, blas_no_conj, alpha, 1,
 			    beta, 1, x_vec, a_vec, seed,
-			    &y_elem, &r_true_l_elem, &r_true_t_elem);
+			    &y_elem, &head_r_true_elem, &tail_r_true_elem);
 
       y_i[yi] = y_elem;
-      r_true_l[ri] = r_true_l_elem;
-      r_true_t[ri] = r_true_t_elem;
+      head_r_true[ri] = head_r_true_elem;
+      tail_r_true[ri] = tail_r_true_elem;
     }
 
 
 
   }
 
-  free(a_vec);
-  free(x_vec);
+  blas_free(a_vec);
+  blas_free(x_vec);
 }
 
 void BLAS_csymv_testgen(int norm, enum blas_order_type order,
@@ -1373,8 +1362,8 @@ void BLAS_csymv_testgen(int norm, enum blas_order_type order,
 			int n, int randomize,
 			void *alpha, int alpha_flag, void *beta,
 			int beta_flag, void *a, int lda, void *x, int incx,
-			void *y, int incy, int *seed, double *r_true_l,
-			double *r_true_t)
+			void *y, int incy, int *seed, double *head_r_true,
+			double *tail_r_true)
 
 /*
  * Purpose
@@ -1441,10 +1430,10 @@ void BLAS_csymv_testgen(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * double  (output) *r_true_l
+ * double  (output) *head_r_true
  *         the leading part of the truth in double-double.
  *
- * double  (output) *r_true_t
+ * double  (output) *tail_r_true
  *         the trailing part of the truth in double-double
  *
  */
@@ -1463,8 +1452,7 @@ void BLAS_csymv_testgen(int norm, enum blas_order_type order,
   float y_elem[2];
   float a_elem[2];
   float x_elem[2];
-  double r_true_t_elem[2];
-  double r_true_l_elem[2];
+  double head_r_true_elem[2], tail_r_true_elem[2];
 
   float *a_vec;
   float *x_vec;
@@ -1529,16 +1517,16 @@ void BLAS_csymv_testgen(int norm, enum blas_order_type order,
     BLAS_cdot_testgen(n_i, 0, 0, norm, blas_no_conj,
 		      alpha, alpha_flag, beta, beta_flag,
 		      x_vec, a_vec, seed, y_elem,
-		      r_true_l_elem, r_true_t_elem);
+		      head_r_true_elem, tail_r_true_elem);
 
     yi = y_starti;
     ri = 0;
     y_i[yi] = y_elem[0];
     y_i[yi + 1] = y_elem[1];
-    r_true_l[ri] = r_true_l_elem[0];
-    r_true_l[ri + 1] = r_true_l_elem[1];
-    r_true_t[ri] = r_true_t_elem[0];
-    r_true_t[ri + 1] = r_true_t_elem[1];
+    head_r_true[ri] = head_r_true_elem[0];
+    head_r_true[ri + 1] = head_r_true_elem[1];
+    tail_r_true[ri] = tail_r_true_elem[0];
+    tail_r_true[ri + 1] = tail_r_true_elem[1];
 
     /* Copy a_vec to first row of A */
     csymv_commit_row(order, uplo, n_i, a, lda, a_vec, 0);
@@ -1553,18 +1541,17 @@ void BLAS_csymv_testgen(int norm, enum blas_order_type order,
       BLAS_cdot_testgen(n_i, i, n_i - i, norm,
 			blas_no_conj, alpha, 1,
 			beta, 1, x_vec, a_vec, seed,
-			y_elem, r_true_l_elem, r_true_t_elem);
-
+			y_elem, head_r_true_elem, tail_r_true_elem);
 
       csymv_commit_row(order, uplo, n_i, a, lda, a_vec, i);
 
       /*commits an element to the generated y */
       y_i[yi] = y_elem[0];
       y_i[yi + 1] = y_elem[1];
-      r_true_l[ri] = r_true_l_elem[0];
-      r_true_l[ri + 1] = r_true_l_elem[1];
-      r_true_t[ri] = r_true_t_elem[0];
-      r_true_t[ri + 1] = r_true_t_elem[1];
+      head_r_true[ri] = head_r_true_elem[0];
+      head_r_true[ri + 1] = head_r_true_elem[1];
+      tail_r_true[ri] = tail_r_true_elem[0];
+      tail_r_true[ri + 1] = tail_r_true_elem[1];
     }
 
   } else {
@@ -1640,30 +1627,30 @@ void BLAS_csymv_testgen(int norm, enum blas_order_type order,
 
       BLAS_cdot_testgen(n_i, n_i, 0, norm, blas_no_conj, alpha, 1,
 			beta, 1, x_vec, a_vec, seed,
-			y_elem, r_true_l_elem, r_true_t_elem);
+			y_elem, head_r_true_elem, tail_r_true_elem);
 
       y_i[yi] = y_elem[0];
       y_i[yi + 1] = y_elem[1];
-      r_true_l[ri] = r_true_l_elem[0];
-      r_true_l[ri + 1] = r_true_l_elem[1];
-      r_true_t[ri] = r_true_t_elem[0];
-      r_true_t[ri + 1] = r_true_t_elem[1];
+      head_r_true[ri] = head_r_true_elem[0];
+      head_r_true[ri + 1] = head_r_true_elem[1];
+      tail_r_true[ri] = tail_r_true_elem[0];
+      tail_r_true[ri + 1] = tail_r_true_elem[1];
     }
 
 
 
   }
 
-  free(a_vec);
-  free(x_vec);
+  blas_free(a_vec);
+  blas_free(x_vec);
 }
 void BLAS_zsymv_testgen(int norm, enum blas_order_type order,
 			enum blas_uplo_type uplo,
 			int n, int randomize,
 			void *alpha, int alpha_flag, void *beta,
 			int beta_flag, void *a, int lda, void *x, int incx,
-			void *y, int incy, int *seed, double *r_true_l,
-			double *r_true_t)
+			void *y, int incy, int *seed, double *head_r_true,
+			double *tail_r_true)
 
 /*
  * Purpose
@@ -1730,10 +1717,10 @@ void BLAS_zsymv_testgen(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * double  (output) *r_true_l
+ * double  (output) *head_r_true
  *         the leading part of the truth in double-double.
  *
- * double  (output) *r_true_t
+ * double  (output) *tail_r_true
  *         the trailing part of the truth in double-double
  *
  */
@@ -1752,8 +1739,7 @@ void BLAS_zsymv_testgen(int norm, enum blas_order_type order,
   double y_elem[2];
   double a_elem[2];
   double x_elem[2];
-  double r_true_t_elem[2];
-  double r_true_l_elem[2];
+  double head_r_true_elem[2], tail_r_true_elem[2];
 
   double *a_vec;
   double *x_vec;
@@ -1818,16 +1804,16 @@ void BLAS_zsymv_testgen(int norm, enum blas_order_type order,
     BLAS_zdot_testgen(n_i, 0, 0, norm, blas_no_conj,
 		      alpha, alpha_flag, beta, beta_flag,
 		      x_vec, a_vec, seed, y_elem,
-		      r_true_l_elem, r_true_t_elem);
+		      head_r_true_elem, tail_r_true_elem);
 
     yi = y_starti;
     ri = 0;
     y_i[yi] = y_elem[0];
     y_i[yi + 1] = y_elem[1];
-    r_true_l[ri] = r_true_l_elem[0];
-    r_true_l[ri + 1] = r_true_l_elem[1];
-    r_true_t[ri] = r_true_t_elem[0];
-    r_true_t[ri + 1] = r_true_t_elem[1];
+    head_r_true[ri] = head_r_true_elem[0];
+    head_r_true[ri + 1] = head_r_true_elem[1];
+    tail_r_true[ri] = tail_r_true_elem[0];
+    tail_r_true[ri + 1] = tail_r_true_elem[1];
 
     /* Copy a_vec to first row of A */
     zsymv_commit_row(order, uplo, n_i, a, lda, a_vec, 0);
@@ -1842,18 +1828,17 @@ void BLAS_zsymv_testgen(int norm, enum blas_order_type order,
       BLAS_zdot_testgen(n_i, i, n_i - i, norm,
 			blas_no_conj, alpha, 1,
 			beta, 1, x_vec, a_vec, seed,
-			y_elem, r_true_l_elem, r_true_t_elem);
-
+			y_elem, head_r_true_elem, tail_r_true_elem);
 
       zsymv_commit_row(order, uplo, n_i, a, lda, a_vec, i);
 
       /*commits an element to the generated y */
       y_i[yi] = y_elem[0];
       y_i[yi + 1] = y_elem[1];
-      r_true_l[ri] = r_true_l_elem[0];
-      r_true_l[ri + 1] = r_true_l_elem[1];
-      r_true_t[ri] = r_true_t_elem[0];
-      r_true_t[ri + 1] = r_true_t_elem[1];
+      head_r_true[ri] = head_r_true_elem[0];
+      head_r_true[ri + 1] = head_r_true_elem[1];
+      tail_r_true[ri] = tail_r_true_elem[0];
+      tail_r_true[ri + 1] = tail_r_true_elem[1];
     }
 
   } else {
@@ -1929,22 +1914,22 @@ void BLAS_zsymv_testgen(int norm, enum blas_order_type order,
 
       BLAS_zdot_testgen(n_i, n_i, 0, norm, blas_no_conj, alpha, 1,
 			beta, 1, x_vec, a_vec, seed,
-			y_elem, r_true_l_elem, r_true_t_elem);
+			y_elem, head_r_true_elem, tail_r_true_elem);
 
       y_i[yi] = y_elem[0];
       y_i[yi + 1] = y_elem[1];
-      r_true_l[ri] = r_true_l_elem[0];
-      r_true_l[ri + 1] = r_true_l_elem[1];
-      r_true_t[ri] = r_true_t_elem[0];
-      r_true_t[ri + 1] = r_true_t_elem[1];
+      head_r_true[ri] = head_r_true_elem[0];
+      head_r_true[ri + 1] = head_r_true_elem[1];
+      tail_r_true[ri] = tail_r_true_elem[0];
+      tail_r_true[ri + 1] = tail_r_true_elem[1];
     }
 
 
 
   }
 
-  free(a_vec);
-  free(x_vec);
+  blas_free(a_vec);
+  blas_free(x_vec);
 }
 void BLAS_zsymv_c_z_testgen(int norm, enum blas_order_type order,
 			    enum blas_uplo_type uplo,
@@ -1952,7 +1937,7 @@ void BLAS_zsymv_c_z_testgen(int norm, enum blas_order_type order,
 			    void *alpha, int alpha_flag, void *beta,
 			    int beta_flag, void *a, int lda, void *x,
 			    int incx, void *y, int incy, int *seed,
-			    double *r_true_l, double *r_true_t)
+			    double *head_r_true, double *tail_r_true)
 
 /*
  * Purpose
@@ -2019,10 +2004,10 @@ void BLAS_zsymv_c_z_testgen(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * double  (output) *r_true_l
+ * double  (output) *head_r_true
  *         the leading part of the truth in double-double.
  *
- * double  (output) *r_true_t
+ * double  (output) *tail_r_true
  *         the trailing part of the truth in double-double
  *
  */
@@ -2041,8 +2026,7 @@ void BLAS_zsymv_c_z_testgen(int norm, enum blas_order_type order,
   double y_elem[2];
   float a_elem[2];
   double x_elem[2];
-  double r_true_t_elem[2];
-  double r_true_l_elem[2];
+  double head_r_true_elem[2], tail_r_true_elem[2];
 
   float *a_vec;
   double *x_vec;
@@ -2107,16 +2091,16 @@ void BLAS_zsymv_c_z_testgen(int norm, enum blas_order_type order,
     BLAS_zdot_z_c_testgen(n_i, 0, 0, norm, blas_no_conj,
 			  alpha, alpha_flag, beta, beta_flag,
 			  x_vec, a_vec, seed, y_elem,
-			  r_true_l_elem, r_true_t_elem);
+			  head_r_true_elem, tail_r_true_elem);
 
     yi = y_starti;
     ri = 0;
     y_i[yi] = y_elem[0];
     y_i[yi + 1] = y_elem[1];
-    r_true_l[ri] = r_true_l_elem[0];
-    r_true_l[ri + 1] = r_true_l_elem[1];
-    r_true_t[ri] = r_true_t_elem[0];
-    r_true_t[ri + 1] = r_true_t_elem[1];
+    head_r_true[ri] = head_r_true_elem[0];
+    head_r_true[ri + 1] = head_r_true_elem[1];
+    tail_r_true[ri] = tail_r_true_elem[0];
+    tail_r_true[ri + 1] = tail_r_true_elem[1];
 
     /* Copy a_vec to first row of A */
     csymv_commit_row(order, uplo, n_i, a, lda, a_vec, 0);
@@ -2131,18 +2115,17 @@ void BLAS_zsymv_c_z_testgen(int norm, enum blas_order_type order,
       BLAS_zdot_z_c_testgen(n_i, i, n_i - i, norm,
 			    blas_no_conj, alpha, 1,
 			    beta, 1, x_vec, a_vec, seed,
-			    y_elem, r_true_l_elem, r_true_t_elem);
-
+			    y_elem, head_r_true_elem, tail_r_true_elem);
 
       csymv_commit_row(order, uplo, n_i, a, lda, a_vec, i);
 
       /*commits an element to the generated y */
       y_i[yi] = y_elem[0];
       y_i[yi + 1] = y_elem[1];
-      r_true_l[ri] = r_true_l_elem[0];
-      r_true_l[ri + 1] = r_true_l_elem[1];
-      r_true_t[ri] = r_true_t_elem[0];
-      r_true_t[ri + 1] = r_true_t_elem[1];
+      head_r_true[ri] = head_r_true_elem[0];
+      head_r_true[ri + 1] = head_r_true_elem[1];
+      tail_r_true[ri] = tail_r_true_elem[0];
+      tail_r_true[ri + 1] = tail_r_true_elem[1];
     }
 
   } else {
@@ -2218,22 +2201,22 @@ void BLAS_zsymv_c_z_testgen(int norm, enum blas_order_type order,
 
       BLAS_zdot_z_c_testgen(n_i, n_i, 0, norm, blas_no_conj, alpha, 1,
 			    beta, 1, x_vec, a_vec, seed,
-			    y_elem, r_true_l_elem, r_true_t_elem);
+			    y_elem, head_r_true_elem, tail_r_true_elem);
 
       y_i[yi] = y_elem[0];
       y_i[yi + 1] = y_elem[1];
-      r_true_l[ri] = r_true_l_elem[0];
-      r_true_l[ri + 1] = r_true_l_elem[1];
-      r_true_t[ri] = r_true_t_elem[0];
-      r_true_t[ri + 1] = r_true_t_elem[1];
+      head_r_true[ri] = head_r_true_elem[0];
+      head_r_true[ri + 1] = head_r_true_elem[1];
+      tail_r_true[ri] = tail_r_true_elem[0];
+      tail_r_true[ri + 1] = tail_r_true_elem[1];
     }
 
 
 
   }
 
-  free(a_vec);
-  free(x_vec);
+  blas_free(a_vec);
+  blas_free(x_vec);
 }
 void BLAS_zsymv_z_c_testgen(int norm, enum blas_order_type order,
 			    enum blas_uplo_type uplo,
@@ -2241,7 +2224,7 @@ void BLAS_zsymv_z_c_testgen(int norm, enum blas_order_type order,
 			    void *alpha, int alpha_flag, void *beta,
 			    int beta_flag, void *a, int lda, void *x,
 			    int incx, void *y, int incy, int *seed,
-			    double *r_true_l, double *r_true_t)
+			    double *head_r_true, double *tail_r_true)
 
 /*
  * Purpose
@@ -2308,10 +2291,10 @@ void BLAS_zsymv_z_c_testgen(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * double  (output) *r_true_l
+ * double  (output) *head_r_true
  *         the leading part of the truth in double-double.
  *
- * double  (output) *r_true_t
+ * double  (output) *tail_r_true
  *         the trailing part of the truth in double-double
  *
  */
@@ -2330,8 +2313,7 @@ void BLAS_zsymv_z_c_testgen(int norm, enum blas_order_type order,
   double y_elem[2];
   double a_elem[2];
   float x_elem[2];
-  double r_true_t_elem[2];
-  double r_true_l_elem[2];
+  double head_r_true_elem[2], tail_r_true_elem[2];
 
   double *a_vec;
   float *x_vec;
@@ -2396,16 +2378,16 @@ void BLAS_zsymv_z_c_testgen(int norm, enum blas_order_type order,
     BLAS_zdot_c_z_testgen(n_i, 0, 0, norm, blas_no_conj,
 			  alpha, alpha_flag, beta, beta_flag,
 			  x_vec, a_vec, seed, y_elem,
-			  r_true_l_elem, r_true_t_elem);
+			  head_r_true_elem, tail_r_true_elem);
 
     yi = y_starti;
     ri = 0;
     y_i[yi] = y_elem[0];
     y_i[yi + 1] = y_elem[1];
-    r_true_l[ri] = r_true_l_elem[0];
-    r_true_l[ri + 1] = r_true_l_elem[1];
-    r_true_t[ri] = r_true_t_elem[0];
-    r_true_t[ri + 1] = r_true_t_elem[1];
+    head_r_true[ri] = head_r_true_elem[0];
+    head_r_true[ri + 1] = head_r_true_elem[1];
+    tail_r_true[ri] = tail_r_true_elem[0];
+    tail_r_true[ri + 1] = tail_r_true_elem[1];
 
     /* Copy a_vec to first row of A */
     zsymv_commit_row(order, uplo, n_i, a, lda, a_vec, 0);
@@ -2420,18 +2402,17 @@ void BLAS_zsymv_z_c_testgen(int norm, enum blas_order_type order,
       BLAS_zdot_c_z_testgen(n_i, i, n_i - i, norm,
 			    blas_no_conj, alpha, 1,
 			    beta, 1, x_vec, a_vec, seed,
-			    y_elem, r_true_l_elem, r_true_t_elem);
-
+			    y_elem, head_r_true_elem, tail_r_true_elem);
 
       zsymv_commit_row(order, uplo, n_i, a, lda, a_vec, i);
 
       /*commits an element to the generated y */
       y_i[yi] = y_elem[0];
       y_i[yi + 1] = y_elem[1];
-      r_true_l[ri] = r_true_l_elem[0];
-      r_true_l[ri + 1] = r_true_l_elem[1];
-      r_true_t[ri] = r_true_t_elem[0];
-      r_true_t[ri + 1] = r_true_t_elem[1];
+      head_r_true[ri] = head_r_true_elem[0];
+      head_r_true[ri + 1] = head_r_true_elem[1];
+      tail_r_true[ri] = tail_r_true_elem[0];
+      tail_r_true[ri + 1] = tail_r_true_elem[1];
     }
 
   } else {
@@ -2507,22 +2488,22 @@ void BLAS_zsymv_z_c_testgen(int norm, enum blas_order_type order,
 
       BLAS_zdot_c_z_testgen(n_i, n_i, 0, norm, blas_no_conj, alpha, 1,
 			    beta, 1, x_vec, a_vec, seed,
-			    y_elem, r_true_l_elem, r_true_t_elem);
+			    y_elem, head_r_true_elem, tail_r_true_elem);
 
       y_i[yi] = y_elem[0];
       y_i[yi + 1] = y_elem[1];
-      r_true_l[ri] = r_true_l_elem[0];
-      r_true_l[ri + 1] = r_true_l_elem[1];
-      r_true_t[ri] = r_true_t_elem[0];
-      r_true_t[ri + 1] = r_true_t_elem[1];
+      head_r_true[ri] = head_r_true_elem[0];
+      head_r_true[ri + 1] = head_r_true_elem[1];
+      tail_r_true[ri] = tail_r_true_elem[0];
+      tail_r_true[ri + 1] = tail_r_true_elem[1];
     }
 
 
 
   }
 
-  free(a_vec);
-  free(x_vec);
+  blas_free(a_vec);
+  blas_free(x_vec);
 }
 void BLAS_zsymv_c_c_testgen(int norm, enum blas_order_type order,
 			    enum blas_uplo_type uplo,
@@ -2530,7 +2511,7 @@ void BLAS_zsymv_c_c_testgen(int norm, enum blas_order_type order,
 			    void *alpha, int alpha_flag, void *beta,
 			    int beta_flag, void *a, int lda, void *x,
 			    int incx, void *y, int incy, int *seed,
-			    double *r_true_l, double *r_true_t)
+			    double *head_r_true, double *tail_r_true)
 
 /*
  * Purpose
@@ -2597,10 +2578,10 @@ void BLAS_zsymv_c_c_testgen(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * double  (output) *r_true_l
+ * double  (output) *head_r_true
  *         the leading part of the truth in double-double.
  *
- * double  (output) *r_true_t
+ * double  (output) *tail_r_true
  *         the trailing part of the truth in double-double
  *
  */
@@ -2619,8 +2600,7 @@ void BLAS_zsymv_c_c_testgen(int norm, enum blas_order_type order,
   double y_elem[2];
   float a_elem[2];
   float x_elem[2];
-  double r_true_t_elem[2];
-  double r_true_l_elem[2];
+  double head_r_true_elem[2], tail_r_true_elem[2];
 
   float *a_vec;
   float *x_vec;
@@ -2685,16 +2665,16 @@ void BLAS_zsymv_c_c_testgen(int norm, enum blas_order_type order,
     BLAS_zdot_c_c_testgen(n_i, 0, 0, norm, blas_no_conj,
 			  alpha, alpha_flag, beta, beta_flag,
 			  x_vec, a_vec, seed, y_elem,
-			  r_true_l_elem, r_true_t_elem);
+			  head_r_true_elem, tail_r_true_elem);
 
     yi = y_starti;
     ri = 0;
     y_i[yi] = y_elem[0];
     y_i[yi + 1] = y_elem[1];
-    r_true_l[ri] = r_true_l_elem[0];
-    r_true_l[ri + 1] = r_true_l_elem[1];
-    r_true_t[ri] = r_true_t_elem[0];
-    r_true_t[ri + 1] = r_true_t_elem[1];
+    head_r_true[ri] = head_r_true_elem[0];
+    head_r_true[ri + 1] = head_r_true_elem[1];
+    tail_r_true[ri] = tail_r_true_elem[0];
+    tail_r_true[ri + 1] = tail_r_true_elem[1];
 
     /* Copy a_vec to first row of A */
     csymv_commit_row(order, uplo, n_i, a, lda, a_vec, 0);
@@ -2709,18 +2689,17 @@ void BLAS_zsymv_c_c_testgen(int norm, enum blas_order_type order,
       BLAS_zdot_c_c_testgen(n_i, i, n_i - i, norm,
 			    blas_no_conj, alpha, 1,
 			    beta, 1, x_vec, a_vec, seed,
-			    y_elem, r_true_l_elem, r_true_t_elem);
-
+			    y_elem, head_r_true_elem, tail_r_true_elem);
 
       csymv_commit_row(order, uplo, n_i, a, lda, a_vec, i);
 
       /*commits an element to the generated y */
       y_i[yi] = y_elem[0];
       y_i[yi + 1] = y_elem[1];
-      r_true_l[ri] = r_true_l_elem[0];
-      r_true_l[ri + 1] = r_true_l_elem[1];
-      r_true_t[ri] = r_true_t_elem[0];
-      r_true_t[ri + 1] = r_true_t_elem[1];
+      head_r_true[ri] = head_r_true_elem[0];
+      head_r_true[ri + 1] = head_r_true_elem[1];
+      tail_r_true[ri] = tail_r_true_elem[0];
+      tail_r_true[ri + 1] = tail_r_true_elem[1];
     }
 
   } else {
@@ -2796,22 +2775,22 @@ void BLAS_zsymv_c_c_testgen(int norm, enum blas_order_type order,
 
       BLAS_zdot_c_c_testgen(n_i, n_i, 0, norm, blas_no_conj, alpha, 1,
 			    beta, 1, x_vec, a_vec, seed,
-			    y_elem, r_true_l_elem, r_true_t_elem);
+			    y_elem, head_r_true_elem, tail_r_true_elem);
 
       y_i[yi] = y_elem[0];
       y_i[yi + 1] = y_elem[1];
-      r_true_l[ri] = r_true_l_elem[0];
-      r_true_l[ri + 1] = r_true_l_elem[1];
-      r_true_t[ri] = r_true_t_elem[0];
-      r_true_t[ri + 1] = r_true_t_elem[1];
+      head_r_true[ri] = head_r_true_elem[0];
+      head_r_true[ri + 1] = head_r_true_elem[1];
+      tail_r_true[ri] = tail_r_true_elem[0];
+      tail_r_true[ri + 1] = tail_r_true_elem[1];
     }
 
 
 
   }
 
-  free(a_vec);
-  free(x_vec);
+  blas_free(a_vec);
+  blas_free(x_vec);
 }
 
 void BLAS_zsymv_z_d_testgen(int norm, enum blas_order_type order,
@@ -2820,7 +2799,7 @@ void BLAS_zsymv_z_d_testgen(int norm, enum blas_order_type order,
 			    void *alpha, int alpha_flag, void *beta,
 			    int beta_flag, void *a, int lda, double *x,
 			    int incx, void *y, int incy, int *seed,
-			    double *r_true_l, double *r_true_t)
+			    double *head_r_true, double *tail_r_true)
 
 /*
  * Purpose
@@ -2887,10 +2866,10 @@ void BLAS_zsymv_z_d_testgen(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * double  (output) *r_true_l
+ * double  (output) *head_r_true
  *         the leading part of the truth in double-double.
  *
- * double  (output) *r_true_t
+ * double  (output) *tail_r_true
  *         the trailing part of the truth in double-double
  *
  */
@@ -2909,8 +2888,7 @@ void BLAS_zsymv_z_d_testgen(int norm, enum blas_order_type order,
   double y_elem[2];
   double a_elem[2];
   double x_elem;
-  double r_true_t_elem[2];
-  double r_true_l_elem[2];
+  double head_r_true_elem[2], tail_r_true_elem[2];
 
   double *a_vec;
   double *x_vec;
@@ -2974,16 +2952,16 @@ void BLAS_zsymv_z_d_testgen(int norm, enum blas_order_type order,
     BLAS_zdot_d_z_testgen(n_i, 0, 0, norm, blas_no_conj,
 			  alpha, alpha_flag, beta, beta_flag,
 			  x_vec, a_vec, seed, y_elem,
-			  r_true_l_elem, r_true_t_elem);
+			  head_r_true_elem, tail_r_true_elem);
 
     yi = y_starti;
     ri = 0;
     y_i[yi] = y_elem[0];
     y_i[yi + 1] = y_elem[1];
-    r_true_l[ri] = r_true_l_elem[0];
-    r_true_l[ri + 1] = r_true_l_elem[1];
-    r_true_t[ri] = r_true_t_elem[0];
-    r_true_t[ri + 1] = r_true_t_elem[1];
+    head_r_true[ri] = head_r_true_elem[0];
+    head_r_true[ri + 1] = head_r_true_elem[1];
+    tail_r_true[ri] = tail_r_true_elem[0];
+    tail_r_true[ri + 1] = tail_r_true_elem[1];
 
     /* Copy a_vec to first row of A */
     zsymv_commit_row(order, uplo, n_i, a, lda, a_vec, 0);
@@ -2998,18 +2976,17 @@ void BLAS_zsymv_z_d_testgen(int norm, enum blas_order_type order,
       BLAS_zdot_d_z_testgen(n_i, i, n_i - i, norm,
 			    blas_no_conj, alpha, 1,
 			    beta, 1, x_vec, a_vec, seed,
-			    y_elem, r_true_l_elem, r_true_t_elem);
-
+			    y_elem, head_r_true_elem, tail_r_true_elem);
 
       zsymv_commit_row(order, uplo, n_i, a, lda, a_vec, i);
 
       /*commits an element to the generated y */
       y_i[yi] = y_elem[0];
       y_i[yi + 1] = y_elem[1];
-      r_true_l[ri] = r_true_l_elem[0];
-      r_true_l[ri + 1] = r_true_l_elem[1];
-      r_true_t[ri] = r_true_t_elem[0];
-      r_true_t[ri + 1] = r_true_t_elem[1];
+      head_r_true[ri] = head_r_true_elem[0];
+      head_r_true[ri + 1] = head_r_true_elem[1];
+      tail_r_true[ri] = tail_r_true_elem[0];
+      tail_r_true[ri + 1] = tail_r_true_elem[1];
     }
 
   } else {
@@ -3094,24 +3071,23 @@ void BLAS_zsymv_z_d_testgen(int norm, enum blas_order_type order,
       BLAS_zdot_testgen(n_i, n_i, 0, norm, blas_no_conj, alpha, 1,
 			beta, 1,
 			xx_vec,
-			a_vec, seed, y_elem, r_true_l_elem, r_true_t_elem);
+			a_vec,
+			seed, y_elem, head_r_true_elem, tail_r_true_elem);
 
       y_i[yi] = y_elem[0];
       y_i[yi + 1] = y_elem[1];
-      r_true_l[ri] = r_true_l_elem[0];
-      r_true_l[ri + 1] = r_true_l_elem[1];
-      r_true_t[ri] = r_true_t_elem[0];
-      r_true_t[ri + 1] = r_true_t_elem[1];
+      head_r_true[ri] = head_r_true_elem[0];
+      head_r_true[ri + 1] = head_r_true_elem[1];
+      tail_r_true[ri] = tail_r_true_elem[0];
+      tail_r_true[ri + 1] = tail_r_true_elem[1];
     }
 
 
-
-    free(xx_vec);
-
+    blas_free(xx_vec);
   }
 
-  free(a_vec);
-  free(x_vec);
+  blas_free(a_vec);
+  blas_free(x_vec);
 }
 void BLAS_zsymv_d_z_testgen(int norm, enum blas_order_type order,
 			    enum blas_uplo_type uplo,
@@ -3119,7 +3095,7 @@ void BLAS_zsymv_d_z_testgen(int norm, enum blas_order_type order,
 			    void *alpha, int alpha_flag, void *beta,
 			    int beta_flag, double *a, int lda, void *x,
 			    int incx, void *y, int incy, int *seed,
-			    double *r_true_l, double *r_true_t)
+			    double *head_r_true, double *tail_r_true)
 
 /*
  * Purpose
@@ -3186,10 +3162,10 @@ void BLAS_zsymv_d_z_testgen(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * double  (output) *r_true_l
+ * double  (output) *head_r_true
  *         the leading part of the truth in double-double.
  *
- * double  (output) *r_true_t
+ * double  (output) *tail_r_true
  *         the trailing part of the truth in double-double
  *
  */
@@ -3208,8 +3184,7 @@ void BLAS_zsymv_d_z_testgen(int norm, enum blas_order_type order,
   double y_elem[2];
   double a_elem;
   double x_elem[2];
-  double r_true_t_elem[2];
-  double r_true_l_elem[2];
+  double head_r_true_elem[2], tail_r_true_elem[2];
 
   double *a_vec;
   double *x_vec;
@@ -3273,16 +3248,16 @@ void BLAS_zsymv_d_z_testgen(int norm, enum blas_order_type order,
     BLAS_zdot_z_d_testgen(n_i, 0, 0, norm, blas_no_conj,
 			  alpha, alpha_flag, beta, beta_flag,
 			  x_vec, a_vec, seed, y_elem,
-			  r_true_l_elem, r_true_t_elem);
+			  head_r_true_elem, tail_r_true_elem);
 
     yi = y_starti;
     ri = 0;
     y_i[yi] = y_elem[0];
     y_i[yi + 1] = y_elem[1];
-    r_true_l[ri] = r_true_l_elem[0];
-    r_true_l[ri + 1] = r_true_l_elem[1];
-    r_true_t[ri] = r_true_t_elem[0];
-    r_true_t[ri + 1] = r_true_t_elem[1];
+    head_r_true[ri] = head_r_true_elem[0];
+    head_r_true[ri + 1] = head_r_true_elem[1];
+    tail_r_true[ri] = tail_r_true_elem[0];
+    tail_r_true[ri + 1] = tail_r_true_elem[1];
 
     /* Copy a_vec to first row of A */
     dsymv_commit_row(order, uplo, n_i, a, lda, a_vec, 0);
@@ -3297,18 +3272,17 @@ void BLAS_zsymv_d_z_testgen(int norm, enum blas_order_type order,
       BLAS_zdot_z_d_testgen(n_i, i, n_i - i, norm,
 			    blas_no_conj, alpha, 1,
 			    beta, 1, x_vec, a_vec, seed,
-			    y_elem, r_true_l_elem, r_true_t_elem);
-
+			    y_elem, head_r_true_elem, tail_r_true_elem);
 
       dsymv_commit_row(order, uplo, n_i, a, lda, a_vec, i);
 
       /*commits an element to the generated y */
       y_i[yi] = y_elem[0];
       y_i[yi + 1] = y_elem[1];
-      r_true_l[ri] = r_true_l_elem[0];
-      r_true_l[ri + 1] = r_true_l_elem[1];
-      r_true_t[ri] = r_true_t_elem[0];
-      r_true_t[ri + 1] = r_true_t_elem[1];
+      head_r_true[ri] = head_r_true_elem[0];
+      head_r_true[ri + 1] = head_r_true_elem[1];
+      tail_r_true[ri] = tail_r_true_elem[0];
+      tail_r_true[ri + 1] = tail_r_true_elem[1];
     }
 
   } else {
@@ -3393,24 +3367,23 @@ void BLAS_zsymv_d_z_testgen(int norm, enum blas_order_type order,
       BLAS_zdot_testgen(n_i, n_i, 0, norm, blas_no_conj, alpha, 1,
 			beta, 1,
 			x_vec,
-			aa_vec, seed, y_elem, r_true_l_elem, r_true_t_elem);
+			aa_vec,
+			seed, y_elem, head_r_true_elem, tail_r_true_elem);
 
       y_i[yi] = y_elem[0];
       y_i[yi + 1] = y_elem[1];
-      r_true_l[ri] = r_true_l_elem[0];
-      r_true_l[ri + 1] = r_true_l_elem[1];
-      r_true_t[ri] = r_true_t_elem[0];
-      r_true_t[ri + 1] = r_true_t_elem[1];
+      head_r_true[ri] = head_r_true_elem[0];
+      head_r_true[ri + 1] = head_r_true_elem[1];
+      tail_r_true[ri] = tail_r_true_elem[0];
+      tail_r_true[ri + 1] = tail_r_true_elem[1];
     }
 
-
-    free(aa_vec);
-
+    blas_free(aa_vec);
 
   }
 
-  free(a_vec);
-  free(x_vec);
+  blas_free(a_vec);
+  blas_free(x_vec);
 }
 void BLAS_zsymv_d_d_testgen(int norm, enum blas_order_type order,
 			    enum blas_uplo_type uplo,
@@ -3418,7 +3391,7 @@ void BLAS_zsymv_d_d_testgen(int norm, enum blas_order_type order,
 			    void *alpha, int alpha_flag, void *beta,
 			    int beta_flag, double *a, int lda, double *x,
 			    int incx, void *y, int incy, int *seed,
-			    double *r_true_l, double *r_true_t)
+			    double *head_r_true, double *tail_r_true)
 
 /*
  * Purpose
@@ -3485,10 +3458,10 @@ void BLAS_zsymv_d_d_testgen(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * double  (output) *r_true_l
+ * double  (output) *head_r_true
  *         the leading part of the truth in double-double.
  *
- * double  (output) *r_true_t
+ * double  (output) *tail_r_true
  *         the trailing part of the truth in double-double
  *
  */
@@ -3507,8 +3480,7 @@ void BLAS_zsymv_d_d_testgen(int norm, enum blas_order_type order,
   double y_elem[2];
   double a_elem;
   double x_elem;
-  double r_true_t_elem[2];
-  double r_true_l_elem[2];
+  double head_r_true_elem[2], tail_r_true_elem[2];
 
   double *a_vec;
   double *x_vec;
@@ -3571,16 +3543,16 @@ void BLAS_zsymv_d_d_testgen(int norm, enum blas_order_type order,
     BLAS_zdot_d_d_testgen(n_i, 0, 0, norm, blas_no_conj,
 			  alpha, alpha_flag, beta, beta_flag,
 			  x_vec, a_vec, seed, y_elem,
-			  r_true_l_elem, r_true_t_elem);
+			  head_r_true_elem, tail_r_true_elem);
 
     yi = y_starti;
     ri = 0;
     y_i[yi] = y_elem[0];
     y_i[yi + 1] = y_elem[1];
-    r_true_l[ri] = r_true_l_elem[0];
-    r_true_l[ri + 1] = r_true_l_elem[1];
-    r_true_t[ri] = r_true_t_elem[0];
-    r_true_t[ri + 1] = r_true_t_elem[1];
+    head_r_true[ri] = head_r_true_elem[0];
+    head_r_true[ri + 1] = head_r_true_elem[1];
+    tail_r_true[ri] = tail_r_true_elem[0];
+    tail_r_true[ri + 1] = tail_r_true_elem[1];
 
     /* Copy a_vec to first row of A */
     dsymv_commit_row(order, uplo, n_i, a, lda, a_vec, 0);
@@ -3595,18 +3567,17 @@ void BLAS_zsymv_d_d_testgen(int norm, enum blas_order_type order,
       BLAS_zdot_d_d_testgen(n_i, i, n_i - i, norm,
 			    blas_no_conj, alpha, 1,
 			    beta, 1, x_vec, a_vec, seed,
-			    y_elem, r_true_l_elem, r_true_t_elem);
-
+			    y_elem, head_r_true_elem, tail_r_true_elem);
 
       dsymv_commit_row(order, uplo, n_i, a, lda, a_vec, i);
 
       /*commits an element to the generated y */
       y_i[yi] = y_elem[0];
       y_i[yi + 1] = y_elem[1];
-      r_true_l[ri] = r_true_l_elem[0];
-      r_true_l[ri + 1] = r_true_l_elem[1];
-      r_true_t[ri] = r_true_t_elem[0];
-      r_true_t[ri + 1] = r_true_t_elem[1];
+      head_r_true[ri] = head_r_true_elem[0];
+      head_r_true[ri + 1] = head_r_true_elem[1];
+      tail_r_true[ri] = tail_r_true_elem[0];
+      tail_r_true[ri + 1] = tail_r_true_elem[1];
     }
 
   } else {
@@ -3699,26 +3670,23 @@ void BLAS_zsymv_d_d_testgen(int norm, enum blas_order_type order,
       BLAS_zdot_testgen(n_i, n_i, 0, norm, blas_no_conj, alpha, 1,
 			beta, 1,
 			xx_vec,
-			aa_vec, seed, y_elem, r_true_l_elem, r_true_t_elem);
+			aa_vec,
+			seed, y_elem, head_r_true_elem, tail_r_true_elem);
 
       y_i[yi] = y_elem[0];
       y_i[yi + 1] = y_elem[1];
-      r_true_l[ri] = r_true_l_elem[0];
-      r_true_l[ri + 1] = r_true_l_elem[1];
-      r_true_t[ri] = r_true_t_elem[0];
-      r_true_t[ri + 1] = r_true_t_elem[1];
+      head_r_true[ri] = head_r_true_elem[0];
+      head_r_true[ri + 1] = head_r_true_elem[1];
+      tail_r_true[ri] = tail_r_true_elem[0];
+      tail_r_true[ri + 1] = tail_r_true_elem[1];
     }
 
-
-    free(aa_vec);
-
-
-    free(xx_vec);
-
+    blas_free(aa_vec);
+    blas_free(xx_vec);
   }
 
-  free(a_vec);
-  free(x_vec);
+  blas_free(a_vec);
+  blas_free(x_vec);
 }
 
 void BLAS_csymv_c_s_testgen(int norm, enum blas_order_type order,
@@ -3727,7 +3695,7 @@ void BLAS_csymv_c_s_testgen(int norm, enum blas_order_type order,
 			    void *alpha, int alpha_flag, void *beta,
 			    int beta_flag, void *a, int lda, float *x,
 			    int incx, void *y, int incy, int *seed,
-			    double *r_true_l, double *r_true_t)
+			    double *head_r_true, double *tail_r_true)
 
 /*
  * Purpose
@@ -3794,10 +3762,10 @@ void BLAS_csymv_c_s_testgen(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * double  (output) *r_true_l
+ * double  (output) *head_r_true
  *         the leading part of the truth in double-double.
  *
- * double  (output) *r_true_t
+ * double  (output) *tail_r_true
  *         the trailing part of the truth in double-double
  *
  */
@@ -3816,8 +3784,7 @@ void BLAS_csymv_c_s_testgen(int norm, enum blas_order_type order,
   float y_elem[2];
   float a_elem[2];
   float x_elem;
-  double r_true_t_elem[2];
-  double r_true_l_elem[2];
+  double head_r_true_elem[2], tail_r_true_elem[2];
 
   float *a_vec;
   float *x_vec;
@@ -3881,16 +3848,16 @@ void BLAS_csymv_c_s_testgen(int norm, enum blas_order_type order,
     BLAS_cdot_s_c_testgen(n_i, 0, 0, norm, blas_no_conj,
 			  alpha, alpha_flag, beta, beta_flag,
 			  x_vec, a_vec, seed, y_elem,
-			  r_true_l_elem, r_true_t_elem);
+			  head_r_true_elem, tail_r_true_elem);
 
     yi = y_starti;
     ri = 0;
     y_i[yi] = y_elem[0];
     y_i[yi + 1] = y_elem[1];
-    r_true_l[ri] = r_true_l_elem[0];
-    r_true_l[ri + 1] = r_true_l_elem[1];
-    r_true_t[ri] = r_true_t_elem[0];
-    r_true_t[ri + 1] = r_true_t_elem[1];
+    head_r_true[ri] = head_r_true_elem[0];
+    head_r_true[ri + 1] = head_r_true_elem[1];
+    tail_r_true[ri] = tail_r_true_elem[0];
+    tail_r_true[ri + 1] = tail_r_true_elem[1];
 
     /* Copy a_vec to first row of A */
     csymv_commit_row(order, uplo, n_i, a, lda, a_vec, 0);
@@ -3905,18 +3872,17 @@ void BLAS_csymv_c_s_testgen(int norm, enum blas_order_type order,
       BLAS_cdot_s_c_testgen(n_i, i, n_i - i, norm,
 			    blas_no_conj, alpha, 1,
 			    beta, 1, x_vec, a_vec, seed,
-			    y_elem, r_true_l_elem, r_true_t_elem);
-
+			    y_elem, head_r_true_elem, tail_r_true_elem);
 
       csymv_commit_row(order, uplo, n_i, a, lda, a_vec, i);
 
       /*commits an element to the generated y */
       y_i[yi] = y_elem[0];
       y_i[yi + 1] = y_elem[1];
-      r_true_l[ri] = r_true_l_elem[0];
-      r_true_l[ri + 1] = r_true_l_elem[1];
-      r_true_t[ri] = r_true_t_elem[0];
-      r_true_t[ri + 1] = r_true_t_elem[1];
+      head_r_true[ri] = head_r_true_elem[0];
+      head_r_true[ri + 1] = head_r_true_elem[1];
+      tail_r_true[ri] = tail_r_true_elem[0];
+      tail_r_true[ri + 1] = tail_r_true_elem[1];
     }
 
   } else {
@@ -4001,24 +3967,23 @@ void BLAS_csymv_c_s_testgen(int norm, enum blas_order_type order,
       BLAS_cdot_testgen(n_i, n_i, 0, norm, blas_no_conj, alpha, 1,
 			beta, 1,
 			xx_vec,
-			a_vec, seed, y_elem, r_true_l_elem, r_true_t_elem);
+			a_vec,
+			seed, y_elem, head_r_true_elem, tail_r_true_elem);
 
       y_i[yi] = y_elem[0];
       y_i[yi + 1] = y_elem[1];
-      r_true_l[ri] = r_true_l_elem[0];
-      r_true_l[ri + 1] = r_true_l_elem[1];
-      r_true_t[ri] = r_true_t_elem[0];
-      r_true_t[ri + 1] = r_true_t_elem[1];
+      head_r_true[ri] = head_r_true_elem[0];
+      head_r_true[ri + 1] = head_r_true_elem[1];
+      tail_r_true[ri] = tail_r_true_elem[0];
+      tail_r_true[ri + 1] = tail_r_true_elem[1];
     }
 
 
-
-    free(xx_vec);
-
+    blas_free(xx_vec);
   }
 
-  free(a_vec);
-  free(x_vec);
+  blas_free(a_vec);
+  blas_free(x_vec);
 }
 void BLAS_csymv_s_c_testgen(int norm, enum blas_order_type order,
 			    enum blas_uplo_type uplo,
@@ -4026,7 +3991,7 @@ void BLAS_csymv_s_c_testgen(int norm, enum blas_order_type order,
 			    void *alpha, int alpha_flag, void *beta,
 			    int beta_flag, float *a, int lda, void *x,
 			    int incx, void *y, int incy, int *seed,
-			    double *r_true_l, double *r_true_t)
+			    double *head_r_true, double *tail_r_true)
 
 /*
  * Purpose
@@ -4093,10 +4058,10 @@ void BLAS_csymv_s_c_testgen(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * double  (output) *r_true_l
+ * double  (output) *head_r_true
  *         the leading part of the truth in double-double.
  *
- * double  (output) *r_true_t
+ * double  (output) *tail_r_true
  *         the trailing part of the truth in double-double
  *
  */
@@ -4115,8 +4080,7 @@ void BLAS_csymv_s_c_testgen(int norm, enum blas_order_type order,
   float y_elem[2];
   float a_elem;
   float x_elem[2];
-  double r_true_t_elem[2];
-  double r_true_l_elem[2];
+  double head_r_true_elem[2], tail_r_true_elem[2];
 
   float *a_vec;
   float *x_vec;
@@ -4180,16 +4144,16 @@ void BLAS_csymv_s_c_testgen(int norm, enum blas_order_type order,
     BLAS_cdot_c_s_testgen(n_i, 0, 0, norm, blas_no_conj,
 			  alpha, alpha_flag, beta, beta_flag,
 			  x_vec, a_vec, seed, y_elem,
-			  r_true_l_elem, r_true_t_elem);
+			  head_r_true_elem, tail_r_true_elem);
 
     yi = y_starti;
     ri = 0;
     y_i[yi] = y_elem[0];
     y_i[yi + 1] = y_elem[1];
-    r_true_l[ri] = r_true_l_elem[0];
-    r_true_l[ri + 1] = r_true_l_elem[1];
-    r_true_t[ri] = r_true_t_elem[0];
-    r_true_t[ri + 1] = r_true_t_elem[1];
+    head_r_true[ri] = head_r_true_elem[0];
+    head_r_true[ri + 1] = head_r_true_elem[1];
+    tail_r_true[ri] = tail_r_true_elem[0];
+    tail_r_true[ri + 1] = tail_r_true_elem[1];
 
     /* Copy a_vec to first row of A */
     ssymv_commit_row(order, uplo, n_i, a, lda, a_vec, 0);
@@ -4204,18 +4168,17 @@ void BLAS_csymv_s_c_testgen(int norm, enum blas_order_type order,
       BLAS_cdot_c_s_testgen(n_i, i, n_i - i, norm,
 			    blas_no_conj, alpha, 1,
 			    beta, 1, x_vec, a_vec, seed,
-			    y_elem, r_true_l_elem, r_true_t_elem);
-
+			    y_elem, head_r_true_elem, tail_r_true_elem);
 
       ssymv_commit_row(order, uplo, n_i, a, lda, a_vec, i);
 
       /*commits an element to the generated y */
       y_i[yi] = y_elem[0];
       y_i[yi + 1] = y_elem[1];
-      r_true_l[ri] = r_true_l_elem[0];
-      r_true_l[ri + 1] = r_true_l_elem[1];
-      r_true_t[ri] = r_true_t_elem[0];
-      r_true_t[ri + 1] = r_true_t_elem[1];
+      head_r_true[ri] = head_r_true_elem[0];
+      head_r_true[ri + 1] = head_r_true_elem[1];
+      tail_r_true[ri] = tail_r_true_elem[0];
+      tail_r_true[ri + 1] = tail_r_true_elem[1];
     }
 
   } else {
@@ -4300,24 +4263,23 @@ void BLAS_csymv_s_c_testgen(int norm, enum blas_order_type order,
       BLAS_cdot_testgen(n_i, n_i, 0, norm, blas_no_conj, alpha, 1,
 			beta, 1,
 			x_vec,
-			aa_vec, seed, y_elem, r_true_l_elem, r_true_t_elem);
+			aa_vec,
+			seed, y_elem, head_r_true_elem, tail_r_true_elem);
 
       y_i[yi] = y_elem[0];
       y_i[yi + 1] = y_elem[1];
-      r_true_l[ri] = r_true_l_elem[0];
-      r_true_l[ri + 1] = r_true_l_elem[1];
-      r_true_t[ri] = r_true_t_elem[0];
-      r_true_t[ri + 1] = r_true_t_elem[1];
+      head_r_true[ri] = head_r_true_elem[0];
+      head_r_true[ri + 1] = head_r_true_elem[1];
+      tail_r_true[ri] = tail_r_true_elem[0];
+      tail_r_true[ri + 1] = tail_r_true_elem[1];
     }
 
-
-    free(aa_vec);
-
+    blas_free(aa_vec);
 
   }
 
-  free(a_vec);
-  free(x_vec);
+  blas_free(a_vec);
+  blas_free(x_vec);
 }
 void BLAS_csymv_s_s_testgen(int norm, enum blas_order_type order,
 			    enum blas_uplo_type uplo,
@@ -4325,7 +4287,7 @@ void BLAS_csymv_s_s_testgen(int norm, enum blas_order_type order,
 			    void *alpha, int alpha_flag, void *beta,
 			    int beta_flag, float *a, int lda, float *x,
 			    int incx, void *y, int incy, int *seed,
-			    double *r_true_l, double *r_true_t)
+			    double *head_r_true, double *tail_r_true)
 
 /*
  * Purpose
@@ -4392,10 +4354,10 @@ void BLAS_csymv_s_s_testgen(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * double  (output) *r_true_l
+ * double  (output) *head_r_true
  *         the leading part of the truth in double-double.
  *
- * double  (output) *r_true_t
+ * double  (output) *tail_r_true
  *         the trailing part of the truth in double-double
  *
  */
@@ -4414,8 +4376,7 @@ void BLAS_csymv_s_s_testgen(int norm, enum blas_order_type order,
   float y_elem[2];
   float a_elem;
   float x_elem;
-  double r_true_t_elem[2];
-  double r_true_l_elem[2];
+  double head_r_true_elem[2], tail_r_true_elem[2];
 
   float *a_vec;
   float *x_vec;
@@ -4478,16 +4439,16 @@ void BLAS_csymv_s_s_testgen(int norm, enum blas_order_type order,
     BLAS_cdot_s_s_testgen(n_i, 0, 0, norm, blas_no_conj,
 			  alpha, alpha_flag, beta, beta_flag,
 			  x_vec, a_vec, seed, y_elem,
-			  r_true_l_elem, r_true_t_elem);
+			  head_r_true_elem, tail_r_true_elem);
 
     yi = y_starti;
     ri = 0;
     y_i[yi] = y_elem[0];
     y_i[yi + 1] = y_elem[1];
-    r_true_l[ri] = r_true_l_elem[0];
-    r_true_l[ri + 1] = r_true_l_elem[1];
-    r_true_t[ri] = r_true_t_elem[0];
-    r_true_t[ri + 1] = r_true_t_elem[1];
+    head_r_true[ri] = head_r_true_elem[0];
+    head_r_true[ri + 1] = head_r_true_elem[1];
+    tail_r_true[ri] = tail_r_true_elem[0];
+    tail_r_true[ri + 1] = tail_r_true_elem[1];
 
     /* Copy a_vec to first row of A */
     ssymv_commit_row(order, uplo, n_i, a, lda, a_vec, 0);
@@ -4502,18 +4463,17 @@ void BLAS_csymv_s_s_testgen(int norm, enum blas_order_type order,
       BLAS_cdot_s_s_testgen(n_i, i, n_i - i, norm,
 			    blas_no_conj, alpha, 1,
 			    beta, 1, x_vec, a_vec, seed,
-			    y_elem, r_true_l_elem, r_true_t_elem);
-
+			    y_elem, head_r_true_elem, tail_r_true_elem);
 
       ssymv_commit_row(order, uplo, n_i, a, lda, a_vec, i);
 
       /*commits an element to the generated y */
       y_i[yi] = y_elem[0];
       y_i[yi + 1] = y_elem[1];
-      r_true_l[ri] = r_true_l_elem[0];
-      r_true_l[ri + 1] = r_true_l_elem[1];
-      r_true_t[ri] = r_true_t_elem[0];
-      r_true_t[ri + 1] = r_true_t_elem[1];
+      head_r_true[ri] = head_r_true_elem[0];
+      head_r_true[ri + 1] = head_r_true_elem[1];
+      tail_r_true[ri] = tail_r_true_elem[0];
+      tail_r_true[ri + 1] = tail_r_true_elem[1];
     }
 
   } else {
@@ -4606,24 +4566,21 @@ void BLAS_csymv_s_s_testgen(int norm, enum blas_order_type order,
       BLAS_cdot_testgen(n_i, n_i, 0, norm, blas_no_conj, alpha, 1,
 			beta, 1,
 			xx_vec,
-			aa_vec, seed, y_elem, r_true_l_elem, r_true_t_elem);
+			aa_vec,
+			seed, y_elem, head_r_true_elem, tail_r_true_elem);
 
       y_i[yi] = y_elem[0];
       y_i[yi + 1] = y_elem[1];
-      r_true_l[ri] = r_true_l_elem[0];
-      r_true_l[ri + 1] = r_true_l_elem[1];
-      r_true_t[ri] = r_true_t_elem[0];
-      r_true_t[ri + 1] = r_true_t_elem[1];
+      head_r_true[ri] = head_r_true_elem[0];
+      head_r_true[ri + 1] = head_r_true_elem[1];
+      tail_r_true[ri] = tail_r_true_elem[0];
+      tail_r_true[ri + 1] = tail_r_true_elem[1];
     }
 
-
-    free(aa_vec);
-
-
-    free(xx_vec);
-
+    blas_free(aa_vec);
+    blas_free(xx_vec);
   }
 
-  free(a_vec);
-  free(x_vec);
+  blas_free(a_vec);
+  blas_free(x_vec);
 }

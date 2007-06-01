@@ -71,43 +71,48 @@ void BLAS_sdot_testgen(int n, int n_fix2, int n_mix, int norm,
  */
 {
   int i, inc = 1;
-  float alpha_i;
-  float beta_i;
-  float r_i;
-  float *x_i;
-  float *y_i;
+  float *alpha_i = alpha;
+  float *beta_i = beta;
+  float *r_i = r;
+  float *x_i = x;
+  float *y_i = y;
+  float alpha_tmp;
+  float beta_tmp;
+  float r_tmp;
+  float *x_vec;
+  float *y_vec;
 
-  alpha_i = *alpha;
-  beta_i = *beta;
+  alpha_tmp = *alpha_i;
+  beta_tmp = *beta_i;
 
-  x_i = (float *) blas_malloc(2 * n * sizeof(float));
-  if (2 * n > 0 && x_i == NULL) {
+  x_vec = (float *) blas_malloc(2 * n * sizeof(float));
+  if (2 * n > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  y_i = x_i + inc * n;
+  y_vec = x_vec + inc * n;
   for (i = 0; i < inc * n_fix2; i += inc) {
-    x_i[i] = x[i];
-    y_i[i] = y[i];
+    x_vec[i] = x_i[i];
+    y_vec[i] = y_i[i];
   }
   for (; i < inc * (n_fix2 + n_mix); i += inc) {
-    x_i[i] = x[i];
+    x_vec[i] = x_i[i];
   }
 
   /* Call generator now. */
   testgen_BLAS_sdot(n, n_fix2, n_mix, norm, conj,
-		    &alpha_i, alpha_flag,
-		    &beta_i, beta_flag,
-		    x_i, y_i, seed, &r_i, r_true_l, r_true_t);
+		    &alpha_tmp, alpha_flag,
+		    &beta_tmp, beta_flag,
+		    x_vec, y_vec, seed, &r_tmp, r_true_l, r_true_t);
 
-  *alpha = alpha_i;
-  *beta = beta_i;
-  *r = r_i;
+  *alpha_i = alpha_tmp;
+  *beta_i = beta_tmp;
+  *r_i = r_tmp;
   for (i = 0; i < inc * n; i += inc) {
-    x[i] = x_i[i];
-    y[i] = y_i[i];
+    x_i[i] = x_vec[i];
+    y_i[i] = y_vec[i];
   }
 
-  blas_free(x_i);		/* also y_i */
+  blas_free(x_vec);		/* also y_i */
 }				/* end BLAS_sdot_testgen */
 
 void BLAS_ddot_testgen(int n, int n_fix2, int n_mix, int norm,
@@ -178,43 +183,48 @@ void BLAS_ddot_testgen(int n, int n_fix2, int n_mix, int norm,
  */
 {
   int i, inc = 1;
-  double alpha_i;
-  double beta_i;
-  double r_i;
-  double *x_i;
-  double *y_i;
+  double *alpha_i = alpha;
+  double *beta_i = beta;
+  double *r_i = r;
+  double *x_i = x;
+  double *y_i = y;
+  double alpha_tmp;
+  double beta_tmp;
+  double r_tmp;
+  double *x_vec;
+  double *y_vec;
 
-  alpha_i = *alpha;
-  beta_i = *beta;
+  alpha_tmp = *alpha_i;
+  beta_tmp = *beta_i;
 
-  x_i = (double *) blas_malloc(2 * n * sizeof(double));
-  if (2 * n > 0 && x_i == NULL) {
+  x_vec = (double *) blas_malloc(2 * n * sizeof(double));
+  if (2 * n > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  y_i = x_i + inc * n;
+  y_vec = x_vec + inc * n;
   for (i = 0; i < inc * n_fix2; i += inc) {
-    x_i[i] = x[i];
-    y_i[i] = y[i];
+    x_vec[i] = x_i[i];
+    y_vec[i] = y_i[i];
   }
   for (; i < inc * (n_fix2 + n_mix); i += inc) {
-    x_i[i] = x[i];
+    x_vec[i] = x_i[i];
   }
 
   /* Call generator now. */
   testgen_BLAS_ddot(n, n_fix2, n_mix, norm, conj,
-		    &alpha_i, alpha_flag,
-		    &beta_i, beta_flag,
-		    x_i, y_i, seed, &r_i, r_true_l, r_true_t);
+		    &alpha_tmp, alpha_flag,
+		    &beta_tmp, beta_flag,
+		    x_vec, y_vec, seed, &r_tmp, r_true_l, r_true_t);
 
-  *alpha = alpha_i;
-  *beta = beta_i;
-  *r = r_i;
+  *alpha_i = alpha_tmp;
+  *beta_i = beta_tmp;
+  *r_i = r_tmp;
   for (i = 0; i < inc * n; i += inc) {
-    x[i] = x_i[i];
-    y[i] = y_i[i];
+    x_i[i] = x_vec[i];
+    y_i[i] = y_vec[i];
   }
 
-  blas_free(x_i);		/* also y_i */
+  blas_free(x_vec);		/* also y_i */
 }				/* end BLAS_ddot_testgen */
 
 void BLAS_ddot_s_s_testgen(int n, int n_fix2, int n_mix, int norm,
@@ -285,43 +295,48 @@ void BLAS_ddot_s_s_testgen(int n, int n_fix2, int n_mix, int norm,
  */
 {
   int i, inc = 1;
-  float alpha_i;
-  float beta_i;
-  float r_i;
-  float *x_i;
-  float *y_i;
+  double *alpha_i = alpha;
+  double *beta_i = beta;
+  double *r_i = r;
+  float *x_i = x;
+  float *y_i = y;
+  float alpha_tmp;
+  float beta_tmp;
+  float r_tmp;
+  float *x_vec;
+  float *y_vec;
 
-  alpha_i = *alpha;
-  beta_i = *beta;
+  alpha_tmp = *alpha_i;
+  beta_tmp = *beta_i;
 
-  x_i = (float *) blas_malloc(2 * n * sizeof(float));
-  if (2 * n > 0 && x_i == NULL) {
+  x_vec = (float *) blas_malloc(2 * n * sizeof(float));
+  if (2 * n > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  y_i = x_i + inc * n;
+  y_vec = x_vec + inc * n;
   for (i = 0; i < inc * n_fix2; i += inc) {
-    x_i[i] = x[i];
-    y_i[i] = y[i];
+    x_vec[i] = x_i[i];
+    y_vec[i] = y_i[i];
   }
   for (; i < inc * (n_fix2 + n_mix); i += inc) {
-    x_i[i] = x[i];
+    x_vec[i] = x_i[i];
   }
 
   /* Call generator now. */
   testgen_BLAS_sdot(n, n_fix2, n_mix, norm, conj,
-		    &alpha_i, alpha_flag,
-		    &beta_i, beta_flag,
-		    x_i, y_i, seed, &r_i, r_true_l, r_true_t);
+		    &alpha_tmp, alpha_flag,
+		    &beta_tmp, beta_flag,
+		    x_vec, y_vec, seed, &r_tmp, r_true_l, r_true_t);
 
-  *alpha = alpha_i;
-  *beta = beta_i;
-  *r = r_i;
+  *alpha_i = alpha_tmp;
+  *beta_i = beta_tmp;
+  *r_i = r_tmp;
   for (i = 0; i < inc * n; i += inc) {
-    x[i] = x_i[i];
-    y[i] = y_i[i];
+    x_i[i] = x_vec[i];
+    y_i[i] = y_vec[i];
   }
 
-  blas_free(x_i);		/* also y_i */
+  blas_free(x_vec);		/* also y_i */
 }				/* end BLAS_ddot_s_s_testgen */
 
 void BLAS_ddot_s_d_testgen(int n, int n_fix2, int n_mix, int norm,
@@ -392,43 +407,48 @@ void BLAS_ddot_s_d_testgen(int n, int n_fix2, int n_mix, int norm,
  */
 {
   int i, inc = 1;
-  float alpha_i;
-  float beta_i;
-  float r_i;
-  float *x_i;
-  float *y_i;
+  double *alpha_i = alpha;
+  double *beta_i = beta;
+  double *r_i = r;
+  float *x_i = x;
+  double *y_i = y;
+  float alpha_tmp;
+  float beta_tmp;
+  float r_tmp;
+  float *x_vec;
+  float *y_vec;
 
-  alpha_i = *alpha;
-  beta_i = *beta;
+  alpha_tmp = *alpha_i;
+  beta_tmp = *beta_i;
 
-  x_i = (float *) blas_malloc(2 * n * sizeof(float));
-  if (2 * n > 0 && x_i == NULL) {
+  x_vec = (float *) blas_malloc(2 * n * sizeof(float));
+  if (2 * n > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  y_i = x_i + inc * n;
+  y_vec = x_vec + inc * n;
   for (i = 0; i < inc * n_fix2; i += inc) {
-    x_i[i] = x[i];
-    y_i[i] = y[i];
+    x_vec[i] = x_i[i];
+    y_vec[i] = y_i[i];
   }
   for (; i < inc * (n_fix2 + n_mix); i += inc) {
-    x_i[i] = x[i];
+    x_vec[i] = x_i[i];
   }
 
   /* Call generator now. */
   testgen_BLAS_sdot(n, n_fix2, n_mix, norm, conj,
-		    &alpha_i, alpha_flag,
-		    &beta_i, beta_flag,
-		    x_i, y_i, seed, &r_i, r_true_l, r_true_t);
+		    &alpha_tmp, alpha_flag,
+		    &beta_tmp, beta_flag,
+		    x_vec, y_vec, seed, &r_tmp, r_true_l, r_true_t);
 
-  *alpha = alpha_i;
-  *beta = beta_i;
-  *r = r_i;
+  *alpha_i = alpha_tmp;
+  *beta_i = beta_tmp;
+  *r_i = r_tmp;
   for (i = 0; i < inc * n; i += inc) {
-    x[i] = x_i[i];
-    y[i] = y_i[i];
+    x_i[i] = x_vec[i];
+    y_i[i] = y_vec[i];
   }
 
-  blas_free(x_i);		/* also y_i */
+  blas_free(x_vec);		/* also y_i */
 }				/* end BLAS_ddot_s_d_testgen */
 
 void BLAS_ddot_d_s_testgen(int n, int n_fix2, int n_mix, int norm,
@@ -499,43 +519,48 @@ void BLAS_ddot_d_s_testgen(int n, int n_fix2, int n_mix, int norm,
  */
 {
   int i, inc = 1;
-  float alpha_i;
-  float beta_i;
-  float r_i;
-  float *x_i;
-  float *y_i;
+  double *alpha_i = alpha;
+  double *beta_i = beta;
+  double *r_i = r;
+  double *x_i = x;
+  float *y_i = y;
+  float alpha_tmp;
+  float beta_tmp;
+  float r_tmp;
+  float *x_vec;
+  float *y_vec;
 
-  alpha_i = *alpha;
-  beta_i = *beta;
+  alpha_tmp = *alpha_i;
+  beta_tmp = *beta_i;
 
-  x_i = (float *) blas_malloc(2 * n * sizeof(float));
-  if (2 * n > 0 && x_i == NULL) {
+  x_vec = (float *) blas_malloc(2 * n * sizeof(float));
+  if (2 * n > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  y_i = x_i + inc * n;
+  y_vec = x_vec + inc * n;
   for (i = 0; i < inc * n_fix2; i += inc) {
-    x_i[i] = x[i];
-    y_i[i] = y[i];
+    x_vec[i] = x_i[i];
+    y_vec[i] = y_i[i];
   }
   for (; i < inc * (n_fix2 + n_mix); i += inc) {
-    x_i[i] = x[i];
+    x_vec[i] = x_i[i];
   }
 
   /* Call generator now. */
   testgen_BLAS_sdot(n, n_fix2, n_mix, norm, conj,
-		    &alpha_i, alpha_flag,
-		    &beta_i, beta_flag,
-		    x_i, y_i, seed, &r_i, r_true_l, r_true_t);
+		    &alpha_tmp, alpha_flag,
+		    &beta_tmp, beta_flag,
+		    x_vec, y_vec, seed, &r_tmp, r_true_l, r_true_t);
 
-  *alpha = alpha_i;
-  *beta = beta_i;
-  *r = r_i;
+  *alpha_i = alpha_tmp;
+  *beta_i = beta_tmp;
+  *r_i = r_tmp;
   for (i = 0; i < inc * n; i += inc) {
-    x[i] = x_i[i];
-    y[i] = y_i[i];
+    x_i[i] = x_vec[i];
+    y_i[i] = y_vec[i];
   }
 
-  blas_free(x_i);		/* also y_i */
+  blas_free(x_vec);		/* also y_i */
 }				/* end BLAS_ddot_d_s_testgen */
 
 void BLAS_cdot_testgen(int n, int n_fix2, int n_mix, int norm,
@@ -606,53 +631,58 @@ void BLAS_cdot_testgen(int n, int n_fix2, int n_mix, int norm,
  */
 {
   int i, inc = 1;
-  float alpha_i[2];
-  float beta_i[2];
-  float r_i[2];
-  float *x_i;
-  float *y_i;
+  float *alpha_i = (float *) alpha;
+  float *beta_i = (float *) beta;
+  float *r_i = (float *) r;
+  float *x_i = (float *) x;
+  float *y_i = (float *) y;
+  float alpha_tmp[2];
+  float beta_tmp[2];
+  float r_tmp[2];
+  float *x_vec;
+  float *y_vec;
 
-  alpha_i[0] = ((float *) alpha)[0];
-  alpha_i[1] = ((float *) alpha)[1];
-  beta_i[0] = ((float *) beta)[0];
-  beta_i[1] = ((float *) beta)[1];
+  alpha_tmp[0] = alpha_i[0];
+  alpha_tmp[1] = alpha_i[1];
+  beta_tmp[0] = beta_i[0];
+  beta_tmp[1] = beta_i[1];
   inc *= 2;
-  x_i = (float *) blas_malloc(2 * n * sizeof(float) * 2);
-  if (2 * n > 0 && x_i == NULL) {
+  x_vec = (float *) blas_malloc(2 * n * sizeof(float) * 2);
+  if (2 * n > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  y_i = x_i + inc * n;
+  y_vec = x_vec + inc * n;
   for (i = 0; i < inc * n_fix2; i += inc) {
-    ((float *) x_i)[i] = ((float *) x)[i];
-    ((float *) x_i)[i + 1] = ((float *) x)[i + 1];
-    ((float *) y_i)[i] = ((float *) y)[i];
-    ((float *) y_i)[i + 1] = ((float *) y)[i + 1];
+    x_vec[i] = x_i[i];
+    x_vec[i + 1] = x_i[i + 1];
+    y_vec[i] = y_i[i];
+    y_vec[i + 1] = y_i[i + 1];
   }
   for (; i < inc * (n_fix2 + n_mix); i += inc) {
-    ((float *) x_i)[i] = ((float *) x)[i];
-    ((float *) x_i)[i + 1] = ((float *) x)[i + 1];
+    x_vec[i] = x_i[i];
+    x_vec[i + 1] = x_i[i + 1];
   }
 
   /* Call generator now. */
   testgen_BLAS_cdot(n, n_fix2, n_mix, norm, conj,
-		    alpha_i, alpha_flag,
-		    beta_i, beta_flag,
-		    x_i, y_i, seed, r_i, r_true_l, r_true_t);
+		    alpha_tmp, alpha_flag,
+		    beta_tmp, beta_flag,
+		    x_vec, y_vec, seed, r_tmp, r_true_l, r_true_t);
 
-  ((float *) alpha)[0] = alpha_i[0];
-  ((float *) alpha)[1] = alpha_i[1];
-  ((float *) beta)[0] = beta_i[0];
-  ((float *) beta)[1] = beta_i[1];
-  ((float *) r)[0] = r_i[0];
-  ((float *) r)[1] = r_i[1];
+  alpha_i[0] = alpha_tmp[0];
+  alpha_i[1] = alpha_tmp[1];
+  beta_i[0] = beta_tmp[0];
+  beta_i[1] = beta_tmp[1];
+  r_i[0] = r_tmp[0];
+  r_i[1] = r_tmp[1];
   for (i = 0; i < inc * n; i += inc) {
-    ((float *) x)[i] = ((float *) x_i)[i];
-    ((float *) x)[i + 1] = ((float *) x_i)[i + 1];
-    ((float *) y)[i] = ((float *) y_i)[i];
-    ((float *) y)[i + 1] = ((float *) y_i)[i + 1];
+    x_i[i] = x_vec[i];
+    x_i[i + 1] = x_vec[i + 1];
+    y_i[i] = y_vec[i];
+    y_i[i + 1] = y_vec[i + 1];
   }
 
-  blas_free(x_i);		/* also y_i */
+  blas_free(x_vec);		/* also y_i */
 }				/* end BLAS_cdot_testgen */
 
 void BLAS_zdot_testgen(int n, int n_fix2, int n_mix, int norm,
@@ -723,53 +753,58 @@ void BLAS_zdot_testgen(int n, int n_fix2, int n_mix, int norm,
  */
 {
   int i, inc = 1;
-  double alpha_i[2];
-  double beta_i[2];
-  double r_i[2];
-  double *x_i;
-  double *y_i;
+  double *alpha_i = (double *) alpha;
+  double *beta_i = (double *) beta;
+  double *r_i = (double *) r;
+  double *x_i = (double *) x;
+  double *y_i = (double *) y;
+  double alpha_tmp[2];
+  double beta_tmp[2];
+  double r_tmp[2];
+  double *x_vec;
+  double *y_vec;
 
-  alpha_i[0] = ((double *) alpha)[0];
-  alpha_i[1] = ((double *) alpha)[1];
-  beta_i[0] = ((double *) beta)[0];
-  beta_i[1] = ((double *) beta)[1];
+  alpha_tmp[0] = alpha_i[0];
+  alpha_tmp[1] = alpha_i[1];
+  beta_tmp[0] = beta_i[0];
+  beta_tmp[1] = beta_i[1];
   inc *= 2;
-  x_i = (double *) blas_malloc(2 * n * sizeof(double) * 2);
-  if (2 * n > 0 && x_i == NULL) {
+  x_vec = (double *) blas_malloc(2 * n * sizeof(double) * 2);
+  if (2 * n > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  y_i = x_i + inc * n;
+  y_vec = x_vec + inc * n;
   for (i = 0; i < inc * n_fix2; i += inc) {
-    ((double *) x_i)[i] = ((double *) x)[i];
-    ((double *) x_i)[i + 1] = ((double *) x)[i + 1];
-    ((double *) y_i)[i] = ((double *) y)[i];
-    ((double *) y_i)[i + 1] = ((double *) y)[i + 1];
+    x_vec[i] = x_i[i];
+    x_vec[i + 1] = x_i[i + 1];
+    y_vec[i] = y_i[i];
+    y_vec[i + 1] = y_i[i + 1];
   }
   for (; i < inc * (n_fix2 + n_mix); i += inc) {
-    ((double *) x_i)[i] = ((double *) x)[i];
-    ((double *) x_i)[i + 1] = ((double *) x)[i + 1];
+    x_vec[i] = x_i[i];
+    x_vec[i + 1] = x_i[i + 1];
   }
 
   /* Call generator now. */
   testgen_BLAS_zdot(n, n_fix2, n_mix, norm, conj,
-		    alpha_i, alpha_flag,
-		    beta_i, beta_flag,
-		    x_i, y_i, seed, r_i, r_true_l, r_true_t);
+		    alpha_tmp, alpha_flag,
+		    beta_tmp, beta_flag,
+		    x_vec, y_vec, seed, r_tmp, r_true_l, r_true_t);
 
-  ((double *) alpha)[0] = alpha_i[0];
-  ((double *) alpha)[1] = alpha_i[1];
-  ((double *) beta)[0] = beta_i[0];
-  ((double *) beta)[1] = beta_i[1];
-  ((double *) r)[0] = r_i[0];
-  ((double *) r)[1] = r_i[1];
+  alpha_i[0] = alpha_tmp[0];
+  alpha_i[1] = alpha_tmp[1];
+  beta_i[0] = beta_tmp[0];
+  beta_i[1] = beta_tmp[1];
+  r_i[0] = r_tmp[0];
+  r_i[1] = r_tmp[1];
   for (i = 0; i < inc * n; i += inc) {
-    ((double *) x)[i] = ((double *) x_i)[i];
-    ((double *) x)[i + 1] = ((double *) x_i)[i + 1];
-    ((double *) y)[i] = ((double *) y_i)[i];
-    ((double *) y)[i + 1] = ((double *) y_i)[i + 1];
+    x_i[i] = x_vec[i];
+    x_i[i + 1] = x_vec[i + 1];
+    y_i[i] = y_vec[i];
+    y_i[i + 1] = y_vec[i + 1];
   }
 
-  blas_free(x_i);		/* also y_i */
+  blas_free(x_vec);		/* also y_i */
 }				/* end BLAS_zdot_testgen */
 
 void BLAS_zdot_c_c_testgen(int n, int n_fix2, int n_mix, int norm,
@@ -840,53 +875,58 @@ void BLAS_zdot_c_c_testgen(int n, int n_fix2, int n_mix, int norm,
  */
 {
   int i, inc = 1;
-  float alpha_i[2];
-  float beta_i[2];
-  float r_i[2];
-  float *x_i;
-  float *y_i;
+  double *alpha_i = (double *) alpha;
+  double *beta_i = (double *) beta;
+  double *r_i = (double *) r;
+  float *x_i = (float *) x;
+  float *y_i = (float *) y;
+  float alpha_tmp[2];
+  float beta_tmp[2];
+  float r_tmp[2];
+  float *x_vec;
+  float *y_vec;
 
-  alpha_i[0] = ((double *) alpha)[0];
-  alpha_i[1] = ((double *) alpha)[1];
-  beta_i[0] = ((double *) beta)[0];
-  beta_i[1] = ((double *) beta)[1];
+  alpha_tmp[0] = alpha_i[0];
+  alpha_tmp[1] = alpha_i[1];
+  beta_tmp[0] = beta_i[0];
+  beta_tmp[1] = beta_i[1];
   inc *= 2;
-  x_i = (float *) blas_malloc(2 * n * sizeof(float) * 2);
-  if (2 * n > 0 && x_i == NULL) {
+  x_vec = (float *) blas_malloc(2 * n * sizeof(float) * 2);
+  if (2 * n > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  y_i = x_i + inc * n;
+  y_vec = x_vec + inc * n;
   for (i = 0; i < inc * n_fix2; i += inc) {
-    ((float *) x_i)[i] = ((float *) x)[i];
-    ((float *) x_i)[i + 1] = ((float *) x)[i + 1];
-    ((float *) y_i)[i] = ((float *) y)[i];
-    ((float *) y_i)[i + 1] = ((float *) y)[i + 1];
+    x_vec[i] = x_i[i];
+    x_vec[i + 1] = x_i[i + 1];
+    y_vec[i] = y_i[i];
+    y_vec[i + 1] = y_i[i + 1];
   }
   for (; i < inc * (n_fix2 + n_mix); i += inc) {
-    ((float *) x_i)[i] = ((float *) x)[i];
-    ((float *) x_i)[i + 1] = ((float *) x)[i + 1];
+    x_vec[i] = x_i[i];
+    x_vec[i + 1] = x_i[i + 1];
   }
 
   /* Call generator now. */
   testgen_BLAS_cdot(n, n_fix2, n_mix, norm, conj,
-		    alpha_i, alpha_flag,
-		    beta_i, beta_flag,
-		    x_i, y_i, seed, r_i, r_true_l, r_true_t);
+		    alpha_tmp, alpha_flag,
+		    beta_tmp, beta_flag,
+		    x_vec, y_vec, seed, r_tmp, r_true_l, r_true_t);
 
-  ((double *) alpha)[0] = alpha_i[0];
-  ((double *) alpha)[1] = alpha_i[1];
-  ((double *) beta)[0] = beta_i[0];
-  ((double *) beta)[1] = beta_i[1];
-  ((double *) r)[0] = r_i[0];
-  ((double *) r)[1] = r_i[1];
+  alpha_i[0] = alpha_tmp[0];
+  alpha_i[1] = alpha_tmp[1];
+  beta_i[0] = beta_tmp[0];
+  beta_i[1] = beta_tmp[1];
+  r_i[0] = r_tmp[0];
+  r_i[1] = r_tmp[1];
   for (i = 0; i < inc * n; i += inc) {
-    ((float *) x)[i] = ((float *) x_i)[i];
-    ((float *) x)[i + 1] = ((float *) x_i)[i + 1];
-    ((float *) y)[i] = ((float *) y_i)[i];
-    ((float *) y)[i + 1] = ((float *) y_i)[i + 1];
+    x_i[i] = x_vec[i];
+    x_i[i + 1] = x_vec[i + 1];
+    y_i[i] = y_vec[i];
+    y_i[i + 1] = y_vec[i + 1];
   }
 
-  blas_free(x_i);		/* also y_i */
+  blas_free(x_vec);		/* also y_i */
 }				/* end BLAS_zdot_c_c_testgen */
 
 void BLAS_zdot_c_z_testgen(int n, int n_fix2, int n_mix, int norm,
@@ -957,53 +997,58 @@ void BLAS_zdot_c_z_testgen(int n, int n_fix2, int n_mix, int norm,
  */
 {
   int i, inc = 1;
-  float alpha_i[2];
-  float beta_i[2];
-  float r_i[2];
-  float *x_i;
-  float *y_i;
+  double *alpha_i = (double *) alpha;
+  double *beta_i = (double *) beta;
+  double *r_i = (double *) r;
+  float *x_i = (float *) x;
+  double *y_i = (double *) y;
+  float alpha_tmp[2];
+  float beta_tmp[2];
+  float r_tmp[2];
+  float *x_vec;
+  float *y_vec;
 
-  alpha_i[0] = ((double *) alpha)[0];
-  alpha_i[1] = ((double *) alpha)[1];
-  beta_i[0] = ((double *) beta)[0];
-  beta_i[1] = ((double *) beta)[1];
+  alpha_tmp[0] = alpha_i[0];
+  alpha_tmp[1] = alpha_i[1];
+  beta_tmp[0] = beta_i[0];
+  beta_tmp[1] = beta_i[1];
   inc *= 2;
-  x_i = (float *) blas_malloc(2 * n * sizeof(float) * 2);
-  if (2 * n > 0 && x_i == NULL) {
+  x_vec = (float *) blas_malloc(2 * n * sizeof(float) * 2);
+  if (2 * n > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  y_i = x_i + inc * n;
+  y_vec = x_vec + inc * n;
   for (i = 0; i < inc * n_fix2; i += inc) {
-    ((float *) x_i)[i] = ((float *) x)[i];
-    ((float *) x_i)[i + 1] = ((float *) x)[i + 1];
-    ((float *) y_i)[i] = ((double *) y)[i];
-    ((float *) y_i)[i + 1] = ((double *) y)[i + 1];
+    x_vec[i] = x_i[i];
+    x_vec[i + 1] = x_i[i + 1];
+    y_vec[i] = y_i[i];
+    y_vec[i + 1] = y_i[i + 1];
   }
   for (; i < inc * (n_fix2 + n_mix); i += inc) {
-    ((float *) x_i)[i] = ((float *) x)[i];
-    ((float *) x_i)[i + 1] = ((float *) x)[i + 1];
+    x_vec[i] = x_i[i];
+    x_vec[i + 1] = x_i[i + 1];
   }
 
   /* Call generator now. */
   testgen_BLAS_cdot(n, n_fix2, n_mix, norm, conj,
-		    alpha_i, alpha_flag,
-		    beta_i, beta_flag,
-		    x_i, y_i, seed, r_i, r_true_l, r_true_t);
+		    alpha_tmp, alpha_flag,
+		    beta_tmp, beta_flag,
+		    x_vec, y_vec, seed, r_tmp, r_true_l, r_true_t);
 
-  ((double *) alpha)[0] = alpha_i[0];
-  ((double *) alpha)[1] = alpha_i[1];
-  ((double *) beta)[0] = beta_i[0];
-  ((double *) beta)[1] = beta_i[1];
-  ((double *) r)[0] = r_i[0];
-  ((double *) r)[1] = r_i[1];
+  alpha_i[0] = alpha_tmp[0];
+  alpha_i[1] = alpha_tmp[1];
+  beta_i[0] = beta_tmp[0];
+  beta_i[1] = beta_tmp[1];
+  r_i[0] = r_tmp[0];
+  r_i[1] = r_tmp[1];
   for (i = 0; i < inc * n; i += inc) {
-    ((float *) x)[i] = ((float *) x_i)[i];
-    ((float *) x)[i + 1] = ((float *) x_i)[i + 1];
-    ((double *) y)[i] = ((float *) y_i)[i];
-    ((double *) y)[i + 1] = ((float *) y_i)[i + 1];
+    x_i[i] = x_vec[i];
+    x_i[i + 1] = x_vec[i + 1];
+    y_i[i] = y_vec[i];
+    y_i[i + 1] = y_vec[i + 1];
   }
 
-  blas_free(x_i);		/* also y_i */
+  blas_free(x_vec);		/* also y_i */
 }				/* end BLAS_zdot_c_z_testgen */
 
 void BLAS_zdot_z_c_testgen(int n, int n_fix2, int n_mix, int norm,
@@ -1074,53 +1119,58 @@ void BLAS_zdot_z_c_testgen(int n, int n_fix2, int n_mix, int norm,
  */
 {
   int i, inc = 1;
-  float alpha_i[2];
-  float beta_i[2];
-  float r_i[2];
-  float *x_i;
-  float *y_i;
+  double *alpha_i = (double *) alpha;
+  double *beta_i = (double *) beta;
+  double *r_i = (double *) r;
+  double *x_i = (double *) x;
+  float *y_i = (float *) y;
+  float alpha_tmp[2];
+  float beta_tmp[2];
+  float r_tmp[2];
+  float *x_vec;
+  float *y_vec;
 
-  alpha_i[0] = ((double *) alpha)[0];
-  alpha_i[1] = ((double *) alpha)[1];
-  beta_i[0] = ((double *) beta)[0];
-  beta_i[1] = ((double *) beta)[1];
+  alpha_tmp[0] = alpha_i[0];
+  alpha_tmp[1] = alpha_i[1];
+  beta_tmp[0] = beta_i[0];
+  beta_tmp[1] = beta_i[1];
   inc *= 2;
-  x_i = (float *) blas_malloc(2 * n * sizeof(float) * 2);
-  if (2 * n > 0 && x_i == NULL) {
+  x_vec = (float *) blas_malloc(2 * n * sizeof(float) * 2);
+  if (2 * n > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  y_i = x_i + inc * n;
+  y_vec = x_vec + inc * n;
   for (i = 0; i < inc * n_fix2; i += inc) {
-    ((float *) x_i)[i] = ((double *) x)[i];
-    ((float *) x_i)[i + 1] = ((double *) x)[i + 1];
-    ((float *) y_i)[i] = ((float *) y)[i];
-    ((float *) y_i)[i + 1] = ((float *) y)[i + 1];
+    x_vec[i] = x_i[i];
+    x_vec[i + 1] = x_i[i + 1];
+    y_vec[i] = y_i[i];
+    y_vec[i + 1] = y_i[i + 1];
   }
   for (; i < inc * (n_fix2 + n_mix); i += inc) {
-    ((float *) x_i)[i] = ((double *) x)[i];
-    ((float *) x_i)[i + 1] = ((double *) x)[i + 1];
+    x_vec[i] = x_i[i];
+    x_vec[i + 1] = x_i[i + 1];
   }
 
   /* Call generator now. */
   testgen_BLAS_cdot(n, n_fix2, n_mix, norm, conj,
-		    alpha_i, alpha_flag,
-		    beta_i, beta_flag,
-		    x_i, y_i, seed, r_i, r_true_l, r_true_t);
+		    alpha_tmp, alpha_flag,
+		    beta_tmp, beta_flag,
+		    x_vec, y_vec, seed, r_tmp, r_true_l, r_true_t);
 
-  ((double *) alpha)[0] = alpha_i[0];
-  ((double *) alpha)[1] = alpha_i[1];
-  ((double *) beta)[0] = beta_i[0];
-  ((double *) beta)[1] = beta_i[1];
-  ((double *) r)[0] = r_i[0];
-  ((double *) r)[1] = r_i[1];
+  alpha_i[0] = alpha_tmp[0];
+  alpha_i[1] = alpha_tmp[1];
+  beta_i[0] = beta_tmp[0];
+  beta_i[1] = beta_tmp[1];
+  r_i[0] = r_tmp[0];
+  r_i[1] = r_tmp[1];
   for (i = 0; i < inc * n; i += inc) {
-    ((double *) x)[i] = ((float *) x_i)[i];
-    ((double *) x)[i + 1] = ((float *) x_i)[i + 1];
-    ((float *) y)[i] = ((float *) y_i)[i];
-    ((float *) y)[i + 1] = ((float *) y_i)[i + 1];
+    x_i[i] = x_vec[i];
+    x_i[i + 1] = x_vec[i + 1];
+    y_i[i] = y_vec[i];
+    y_i[i + 1] = y_vec[i + 1];
   }
 
-  blas_free(x_i);		/* also y_i */
+  blas_free(x_vec);		/* also y_i */
 }				/* end BLAS_zdot_z_c_testgen */
 
 void BLAS_cdot_s_s_testgen(int n, int n_fix2, int n_mix, int norm,
@@ -1191,116 +1241,121 @@ void BLAS_cdot_s_s_testgen(int n, int n_fix2, int n_mix, int norm,
  */
 {
   int i;
+  float *alpha_i = (float *) alpha;
+  float *beta_i = (float *) beta;
+  float *r_i = (float *) r;
+  float *x_i = x;
+  float *y_i = y;
   float alpha_i_r;
   float alpha_i_i;
   float beta_i_r;
   float beta_i_i;
-  float r_i;
-  float *x_i;
-  float *y_i;
+  float r_tmp;
+  float *x_vec;
+  float *y_vec;
 
-  alpha_i_r = ((float *) alpha)[0];
-  alpha_i_i = ((float *) alpha)[1];
-  beta_i_r = ((float *) beta)[0];
-  beta_i_i = ((float *) beta)[1];
-  x_i = (float *) blas_malloc(2 * n * sizeof(float));
-  if (2 * n > 0 && x_i == NULL) {
+  alpha_i_r = alpha_i[0];
+  alpha_i_i = alpha_i[1];
+  beta_i_r = beta_i[0];
+  beta_i_i = beta_i[1];
+  x_vec = (float *) blas_malloc(2 * n * sizeof(float));
+  if (2 * n > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  y_i = x_i + n;
+  y_vec = x_vec + n;
   for (i = 0; i < n_fix2; i++) {
-    x_i[i] = x[i];
-    y_i[i] = y[i];
+    x_vec[i] = x_i[i];
+    y_vec[i] = y_i[i];
   }
   for (; i < n_fix2 + n_mix; i++) {
-    x_i[i] = x[i];
+    x_vec[i] = x_i[i];
   }
 
   /* Call generator now. */
   testgen_BLAS_sdot(n, n_fix2, n_mix, norm, conj,
 		    &alpha_i_r, alpha_flag,
 		    &beta_i_r, beta_flag,
-		    x_i, y_i, seed, &r_i, &r_true_l[0], &r_true_t[0]);
+		    x_vec, y_vec, seed, &r_tmp, &r_true_l[0], &r_true_t[0]);
 
-  if (alpha_flag == 1) {	/* alpha is fixed */
-    if (alpha_i_r == 1.0 && alpha_i_i == 0.) {	/* alpha == 1.0 */
-      if (beta_flag == 1 && ((beta_i_r == 0. && beta_i_i == 0.) || (beta_i_r == 1. && beta_i_i == 0.))) {	/* beta == 0 or 1 */
-	((float *) r)[0] = r_i;
-	((float *) r)[1] = 0.0;
-      } else {			/* beta *= (1-i), r *= (1+i)/2 --> prod = 1 */
-	((float *) beta)[0] = beta_i_r;
-	((float *) beta)[1] = -beta_i_r;
-	((float *) r)[0] = r_i / 2.;
-	((float *) r)[1] = r_i / 2.;
+  if (alpha_flag == 1) {	/* alpha_i is fixed */
+    if (alpha_i_r == 1.0 && alpha_i_i == 0.) {	/* alpha_i == 1.0 */
+      if (beta_flag == 1 && ((beta_i_r == 0. && beta_i_i == 0.) || (beta_i_r == 1. && beta_i_i == 0.))) {	/* beta_i == 0 or 1 */
+	r_i[0] = r_tmp;
+	r_i[1] = 0.0;
+      } else {			/* beta_i *= (1-i), r_i *= (1+i)/2 --> prod = 1 */
+	beta_i[0] = beta_i_r;
+	beta_i[1] = -beta_i_r;
+	r_i[0] = r_tmp / 2.;
+	r_i[1] = r_tmp / 2.;
       }
       r_true_l[1] = r_true_t[1] = 0.0;
-    } else if (alpha_i_r == 0. && alpha_i_i == 0.) {	/* alpha == 0.0 */
+    } else if (alpha_i_r == 0. && alpha_i_i == 0.) {	/* alpha_i == 0.0 */
       if (beta_flag == 1 &&
 	  ((beta_i_r == 0. && beta_i_i == 0.) ||
 	   (beta_i_r == 1. && beta_i_i == 0.))) {
-	/* beta == 0 or 1 --> r *= (1+i) */
-	((float *) r)[0] = r_i;
-	((float *) r)[1] = r_i;
-      } else {			/* beta *= (1-i), r *= i --> prod = 1+i */
-	((float *) beta)[0] = beta_i_r;
-	((float *) beta)[1] = -beta_i_r;
-	((float *) r)[0] = 0.0;
-	((float *) r)[1] = r_i;
+	/* beta_i == 0 or 1 --> r_i *= (1+i) */
+	r_i[0] = r_tmp;
+	r_i[1] = r_tmp;
+      } else {			/* beta_i *= (1-i), r_i *= i --> prod = 1+i */
+	beta_i[0] = beta_i_r;
+	beta_i[1] = -beta_i_r;
+	r_i[0] = 0.0;
+	r_i[1] = r_tmp;
       }
       r_true_l[1] = r_true_l[0];
       r_true_t[1] = r_true_t[0];
-    } else {			/* alpha is a fixed multiple of (1+i) */
-      ((float *) alpha)[0] = alpha_i_r;
-      ((float *) alpha)[1] = alpha_i_r;
+    } else {			/* alpha_i is a fixed multiple of (1+i) */
+      alpha_i[0] = alpha_i_r;
+      alpha_i[1] = alpha_i_r;
       if (beta_flag == 1 &&
 	  ((beta_i_r == 0. && beta_i_i == 0.) ||
 	   (beta_i_r == 1. && beta_i_i == 0.))) {
-	/* beta == 0 or 1 --> r *= (1+i) */
-	((float *) r)[0] = r_i;
-	((float *) r)[1] = r_i;
-      } else {			/* beta *= (1-i), r *= i --> prod = 1+i */
-	((float *) beta)[0] = beta_i_r;
-	((float *) beta)[1] = -beta_i_r;
-	((float *) r)[0] = 0.0;
-	((float *) r)[1] = r_i;
+	/* beta_i == 0 or 1 --> r_i *= (1+i) */
+	r_i[0] = r_tmp;
+	r_i[1] = r_tmp;
+      } else {			/* beta_i *= (1-i), r_i *= i --> prod = 1+i */
+	beta_i[0] = beta_i_r;
+	beta_i[1] = -beta_i_r;
+	r_i[0] = 0.0;
+	r_i[1] = r_tmp;
       }
       r_true_l[1] = r_true_l[0];
       r_true_t[1] = r_true_t[0];
     }
-  } else if (beta_flag == 1) {	/* alpha is free, beta is fixed */
-    /* alpha *= (1+i) */
-    ((float *) alpha)[0] = alpha_i_r;
-    ((float *) alpha)[1] = alpha_i_r;
-    if ((beta_i_r == 0. && beta_i_i == 0.) || (beta_i_r == 1. && beta_i_i == 0.)) {	/* r *= (1+i) */
-      ((float *) r)[0] = r_i;
-      ((float *) r)[1] = r_i;
-    } else {			/* beta *= (1-i), r *= i */
-      ((float *) beta)[0] = beta_i_r;
-      ((float *) beta)[1] = -beta_i_r;
-      ((float *) r)[0] = 0.;
-      ((float *) r)[1] = r_i;
+  } else if (beta_flag == 1) {	/* alpha_i is free, beta_i is fixed */
+    /* alpha_i *= (1+i) */
+    alpha_i[0] = alpha_i_r;
+    alpha_i[1] = alpha_i_r;
+    if ((beta_i_r == 0. && beta_i_i == 0.) || (beta_i_r == 1. && beta_i_i == 0.)) {	/* r_i *= (1+i) */
+      r_i[0] = r_tmp;
+      r_i[1] = r_tmp;
+    } else {			/* beta_i *= (1-i), r_i *= i */
+      beta_i[0] = beta_i_r;
+      beta_i[1] = -beta_i_r;
+      r_i[0] = 0.;
+      r_i[1] = r_tmp;
     }
     r_true_l[1] = r_true_l[0];
     r_true_t[1] = r_true_t[0];
-  } else {			/* both alpha and beta are free */
+  } else {			/* both alpha_i and beta_i are free */
     assert(alpha_flag == 0 && beta_flag == 0);
-    ((float *) alpha)[0] = alpha_i_r;
-    ((float *) alpha)[1] = alpha_i_r;
-    ((float *) beta)[0] = beta_i_r;
-    ((float *) beta)[1] = -beta_i_r;
-    ((float *) r)[0] = 0;
-    ((float *) r)[1] = r_i;
+    alpha_i[0] = alpha_i_r;
+    alpha_i[1] = alpha_i_r;
+    beta_i[0] = beta_i_r;
+    beta_i[1] = -beta_i_r;
+    r_i[0] = 0;
+    r_i[1] = r_tmp;
     /* imaginary part of r_true */
     r_true_l[1] = r_true_l[0];
     r_true_t[1] = r_true_t[0];
   }
 
   for (i = 0; i < n; ++i) {
-    x[i] = x_i[i];
-    y[i] = y_i[i];
+    x_i[i] = x_vec[i];
+    y_i[i] = y_vec[i];
   }
 
-  blas_free(x_i);		/* also y_i */
+  blas_free(x_vec);		/* also y_i */
 }				/* end BLAS_cdot_s_s_testgen */
 
 void BLAS_cdot_s_c_testgen(int n, int n_fix2, int n_mix, int norm,
@@ -1371,111 +1426,116 @@ void BLAS_cdot_s_c_testgen(int n, int n_fix2, int n_mix, int norm,
  */
 {
   int i;
+  float *alpha_i = (float *) alpha;
+  float *beta_i = (float *) beta;
+  float *r_i = (float *) r;
+  float *x_i = x;
+  float *y_i = (float *) y;
   float alpha_i_r;
   float alpha_i_i;
   float beta_i_r;
   float beta_i_i;
-  float r_i;
-  float *x_i;
-  float *y_i;
+  float r_tmp;
+  float *x_vec;
+  float *y_vec;
 
-  alpha_i_r = ((float *) alpha)[0];
-  alpha_i_i = ((float *) alpha)[1];
-  beta_i_r = ((float *) beta)[0];
-  beta_i_i = ((float *) beta)[1];
-  x_i = (float *) blas_malloc(2 * n * sizeof(float));
-  if (2 * n > 0 && x_i == NULL) {
+  alpha_i_r = alpha_i[0];
+  alpha_i_i = alpha_i[1];
+  beta_i_r = beta_i[0];
+  beta_i_i = beta_i[1];
+  x_vec = (float *) blas_malloc(2 * n * sizeof(float));
+  if (2 * n > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  y_i = x_i + n;
+  y_vec = x_vec + n;
   for (i = 0; i < n_fix2; i++) {
-    x_i[i] = x[i];
-    ((float *) y_i)[i] = ((float *) y)[2 * i];
+    x_vec[i] = x_i[i];
+    y_vec[i] = y_i[2 * i];
   }
   for (; i < n_fix2 + n_mix; i++) {
-    x_i[i] = x[i];
+    x_vec[i] = x_i[i];
   }
 
   /* Call generator now. */
   testgen_BLAS_sdot(n, n_fix2, n_mix, norm, conj,
 		    &alpha_i_r, alpha_flag,
 		    &beta_i_r, beta_flag,
-		    x_i, y_i, seed, &r_i, &r_true_l[0], &r_true_t[0]);
+		    x_vec, y_vec, seed, &r_tmp, &r_true_l[0], &r_true_t[0]);
 
-  if (alpha_flag == 1) {	/* alpha is fixed */
-    if (alpha_i_r == 1.0 && alpha_i_i == 0.) {	/* alpha == 1.0 */
+  if (alpha_flag == 1) {	/* alpha_i is fixed */
+    if (alpha_i_r == 1.0 && alpha_i_i == 0.) {	/* alpha_i == 1.0 */
       if (beta_flag == 1 &&
 	  ((beta_i_r == 0. && beta_i_i == 0.) ||
 	   (beta_i_r == 1. && beta_i_i == 0.))) {
-	/* beta == 0 or 1 --> r *= (1+i) */
-	((float *) r)[0] = r_i;
-	((float *) r)[1] = r_i;
-      } else {			/* beta *= (1-i), r *= i --> prod = 1+i */
-	((float *) beta)[0] = beta_i_r;
-	((float *) beta)[1] = -beta_i_r;
-	((float *) r)[0] = 0.0;
-	((float *) r)[1] = r_i;
+	/* beta_i == 0 or 1 --> r_i *= (1+i) */
+	r_i[0] = r_tmp;
+	r_i[1] = r_tmp;
+      } else {			/* beta_i *= (1-i), r_i *= i --> prod = 1+i */
+	beta_i[0] = beta_i_r;
+	beta_i[1] = -beta_i_r;
+	r_i[0] = 0.0;
+	r_i[1] = r_tmp;
       }
       r_true_l[1] = r_true_l[0];
       r_true_t[1] = r_true_t[0];
-    } else if (alpha_i_r == 0. && alpha_i_i == 0.) {	/* alpha == 0.0 */
+    } else if (alpha_i_r == 0. && alpha_i_i == 0.) {	/* alpha_i == 0.0 */
       if (beta_flag == 1 &&
 	  ((beta_i_r == 0. && beta_i_i == 0.) ||
 	   (beta_i_r == 1. && beta_i_i == 0.))) {
-	/* beta == 0 or 1 --> r *= (1+i) */
-	((float *) r)[0] = r_i;
-	((float *) r)[1] = r_i;
-      } else {			/* beta *= (1-i), r *= i --> prod = 1+i */
-	((float *) beta)[0] = beta_i_r;
-	((float *) beta)[1] = -beta_i_r;
-	((float *) r)[0] = 0.0;
-	((float *) r)[1] = r_i;
+	/* beta_i == 0 or 1 --> r_i *= (1+i) */
+	r_i[0] = r_tmp;
+	r_i[1] = r_tmp;
+      } else {			/* beta_i *= (1-i), r_i *= i --> prod = 1+i */
+	beta_i[0] = beta_i_r;
+	beta_i[1] = -beta_i_r;
+	r_i[0] = 0.0;
+	r_i[1] = r_tmp;
       }
       r_true_l[1] = r_true_l[0];
       r_true_t[1] = r_true_t[0];
-    } else {			/* alpha is a fixed multiple of (1+i) */
-      ((float *) alpha)[0] = alpha_i_r;
-      ((float *) alpha)[1] = alpha_i_r;
+    } else {			/* alpha_i is a fixed multiple of (1+i) */
+      alpha_i[0] = alpha_i_r;
+      alpha_i[1] = alpha_i_r;
       if (beta_flag == 1 &&
 	  ((beta_i_r == 0. && beta_i_i == 0.) ||
 	   (beta_i_r == 1. && beta_i_i == 0.))) {
-	/* beta is 0 or 1 --> r *= 2i --> prod = 2i */
-	((float *) r)[0] = 0.0;
-	((float *) r)[1] = 2.0 * r_i;
-      } else {			/* beta *= (1+i), r *= (1+i) --> prod = 2i */
-	((float *) beta)[0] = beta_i_r;
-	((float *) beta)[1] = beta_i_r;
-	((float *) r)[0] = r_i;
-	((float *) r)[1] = r_i;
+	/* beta_i is 0 or 1 --> r_i *= 2i --> prod = 2i */
+	r_i[0] = 0.0;
+	r_i[1] = 2.0 * r_tmp;
+      } else {			/* beta_i *= (1+i), r_i *= (1+i) --> prod = 2i */
+	beta_i[0] = beta_i_r;
+	beta_i[1] = beta_i_r;
+	r_i[0] = r_tmp;
+	r_i[1] = r_tmp;
       }
       r_true_l[1] = 2.0 * r_true_l[0];
       r_true_t[1] = 2.0 * r_true_t[0];
       r_true_l[0] = r_true_t[0] = 0.0;
     }
-  } else if (beta_flag == 1) {	/* alpha is free, beta is fixed */
-    /* alpha *= (1+i) */
-    ((float *) alpha)[0] = alpha_i_r;
-    ((float *) alpha)[1] = alpha_i_r;
-    if ((beta_i_r == 0. && beta_i_i == 0.) || (beta_i_r == 1. && beta_i_i == 0.)) {	/* r*=2i --> prod = 2i */
-      ((float *) r)[0] = 0.0;
-      ((float *) r)[1] = 2.0 * r_i;
-    } else {			/* beta *= (1+i), r *= (1+i) */
-      ((float *) beta)[0] = beta_i_r;
-      ((float *) beta)[1] = beta_i_r;
-      ((float *) r)[0] = r_i;
-      ((float *) r)[1] = r_i;
+  } else if (beta_flag == 1) {	/* alpha_i is free, beta_i is fixed */
+    /* alpha_i *= (1+i) */
+    alpha_i[0] = alpha_i_r;
+    alpha_i[1] = alpha_i_r;
+    if ((beta_i_r == 0. && beta_i_i == 0.) || (beta_i_r == 1. && beta_i_i == 0.)) {	/* r_i*=2i --> prod = 2i */
+      r_i[0] = 0.0;
+      r_i[1] = 2.0 * r_tmp;
+    } else {			/* beta_i *= (1+i), r_i *= (1+i) */
+      beta_i[0] = beta_i_r;
+      beta_i[1] = beta_i_r;
+      r_i[0] = r_tmp;
+      r_i[1] = r_tmp;
     }
     r_true_l[1] = 2.0 * r_true_l[0];
     r_true_t[1] = 2.0 * r_true_t[0];
     r_true_l[0] = r_true_t[0] = 0.0;
-  } else {			/* both alpha and beta are free */
+  } else {			/* both alpha_i and beta_i are free */
     assert(alpha_flag == 0 && beta_flag == 0);
-    ((float *) alpha)[0] = alpha_i_r;
-    ((float *) alpha)[1] = alpha_i_r;
-    ((float *) beta)[0] = beta_i_r;
-    ((float *) beta)[1] = beta_i_r;
-    ((float *) r)[0] = r_i;
-    ((float *) r)[1] = r_i;
+    alpha_i[0] = alpha_i_r;
+    alpha_i[1] = alpha_i_r;
+    beta_i[0] = beta_i_r;
+    beta_i[1] = beta_i_r;
+    r_i[0] = r_tmp;
+    r_i[1] = r_tmp;
     /* imaginary part of r_true */
     ddmuld(r_true_l[0], r_true_t[0], 2.0, &r_true_l[1], &r_true_t[1]);
     /* real part of r_true */
@@ -1484,12 +1544,12 @@ void BLAS_cdot_s_c_testgen(int n, int n_fix2, int n_mix, int norm,
   }
 
   for (i = 0; i < n; ++i) {
-    x[i] = x_i[i];
-    ((float *) y)[2 * i] = ((float *) y_i)[i];
-    ((float *) y)[2 * i + 1] = ((float *) y_i)[i];
+    x_i[i] = x_vec[i];
+    y_i[2 * i] = y_vec[i];
+    y_i[2 * i + 1] = y_vec[i];
   }
 
-  blas_free(x_i);		/* also y_i */
+  blas_free(x_vec);		/* also y_i */
 }				/* end BLAS_cdot_s_c_testgen */
 
 void BLAS_cdot_c_s_testgen(int n, int n_fix2, int n_mix, int norm,
@@ -1560,111 +1620,116 @@ void BLAS_cdot_c_s_testgen(int n, int n_fix2, int n_mix, int norm,
  */
 {
   int i;
+  float *alpha_i = (float *) alpha;
+  float *beta_i = (float *) beta;
+  float *r_i = (float *) r;
+  float *x_i = (float *) x;
+  float *y_i = y;
   float alpha_i_r;
   float alpha_i_i;
   float beta_i_r;
   float beta_i_i;
-  float r_i;
-  float *x_i;
-  float *y_i;
+  float r_tmp;
+  float *x_vec;
+  float *y_vec;
 
-  alpha_i_r = ((float *) alpha)[0];
-  alpha_i_i = ((float *) alpha)[1];
-  beta_i_r = ((float *) beta)[0];
-  beta_i_i = ((float *) beta)[1];
-  x_i = (float *) blas_malloc(2 * n * sizeof(float));
-  if (2 * n > 0 && x_i == NULL) {
+  alpha_i_r = alpha_i[0];
+  alpha_i_i = alpha_i[1];
+  beta_i_r = beta_i[0];
+  beta_i_i = beta_i[1];
+  x_vec = (float *) blas_malloc(2 * n * sizeof(float));
+  if (2 * n > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  y_i = x_i + n;
+  y_vec = x_vec + n;
   for (i = 0; i < n_fix2; i++) {
-    ((float *) x_i)[i] = ((float *) x)[2 * i];
-    y_i[i] = y[i];
+    x_vec[i] = x_i[2 * i];
+    y_vec[i] = y_i[i];
   }
   for (; i < n_fix2 + n_mix; i++) {
-    ((float *) x_i)[i] = ((float *) x)[2 * i];
+    x_vec[i] = x_i[2 * i];
   }
 
   /* Call generator now. */
   testgen_BLAS_sdot(n, n_fix2, n_mix, norm, conj,
 		    &alpha_i_r, alpha_flag,
 		    &beta_i_r, beta_flag,
-		    x_i, y_i, seed, &r_i, &r_true_l[0], &r_true_t[0]);
+		    x_vec, y_vec, seed, &r_tmp, &r_true_l[0], &r_true_t[0]);
 
-  if (alpha_flag == 1) {	/* alpha is fixed */
-    if (alpha_i_r == 1.0 && alpha_i_i == 0.) {	/* alpha == 1.0 */
+  if (alpha_flag == 1) {	/* alpha_i is fixed */
+    if (alpha_i_r == 1.0 && alpha_i_i == 0.) {	/* alpha_i == 1.0 */
       if (beta_flag == 1 &&
 	  ((beta_i_r == 0. && beta_i_i == 0.) ||
 	   (beta_i_r == 1. && beta_i_i == 0.))) {
-	/* beta == 0 or 1 --> r *= (1+i) */
-	((float *) r)[0] = r_i;
-	((float *) r)[1] = r_i;
-      } else {			/* beta *= (1-i), r *= i --> prod = 1+i */
-	((float *) beta)[0] = beta_i_r;
-	((float *) beta)[1] = -beta_i_r;
-	((float *) r)[0] = 0.0;
-	((float *) r)[1] = r_i;
+	/* beta_i == 0 or 1 --> r_i *= (1+i) */
+	r_i[0] = r_tmp;
+	r_i[1] = r_tmp;
+      } else {			/* beta_i *= (1-i), r_i *= i --> prod = 1+i */
+	beta_i[0] = beta_i_r;
+	beta_i[1] = -beta_i_r;
+	r_i[0] = 0.0;
+	r_i[1] = r_tmp;
       }
       r_true_l[1] = r_true_l[0];
       r_true_t[1] = r_true_t[0];
-    } else if (alpha_i_r == 0. && alpha_i_i == 0.) {	/* alpha == 0.0 */
+    } else if (alpha_i_r == 0. && alpha_i_i == 0.) {	/* alpha_i == 0.0 */
       if (beta_flag == 1 &&
 	  ((beta_i_r == 0. && beta_i_i == 0.) ||
 	   (beta_i_r == 1. && beta_i_i == 0.))) {
-	/* beta == 0 or 1 --> r *= (1+i) */
-	((float *) r)[0] = r_i;
-	((float *) r)[1] = r_i;
-      } else {			/* beta *= (1-i), r *= i --> prod = 1+i */
-	((float *) beta)[0] = beta_i_r;
-	((float *) beta)[1] = -beta_i_r;
-	((float *) r)[0] = 0.0;
-	((float *) r)[1] = r_i;
+	/* beta_i == 0 or 1 --> r_i *= (1+i) */
+	r_i[0] = r_tmp;
+	r_i[1] = r_tmp;
+      } else {			/* beta_i *= (1-i), r_i *= i --> prod = 1+i */
+	beta_i[0] = beta_i_r;
+	beta_i[1] = -beta_i_r;
+	r_i[0] = 0.0;
+	r_i[1] = r_tmp;
       }
       r_true_l[1] = r_true_l[0];
       r_true_t[1] = r_true_t[0];
-    } else {			/* alpha is a fixed multiple of (1+i) */
-      ((float *) alpha)[0] = alpha_i_r;
-      ((float *) alpha)[1] = alpha_i_r;
+    } else {			/* alpha_i is a fixed multiple of (1+i) */
+      alpha_i[0] = alpha_i_r;
+      alpha_i[1] = alpha_i_r;
       if (beta_flag == 1 &&
 	  ((beta_i_r == 0. && beta_i_i == 0.) ||
 	   (beta_i_r == 1. && beta_i_i == 0.))) {
-	/* beta is 0 or 1 --> r *= 2i --> prod = 2i */
-	((float *) r)[0] = 0.0;
-	((float *) r)[1] = 2.0 * r_i;
-      } else {			/* beta *= (1+i), r *= (1+i) --> prod = 2i */
-	((float *) beta)[0] = beta_i_r;
-	((float *) beta)[1] = beta_i_r;
-	((float *) r)[0] = r_i;
-	((float *) r)[1] = r_i;
+	/* beta_i is 0 or 1 --> r_i *= 2i --> prod = 2i */
+	r_i[0] = 0.0;
+	r_i[1] = 2.0 * r_tmp;
+      } else {			/* beta_i *= (1+i), r_i *= (1+i) --> prod = 2i */
+	beta_i[0] = beta_i_r;
+	beta_i[1] = beta_i_r;
+	r_i[0] = r_tmp;
+	r_i[1] = r_tmp;
       }
       r_true_l[1] = 2.0 * r_true_l[0];
       r_true_t[1] = 2.0 * r_true_t[0];
       r_true_l[0] = r_true_t[0] = 0.0;
     }
-  } else if (beta_flag == 1) {	/* alpha is free, beta is fixed */
-    /* alpha *= (1+i) */
-    ((float *) alpha)[0] = alpha_i_r;
-    ((float *) alpha)[1] = alpha_i_r;
-    if ((beta_i_r == 0. && beta_i_i == 0.) || (beta_i_r == 1. && beta_i_i == 0.)) {	/* r*=2i --> prod = 2i */
-      ((float *) r)[0] = 0.0;
-      ((float *) r)[1] = 2.0 * r_i;
-    } else {			/* beta *= (1+i), r *= (1+i) */
-      ((float *) beta)[0] = beta_i_r;
-      ((float *) beta)[1] = beta_i_r;
-      ((float *) r)[0] = r_i;
-      ((float *) r)[1] = r_i;
+  } else if (beta_flag == 1) {	/* alpha_i is free, beta_i is fixed */
+    /* alpha_i *= (1+i) */
+    alpha_i[0] = alpha_i_r;
+    alpha_i[1] = alpha_i_r;
+    if ((beta_i_r == 0. && beta_i_i == 0.) || (beta_i_r == 1. && beta_i_i == 0.)) {	/* r_i*=2i --> prod = 2i */
+      r_i[0] = 0.0;
+      r_i[1] = 2.0 * r_tmp;
+    } else {			/* beta_i *= (1+i), r_i *= (1+i) */
+      beta_i[0] = beta_i_r;
+      beta_i[1] = beta_i_r;
+      r_i[0] = r_tmp;
+      r_i[1] = r_tmp;
     }
     r_true_l[1] = 2.0 * r_true_l[0];
     r_true_t[1] = 2.0 * r_true_t[0];
     r_true_l[0] = r_true_t[0] = 0.0;
-  } else {			/* both alpha and beta are free */
+  } else {			/* both alpha_i and beta_i are free */
     assert(alpha_flag == 0 && beta_flag == 0);
-    ((float *) alpha)[0] = alpha_i_r;
-    ((float *) alpha)[1] = alpha_i_r;
-    ((float *) beta)[0] = beta_i_r;
-    ((float *) beta)[1] = beta_i_r;
-    ((float *) r)[0] = r_i;
-    ((float *) r)[1] = r_i;
+    alpha_i[0] = alpha_i_r;
+    alpha_i[1] = alpha_i_r;
+    beta_i[0] = beta_i_r;
+    beta_i[1] = beta_i_r;
+    r_i[0] = r_tmp;
+    r_i[1] = r_tmp;
     /* imaginary part of r_true */
     ddmuld(r_true_l[0], r_true_t[0], 2.0, &r_true_l[1], &r_true_t[1]);
     /* real part of r_true */
@@ -1673,15 +1738,15 @@ void BLAS_cdot_c_s_testgen(int n, int n_fix2, int n_mix, int norm,
   }
 
   for (i = 0; i < n; ++i) {
-    ((float *) x)[2 * i] = ((float *) x_i)[i];
-    ((float *) x)[2 * i + 1] = ((float *) x_i)[i];
-    y[i] = y_i[i];
+    x_i[2 * i] = x_vec[i];
+    x_i[2 * i + 1] = x_vec[i];
+    y_i[i] = y_vec[i];
   }
   if (conj == blas_conj) {
     for (i = 0; i < n; ++i)
-      ((float *) x)[2 * i + 1] = -((float *) x)[2 * i + 1];
+      x_i[2 * i + 1] = -x_i[2 * i + 1];
   }
-  blas_free(x_i);		/* also y_i */
+  blas_free(x_vec);		/* also y_i */
 }				/* end BLAS_cdot_c_s_testgen */
 
 void BLAS_zdot_d_d_testgen(int n, int n_fix2, int n_mix, int norm,
@@ -1752,116 +1817,121 @@ void BLAS_zdot_d_d_testgen(int n, int n_fix2, int n_mix, int norm,
  */
 {
   int i;
+  double *alpha_i = (double *) alpha;
+  double *beta_i = (double *) beta;
+  double *r_i = (double *) r;
+  double *x_i = x;
+  double *y_i = y;
   double alpha_i_r;
   double alpha_i_i;
   double beta_i_r;
   double beta_i_i;
-  double r_i;
-  double *x_i;
-  double *y_i;
+  double r_tmp;
+  double *x_vec;
+  double *y_vec;
 
-  alpha_i_r = ((double *) alpha)[0];
-  alpha_i_i = ((double *) alpha)[1];
-  beta_i_r = ((double *) beta)[0];
-  beta_i_i = ((double *) beta)[1];
-  x_i = (double *) blas_malloc(2 * n * sizeof(double));
-  if (2 * n > 0 && x_i == NULL) {
+  alpha_i_r = alpha_i[0];
+  alpha_i_i = alpha_i[1];
+  beta_i_r = beta_i[0];
+  beta_i_i = beta_i[1];
+  x_vec = (double *) blas_malloc(2 * n * sizeof(double));
+  if (2 * n > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  y_i = x_i + n;
+  y_vec = x_vec + n;
   for (i = 0; i < n_fix2; i++) {
-    x_i[i] = x[i];
-    y_i[i] = y[i];
+    x_vec[i] = x_i[i];
+    y_vec[i] = y_i[i];
   }
   for (; i < n_fix2 + n_mix; i++) {
-    x_i[i] = x[i];
+    x_vec[i] = x_i[i];
   }
 
   /* Call generator now. */
   testgen_BLAS_ddot(n, n_fix2, n_mix, norm, conj,
 		    &alpha_i_r, alpha_flag,
 		    &beta_i_r, beta_flag,
-		    x_i, y_i, seed, &r_i, &r_true_l[0], &r_true_t[0]);
+		    x_vec, y_vec, seed, &r_tmp, &r_true_l[0], &r_true_t[0]);
 
-  if (alpha_flag == 1) {	/* alpha is fixed */
-    if (alpha_i_r == 1.0 && alpha_i_i == 0.) {	/* alpha == 1.0 */
-      if (beta_flag == 1 && ((beta_i_r == 0. && beta_i_i == 0.) || (beta_i_r == 1. && beta_i_i == 0.))) {	/* beta == 0 or 1 */
-	((double *) r)[0] = r_i;
-	((double *) r)[1] = 0.0;
-      } else {			/* beta *= (1-i), r *= (1+i)/2 --> prod = 1 */
-	((double *) beta)[0] = beta_i_r;
-	((double *) beta)[1] = -beta_i_r;
-	((double *) r)[0] = r_i / 2.;
-	((double *) r)[1] = r_i / 2.;
+  if (alpha_flag == 1) {	/* alpha_i is fixed */
+    if (alpha_i_r == 1.0 && alpha_i_i == 0.) {	/* alpha_i == 1.0 */
+      if (beta_flag == 1 && ((beta_i_r == 0. && beta_i_i == 0.) || (beta_i_r == 1. && beta_i_i == 0.))) {	/* beta_i == 0 or 1 */
+	r_i[0] = r_tmp;
+	r_i[1] = 0.0;
+      } else {			/* beta_i *= (1-i), r_i *= (1+i)/2 --> prod = 1 */
+	beta_i[0] = beta_i_r;
+	beta_i[1] = -beta_i_r;
+	r_i[0] = r_tmp / 2.;
+	r_i[1] = r_tmp / 2.;
       }
       r_true_l[1] = r_true_t[1] = 0.0;
-    } else if (alpha_i_r == 0. && alpha_i_i == 0.) {	/* alpha == 0.0 */
+    } else if (alpha_i_r == 0. && alpha_i_i == 0.) {	/* alpha_i == 0.0 */
       if (beta_flag == 1 &&
 	  ((beta_i_r == 0. && beta_i_i == 0.) ||
 	   (beta_i_r == 1. && beta_i_i == 0.))) {
-	/* beta == 0 or 1 --> r *= (1+i) */
-	((double *) r)[0] = r_i;
-	((double *) r)[1] = r_i;
-      } else {			/* beta *= (1-i), r *= i --> prod = 1+i */
-	((double *) beta)[0] = beta_i_r;
-	((double *) beta)[1] = -beta_i_r;
-	((double *) r)[0] = 0.0;
-	((double *) r)[1] = r_i;
+	/* beta_i == 0 or 1 --> r_i *= (1+i) */
+	r_i[0] = r_tmp;
+	r_i[1] = r_tmp;
+      } else {			/* beta_i *= (1-i), r_i *= i --> prod = 1+i */
+	beta_i[0] = beta_i_r;
+	beta_i[1] = -beta_i_r;
+	r_i[0] = 0.0;
+	r_i[1] = r_tmp;
       }
       r_true_l[1] = r_true_l[0];
       r_true_t[1] = r_true_t[0];
-    } else {			/* alpha is a fixed multiple of (1+i) */
-      ((double *) alpha)[0] = alpha_i_r;
-      ((double *) alpha)[1] = alpha_i_r;
+    } else {			/* alpha_i is a fixed multiple of (1+i) */
+      alpha_i[0] = alpha_i_r;
+      alpha_i[1] = alpha_i_r;
       if (beta_flag == 1 &&
 	  ((beta_i_r == 0. && beta_i_i == 0.) ||
 	   (beta_i_r == 1. && beta_i_i == 0.))) {
-	/* beta == 0 or 1 --> r *= (1+i) */
-	((double *) r)[0] = r_i;
-	((double *) r)[1] = r_i;
-      } else {			/* beta *= (1-i), r *= i --> prod = 1+i */
-	((double *) beta)[0] = beta_i_r;
-	((double *) beta)[1] = -beta_i_r;
-	((double *) r)[0] = 0.0;
-	((double *) r)[1] = r_i;
+	/* beta_i == 0 or 1 --> r_i *= (1+i) */
+	r_i[0] = r_tmp;
+	r_i[1] = r_tmp;
+      } else {			/* beta_i *= (1-i), r_i *= i --> prod = 1+i */
+	beta_i[0] = beta_i_r;
+	beta_i[1] = -beta_i_r;
+	r_i[0] = 0.0;
+	r_i[1] = r_tmp;
       }
       r_true_l[1] = r_true_l[0];
       r_true_t[1] = r_true_t[0];
     }
-  } else if (beta_flag == 1) {	/* alpha is free, beta is fixed */
-    /* alpha *= (1+i) */
-    ((double *) alpha)[0] = alpha_i_r;
-    ((double *) alpha)[1] = alpha_i_r;
-    if ((beta_i_r == 0. && beta_i_i == 0.) || (beta_i_r == 1. && beta_i_i == 0.)) {	/* r *= (1+i) */
-      ((double *) r)[0] = r_i;
-      ((double *) r)[1] = r_i;
-    } else {			/* beta *= (1-i), r *= i */
-      ((double *) beta)[0] = beta_i_r;
-      ((double *) beta)[1] = -beta_i_r;
-      ((double *) r)[0] = 0.;
-      ((double *) r)[1] = r_i;
+  } else if (beta_flag == 1) {	/* alpha_i is free, beta_i is fixed */
+    /* alpha_i *= (1+i) */
+    alpha_i[0] = alpha_i_r;
+    alpha_i[1] = alpha_i_r;
+    if ((beta_i_r == 0. && beta_i_i == 0.) || (beta_i_r == 1. && beta_i_i == 0.)) {	/* r_i *= (1+i) */
+      r_i[0] = r_tmp;
+      r_i[1] = r_tmp;
+    } else {			/* beta_i *= (1-i), r_i *= i */
+      beta_i[0] = beta_i_r;
+      beta_i[1] = -beta_i_r;
+      r_i[0] = 0.;
+      r_i[1] = r_tmp;
     }
     r_true_l[1] = r_true_l[0];
     r_true_t[1] = r_true_t[0];
-  } else {			/* both alpha and beta are free */
+  } else {			/* both alpha_i and beta_i are free */
     assert(alpha_flag == 0 && beta_flag == 0);
-    ((double *) alpha)[0] = alpha_i_r;
-    ((double *) alpha)[1] = alpha_i_r;
-    ((double *) beta)[0] = beta_i_r;
-    ((double *) beta)[1] = -beta_i_r;
-    ((double *) r)[0] = 0;
-    ((double *) r)[1] = r_i;
+    alpha_i[0] = alpha_i_r;
+    alpha_i[1] = alpha_i_r;
+    beta_i[0] = beta_i_r;
+    beta_i[1] = -beta_i_r;
+    r_i[0] = 0;
+    r_i[1] = r_tmp;
     /* imaginary part of r_true */
     r_true_l[1] = r_true_l[0];
     r_true_t[1] = r_true_t[0];
   }
 
   for (i = 0; i < n; ++i) {
-    x[i] = x_i[i];
-    y[i] = y_i[i];
+    x_i[i] = x_vec[i];
+    y_i[i] = y_vec[i];
   }
 
-  blas_free(x_i);		/* also y_i */
+  blas_free(x_vec);		/* also y_i */
 }
 
 	/* end BLAS_zdot_d_d_testgen */
@@ -1934,111 +2004,116 @@ void BLAS_zdot_z_d_testgen(int n, int n_fix2, int n_mix, int norm,
  */
 {
   int i;
+  double *alpha_i = (double *) alpha;
+  double *beta_i = (double *) beta;
+  double *r_i = (double *) r;
+  double *x_i = (double *) x;
+  double *y_i = y;
   double alpha_i_r;
   double alpha_i_i;
   double beta_i_r;
   double beta_i_i;
-  double r_i;
-  double *x_i;
-  double *y_i;
+  double r_tmp;
+  double *x_vec;
+  double *y_vec;
 
-  alpha_i_r = ((double *) alpha)[0];
-  alpha_i_i = ((double *) alpha)[1];
-  beta_i_r = ((double *) beta)[0];
-  beta_i_i = ((double *) beta)[1];
-  x_i = (double *) blas_malloc(2 * n * sizeof(double));
-  if (2 * n > 0 && x_i == NULL) {
+  alpha_i_r = alpha_i[0];
+  alpha_i_i = alpha_i[1];
+  beta_i_r = beta_i[0];
+  beta_i_i = beta_i[1];
+  x_vec = (double *) blas_malloc(2 * n * sizeof(double));
+  if (2 * n > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  y_i = x_i + n;
+  y_vec = x_vec + n;
   for (i = 0; i < n_fix2; i++) {
-    ((double *) x_i)[i] = ((double *) x)[2 * i];
-    y_i[i] = y[i];
+    x_vec[i] = x_i[2 * i];
+    y_vec[i] = y_i[i];
   }
   for (; i < n_fix2 + n_mix; i++) {
-    ((double *) x_i)[i] = ((double *) x)[2 * i];
+    x_vec[i] = x_i[2 * i];
   }
 
   /* Call generator now. */
   testgen_BLAS_ddot(n, n_fix2, n_mix, norm, conj,
 		    &alpha_i_r, alpha_flag,
 		    &beta_i_r, beta_flag,
-		    x_i, y_i, seed, &r_i, &r_true_l[0], &r_true_t[0]);
+		    x_vec, y_vec, seed, &r_tmp, &r_true_l[0], &r_true_t[0]);
 
-  if (alpha_flag == 1) {	/* alpha is fixed */
-    if (alpha_i_r == 1.0 && alpha_i_i == 0.) {	/* alpha == 1.0 */
+  if (alpha_flag == 1) {	/* alpha_i is fixed */
+    if (alpha_i_r == 1.0 && alpha_i_i == 0.) {	/* alpha_i == 1.0 */
       if (beta_flag == 1 &&
 	  ((beta_i_r == 0. && beta_i_i == 0.) ||
 	   (beta_i_r == 1. && beta_i_i == 0.))) {
-	/* beta == 0 or 1 --> r *= (1+i) */
-	((double *) r)[0] = r_i;
-	((double *) r)[1] = r_i;
-      } else {			/* beta *= (1-i), r *= i --> prod = 1+i */
-	((double *) beta)[0] = beta_i_r;
-	((double *) beta)[1] = -beta_i_r;
-	((double *) r)[0] = 0.0;
-	((double *) r)[1] = r_i;
+	/* beta_i == 0 or 1 --> r_i *= (1+i) */
+	r_i[0] = r_tmp;
+	r_i[1] = r_tmp;
+      } else {			/* beta_i *= (1-i), r_i *= i --> prod = 1+i */
+	beta_i[0] = beta_i_r;
+	beta_i[1] = -beta_i_r;
+	r_i[0] = 0.0;
+	r_i[1] = r_tmp;
       }
       r_true_l[1] = r_true_l[0];
       r_true_t[1] = r_true_t[0];
-    } else if (alpha_i_r == 0. && alpha_i_i == 0.) {	/* alpha == 0.0 */
+    } else if (alpha_i_r == 0. && alpha_i_i == 0.) {	/* alpha_i == 0.0 */
       if (beta_flag == 1 &&
 	  ((beta_i_r == 0. && beta_i_i == 0.) ||
 	   (beta_i_r == 1. && beta_i_i == 0.))) {
-	/* beta == 0 or 1 --> r *= (1+i) */
-	((double *) r)[0] = r_i;
-	((double *) r)[1] = r_i;
-      } else {			/* beta *= (1-i), r *= i --> prod = 1+i */
-	((double *) beta)[0] = beta_i_r;
-	((double *) beta)[1] = -beta_i_r;
-	((double *) r)[0] = 0.0;
-	((double *) r)[1] = r_i;
+	/* beta_i == 0 or 1 --> r_i *= (1+i) */
+	r_i[0] = r_tmp;
+	r_i[1] = r_tmp;
+      } else {			/* beta_i *= (1-i), r_i *= i --> prod = 1+i */
+	beta_i[0] = beta_i_r;
+	beta_i[1] = -beta_i_r;
+	r_i[0] = 0.0;
+	r_i[1] = r_tmp;
       }
       r_true_l[1] = r_true_l[0];
       r_true_t[1] = r_true_t[0];
-    } else {			/* alpha is a fixed multiple of (1+i) */
-      ((double *) alpha)[0] = alpha_i_r;
-      ((double *) alpha)[1] = alpha_i_r;
+    } else {			/* alpha_i is a fixed multiple of (1+i) */
+      alpha_i[0] = alpha_i_r;
+      alpha_i[1] = alpha_i_r;
       if (beta_flag == 1 &&
 	  ((beta_i_r == 0. && beta_i_i == 0.) ||
 	   (beta_i_r == 1. && beta_i_i == 0.))) {
-	/* beta is 0 or 1 --> r *= 2i --> prod = 2i */
-	((double *) r)[0] = 0.0;
-	((double *) r)[1] = 2.0 * r_i;
-      } else {			/* beta *= (1+i), r *= (1+i) --> prod = 2i */
-	((double *) beta)[0] = beta_i_r;
-	((double *) beta)[1] = beta_i_r;
-	((double *) r)[0] = r_i;
-	((double *) r)[1] = r_i;
+	/* beta_i is 0 or 1 --> r_i *= 2i --> prod = 2i */
+	r_i[0] = 0.0;
+	r_i[1] = 2.0 * r_tmp;
+      } else {			/* beta_i *= (1+i), r_i *= (1+i) --> prod = 2i */
+	beta_i[0] = beta_i_r;
+	beta_i[1] = beta_i_r;
+	r_i[0] = r_tmp;
+	r_i[1] = r_tmp;
       }
       r_true_l[1] = 2.0 * r_true_l[0];
       r_true_t[1] = 2.0 * r_true_t[0];
       r_true_l[0] = r_true_t[0] = 0.0;
     }
-  } else if (beta_flag == 1) {	/* alpha is free, beta is fixed */
-    /* alpha *= (1+i) */
-    ((double *) alpha)[0] = alpha_i_r;
-    ((double *) alpha)[1] = alpha_i_r;
-    if ((beta_i_r == 0. && beta_i_i == 0.) || (beta_i_r == 1. && beta_i_i == 0.)) {	/* r*=2i --> prod = 2i */
-      ((double *) r)[0] = 0.0;
-      ((double *) r)[1] = 2.0 * r_i;
-    } else {			/* beta *= (1+i), r *= (1+i) */
-      ((double *) beta)[0] = beta_i_r;
-      ((double *) beta)[1] = beta_i_r;
-      ((double *) r)[0] = r_i;
-      ((double *) r)[1] = r_i;
+  } else if (beta_flag == 1) {	/* alpha_i is free, beta_i is fixed */
+    /* alpha_i *= (1+i) */
+    alpha_i[0] = alpha_i_r;
+    alpha_i[1] = alpha_i_r;
+    if ((beta_i_r == 0. && beta_i_i == 0.) || (beta_i_r == 1. && beta_i_i == 0.)) {	/* r_i*=2i --> prod = 2i */
+      r_i[0] = 0.0;
+      r_i[1] = 2.0 * r_tmp;
+    } else {			/* beta_i *= (1+i), r_i *= (1+i) */
+      beta_i[0] = beta_i_r;
+      beta_i[1] = beta_i_r;
+      r_i[0] = r_tmp;
+      r_i[1] = r_tmp;
     }
     r_true_l[1] = 2.0 * r_true_l[0];
     r_true_t[1] = 2.0 * r_true_t[0];
     r_true_l[0] = r_true_t[0] = 0.0;
-  } else {			/* both alpha and beta are free */
+  } else {			/* both alpha_i and beta_i are free */
     assert(alpha_flag == 0 && beta_flag == 0);
-    ((double *) alpha)[0] = alpha_i_r;
-    ((double *) alpha)[1] = alpha_i_r;
-    ((double *) beta)[0] = beta_i_r;
-    ((double *) beta)[1] = beta_i_r;
-    ((double *) r)[0] = r_i;
-    ((double *) r)[1] = r_i;
+    alpha_i[0] = alpha_i_r;
+    alpha_i[1] = alpha_i_r;
+    beta_i[0] = beta_i_r;
+    beta_i[1] = beta_i_r;
+    r_i[0] = r_tmp;
+    r_i[1] = r_tmp;
     /* imaginary part of r_true */
     ddmuld(r_true_l[0], r_true_t[0], 2.0, &r_true_l[1], &r_true_t[1]);
     /* real part of r_true */
@@ -2047,15 +2122,15 @@ void BLAS_zdot_z_d_testgen(int n, int n_fix2, int n_mix, int norm,
   }
 
   for (i = 0; i < n; ++i) {
-    ((double *) x)[2 * i] = ((double *) x_i)[i];
-    ((double *) x)[2 * i + 1] = ((double *) x_i)[i];
-    y[i] = y_i[i];
+    x_i[2 * i] = x_vec[i];
+    x_i[2 * i + 1] = x_vec[i];
+    y_i[i] = y_vec[i];
   }
   if (conj == blas_conj) {
     for (i = 0; i < n; ++i)
-      ((double *) x)[2 * i + 1] = -((double *) x)[2 * i + 1];
+      x_i[2 * i + 1] = -x_i[2 * i + 1];
   }
-  blas_free(x_i);		/* also y_i */
+  blas_free(x_vec);		/* also y_i */
 }
 
 	/* end BLAS_zdot_z_d_testgen */
@@ -2128,111 +2203,116 @@ void BLAS_zdot_d_z_testgen(int n, int n_fix2, int n_mix, int norm,
  */
 {
   int i;
+  double *alpha_i = (double *) alpha;
+  double *beta_i = (double *) beta;
+  double *r_i = (double *) r;
+  double *x_i = x;
+  double *y_i = (double *) y;
   double alpha_i_r;
   double alpha_i_i;
   double beta_i_r;
   double beta_i_i;
-  double r_i;
-  double *x_i;
-  double *y_i;
+  double r_tmp;
+  double *x_vec;
+  double *y_vec;
 
-  alpha_i_r = ((double *) alpha)[0];
-  alpha_i_i = ((double *) alpha)[1];
-  beta_i_r = ((double *) beta)[0];
-  beta_i_i = ((double *) beta)[1];
-  x_i = (double *) blas_malloc(2 * n * sizeof(double));
-  if (2 * n > 0 && x_i == NULL) {
+  alpha_i_r = alpha_i[0];
+  alpha_i_i = alpha_i[1];
+  beta_i_r = beta_i[0];
+  beta_i_i = beta_i[1];
+  x_vec = (double *) blas_malloc(2 * n * sizeof(double));
+  if (2 * n > 0 && x_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  y_i = x_i + n;
+  y_vec = x_vec + n;
   for (i = 0; i < n_fix2; i++) {
-    x_i[i] = x[i];
-    ((double *) y_i)[i] = ((double *) y)[2 * i];
+    x_vec[i] = x_i[i];
+    y_vec[i] = y_i[2 * i];
   }
   for (; i < n_fix2 + n_mix; i++) {
-    x_i[i] = x[i];
+    x_vec[i] = x_i[i];
   }
 
   /* Call generator now. */
   testgen_BLAS_ddot(n, n_fix2, n_mix, norm, conj,
 		    &alpha_i_r, alpha_flag,
 		    &beta_i_r, beta_flag,
-		    x_i, y_i, seed, &r_i, &r_true_l[0], &r_true_t[0]);
+		    x_vec, y_vec, seed, &r_tmp, &r_true_l[0], &r_true_t[0]);
 
-  if (alpha_flag == 1) {	/* alpha is fixed */
-    if (alpha_i_r == 1.0 && alpha_i_i == 0.) {	/* alpha == 1.0 */
+  if (alpha_flag == 1) {	/* alpha_i is fixed */
+    if (alpha_i_r == 1.0 && alpha_i_i == 0.) {	/* alpha_i == 1.0 */
       if (beta_flag == 1 &&
 	  ((beta_i_r == 0. && beta_i_i == 0.) ||
 	   (beta_i_r == 1. && beta_i_i == 0.))) {
-	/* beta == 0 or 1 --> r *= (1+i) */
-	((double *) r)[0] = r_i;
-	((double *) r)[1] = r_i;
-      } else {			/* beta *= (1-i), r *= i --> prod = 1+i */
-	((double *) beta)[0] = beta_i_r;
-	((double *) beta)[1] = -beta_i_r;
-	((double *) r)[0] = 0.0;
-	((double *) r)[1] = r_i;
+	/* beta_i == 0 or 1 --> r_i *= (1+i) */
+	r_i[0] = r_tmp;
+	r_i[1] = r_tmp;
+      } else {			/* beta_i *= (1-i), r_i *= i --> prod = 1+i */
+	beta_i[0] = beta_i_r;
+	beta_i[1] = -beta_i_r;
+	r_i[0] = 0.0;
+	r_i[1] = r_tmp;
       }
       r_true_l[1] = r_true_l[0];
       r_true_t[1] = r_true_t[0];
-    } else if (alpha_i_r == 0. && alpha_i_i == 0.) {	/* alpha == 0.0 */
+    } else if (alpha_i_r == 0. && alpha_i_i == 0.) {	/* alpha_i == 0.0 */
       if (beta_flag == 1 &&
 	  ((beta_i_r == 0. && beta_i_i == 0.) ||
 	   (beta_i_r == 1. && beta_i_i == 0.))) {
-	/* beta == 0 or 1 --> r *= (1+i) */
-	((double *) r)[0] = r_i;
-	((double *) r)[1] = r_i;
-      } else {			/* beta *= (1-i), r *= i --> prod = 1+i */
-	((double *) beta)[0] = beta_i_r;
-	((double *) beta)[1] = -beta_i_r;
-	((double *) r)[0] = 0.0;
-	((double *) r)[1] = r_i;
+	/* beta_i == 0 or 1 --> r_i *= (1+i) */
+	r_i[0] = r_tmp;
+	r_i[1] = r_tmp;
+      } else {			/* beta_i *= (1-i), r_i *= i --> prod = 1+i */
+	beta_i[0] = beta_i_r;
+	beta_i[1] = -beta_i_r;
+	r_i[0] = 0.0;
+	r_i[1] = r_tmp;
       }
       r_true_l[1] = r_true_l[0];
       r_true_t[1] = r_true_t[0];
-    } else {			/* alpha is a fixed multiple of (1+i) */
-      ((double *) alpha)[0] = alpha_i_r;
-      ((double *) alpha)[1] = alpha_i_r;
+    } else {			/* alpha_i is a fixed multiple of (1+i) */
+      alpha_i[0] = alpha_i_r;
+      alpha_i[1] = alpha_i_r;
       if (beta_flag == 1 &&
 	  ((beta_i_r == 0. && beta_i_i == 0.) ||
 	   (beta_i_r == 1. && beta_i_i == 0.))) {
-	/* beta is 0 or 1 --> r *= 2i --> prod = 2i */
-	((double *) r)[0] = 0.0;
-	((double *) r)[1] = 2.0 * r_i;
-      } else {			/* beta *= (1+i), r *= (1+i) --> prod = 2i */
-	((double *) beta)[0] = beta_i_r;
-	((double *) beta)[1] = beta_i_r;
-	((double *) r)[0] = r_i;
-	((double *) r)[1] = r_i;
+	/* beta_i is 0 or 1 --> r_i *= 2i --> prod = 2i */
+	r_i[0] = 0.0;
+	r_i[1] = 2.0 * r_tmp;
+      } else {			/* beta_i *= (1+i), r_i *= (1+i) --> prod = 2i */
+	beta_i[0] = beta_i_r;
+	beta_i[1] = beta_i_r;
+	r_i[0] = r_tmp;
+	r_i[1] = r_tmp;
       }
       r_true_l[1] = 2.0 * r_true_l[0];
       r_true_t[1] = 2.0 * r_true_t[0];
       r_true_l[0] = r_true_t[0] = 0.0;
     }
-  } else if (beta_flag == 1) {	/* alpha is free, beta is fixed */
-    /* alpha *= (1+i) */
-    ((double *) alpha)[0] = alpha_i_r;
-    ((double *) alpha)[1] = alpha_i_r;
-    if ((beta_i_r == 0. && beta_i_i == 0.) || (beta_i_r == 1. && beta_i_i == 0.)) {	/* r*=2i --> prod = 2i */
-      ((double *) r)[0] = 0.0;
-      ((double *) r)[1] = 2.0 * r_i;
-    } else {			/* beta *= (1+i), r *= (1+i) */
-      ((double *) beta)[0] = beta_i_r;
-      ((double *) beta)[1] = beta_i_r;
-      ((double *) r)[0] = r_i;
-      ((double *) r)[1] = r_i;
+  } else if (beta_flag == 1) {	/* alpha_i is free, beta_i is fixed */
+    /* alpha_i *= (1+i) */
+    alpha_i[0] = alpha_i_r;
+    alpha_i[1] = alpha_i_r;
+    if ((beta_i_r == 0. && beta_i_i == 0.) || (beta_i_r == 1. && beta_i_i == 0.)) {	/* r_i*=2i --> prod = 2i */
+      r_i[0] = 0.0;
+      r_i[1] = 2.0 * r_tmp;
+    } else {			/* beta_i *= (1+i), r_i *= (1+i) */
+      beta_i[0] = beta_i_r;
+      beta_i[1] = beta_i_r;
+      r_i[0] = r_tmp;
+      r_i[1] = r_tmp;
     }
     r_true_l[1] = 2.0 * r_true_l[0];
     r_true_t[1] = 2.0 * r_true_t[0];
     r_true_l[0] = r_true_t[0] = 0.0;
-  } else {			/* both alpha and beta are free */
+  } else {			/* both alpha_i and beta_i are free */
     assert(alpha_flag == 0 && beta_flag == 0);
-    ((double *) alpha)[0] = alpha_i_r;
-    ((double *) alpha)[1] = alpha_i_r;
-    ((double *) beta)[0] = beta_i_r;
-    ((double *) beta)[1] = beta_i_r;
-    ((double *) r)[0] = r_i;
-    ((double *) r)[1] = r_i;
+    alpha_i[0] = alpha_i_r;
+    alpha_i[1] = alpha_i_r;
+    beta_i[0] = beta_i_r;
+    beta_i[1] = beta_i_r;
+    r_i[0] = r_tmp;
+    r_i[1] = r_tmp;
     /* imaginary part of r_true */
     ddmuld(r_true_l[0], r_true_t[0], 2.0, &r_true_l[1], &r_true_t[1]);
     /* real part of r_true */
@@ -2241,12 +2321,12 @@ void BLAS_zdot_d_z_testgen(int n, int n_fix2, int n_mix, int norm,
   }
 
   for (i = 0; i < n; ++i) {
-    x[i] = x_i[i];
-    ((double *) y)[2 * i] = ((double *) y_i)[i];
-    ((double *) y)[2 * i + 1] = ((double *) y_i)[i];
+    x_i[i] = x_vec[i];
+    y_i[2 * i] = y_vec[i];
+    y_i[2 * i + 1] = y_vec[i];
   }
 
-  blas_free(x_i);		/* also y_i */
+  blas_free(x_vec);		/* also y_i */
 }
 
 	/* end BLAS_zdot_d_z_testgen */

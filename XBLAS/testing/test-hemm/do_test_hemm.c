@@ -40,7 +40,6 @@
 
 #define NUM_DATA 7
 
-
 void do_test_zhemm_z_c(int m, int n,
 		       int ntests, int *seed, double thresh, int debug,
 		       float test_prob, double *min_ratio, double *max_ratio,
@@ -69,13 +68,12 @@ void do_test_zhemm_z_c(int m, int n,
 
   double rin[2];
   double rout[2];
-  double tail_r_true_elem[2];
-  double head_r_true_elem[2];
+  double head_r_true_elem[2], tail_r_true_elem[2];
 
   enum blas_order_type order_type;
   enum blas_side_type side_type;
   enum blas_uplo_type uplo_type;
-  enum blas_prec_type prec_type;
+  enum blas_prec_type prec;
 
   int order_val, uplo_val, side_val;
   int lda_val, ldb_val, ldc_val;
@@ -106,8 +104,8 @@ void do_test_zhemm_z_c(int m, int n,
   double *ratios;
 
   /* true result calculated by testgen, in double-double */
-  double *tail_r_true;
-  double *head_r_true;
+  double *head_r_true, *tail_r_true;
+
 
   FPU_FIX_DECL;
 
@@ -185,12 +183,9 @@ void do_test_zhemm_z_c(int m, int n,
     b_vec[i + 1] = 0.0;
   }
 
-  tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && tail_r_true == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && head_r_true == NULL) {
+  tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
+  if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
@@ -219,7 +214,6 @@ void do_test_zhemm_z_c(int m, int n,
 
     /* vary beta */
     for (beta_val = BETA_START; beta_val <= BETA_END; beta_val++) {
-
       beta_flag = 0;
       switch (beta_val) {
       case 0:
@@ -235,10 +229,9 @@ void do_test_zhemm_z_c(int m, int n,
 
 
       eps_int = power(2, -BITS_D);
-      prec_type = blas_prec_double;
-      un_int =
-	pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-	    (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+      un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		   (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+      prec = blas_prec_double;
 
       /* vary norm -- underflow, approx 1, overflow */
       for (norm = NORM_START; norm <= NORM_END; norm++) {
@@ -425,10 +418,10 @@ void do_test_zhemm_z_c(int m, int n,
 				   norm, alpha_val, beta_val);
 
 			    /* print out info */
-			    printf("alpha[0]=%.24e, alpha[1]=%.24e", alpha[0],
+			    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
 				   alpha[1]);;
 			    printf("   ");
-			    printf("beta[0]=%.24e, beta[1]=%.24e", beta[0],
+			    printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
 				   beta[1]);;
 			    printf("\n");
 
@@ -541,13 +534,12 @@ void do_test_zhemm_c_z(int m, int n,
 
   double rin[2];
   double rout[2];
-  double tail_r_true_elem[2];
-  double head_r_true_elem[2];
+  double head_r_true_elem[2], tail_r_true_elem[2];
 
   enum blas_order_type order_type;
   enum blas_side_type side_type;
   enum blas_uplo_type uplo_type;
-  enum blas_prec_type prec_type;
+  enum blas_prec_type prec;
 
   int order_val, uplo_val, side_val;
   int lda_val, ldb_val, ldc_val;
@@ -578,8 +570,8 @@ void do_test_zhemm_c_z(int m, int n,
   double *ratios;
 
   /* true result calculated by testgen, in double-double */
-  double *tail_r_true;
-  double *head_r_true;
+  double *head_r_true, *tail_r_true;
+
 
   FPU_FIX_DECL;
 
@@ -657,12 +649,9 @@ void do_test_zhemm_c_z(int m, int n,
     b_vec[i + 1] = 0.0;
   }
 
-  tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && tail_r_true == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && head_r_true == NULL) {
+  tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
+  if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
@@ -691,7 +680,6 @@ void do_test_zhemm_c_z(int m, int n,
 
     /* vary beta */
     for (beta_val = BETA_START; beta_val <= BETA_END; beta_val++) {
-
       beta_flag = 0;
       switch (beta_val) {
       case 0:
@@ -707,10 +695,9 @@ void do_test_zhemm_c_z(int m, int n,
 
 
       eps_int = power(2, -BITS_D);
-      prec_type = blas_prec_double;
-      un_int =
-	pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-	    (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+      un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		   (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+      prec = blas_prec_double;
 
       /* vary norm -- underflow, approx 1, overflow */
       for (norm = NORM_START; norm <= NORM_END; norm++) {
@@ -897,10 +884,10 @@ void do_test_zhemm_c_z(int m, int n,
 				   norm, alpha_val, beta_val);
 
 			    /* print out info */
-			    printf("alpha[0]=%.24e, alpha[1]=%.24e", alpha[0],
+			    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
 				   alpha[1]);;
 			    printf("   ");
-			    printf("beta[0]=%.24e, beta[1]=%.24e", beta[0],
+			    printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
 				   beta[1]);;
 			    printf("\n");
 
@@ -1013,13 +1000,12 @@ void do_test_zhemm_c_c(int m, int n,
 
   double rin[2];
   double rout[2];
-  double tail_r_true_elem[2];
-  double head_r_true_elem[2];
+  double head_r_true_elem[2], tail_r_true_elem[2];
 
   enum blas_order_type order_type;
   enum blas_side_type side_type;
   enum blas_uplo_type uplo_type;
-  enum blas_prec_type prec_type;
+  enum blas_prec_type prec;
 
   int order_val, uplo_val, side_val;
   int lda_val, ldb_val, ldc_val;
@@ -1050,8 +1036,8 @@ void do_test_zhemm_c_c(int m, int n,
   double *ratios;
 
   /* true result calculated by testgen, in double-double */
-  double *tail_r_true;
-  double *head_r_true;
+  double *head_r_true, *tail_r_true;
+
 
   FPU_FIX_DECL;
 
@@ -1129,12 +1115,9 @@ void do_test_zhemm_c_c(int m, int n,
     b_vec[i + 1] = 0.0;
   }
 
-  tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && tail_r_true == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && head_r_true == NULL) {
+  tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
+  if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
@@ -1163,7 +1146,6 @@ void do_test_zhemm_c_c(int m, int n,
 
     /* vary beta */
     for (beta_val = BETA_START; beta_val <= BETA_END; beta_val++) {
-
       beta_flag = 0;
       switch (beta_val) {
       case 0:
@@ -1179,10 +1161,9 @@ void do_test_zhemm_c_c(int m, int n,
 
 
       eps_int = power(2, -BITS_D);
-      prec_type = blas_prec_double;
-      un_int =
-	pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-	    (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+      un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		   (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+      prec = blas_prec_double;
 
       /* vary norm -- underflow, approx 1, overflow */
       for (norm = NORM_START; norm <= NORM_END; norm++) {
@@ -1369,10 +1350,10 @@ void do_test_zhemm_c_c(int m, int n,
 				   norm, alpha_val, beta_val);
 
 			    /* print out info */
-			    printf("alpha[0]=%.24e, alpha[1]=%.24e", alpha[0],
+			    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
 				   alpha[1]);;
 			    printf("   ");
-			    printf("beta[0]=%.24e, beta[1]=%.24e", beta[0],
+			    printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
 				   beta[1]);;
 			    printf("\n");
 
@@ -1485,13 +1466,12 @@ void do_test_chemm_c_s(int m, int n,
 
   float rin[2];
   float rout[2];
-  double tail_r_true_elem[2];
-  double head_r_true_elem[2];
+  double head_r_true_elem[2], tail_r_true_elem[2];
 
   enum blas_order_type order_type;
   enum blas_side_type side_type;
   enum blas_uplo_type uplo_type;
-  enum blas_prec_type prec_type;
+  enum blas_prec_type prec;
 
   int order_val, uplo_val, side_val;
   int lda_val, ldb_val, ldc_val;
@@ -1522,8 +1502,8 @@ void do_test_chemm_c_s(int m, int n,
   double *ratios;
 
   /* true result calculated by testgen, in double-double */
-  double *tail_r_true;
-  double *head_r_true;
+  double *head_r_true, *tail_r_true;
+
 
   FPU_FIX_DECL;
 
@@ -1599,12 +1579,9 @@ void do_test_chemm_c_s(int m, int n,
     b_vec[i] = 0.0;
   }
 
-  tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && tail_r_true == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && head_r_true == NULL) {
+  tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
+  if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
@@ -1633,7 +1610,6 @@ void do_test_chemm_c_s(int m, int n,
 
     /* vary beta */
     for (beta_val = BETA_START; beta_val <= BETA_END; beta_val++) {
-
       beta_flag = 0;
       switch (beta_val) {
       case 0:
@@ -1649,10 +1625,9 @@ void do_test_chemm_c_s(int m, int n,
 
 
       eps_int = power(2, -BITS_S);
-      prec_type = blas_prec_single;
-      un_int =
-	pow((double) BLAS_fpinfo_x(blas_base, blas_prec_single),
-	    (double) BLAS_fpinfo_x(blas_emin, blas_prec_single));
+      un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_single),
+		   (double) BLAS_fpinfo_x(blas_emin, blas_prec_single));
+      prec = blas_prec_single;
 
       /* vary norm -- underflow, approx 1, overflow */
       for (norm = NORM_START; norm <= NORM_END; norm++) {
@@ -1839,10 +1814,10 @@ void do_test_chemm_c_s(int m, int n,
 				   norm, alpha_val, beta_val);
 
 			    /* print out info */
-			    printf("alpha[0]=%.12e, alpha[1]=%.12e", alpha[0],
+			    printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
 				   alpha[1]);;
 			    printf("   ");
-			    printf("beta[0]=%.12e, beta[1]=%.12e", beta[0],
+			    printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
 				   beta[1]);;
 			    printf("\n");
 
@@ -1955,13 +1930,12 @@ void do_test_zhemm_z_d(int m, int n,
 
   double rin[2];
   double rout[2];
-  double tail_r_true_elem[2];
-  double head_r_true_elem[2];
+  double head_r_true_elem[2], tail_r_true_elem[2];
 
   enum blas_order_type order_type;
   enum blas_side_type side_type;
   enum blas_uplo_type uplo_type;
-  enum blas_prec_type prec_type;
+  enum blas_prec_type prec;
 
   int order_val, uplo_val, side_val;
   int lda_val, ldb_val, ldc_val;
@@ -1992,8 +1966,8 @@ void do_test_zhemm_z_d(int m, int n,
   double *ratios;
 
   /* true result calculated by testgen, in double-double */
-  double *tail_r_true;
-  double *head_r_true;
+  double *head_r_true, *tail_r_true;
+
 
   FPU_FIX_DECL;
 
@@ -2069,12 +2043,9 @@ void do_test_zhemm_z_d(int m, int n,
     b_vec[i] = 0.0;
   }
 
-  tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && tail_r_true == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && head_r_true == NULL) {
+  tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
+  if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
@@ -2103,7 +2074,6 @@ void do_test_zhemm_z_d(int m, int n,
 
     /* vary beta */
     for (beta_val = BETA_START; beta_val <= BETA_END; beta_val++) {
-
       beta_flag = 0;
       switch (beta_val) {
       case 0:
@@ -2119,10 +2089,9 @@ void do_test_zhemm_z_d(int m, int n,
 
 
       eps_int = power(2, -BITS_D);
-      prec_type = blas_prec_double;
-      un_int =
-	pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-	    (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+      un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		   (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+      prec = blas_prec_double;
 
       /* vary norm -- underflow, approx 1, overflow */
       for (norm = NORM_START; norm <= NORM_END; norm++) {
@@ -2309,10 +2278,10 @@ void do_test_zhemm_z_d(int m, int n,
 				   norm, alpha_val, beta_val);
 
 			    /* print out info */
-			    printf("alpha[0]=%.24e, alpha[1]=%.24e", alpha[0],
+			    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
 				   alpha[1]);;
 			    printf("   ");
-			    printf("beta[0]=%.24e, beta[1]=%.24e", beta[0],
+			    printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
 				   beta[1]);;
 			    printf("\n");
 
@@ -2397,7 +2366,6 @@ end:
   *num_bad_ratio = bad_ratio_count;
 
 }
-
 void do_test_chemm_x(int m, int n,
 		     int ntests, int *seed, double thresh, int debug,
 		     float test_prob, double *min_ratio, double *max_ratio,
@@ -2426,13 +2394,12 @@ void do_test_chemm_x(int m, int n,
 
   float rin[2];
   float rout[2];
-  double tail_r_true_elem[2];
-  double head_r_true_elem[2];
+  double head_r_true_elem[2], tail_r_true_elem[2];
 
   enum blas_order_type order_type;
   enum blas_side_type side_type;
   enum blas_uplo_type uplo_type;
-  enum blas_prec_type prec_type;
+  enum blas_prec_type prec;
 
   int order_val, uplo_val, side_val;
   int lda_val, ldb_val, ldc_val;
@@ -2463,8 +2430,8 @@ void do_test_chemm_x(int m, int n,
   double *ratios;
 
   /* true result calculated by testgen, in double-double */
-  double *tail_r_true;
-  double *head_r_true;
+  double *head_r_true, *tail_r_true;
+
 
   FPU_FIX_DECL;
 
@@ -2542,12 +2509,9 @@ void do_test_chemm_x(int m, int n,
     b_vec[i + 1] = 0.0;
   }
 
-  tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && tail_r_true == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && head_r_true == NULL) {
+  tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
+  if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
@@ -2576,7 +2540,6 @@ void do_test_chemm_x(int m, int n,
 
     /* vary beta */
     for (beta_val = BETA_START; beta_val <= BETA_END; beta_val++) {
-
       beta_flag = 0;
       switch (beta_val) {
       case 0:
@@ -2593,25 +2556,25 @@ void do_test_chemm_x(int m, int n,
 
       /* varying extra precs */
       for (prec_val = PREC_START; prec_val <= PREC_END; prec_val++) {
-
 	switch (prec_val) {
 	case 0:
 	  eps_int = power(2, -BITS_S);
-	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_single), (double) BLAS_fpinfo_x(blas_emin, blas_prec_single));	/* get single underflow */
-	  prec_type = blas_prec_single;
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_single),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_single));
+	  prec = blas_prec_single;
 	  break;
 	case 1:
 	  eps_int = power(2, -BITS_D);
-	  un_int =
-	    pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-		(double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
-	  prec_type = blas_prec_double;
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+	  prec = blas_prec_double;
 	  break;
 	case 2:
 	default:
 	  eps_int = power(2, -BITS_E);
-	  un_int = power(2, -1022 + 53 + 1);
-	  prec_type = blas_prec_extra;
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_extra),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_extra));
+	  prec = blas_prec_extra;
 	  break;
 	}
 
@@ -2701,7 +2664,7 @@ void do_test_chemm_x(int m, int n,
 			  FPU_FIX_STOP;
 			  BLAS_chemm_x(order_type, side_type,
 				       uplo_type, m, n, alpha, a, lda, b, ldb,
-				       beta, c, ldc, prec_type);
+				       beta, c, ldc, prec);
 			  FPU_FIX_START;
 
 			  /* now compute the ratio using test_BLAS_xdot */
@@ -2802,10 +2765,10 @@ void do_test_chemm_x(int m, int n,
 				     norm, alpha_val, beta_val);
 
 			      /* print out info */
-			      printf("alpha[0]=%.12e, alpha[1]=%.12e",
-				     alpha[0], alpha[1]);;
+			      printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
+				     alpha[1]);;
 			      printf("   ");
-			      printf("beta[0]=%.12e, beta[1]=%.12e", beta[0],
+			      printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
 				     beta[1]);;
 			      printf("\n");
 
@@ -2921,13 +2884,12 @@ void do_test_zhemm_x(int m, int n,
 
   double rin[2];
   double rout[2];
-  double tail_r_true_elem[2];
-  double head_r_true_elem[2];
+  double head_r_true_elem[2], tail_r_true_elem[2];
 
   enum blas_order_type order_type;
   enum blas_side_type side_type;
   enum blas_uplo_type uplo_type;
-  enum blas_prec_type prec_type;
+  enum blas_prec_type prec;
 
   int order_val, uplo_val, side_val;
   int lda_val, ldb_val, ldc_val;
@@ -2958,8 +2920,8 @@ void do_test_zhemm_x(int m, int n,
   double *ratios;
 
   /* true result calculated by testgen, in double-double */
-  double *tail_r_true;
-  double *head_r_true;
+  double *head_r_true, *tail_r_true;
+
 
   FPU_FIX_DECL;
 
@@ -3037,12 +2999,9 @@ void do_test_zhemm_x(int m, int n,
     b_vec[i + 1] = 0.0;
   }
 
-  tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && tail_r_true == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && head_r_true == NULL) {
+  tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
+  if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
@@ -3071,7 +3030,6 @@ void do_test_zhemm_x(int m, int n,
 
     /* vary beta */
     for (beta_val = BETA_START; beta_val <= BETA_END; beta_val++) {
-
       beta_flag = 0;
       switch (beta_val) {
       case 0:
@@ -3088,25 +3046,25 @@ void do_test_zhemm_x(int m, int n,
 
       /* varying extra precs */
       for (prec_val = PREC_START; prec_val <= PREC_END; prec_val++) {
-
 	switch (prec_val) {
 	case 0:
 	  eps_int = power(2, -BITS_D);
-	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double), (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));	/* get double underflow */
-	  prec_type = blas_prec_double;
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+	  prec = blas_prec_double;
 	  break;
 	case 1:
 	  eps_int = power(2, -BITS_D);
-	  un_int =
-	    pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-		(double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
-	  prec_type = blas_prec_double;
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+	  prec = blas_prec_double;
 	  break;
 	case 2:
 	default:
 	  eps_int = power(2, -BITS_E);
-	  un_int = power(2, -1022 + 53 + 1);
-	  prec_type = blas_prec_extra;
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_extra),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_extra));
+	  prec = blas_prec_extra;
 	  break;
 	}
 
@@ -3196,7 +3154,7 @@ void do_test_zhemm_x(int m, int n,
 			  FPU_FIX_STOP;
 			  BLAS_zhemm_x(order_type, side_type,
 				       uplo_type, m, n, alpha, a, lda, b, ldb,
-				       beta, c, ldc, prec_type);
+				       beta, c, ldc, prec);
 			  FPU_FIX_START;
 
 			  /* now compute the ratio using test_BLAS_xdot */
@@ -3297,10 +3255,10 @@ void do_test_zhemm_x(int m, int n,
 				     norm, alpha_val, beta_val);
 
 			      /* print out info */
-			      printf("alpha[0]=%.24e, alpha[1]=%.24e",
+			      printf("alpha[0]=%.16e, alpha[1]=%.16e",
 				     alpha[0], alpha[1]);;
 			      printf("   ");
-			      printf("beta[0]=%.24e, beta[1]=%.24e", beta[0],
+			      printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
 				     beta[1]);;
 			      printf("\n");
 
@@ -3417,13 +3375,12 @@ void do_test_zhemm_z_c_x(int m, int n,
 
   double rin[2];
   double rout[2];
-  double tail_r_true_elem[2];
-  double head_r_true_elem[2];
+  double head_r_true_elem[2], tail_r_true_elem[2];
 
   enum blas_order_type order_type;
   enum blas_side_type side_type;
   enum blas_uplo_type uplo_type;
-  enum blas_prec_type prec_type;
+  enum blas_prec_type prec;
 
   int order_val, uplo_val, side_val;
   int lda_val, ldb_val, ldc_val;
@@ -3454,8 +3411,8 @@ void do_test_zhemm_z_c_x(int m, int n,
   double *ratios;
 
   /* true result calculated by testgen, in double-double */
-  double *tail_r_true;
-  double *head_r_true;
+  double *head_r_true, *tail_r_true;
+
 
   FPU_FIX_DECL;
 
@@ -3533,12 +3490,9 @@ void do_test_zhemm_z_c_x(int m, int n,
     b_vec[i + 1] = 0.0;
   }
 
-  tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && tail_r_true == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && head_r_true == NULL) {
+  tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
+  if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
@@ -3567,7 +3521,6 @@ void do_test_zhemm_z_c_x(int m, int n,
 
     /* vary beta */
     for (beta_val = BETA_START; beta_val <= BETA_END; beta_val++) {
-
       beta_flag = 0;
       switch (beta_val) {
       case 0:
@@ -3584,25 +3537,25 @@ void do_test_zhemm_z_c_x(int m, int n,
 
       /* varying extra precs */
       for (prec_val = PREC_START; prec_val <= PREC_END; prec_val++) {
-
 	switch (prec_val) {
 	case 0:
 	  eps_int = power(2, -BITS_D);
-	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double), (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));	/* get double underflow */
-	  prec_type = blas_prec_double;
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+	  prec = blas_prec_double;
 	  break;
 	case 1:
 	  eps_int = power(2, -BITS_D);
-	  un_int =
-	    pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-		(double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
-	  prec_type = blas_prec_double;
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+	  prec = blas_prec_double;
 	  break;
 	case 2:
 	default:
 	  eps_int = power(2, -BITS_E);
-	  un_int = power(2, -1022 + 53 + 1);
-	  prec_type = blas_prec_extra;
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_extra),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_extra));
+	  prec = blas_prec_extra;
 	  break;
 	}
 
@@ -3692,7 +3645,7 @@ void do_test_zhemm_z_c_x(int m, int n,
 			  FPU_FIX_STOP;
 			  BLAS_zhemm_z_c_x(order_type, side_type,
 					   uplo_type, m, n, alpha, a, lda, b,
-					   ldb, beta, c, ldc, prec_type);
+					   ldb, beta, c, ldc, prec);
 			  FPU_FIX_START;
 
 			  /* now compute the ratio using test_BLAS_xdot */
@@ -3793,10 +3746,10 @@ void do_test_zhemm_z_c_x(int m, int n,
 				     norm, alpha_val, beta_val);
 
 			      /* print out info */
-			      printf("alpha[0]=%.24e, alpha[1]=%.24e",
+			      printf("alpha[0]=%.16e, alpha[1]=%.16e",
 				     alpha[0], alpha[1]);;
 			      printf("   ");
-			      printf("beta[0]=%.24e, beta[1]=%.24e", beta[0],
+			      printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
 				     beta[1]);;
 			      printf("\n");
 
@@ -3913,13 +3866,12 @@ void do_test_zhemm_c_z_x(int m, int n,
 
   double rin[2];
   double rout[2];
-  double tail_r_true_elem[2];
-  double head_r_true_elem[2];
+  double head_r_true_elem[2], tail_r_true_elem[2];
 
   enum blas_order_type order_type;
   enum blas_side_type side_type;
   enum blas_uplo_type uplo_type;
-  enum blas_prec_type prec_type;
+  enum blas_prec_type prec;
 
   int order_val, uplo_val, side_val;
   int lda_val, ldb_val, ldc_val;
@@ -3950,8 +3902,8 @@ void do_test_zhemm_c_z_x(int m, int n,
   double *ratios;
 
   /* true result calculated by testgen, in double-double */
-  double *tail_r_true;
-  double *head_r_true;
+  double *head_r_true, *tail_r_true;
+
 
   FPU_FIX_DECL;
 
@@ -4029,12 +3981,9 @@ void do_test_zhemm_c_z_x(int m, int n,
     b_vec[i + 1] = 0.0;
   }
 
-  tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && tail_r_true == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && head_r_true == NULL) {
+  tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
+  if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
@@ -4063,7 +4012,6 @@ void do_test_zhemm_c_z_x(int m, int n,
 
     /* vary beta */
     for (beta_val = BETA_START; beta_val <= BETA_END; beta_val++) {
-
       beta_flag = 0;
       switch (beta_val) {
       case 0:
@@ -4080,25 +4028,25 @@ void do_test_zhemm_c_z_x(int m, int n,
 
       /* varying extra precs */
       for (prec_val = PREC_START; prec_val <= PREC_END; prec_val++) {
-
 	switch (prec_val) {
 	case 0:
 	  eps_int = power(2, -BITS_D);
-	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double), (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));	/* get double underflow */
-	  prec_type = blas_prec_double;
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+	  prec = blas_prec_double;
 	  break;
 	case 1:
 	  eps_int = power(2, -BITS_D);
-	  un_int =
-	    pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-		(double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
-	  prec_type = blas_prec_double;
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+	  prec = blas_prec_double;
 	  break;
 	case 2:
 	default:
 	  eps_int = power(2, -BITS_E);
-	  un_int = power(2, -1022 + 53 + 1);
-	  prec_type = blas_prec_extra;
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_extra),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_extra));
+	  prec = blas_prec_extra;
 	  break;
 	}
 
@@ -4188,7 +4136,7 @@ void do_test_zhemm_c_z_x(int m, int n,
 			  FPU_FIX_STOP;
 			  BLAS_zhemm_c_z_x(order_type, side_type,
 					   uplo_type, m, n, alpha, a, lda, b,
-					   ldb, beta, c, ldc, prec_type);
+					   ldb, beta, c, ldc, prec);
 			  FPU_FIX_START;
 
 			  /* now compute the ratio using test_BLAS_xdot */
@@ -4289,10 +4237,10 @@ void do_test_zhemm_c_z_x(int m, int n,
 				     norm, alpha_val, beta_val);
 
 			      /* print out info */
-			      printf("alpha[0]=%.24e, alpha[1]=%.24e",
+			      printf("alpha[0]=%.16e, alpha[1]=%.16e",
 				     alpha[0], alpha[1]);;
 			      printf("   ");
-			      printf("beta[0]=%.24e, beta[1]=%.24e", beta[0],
+			      printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
 				     beta[1]);;
 			      printf("\n");
 
@@ -4409,13 +4357,12 @@ void do_test_zhemm_c_c_x(int m, int n,
 
   double rin[2];
   double rout[2];
-  double tail_r_true_elem[2];
-  double head_r_true_elem[2];
+  double head_r_true_elem[2], tail_r_true_elem[2];
 
   enum blas_order_type order_type;
   enum blas_side_type side_type;
   enum blas_uplo_type uplo_type;
-  enum blas_prec_type prec_type;
+  enum blas_prec_type prec;
 
   int order_val, uplo_val, side_val;
   int lda_val, ldb_val, ldc_val;
@@ -4446,8 +4393,8 @@ void do_test_zhemm_c_c_x(int m, int n,
   double *ratios;
 
   /* true result calculated by testgen, in double-double */
-  double *tail_r_true;
-  double *head_r_true;
+  double *head_r_true, *tail_r_true;
+
 
   FPU_FIX_DECL;
 
@@ -4525,12 +4472,9 @@ void do_test_zhemm_c_c_x(int m, int n,
     b_vec[i + 1] = 0.0;
   }
 
-  tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && tail_r_true == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && head_r_true == NULL) {
+  tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
+  if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
@@ -4559,7 +4503,6 @@ void do_test_zhemm_c_c_x(int m, int n,
 
     /* vary beta */
     for (beta_val = BETA_START; beta_val <= BETA_END; beta_val++) {
-
       beta_flag = 0;
       switch (beta_val) {
       case 0:
@@ -4576,25 +4519,25 @@ void do_test_zhemm_c_c_x(int m, int n,
 
       /* varying extra precs */
       for (prec_val = PREC_START; prec_val <= PREC_END; prec_val++) {
-
 	switch (prec_val) {
 	case 0:
 	  eps_int = power(2, -BITS_D);
-	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double), (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));	/* get double underflow */
-	  prec_type = blas_prec_double;
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+	  prec = blas_prec_double;
 	  break;
 	case 1:
 	  eps_int = power(2, -BITS_D);
-	  un_int =
-	    pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-		(double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
-	  prec_type = blas_prec_double;
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+	  prec = blas_prec_double;
 	  break;
 	case 2:
 	default:
 	  eps_int = power(2, -BITS_E);
-	  un_int = power(2, -1022 + 53 + 1);
-	  prec_type = blas_prec_extra;
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_extra),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_extra));
+	  prec = blas_prec_extra;
 	  break;
 	}
 
@@ -4684,7 +4627,7 @@ void do_test_zhemm_c_c_x(int m, int n,
 			  FPU_FIX_STOP;
 			  BLAS_zhemm_c_c_x(order_type, side_type,
 					   uplo_type, m, n, alpha, a, lda, b,
-					   ldb, beta, c, ldc, prec_type);
+					   ldb, beta, c, ldc, prec);
 			  FPU_FIX_START;
 
 			  /* now compute the ratio using test_BLAS_xdot */
@@ -4785,10 +4728,10 @@ void do_test_zhemm_c_c_x(int m, int n,
 				     norm, alpha_val, beta_val);
 
 			      /* print out info */
-			      printf("alpha[0]=%.24e, alpha[1]=%.24e",
+			      printf("alpha[0]=%.16e, alpha[1]=%.16e",
 				     alpha[0], alpha[1]);;
 			      printf("   ");
-			      printf("beta[0]=%.24e, beta[1]=%.24e", beta[0],
+			      printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
 				     beta[1]);;
 			      printf("\n");
 
@@ -4905,13 +4848,12 @@ void do_test_chemm_c_s_x(int m, int n,
 
   float rin[2];
   float rout[2];
-  double tail_r_true_elem[2];
-  double head_r_true_elem[2];
+  double head_r_true_elem[2], tail_r_true_elem[2];
 
   enum blas_order_type order_type;
   enum blas_side_type side_type;
   enum blas_uplo_type uplo_type;
-  enum blas_prec_type prec_type;
+  enum blas_prec_type prec;
 
   int order_val, uplo_val, side_val;
   int lda_val, ldb_val, ldc_val;
@@ -4942,8 +4884,8 @@ void do_test_chemm_c_s_x(int m, int n,
   double *ratios;
 
   /* true result calculated by testgen, in double-double */
-  double *tail_r_true;
-  double *head_r_true;
+  double *head_r_true, *tail_r_true;
+
 
   FPU_FIX_DECL;
 
@@ -5019,12 +4961,9 @@ void do_test_chemm_c_s_x(int m, int n,
     b_vec[i] = 0.0;
   }
 
-  tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && tail_r_true == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && head_r_true == NULL) {
+  tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
+  if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
@@ -5053,7 +4992,6 @@ void do_test_chemm_c_s_x(int m, int n,
 
     /* vary beta */
     for (beta_val = BETA_START; beta_val <= BETA_END; beta_val++) {
-
       beta_flag = 0;
       switch (beta_val) {
       case 0:
@@ -5070,25 +5008,25 @@ void do_test_chemm_c_s_x(int m, int n,
 
       /* varying extra precs */
       for (prec_val = PREC_START; prec_val <= PREC_END; prec_val++) {
-
 	switch (prec_val) {
 	case 0:
 	  eps_int = power(2, -BITS_S);
-	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_single), (double) BLAS_fpinfo_x(blas_emin, blas_prec_single));	/* get single underflow */
-	  prec_type = blas_prec_single;
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_single),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_single));
+	  prec = blas_prec_single;
 	  break;
 	case 1:
 	  eps_int = power(2, -BITS_D);
-	  un_int =
-	    pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-		(double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
-	  prec_type = blas_prec_double;
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+	  prec = blas_prec_double;
 	  break;
 	case 2:
 	default:
 	  eps_int = power(2, -BITS_E);
-	  un_int = power(2, -1022 + 53 + 1);
-	  prec_type = blas_prec_extra;
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_extra),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_extra));
+	  prec = blas_prec_extra;
 	  break;
 	}
 
@@ -5178,7 +5116,7 @@ void do_test_chemm_c_s_x(int m, int n,
 			  FPU_FIX_STOP;
 			  BLAS_chemm_c_s_x(order_type, side_type,
 					   uplo_type, m, n, alpha, a, lda, b,
-					   ldb, beta, c, ldc, prec_type);
+					   ldb, beta, c, ldc, prec);
 			  FPU_FIX_START;
 
 			  /* now compute the ratio using test_BLAS_xdot */
@@ -5279,10 +5217,10 @@ void do_test_chemm_c_s_x(int m, int n,
 				     norm, alpha_val, beta_val);
 
 			      /* print out info */
-			      printf("alpha[0]=%.12e, alpha[1]=%.12e",
-				     alpha[0], alpha[1]);;
+			      printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
+				     alpha[1]);;
 			      printf("   ");
-			      printf("beta[0]=%.12e, beta[1]=%.12e", beta[0],
+			      printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
 				     beta[1]);;
 			      printf("\n");
 
@@ -5399,13 +5337,12 @@ void do_test_zhemm_z_d_x(int m, int n,
 
   double rin[2];
   double rout[2];
-  double tail_r_true_elem[2];
-  double head_r_true_elem[2];
+  double head_r_true_elem[2], tail_r_true_elem[2];
 
   enum blas_order_type order_type;
   enum blas_side_type side_type;
   enum blas_uplo_type uplo_type;
-  enum blas_prec_type prec_type;
+  enum blas_prec_type prec;
 
   int order_val, uplo_val, side_val;
   int lda_val, ldb_val, ldc_val;
@@ -5436,8 +5373,8 @@ void do_test_zhemm_z_d_x(int m, int n,
   double *ratios;
 
   /* true result calculated by testgen, in double-double */
-  double *tail_r_true;
-  double *head_r_true;
+  double *head_r_true, *tail_r_true;
+
 
   FPU_FIX_DECL;
 
@@ -5513,12 +5450,9 @@ void do_test_zhemm_z_d_x(int m, int n,
     b_vec[i] = 0.0;
   }
 
-  tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && tail_r_true == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && head_r_true == NULL) {
+  tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
+  if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
@@ -5547,7 +5481,6 @@ void do_test_zhemm_z_d_x(int m, int n,
 
     /* vary beta */
     for (beta_val = BETA_START; beta_val <= BETA_END; beta_val++) {
-
       beta_flag = 0;
       switch (beta_val) {
       case 0:
@@ -5564,25 +5497,25 @@ void do_test_zhemm_z_d_x(int m, int n,
 
       /* varying extra precs */
       for (prec_val = PREC_START; prec_val <= PREC_END; prec_val++) {
-
 	switch (prec_val) {
 	case 0:
 	  eps_int = power(2, -BITS_D);
-	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double), (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));	/* get double underflow */
-	  prec_type = blas_prec_double;
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+	  prec = blas_prec_double;
 	  break;
 	case 1:
 	  eps_int = power(2, -BITS_D);
-	  un_int =
-	    pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-		(double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
-	  prec_type = blas_prec_double;
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+	  prec = blas_prec_double;
 	  break;
 	case 2:
 	default:
 	  eps_int = power(2, -BITS_E);
-	  un_int = power(2, -1022 + 53 + 1);
-	  prec_type = blas_prec_extra;
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_extra),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_extra));
+	  prec = blas_prec_extra;
 	  break;
 	}
 
@@ -5672,7 +5605,7 @@ void do_test_zhemm_z_d_x(int m, int n,
 			  FPU_FIX_STOP;
 			  BLAS_zhemm_z_d_x(order_type, side_type,
 					   uplo_type, m, n, alpha, a, lda, b,
-					   ldb, beta, c, ldc, prec_type);
+					   ldb, beta, c, ldc, prec);
 			  FPU_FIX_START;
 
 			  /* now compute the ratio using test_BLAS_xdot */
@@ -5773,10 +5706,10 @@ void do_test_zhemm_z_d_x(int m, int n,
 				     norm, alpha_val, beta_val);
 
 			      /* print out info */
-			      printf("alpha[0]=%.24e, alpha[1]=%.24e",
+			      printf("alpha[0]=%.16e, alpha[1]=%.16e",
 				     alpha[0], alpha[1]);;
 			      printf("   ");
-			      printf("beta[0]=%.24e, beta[1]=%.24e", beta[0],
+			      printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
 				     beta[1]);;
 			      printf("\n");
 
@@ -5865,8 +5798,6 @@ end:
 
 }
 
-
-
 int main(int argc, char **argv)
 {
   int nsizes, ntests, debug;
@@ -5917,6 +5848,8 @@ int main(int argc, char **argv)
   printf("Testing %s...\n", base_routine);
   printf("INPUT: nsizes = %d, ntests = %d, thresh = %4.2f, debug = %d\n\n",
 	 nsizes, ntests, thresh, debug);
+
+
 
 
 
@@ -6034,44 +5967,6 @@ int main(int argc, char **argv)
   printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
 	 fname, total_bad_ratios, total_tests, max_ratio);
 
-  fname = "BLAS_zhemm_z_d";
-  printf("Testing %s...\n", fname);
-  total_tests = 0;
-  total_bad_ratios = 0;
-  total_min_ratio = 1e308;
-  total_max_ratio = 0.0;
-  for (i = 0; i < nsizes; i++) {
-    m = mn_data[i][0];
-    n = mn_data[i][1];
-
-    do_test_zhemm_z_d(m, n, ntests, &seed, thresh, debug,
-		      test_prob, &min_ratio, &max_ratio, &num_bad_ratio,
-		      &num_tests);
-
-    if (debug == 2 || (debug == 1 && num_bad_ratio > 0)) {
-      printf("   [%d %d]: ", m, n);
-      printf("bad/total = %d/%d, min_ratio = %g, max_ratio = %g\n",
-	     num_bad_ratio, num_tests, min_ratio, max_ratio);
-    }
-
-    total_tests += num_tests;
-    total_bad_ratios += num_bad_ratio;
-    if (total_min_ratio > min_ratio)
-      total_min_ratio = min_ratio;
-    if (total_max_ratio < max_ratio)
-      total_max_ratio = max_ratio;
-  }
-
-  nr_routines++;
-  if (total_bad_ratios == 0)
-    printf("PASS> ");
-  else {
-    printf("FAIL> ");
-    nr_failed_routines++;
-  }
-  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
-	 fname, total_bad_ratios, total_tests, max_ratio);
-
   fname = "BLAS_chemm_c_s";
   printf("Testing %s...\n", fname);
   total_tests = 0;
@@ -6110,6 +6005,43 @@ int main(int argc, char **argv)
   printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
 	 fname, total_bad_ratios, total_tests, max_ratio);
 
+  fname = "BLAS_zhemm_z_d";
+  printf("Testing %s...\n", fname);
+  total_tests = 0;
+  total_bad_ratios = 0;
+  total_min_ratio = 1e308;
+  total_max_ratio = 0.0;
+  for (i = 0; i < nsizes; i++) {
+    m = mn_data[i][0];
+    n = mn_data[i][1];
+
+    do_test_zhemm_z_d(m, n, ntests, &seed, thresh, debug,
+		      test_prob, &min_ratio, &max_ratio, &num_bad_ratio,
+		      &num_tests);
+
+    if (debug == 2 || (debug == 1 && num_bad_ratio > 0)) {
+      printf("   [%d %d]: ", m, n);
+      printf("bad/total = %d/%d, min_ratio = %g, max_ratio = %g\n",
+	     num_bad_ratio, num_tests, min_ratio, max_ratio);
+    }
+
+    total_tests += num_tests;
+    total_bad_ratios += num_bad_ratio;
+    if (total_min_ratio > min_ratio)
+      total_min_ratio = min_ratio;
+    if (total_max_ratio < max_ratio)
+      total_max_ratio = max_ratio;
+  }
+
+  nr_routines++;
+  if (total_bad_ratios == 0)
+    printf("PASS> ");
+  else {
+    printf("FAIL> ");
+    nr_failed_routines++;
+  }
+  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
+	 fname, total_bad_ratios, total_tests, max_ratio);
 
   fname = "BLAS_chemm_x";
   printf("Testing %s...\n", fname);
@@ -6376,7 +6308,6 @@ int main(int argc, char **argv)
   }
   printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
 	 fname, total_bad_ratios, total_tests, max_ratio);
-
 
 
 

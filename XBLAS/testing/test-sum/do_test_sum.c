@@ -13,9 +13,6 @@
 
 
 
-
-
-
 void do_test_ssum_x(int n, int ntests, int *seed, double thresh,
 		    int debug, float test_prob, double *min_ratio,
 		    double *max_ratio, int *num_bad_ratio, int *num_tests)
@@ -86,7 +83,7 @@ void do_test_ssum_x(int n, int ntests, int *seed, double thresh,
   float sum;
 
   int prec_val;
-  enum blas_prec_type prec_type;
+  enum blas_prec_type prec;
   int x_gen_i, incx_gen;
 
   FPU_FIX_DECL;
@@ -133,28 +130,29 @@ void do_test_ssum_x(int n, int ntests, int *seed, double thresh,
   bad_ratio_count = 0;
 
 
+  /* varying extra precs */
   for (prec_val = PREC_START; prec_val <= PREC_END; prec_val++) {
     switch (prec_val) {
     case 0:
       eps_int = power(2, -BITS_S);
-      prec_type = blas_prec_single;
-      un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_single), (double) BLAS_fpinfo_x(blas_emin, blas_prec_single));	/* get single underflow */
+      un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_single),
+		   (double) BLAS_fpinfo_x(blas_emin, blas_prec_single));
+      prec = blas_prec_single;
       break;
     case 1:
       eps_int = power(2, -BITS_D);
-      un_int =
-	pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-	    (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
-      prec_type = blas_prec_double;
+      un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		   (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+      prec = blas_prec_double;
       break;
     case 2:
     default:
       eps_int = power(2, -BITS_E);
-      un_int = power(2, -1022 + 53 + 1);
-      prec_type = blas_prec_extra;
+      un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_extra),
+		   (double) BLAS_fpinfo_x(blas_emin, blas_prec_extra));
+      prec = blas_prec_extra;
       break;
     }
-
 
     for (norm = NORM_START; norm <= NORM_END; norm++) {
 
@@ -194,7 +192,7 @@ void do_test_ssum_x(int n, int ntests, int *seed, double thresh,
 	  }
 
 	  FPU_FIX_STOP;
-	  BLAS_ssum_x(n, x, incx_val, &sum, prec_type);
+	  BLAS_ssum_x(n, x, incx_val, &sum, prec);
 	  FPU_FIX_START;
 
 	  test_BLAS_ssum(n, sum, head_sum_true, tail_sum_true, x, incx_val,
@@ -209,19 +207,18 @@ void do_test_ssum_x(int n, int ntests, int *seed, double thresh,
 	      printf("Seed = %d\n", saved_seed);
 	      printf("n = %d\n", n);
 	      printf("norm = %d\n", norm);
-
-	      switch (prec_type) {
+	      switch (prec) {
 	      case blas_prec_single:
-		printf("Single\n");
+		printf("single ");
 		break;
 	      case blas_prec_double:
-		printf("Double\n");
+		printf("double ");
 		break;
 	      case blas_prec_indigenous:
-		printf("Indigenous\n");
+		printf("indigenous ");
 		break;
 	      case blas_prec_extra:
-		printf("Extra\n");
+		printf("extra ");
 		break;
 	      }
 
@@ -240,7 +237,6 @@ void do_test_ssum_x(int n, int ntests, int *seed, double thresh,
 	      printf("ratio = %.4e\n", ratio);
 	      printf("head_sum_true=%.16e, tail_sum_true=%.16e",
 		     head_sum_true, tail_sum_true);
-	      printf("\n");
 
 	    }			/* end of if (debug == 3) */
 	  }
@@ -338,7 +334,7 @@ void do_test_dsum_x(int n, int ntests, int *seed, double thresh,
   double sum;
 
   int prec_val;
-  enum blas_prec_type prec_type;
+  enum blas_prec_type prec;
   int x_gen_i, incx_gen;
 
   FPU_FIX_DECL;
@@ -385,28 +381,29 @@ void do_test_dsum_x(int n, int ntests, int *seed, double thresh,
   bad_ratio_count = 0;
 
 
+  /* varying extra precs */
   for (prec_val = PREC_START; prec_val <= PREC_END; prec_val++) {
     switch (prec_val) {
     case 0:
       eps_int = power(2, -BITS_D);
-      prec_type = blas_prec_double;
-      un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double), (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));	/* get double underflow */
+      un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		   (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+      prec = blas_prec_double;
       break;
     case 1:
       eps_int = power(2, -BITS_D);
-      un_int =
-	pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-	    (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
-      prec_type = blas_prec_double;
+      un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		   (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+      prec = blas_prec_double;
       break;
     case 2:
     default:
       eps_int = power(2, -BITS_E);
-      un_int = power(2, -1022 + 53 + 1);
-      prec_type = blas_prec_extra;
+      un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_extra),
+		   (double) BLAS_fpinfo_x(blas_emin, blas_prec_extra));
+      prec = blas_prec_extra;
       break;
     }
-
 
     for (norm = NORM_START; norm <= NORM_END; norm++) {
 
@@ -446,7 +443,7 @@ void do_test_dsum_x(int n, int ntests, int *seed, double thresh,
 	  }
 
 	  FPU_FIX_STOP;
-	  BLAS_dsum_x(n, x, incx_val, &sum, prec_type);
+	  BLAS_dsum_x(n, x, incx_val, &sum, prec);
 	  FPU_FIX_START;
 
 	  test_BLAS_dsum(n, sum, head_sum_true, tail_sum_true, x, incx_val,
@@ -461,19 +458,18 @@ void do_test_dsum_x(int n, int ntests, int *seed, double thresh,
 	      printf("Seed = %d\n", saved_seed);
 	      printf("n = %d\n", n);
 	      printf("norm = %d\n", norm);
-
-	      switch (prec_type) {
+	      switch (prec) {
 	      case blas_prec_single:
-		printf("Single\n");
+		printf("single ");
 		break;
 	      case blas_prec_double:
-		printf("Double\n");
+		printf("double ");
 		break;
 	      case blas_prec_indigenous:
-		printf("Indigenous\n");
+		printf("indigenous ");
 		break;
 	      case blas_prec_extra:
-		printf("Extra\n");
+		printf("extra ");
 		break;
 	      }
 
@@ -492,7 +488,6 @@ void do_test_dsum_x(int n, int ntests, int *seed, double thresh,
 	      printf("ratio = %.4e\n", ratio);
 	      printf("head_sum_true=%.16e, tail_sum_true=%.16e",
 		     head_sum_true, tail_sum_true);
-	      printf("\n");
 
 	    }			/* end of if (debug == 3) */
 	  }
@@ -590,7 +585,7 @@ void do_test_csum_x(int n, int ntests, int *seed, double thresh,
   float sum[2];
 
   int prec_val;
-  enum blas_prec_type prec_type;
+  enum blas_prec_type prec;
   int x_gen_i, incx_gen;
 
   FPU_FIX_DECL;
@@ -639,28 +634,29 @@ void do_test_csum_x(int n, int ntests, int *seed, double thresh,
   bad_ratio_count = 0;
 
 
+  /* varying extra precs */
   for (prec_val = PREC_START; prec_val <= PREC_END; prec_val++) {
     switch (prec_val) {
     case 0:
       eps_int = power(2, -BITS_S);
-      prec_type = blas_prec_single;
-      un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_single), (double) BLAS_fpinfo_x(blas_emin, blas_prec_single));	/* get single underflow */
+      un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_single),
+		   (double) BLAS_fpinfo_x(blas_emin, blas_prec_single));
+      prec = blas_prec_single;
       break;
     case 1:
       eps_int = power(2, -BITS_D);
-      un_int =
-	pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-	    (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
-      prec_type = blas_prec_double;
+      un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		   (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+      prec = blas_prec_double;
       break;
     case 2:
     default:
       eps_int = power(2, -BITS_E);
-      un_int = power(2, -1022 + 53 + 1);
-      prec_type = blas_prec_extra;
+      un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_extra),
+		   (double) BLAS_fpinfo_x(blas_emin, blas_prec_extra));
+      prec = blas_prec_extra;
       break;
     }
-
 
     for (norm = NORM_START; norm <= NORM_END; norm++) {
 
@@ -702,7 +698,7 @@ void do_test_csum_x(int n, int ntests, int *seed, double thresh,
 	  }
 
 	  FPU_FIX_STOP;
-	  BLAS_csum_x(n, x, incx_val, sum, prec_type);
+	  BLAS_csum_x(n, x, incx_val, sum, prec);
 	  FPU_FIX_START;
 
 	  test_BLAS_csum(n, sum, head_sum_true, tail_sum_true, x, incx_val,
@@ -717,19 +713,18 @@ void do_test_csum_x(int n, int ntests, int *seed, double thresh,
 	      printf("Seed = %d\n", saved_seed);
 	      printf("n = %d\n", n);
 	      printf("norm = %d\n", norm);
-
-	      switch (prec_type) {
+	      switch (prec) {
 	      case blas_prec_single:
-		printf("Single\n");
+		printf("single ");
 		break;
 	      case blas_prec_double:
-		printf("Double\n");
+		printf("double ");
 		break;
 	      case blas_prec_indigenous:
-		printf("Indigenous\n");
+		printf("indigenous ");
 		break;
 	      case blas_prec_extra:
-		printf("Extra\n");
+		printf("extra ");
 		break;
 	      }
 
@@ -739,8 +734,7 @@ void do_test_csum_x(int n, int ntests, int *seed, double thresh,
 	      xi = (incx < 0) ? -(n - 1) * incx : 0;
 	      printf(" [ ");
 	      for (j = 0; j < n; j++, xi += incx) {
-		printf("x[%d]=%.8e, x[%d+1]=%.8e", xi, x[xi], xi + 1,
-		       x[xi + 1]);
+		printf("x[%d]=%.8e, x[%d+1]=%.8e", xi, x[xi], xi, x[xi + 1]);
 	      }
 	      printf("]\n");
 
@@ -751,7 +745,6 @@ void do_test_csum_x(int n, int ntests, int *seed, double thresh,
 		("head_sum_true[0]=%.16e, head_sum_true[1]=%.16e,\nTAIL(sum_true)[0]=%.16e, tail_sum_true[1]=%.16e",
 		 head_sum_true[0], head_sum_true[1], tail_sum_true[0],
 		 tail_sum_true[1]);
-	      printf("\n");
 
 	    }			/* end of if (debug == 3) */
 	  }
@@ -849,7 +842,7 @@ void do_test_zsum_x(int n, int ntests, int *seed, double thresh,
   double sum[2];
 
   int prec_val;
-  enum blas_prec_type prec_type;
+  enum blas_prec_type prec;
   int x_gen_i, incx_gen;
 
   FPU_FIX_DECL;
@@ -898,28 +891,29 @@ void do_test_zsum_x(int n, int ntests, int *seed, double thresh,
   bad_ratio_count = 0;
 
 
+  /* varying extra precs */
   for (prec_val = PREC_START; prec_val <= PREC_END; prec_val++) {
     switch (prec_val) {
     case 0:
       eps_int = power(2, -BITS_D);
-      prec_type = blas_prec_double;
-      un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double), (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));	/* get double underflow */
+      un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		   (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+      prec = blas_prec_double;
       break;
     case 1:
       eps_int = power(2, -BITS_D);
-      un_int =
-	pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-	    (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
-      prec_type = blas_prec_double;
+      un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		   (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+      prec = blas_prec_double;
       break;
     case 2:
     default:
       eps_int = power(2, -BITS_E);
-      un_int = power(2, -1022 + 53 + 1);
-      prec_type = blas_prec_extra;
+      un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_extra),
+		   (double) BLAS_fpinfo_x(blas_emin, blas_prec_extra));
+      prec = blas_prec_extra;
       break;
     }
-
 
     for (norm = NORM_START; norm <= NORM_END; norm++) {
 
@@ -961,7 +955,7 @@ void do_test_zsum_x(int n, int ntests, int *seed, double thresh,
 	  }
 
 	  FPU_FIX_STOP;
-	  BLAS_zsum_x(n, x, incx_val, sum, prec_type);
+	  BLAS_zsum_x(n, x, incx_val, sum, prec);
 	  FPU_FIX_START;
 
 	  test_BLAS_zsum(n, sum, head_sum_true, tail_sum_true, x, incx_val,
@@ -976,19 +970,18 @@ void do_test_zsum_x(int n, int ntests, int *seed, double thresh,
 	      printf("Seed = %d\n", saved_seed);
 	      printf("n = %d\n", n);
 	      printf("norm = %d\n", norm);
-
-	      switch (prec_type) {
+	      switch (prec) {
 	      case blas_prec_single:
-		printf("Single\n");
+		printf("single ");
 		break;
 	      case blas_prec_double:
-		printf("Double\n");
+		printf("double ");
 		break;
 	      case blas_prec_indigenous:
-		printf("Indigenous\n");
+		printf("indigenous ");
 		break;
 	      case blas_prec_extra:
-		printf("Extra\n");
+		printf("extra ");
 		break;
 	      }
 
@@ -998,7 +991,7 @@ void do_test_zsum_x(int n, int ntests, int *seed, double thresh,
 	      xi = (incx < 0) ? -(n - 1) * incx : 0;
 	      printf(" [ ");
 	      for (j = 0; j < n; j++, xi += incx) {
-		printf("x[%d]=%.16e, x[%d+1]=%.16e", xi, x[xi], xi + 1,
+		printf("x[%d]=%.16e, x[%d+1]=%.16e", xi, x[xi], xi,
 		       x[xi + 1]);
 	      }
 	      printf("]\n");
@@ -1010,7 +1003,6 @@ void do_test_zsum_x(int n, int ntests, int *seed, double thresh,
 		("head_sum_true[0]=%.16e, head_sum_true[1]=%.16e,\nTAIL(sum_true)[0]=%.16e, tail_sum_true[1]=%.16e",
 		 head_sum_true[0], head_sum_true[1], tail_sum_true[0],
 		 tail_sum_true[1]);
-	      printf("\n");
 
 	    }			/* end of if (debug == 3) */
 	  }
@@ -1038,8 +1030,6 @@ void do_test_zsum_x(int n, int ntests, int *seed, double thresh,
 
 
 }
-
-
 
 int main(int argc, char **argv)
 {
@@ -1087,6 +1077,8 @@ int main(int argc, char **argv)
   printf("Testing %s...\n", base_routine);
   printf("INPUT: nsizes = %d, ntests = %d, thresh = %4.2f, debug = %d\n\n",
 	 nsizes, ntests, thresh, debug);
+
+
 
 
 
@@ -1229,7 +1221,6 @@ int main(int argc, char **argv)
   printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
 	 fname, total_bad_ratios, total_tests, max_ratio);
   printf("\n");
-
 
 
 

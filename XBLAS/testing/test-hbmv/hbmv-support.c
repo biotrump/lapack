@@ -1,12 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "blas_extended.h"
+#include "blas_extended_private.h"
 #include "cblas_test.h"
-
-#ifndef MIN
-#define MIN(x, y) ( ((x)<(y)) ? (x) : (y) )
-#define MAX(x, y) ( ((y)<(x)) ? (x) : (y) )
-#endif
 
 
 

@@ -11,13 +11,6 @@
 
 
 
-
-
-
-
-
-
-
 /* 0 -- 2 */
 #define TRANSA_START    0
 #define TRANSA_END      2
@@ -65,10 +58,11 @@
 #define NUM_DATA 9
 
 
-void do_test_dgemm_d_s
-  (int m, int n, int k,
-   int ntests, int *seed, double thresh, int debug, float test_prob,
-   double *min_ratio, double *max_ratio, int *num_bad_ratio, int *num_tests) {
+void do_test_dgemm_d_s(int m, int n, int k, int ntests, int *seed,
+		       double thresh, int debug, float test_prob,
+		       double *min_ratio, double *max_ratio,
+		       int *num_bad_ratio, int *num_tests)
+{
 
   /* Function name */
   const char fname[] = "BLAS_dgemm_d_s";
@@ -129,13 +123,8 @@ void do_test_dgemm_d_s
   double *ratios;
 
   /* true result calculated by testgen, in double-double */
-  double *tail_r_true;
-  double *head_r_true;
-  double tail_r_true_elem;
-  double head_r_true_elem;
+  double *head_r_true, *tail_r_true;
 
-  double rin;
-  double rout;
   FPU_FIX_DECL;
 
   if (n < 0 || m < 0 || k < 0 || ntests < 0)
@@ -205,11 +194,8 @@ void do_test_dgemm_d_s
   }
 
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double));
-  if (2 * m * n > 0 && head_r_true == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double));
-  if (2 * m * n > 0 && tail_r_true == NULL) {
+  if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
@@ -237,7 +223,6 @@ void do_test_dgemm_d_s
 
     /* vary beta */
     for (beta_val = BETA_START; beta_val <= BETA_END; beta_val++) {
-
       beta_flag = 0;
       switch (beta_val) {
       case 0:
@@ -252,10 +237,9 @@ void do_test_dgemm_d_s
 
 
       eps_int = power(2, -BITS_D);
+      un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		   (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
       prec = blas_prec_double;
-      un_int =
-	pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-	    (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
 
       /* vary norm -- underflow, approx 1, overflow */
       for (norm = NORM_START; norm <= NORM_END; norm++) {
@@ -387,15 +371,11 @@ void do_test_dgemm_d_s
 			    sgemm_copy_col(order, transb,
 					   k, n, b, ldb, b_vec, j);
 
-			    rin = c_gen[cij];
-			    rout = c[cij];
-			    head_r_true_elem = head_r_true[cij];
-			    tail_r_true_elem = tail_r_true[cij];
-
 			    test_BLAS_ddot_d_s(k, blas_no_conj,
-					       alpha, beta, rin, rout,
-					       head_r_true_elem,
-					       tail_r_true_elem, a_vec, 1,
+					       alpha, beta, c_gen[cij],
+					       c[cij],
+					       head_r_true[cij],
+					       tail_r_true[cij], a_vec, 1,
 					       b_vec, 1, eps_int, un_int,
 					       &ratios[rij]);
 
@@ -422,39 +402,42 @@ void do_test_dgemm_d_s
 			    printf("\nm %d   n %d   k %d\n", m, n, k);
 			    printf("LDA %d  LDB %d  LDC %d\n", lda, ldb, ldc);
 
+			    printf("A:");
 			    switch (transa) {
 			    case blas_no_trans:
-			      printf("A no_trans\n");
+			      printf("no_trans ");
 			      break;
 			    case blas_trans:
-			      printf("A trans\n");
+			      printf("trans ");
 			      break;
 			    case blas_conj_trans:
-			      printf("A conj_trans\n");
+			      printf("conj_trans ");
 			      break;
 			    }
-
+			    printf("B:");
 			    switch (transb) {
 			    case blas_no_trans:
-			      printf("B no_trans\n");
+			      printf("no_trans ");
 			      break;
 			    case blas_trans:
-			      printf("B trans\n");
+			      printf("trans ");
 			      break;
 			    case blas_conj_trans:
-			      printf("B conj_trans\n");
+			      printf("conj_trans ");
 			      break;
 			    }
 
 			    printf("NORM %d, ALPHA %d, BETA %d\n",
 				   norm, alpha_val, beta_val);
 
-			    if (order == blas_rowmajor) {
-			      printf("Row Major\n");
-			    } else {
-			      printf("Col Major\n");
+			    switch (order) {
+			    case blas_rowmajor:
+			      printf("row_major ");
+			      break;
+			    case blas_colmajor:
+			      printf("col_major ");
+			      break;
 			    }
-
 
 
 			    if (randomize_val == 0)
@@ -548,10 +531,11 @@ end:
   *num_bad_ratio = bad_ratio_count;
 
 }
-void do_test_dgemm_s_d
-  (int m, int n, int k,
-   int ntests, int *seed, double thresh, int debug, float test_prob,
-   double *min_ratio, double *max_ratio, int *num_bad_ratio, int *num_tests) {
+void do_test_dgemm_s_d(int m, int n, int k, int ntests, int *seed,
+		       double thresh, int debug, float test_prob,
+		       double *min_ratio, double *max_ratio,
+		       int *num_bad_ratio, int *num_tests)
+{
 
   /* Function name */
   const char fname[] = "BLAS_dgemm_s_d";
@@ -612,13 +596,8 @@ void do_test_dgemm_s_d
   double *ratios;
 
   /* true result calculated by testgen, in double-double */
-  double *tail_r_true;
-  double *head_r_true;
-  double tail_r_true_elem;
-  double head_r_true_elem;
+  double *head_r_true, *tail_r_true;
 
-  double rin;
-  double rout;
   FPU_FIX_DECL;
 
   if (n < 0 || m < 0 || k < 0 || ntests < 0)
@@ -688,11 +667,8 @@ void do_test_dgemm_s_d
   }
 
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double));
-  if (2 * m * n > 0 && head_r_true == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double));
-  if (2 * m * n > 0 && tail_r_true == NULL) {
+  if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
@@ -720,7 +696,6 @@ void do_test_dgemm_s_d
 
     /* vary beta */
     for (beta_val = BETA_START; beta_val <= BETA_END; beta_val++) {
-
       beta_flag = 0;
       switch (beta_val) {
       case 0:
@@ -735,10 +710,9 @@ void do_test_dgemm_s_d
 
 
       eps_int = power(2, -BITS_D);
+      un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		   (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
       prec = blas_prec_double;
-      un_int =
-	pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-	    (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
 
       /* vary norm -- underflow, approx 1, overflow */
       for (norm = NORM_START; norm <= NORM_END; norm++) {
@@ -870,15 +844,11 @@ void do_test_dgemm_s_d
 			    dgemm_copy_col(order, transb,
 					   k, n, b, ldb, b_vec, j);
 
-			    rin = c_gen[cij];
-			    rout = c[cij];
-			    head_r_true_elem = head_r_true[cij];
-			    tail_r_true_elem = tail_r_true[cij];
-
 			    test_BLAS_ddot_s_d(k, blas_no_conj,
-					       alpha, beta, rin, rout,
-					       head_r_true_elem,
-					       tail_r_true_elem, a_vec, 1,
+					       alpha, beta, c_gen[cij],
+					       c[cij],
+					       head_r_true[cij],
+					       tail_r_true[cij], a_vec, 1,
 					       b_vec, 1, eps_int, un_int,
 					       &ratios[rij]);
 
@@ -905,39 +875,42 @@ void do_test_dgemm_s_d
 			    printf("\nm %d   n %d   k %d\n", m, n, k);
 			    printf("LDA %d  LDB %d  LDC %d\n", lda, ldb, ldc);
 
+			    printf("A:");
 			    switch (transa) {
 			    case blas_no_trans:
-			      printf("A no_trans\n");
+			      printf("no_trans ");
 			      break;
 			    case blas_trans:
-			      printf("A trans\n");
+			      printf("trans ");
 			      break;
 			    case blas_conj_trans:
-			      printf("A conj_trans\n");
+			      printf("conj_trans ");
 			      break;
 			    }
-
+			    printf("B:");
 			    switch (transb) {
 			    case blas_no_trans:
-			      printf("B no_trans\n");
+			      printf("no_trans ");
 			      break;
 			    case blas_trans:
-			      printf("B trans\n");
+			      printf("trans ");
 			      break;
 			    case blas_conj_trans:
-			      printf("B conj_trans\n");
+			      printf("conj_trans ");
 			      break;
 			    }
 
 			    printf("NORM %d, ALPHA %d, BETA %d\n",
 				   norm, alpha_val, beta_val);
 
-			    if (order == blas_rowmajor) {
-			      printf("Row Major\n");
-			    } else {
-			      printf("Col Major\n");
+			    switch (order) {
+			    case blas_rowmajor:
+			      printf("row_major ");
+			      break;
+			    case blas_colmajor:
+			      printf("col_major ");
+			      break;
 			    }
-
 
 
 			    if (randomize_val == 0)
@@ -1031,10 +1004,11 @@ end:
   *num_bad_ratio = bad_ratio_count;
 
 }
-void do_test_dgemm_s_s
-  (int m, int n, int k,
-   int ntests, int *seed, double thresh, int debug, float test_prob,
-   double *min_ratio, double *max_ratio, int *num_bad_ratio, int *num_tests) {
+void do_test_dgemm_s_s(int m, int n, int k, int ntests, int *seed,
+		       double thresh, int debug, float test_prob,
+		       double *min_ratio, double *max_ratio,
+		       int *num_bad_ratio, int *num_tests)
+{
 
   /* Function name */
   const char fname[] = "BLAS_dgemm_s_s";
@@ -1095,13 +1069,8 @@ void do_test_dgemm_s_s
   double *ratios;
 
   /* true result calculated by testgen, in double-double */
-  double *tail_r_true;
-  double *head_r_true;
-  double tail_r_true_elem;
-  double head_r_true_elem;
+  double *head_r_true, *tail_r_true;
 
-  double rin;
-  double rout;
   FPU_FIX_DECL;
 
   if (n < 0 || m < 0 || k < 0 || ntests < 0)
@@ -1171,11 +1140,8 @@ void do_test_dgemm_s_s
   }
 
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double));
-  if (2 * m * n > 0 && head_r_true == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double));
-  if (2 * m * n > 0 && tail_r_true == NULL) {
+  if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
@@ -1203,7 +1169,6 @@ void do_test_dgemm_s_s
 
     /* vary beta */
     for (beta_val = BETA_START; beta_val <= BETA_END; beta_val++) {
-
       beta_flag = 0;
       switch (beta_val) {
       case 0:
@@ -1218,10 +1183,9 @@ void do_test_dgemm_s_s
 
 
       eps_int = power(2, -BITS_D);
+      un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		   (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
       prec = blas_prec_double;
-      un_int =
-	pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-	    (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
 
       /* vary norm -- underflow, approx 1, overflow */
       for (norm = NORM_START; norm <= NORM_END; norm++) {
@@ -1353,15 +1317,11 @@ void do_test_dgemm_s_s
 			    sgemm_copy_col(order, transb,
 					   k, n, b, ldb, b_vec, j);
 
-			    rin = c_gen[cij];
-			    rout = c[cij];
-			    head_r_true_elem = head_r_true[cij];
-			    tail_r_true_elem = tail_r_true[cij];
-
 			    test_BLAS_ddot_s_s(k, blas_no_conj,
-					       alpha, beta, rin, rout,
-					       head_r_true_elem,
-					       tail_r_true_elem, a_vec, 1,
+					       alpha, beta, c_gen[cij],
+					       c[cij],
+					       head_r_true[cij],
+					       tail_r_true[cij], a_vec, 1,
 					       b_vec, 1, eps_int, un_int,
 					       &ratios[rij]);
 
@@ -1388,39 +1348,42 @@ void do_test_dgemm_s_s
 			    printf("\nm %d   n %d   k %d\n", m, n, k);
 			    printf("LDA %d  LDB %d  LDC %d\n", lda, ldb, ldc);
 
+			    printf("A:");
 			    switch (transa) {
 			    case blas_no_trans:
-			      printf("A no_trans\n");
+			      printf("no_trans ");
 			      break;
 			    case blas_trans:
-			      printf("A trans\n");
+			      printf("trans ");
 			      break;
 			    case blas_conj_trans:
-			      printf("A conj_trans\n");
+			      printf("conj_trans ");
 			      break;
 			    }
-
+			    printf("B:");
 			    switch (transb) {
 			    case blas_no_trans:
-			      printf("B no_trans\n");
+			      printf("no_trans ");
 			      break;
 			    case blas_trans:
-			      printf("B trans\n");
+			      printf("trans ");
 			      break;
 			    case blas_conj_trans:
-			      printf("B conj_trans\n");
+			      printf("conj_trans ");
 			      break;
 			    }
 
 			    printf("NORM %d, ALPHA %d, BETA %d\n",
 				   norm, alpha_val, beta_val);
 
-			    if (order == blas_rowmajor) {
-			      printf("Row Major\n");
-			    } else {
-			      printf("Col Major\n");
+			    switch (order) {
+			    case blas_rowmajor:
+			      printf("row_major ");
+			      break;
+			    case blas_colmajor:
+			      printf("col_major ");
+			      break;
 			    }
-
 
 
 			    if (randomize_val == 0)
@@ -1514,11 +1477,11 @@ end:
   *num_bad_ratio = bad_ratio_count;
 
 }
-
-void do_test_zgemm_z_c
-  (int m, int n, int k,
-   int ntests, int *seed, double thresh, int debug, float test_prob,
-   double *min_ratio, double *max_ratio, int *num_bad_ratio, int *num_tests) {
+void do_test_zgemm_z_c(int m, int n, int k, int ntests, int *seed,
+		       double thresh, int debug, float test_prob,
+		       double *min_ratio, double *max_ratio,
+		       int *num_bad_ratio, int *num_tests)
+{
 
   /* Function name */
   const char fname[] = "BLAS_zgemm_z_c";
@@ -1579,13 +1542,9 @@ void do_test_zgemm_z_c
   double *ratios;
 
   /* true result calculated by testgen, in double-double */
-  double *tail_r_true;
-  double *head_r_true;
-  double tail_r_true_elem[2];
-  double head_r_true_elem[2];
+  double *head_r_true, *tail_r_true;
 
-  double rin[2];
-  double rout[2];
+
   FPU_FIX_DECL;
 
   if (n < 0 || m < 0 || k < 0 || ntests < 0)
@@ -1661,11 +1620,8 @@ void do_test_zgemm_z_c
   }
 
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && head_r_true == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && tail_r_true == NULL) {
+  if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
@@ -1694,7 +1650,6 @@ void do_test_zgemm_z_c
 
     /* vary beta */
     for (beta_val = BETA_START; beta_val <= BETA_END; beta_val++) {
-
       beta_flag = 0;
       switch (beta_val) {
       case 0:
@@ -1710,10 +1665,9 @@ void do_test_zgemm_z_c
 
 
       eps_int = power(2, -BITS_D);
+      un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		   (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
       prec = blas_prec_double;
-      un_int =
-	pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-	    (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
 
       /* vary norm -- underflow, approx 1, overflow */
       for (norm = NORM_START; norm <= NORM_END; norm++) {
@@ -1845,19 +1799,11 @@ void do_test_zgemm_z_c
 			    cgemm_copy_col(order, transb,
 					   k, n, b, ldb, b_vec, j);
 
-			    rin[0] = c_gen[cij];
-			    rin[1] = c_gen[cij + 1];
-			    rout[0] = c[cij];
-			    rout[1] = c[cij + 1];
-			    head_r_true_elem[0] = head_r_true[cij];
-			    head_r_true_elem[1] = head_r_true[cij + 1];
-			    tail_r_true_elem[0] = tail_r_true[cij];
-			    tail_r_true_elem[1] = tail_r_true[cij + 1];
-
 			    test_BLAS_zdot_z_c(k, blas_no_conj,
-					       alpha, beta, rin, rout,
-					       head_r_true_elem,
-					       tail_r_true_elem, a_vec, 1,
+					       alpha, beta, &c_gen[cij],
+					       &c[cij],
+					       &head_r_true[cij],
+					       &tail_r_true[cij], a_vec, 1,
 					       b_vec, 1, eps_int, un_int,
 					       &ratios[rij]);
 
@@ -1884,39 +1830,42 @@ void do_test_zgemm_z_c
 			    printf("\nm %d   n %d   k %d\n", m, n, k);
 			    printf("LDA %d  LDB %d  LDC %d\n", lda, ldb, ldc);
 
+			    printf("A:");
 			    switch (transa) {
 			    case blas_no_trans:
-			      printf("A no_trans\n");
+			      printf("no_trans ");
 			      break;
 			    case blas_trans:
-			      printf("A trans\n");
+			      printf("trans ");
 			      break;
 			    case blas_conj_trans:
-			      printf("A conj_trans\n");
+			      printf("conj_trans ");
 			      break;
 			    }
-
+			    printf("B:");
 			    switch (transb) {
 			    case blas_no_trans:
-			      printf("B no_trans\n");
+			      printf("no_trans ");
 			      break;
 			    case blas_trans:
-			      printf("B trans\n");
+			      printf("trans ");
 			      break;
 			    case blas_conj_trans:
-			      printf("B conj_trans\n");
+			      printf("conj_trans ");
 			      break;
 			    }
 
 			    printf("NORM %d, ALPHA %d, BETA %d\n",
 				   norm, alpha_val, beta_val);
 
-			    if (order == blas_rowmajor) {
-			      printf("Row Major\n");
-			    } else {
-			      printf("Col Major\n");
+			    switch (order) {
+			    case blas_rowmajor:
+			      printf("row_major ");
+			      break;
+			    case blas_colmajor:
+			      printf("col_major ");
+			      break;
 			    }
-
 
 
 			    if (randomize_val == 0)
@@ -2012,10 +1961,11 @@ end:
   *num_bad_ratio = bad_ratio_count;
 
 }
-void do_test_zgemm_c_z
-  (int m, int n, int k,
-   int ntests, int *seed, double thresh, int debug, float test_prob,
-   double *min_ratio, double *max_ratio, int *num_bad_ratio, int *num_tests) {
+void do_test_zgemm_c_z(int m, int n, int k, int ntests, int *seed,
+		       double thresh, int debug, float test_prob,
+		       double *min_ratio, double *max_ratio,
+		       int *num_bad_ratio, int *num_tests)
+{
 
   /* Function name */
   const char fname[] = "BLAS_zgemm_c_z";
@@ -2076,13 +2026,9 @@ void do_test_zgemm_c_z
   double *ratios;
 
   /* true result calculated by testgen, in double-double */
-  double *tail_r_true;
-  double *head_r_true;
-  double tail_r_true_elem[2];
-  double head_r_true_elem[2];
+  double *head_r_true, *tail_r_true;
 
-  double rin[2];
-  double rout[2];
+
   FPU_FIX_DECL;
 
   if (n < 0 || m < 0 || k < 0 || ntests < 0)
@@ -2158,11 +2104,8 @@ void do_test_zgemm_c_z
   }
 
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && head_r_true == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && tail_r_true == NULL) {
+  if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
@@ -2191,7 +2134,6 @@ void do_test_zgemm_c_z
 
     /* vary beta */
     for (beta_val = BETA_START; beta_val <= BETA_END; beta_val++) {
-
       beta_flag = 0;
       switch (beta_val) {
       case 0:
@@ -2207,10 +2149,9 @@ void do_test_zgemm_c_z
 
 
       eps_int = power(2, -BITS_D);
+      un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		   (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
       prec = blas_prec_double;
-      un_int =
-	pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-	    (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
 
       /* vary norm -- underflow, approx 1, overflow */
       for (norm = NORM_START; norm <= NORM_END; norm++) {
@@ -2342,19 +2283,11 @@ void do_test_zgemm_c_z
 			    zgemm_copy_col(order, transb,
 					   k, n, b, ldb, b_vec, j);
 
-			    rin[0] = c_gen[cij];
-			    rin[1] = c_gen[cij + 1];
-			    rout[0] = c[cij];
-			    rout[1] = c[cij + 1];
-			    head_r_true_elem[0] = head_r_true[cij];
-			    head_r_true_elem[1] = head_r_true[cij + 1];
-			    tail_r_true_elem[0] = tail_r_true[cij];
-			    tail_r_true_elem[1] = tail_r_true[cij + 1];
-
 			    test_BLAS_zdot_c_z(k, blas_no_conj,
-					       alpha, beta, rin, rout,
-					       head_r_true_elem,
-					       tail_r_true_elem, a_vec, 1,
+					       alpha, beta, &c_gen[cij],
+					       &c[cij],
+					       &head_r_true[cij],
+					       &tail_r_true[cij], a_vec, 1,
 					       b_vec, 1, eps_int, un_int,
 					       &ratios[rij]);
 
@@ -2381,39 +2314,42 @@ void do_test_zgemm_c_z
 			    printf("\nm %d   n %d   k %d\n", m, n, k);
 			    printf("LDA %d  LDB %d  LDC %d\n", lda, ldb, ldc);
 
+			    printf("A:");
 			    switch (transa) {
 			    case blas_no_trans:
-			      printf("A no_trans\n");
+			      printf("no_trans ");
 			      break;
 			    case blas_trans:
-			      printf("A trans\n");
+			      printf("trans ");
 			      break;
 			    case blas_conj_trans:
-			      printf("A conj_trans\n");
+			      printf("conj_trans ");
 			      break;
 			    }
-
+			    printf("B:");
 			    switch (transb) {
 			    case blas_no_trans:
-			      printf("B no_trans\n");
+			      printf("no_trans ");
 			      break;
 			    case blas_trans:
-			      printf("B trans\n");
+			      printf("trans ");
 			      break;
 			    case blas_conj_trans:
-			      printf("B conj_trans\n");
+			      printf("conj_trans ");
 			      break;
 			    }
 
 			    printf("NORM %d, ALPHA %d, BETA %d\n",
 				   norm, alpha_val, beta_val);
 
-			    if (order == blas_rowmajor) {
-			      printf("Row Major\n");
-			    } else {
-			      printf("Col Major\n");
+			    switch (order) {
+			    case blas_rowmajor:
+			      printf("row_major ");
+			      break;
+			    case blas_colmajor:
+			      printf("col_major ");
+			      break;
 			    }
-
 
 
 			    if (randomize_val == 0)
@@ -2509,10 +2445,11 @@ end:
   *num_bad_ratio = bad_ratio_count;
 
 }
-void do_test_zgemm_c_c
-  (int m, int n, int k,
-   int ntests, int *seed, double thresh, int debug, float test_prob,
-   double *min_ratio, double *max_ratio, int *num_bad_ratio, int *num_tests) {
+void do_test_zgemm_c_c(int m, int n, int k, int ntests, int *seed,
+		       double thresh, int debug, float test_prob,
+		       double *min_ratio, double *max_ratio,
+		       int *num_bad_ratio, int *num_tests)
+{
 
   /* Function name */
   const char fname[] = "BLAS_zgemm_c_c";
@@ -2573,13 +2510,9 @@ void do_test_zgemm_c_c
   double *ratios;
 
   /* true result calculated by testgen, in double-double */
-  double *tail_r_true;
-  double *head_r_true;
-  double tail_r_true_elem[2];
-  double head_r_true_elem[2];
+  double *head_r_true, *tail_r_true;
 
-  double rin[2];
-  double rout[2];
+
   FPU_FIX_DECL;
 
   if (n < 0 || m < 0 || k < 0 || ntests < 0)
@@ -2655,11 +2588,8 @@ void do_test_zgemm_c_c
   }
 
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && head_r_true == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && tail_r_true == NULL) {
+  if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
@@ -2688,7 +2618,6 @@ void do_test_zgemm_c_c
 
     /* vary beta */
     for (beta_val = BETA_START; beta_val <= BETA_END; beta_val++) {
-
       beta_flag = 0;
       switch (beta_val) {
       case 0:
@@ -2704,10 +2633,9 @@ void do_test_zgemm_c_c
 
 
       eps_int = power(2, -BITS_D);
+      un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		   (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
       prec = blas_prec_double;
-      un_int =
-	pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-	    (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
 
       /* vary norm -- underflow, approx 1, overflow */
       for (norm = NORM_START; norm <= NORM_END; norm++) {
@@ -2839,19 +2767,11 @@ void do_test_zgemm_c_c
 			    cgemm_copy_col(order, transb,
 					   k, n, b, ldb, b_vec, j);
 
-			    rin[0] = c_gen[cij];
-			    rin[1] = c_gen[cij + 1];
-			    rout[0] = c[cij];
-			    rout[1] = c[cij + 1];
-			    head_r_true_elem[0] = head_r_true[cij];
-			    head_r_true_elem[1] = head_r_true[cij + 1];
-			    tail_r_true_elem[0] = tail_r_true[cij];
-			    tail_r_true_elem[1] = tail_r_true[cij + 1];
-
 			    test_BLAS_zdot_c_c(k, blas_no_conj,
-					       alpha, beta, rin, rout,
-					       head_r_true_elem,
-					       tail_r_true_elem, a_vec, 1,
+					       alpha, beta, &c_gen[cij],
+					       &c[cij],
+					       &head_r_true[cij],
+					       &tail_r_true[cij], a_vec, 1,
 					       b_vec, 1, eps_int, un_int,
 					       &ratios[rij]);
 
@@ -2878,39 +2798,42 @@ void do_test_zgemm_c_c
 			    printf("\nm %d   n %d   k %d\n", m, n, k);
 			    printf("LDA %d  LDB %d  LDC %d\n", lda, ldb, ldc);
 
+			    printf("A:");
 			    switch (transa) {
 			    case blas_no_trans:
-			      printf("A no_trans\n");
+			      printf("no_trans ");
 			      break;
 			    case blas_trans:
-			      printf("A trans\n");
+			      printf("trans ");
 			      break;
 			    case blas_conj_trans:
-			      printf("A conj_trans\n");
+			      printf("conj_trans ");
 			      break;
 			    }
-
+			    printf("B:");
 			    switch (transb) {
 			    case blas_no_trans:
-			      printf("B no_trans\n");
+			      printf("no_trans ");
 			      break;
 			    case blas_trans:
-			      printf("B trans\n");
+			      printf("trans ");
 			      break;
 			    case blas_conj_trans:
-			      printf("B conj_trans\n");
+			      printf("conj_trans ");
 			      break;
 			    }
 
 			    printf("NORM %d, ALPHA %d, BETA %d\n",
 				   norm, alpha_val, beta_val);
 
-			    if (order == blas_rowmajor) {
-			      printf("Row Major\n");
-			    } else {
-			      printf("Col Major\n");
+			    switch (order) {
+			    case blas_rowmajor:
+			      printf("row_major ");
+			      break;
+			    case blas_colmajor:
+			      printf("col_major ");
+			      break;
 			    }
-
 
 
 			    if (randomize_val == 0)
@@ -3006,10 +2929,11 @@ end:
   *num_bad_ratio = bad_ratio_count;
 
 }
-void do_test_cgemm_c_s
-  (int m, int n, int k,
-   int ntests, int *seed, double thresh, int debug, float test_prob,
-   double *min_ratio, double *max_ratio, int *num_bad_ratio, int *num_tests) {
+void do_test_cgemm_c_s(int m, int n, int k, int ntests, int *seed,
+		       double thresh, int debug, float test_prob,
+		       double *min_ratio, double *max_ratio,
+		       int *num_bad_ratio, int *num_tests)
+{
 
   /* Function name */
   const char fname[] = "BLAS_cgemm_c_s";
@@ -3070,13 +2994,9 @@ void do_test_cgemm_c_s
   double *ratios;
 
   /* true result calculated by testgen, in double-double */
-  double *tail_r_true;
-  double *head_r_true;
-  double tail_r_true_elem[2];
-  double head_r_true_elem[2];
+  double *head_r_true, *tail_r_true;
 
-  float rin[2];
-  float rout[2];
+
   FPU_FIX_DECL;
 
   if (n < 0 || m < 0 || k < 0 || ntests < 0)
@@ -3150,11 +3070,8 @@ void do_test_cgemm_c_s
   }
 
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && head_r_true == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && tail_r_true == NULL) {
+  if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
@@ -3183,7 +3100,6 @@ void do_test_cgemm_c_s
 
     /* vary beta */
     for (beta_val = BETA_START; beta_val <= BETA_END; beta_val++) {
-
       beta_flag = 0;
       switch (beta_val) {
       case 0:
@@ -3199,10 +3115,9 @@ void do_test_cgemm_c_s
 
 
       eps_int = power(2, -BITS_S);
+      un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_single),
+		   (double) BLAS_fpinfo_x(blas_emin, blas_prec_single));
       prec = blas_prec_single;
-      un_int =
-	pow((double) BLAS_fpinfo_x(blas_base, blas_prec_single),
-	    (double) BLAS_fpinfo_x(blas_emin, blas_prec_single));
 
       /* vary norm -- underflow, approx 1, overflow */
       for (norm = NORM_START; norm <= NORM_END; norm++) {
@@ -3334,19 +3249,11 @@ void do_test_cgemm_c_s
 			    sgemm_copy_col(order, transb,
 					   k, n, b, ldb, b_vec, j);
 
-			    rin[0] = c_gen[cij];
-			    rin[1] = c_gen[cij + 1];
-			    rout[0] = c[cij];
-			    rout[1] = c[cij + 1];
-			    head_r_true_elem[0] = head_r_true[cij];
-			    head_r_true_elem[1] = head_r_true[cij + 1];
-			    tail_r_true_elem[0] = tail_r_true[cij];
-			    tail_r_true_elem[1] = tail_r_true[cij + 1];
-
 			    test_BLAS_cdot_c_s(k, blas_no_conj,
-					       alpha, beta, rin, rout,
-					       head_r_true_elem,
-					       tail_r_true_elem, a_vec, 1,
+					       alpha, beta, &c_gen[cij],
+					       &c[cij],
+					       &head_r_true[cij],
+					       &tail_r_true[cij], a_vec, 1,
 					       b_vec, 1, eps_int, un_int,
 					       &ratios[rij]);
 
@@ -3373,39 +3280,42 @@ void do_test_cgemm_c_s
 			    printf("\nm %d   n %d   k %d\n", m, n, k);
 			    printf("LDA %d  LDB %d  LDC %d\n", lda, ldb, ldc);
 
+			    printf("A:");
 			    switch (transa) {
 			    case blas_no_trans:
-			      printf("A no_trans\n");
+			      printf("no_trans ");
 			      break;
 			    case blas_trans:
-			      printf("A trans\n");
+			      printf("trans ");
 			      break;
 			    case blas_conj_trans:
-			      printf("A conj_trans\n");
+			      printf("conj_trans ");
 			      break;
 			    }
-
+			    printf("B:");
 			    switch (transb) {
 			    case blas_no_trans:
-			      printf("B no_trans\n");
+			      printf("no_trans ");
 			      break;
 			    case blas_trans:
-			      printf("B trans\n");
+			      printf("trans ");
 			      break;
 			    case blas_conj_trans:
-			      printf("B conj_trans\n");
+			      printf("conj_trans ");
 			      break;
 			    }
 
 			    printf("NORM %d, ALPHA %d, BETA %d\n",
 				   norm, alpha_val, beta_val);
 
-			    if (order == blas_rowmajor) {
-			      printf("Row Major\n");
-			    } else {
-			      printf("Col Major\n");
+			    switch (order) {
+			    case blas_rowmajor:
+			      printf("row_major ");
+			      break;
+			    case blas_colmajor:
+			      printf("col_major ");
+			      break;
 			    }
-
 
 
 			    if (randomize_val == 0)
@@ -3414,10 +3324,10 @@ void do_test_cgemm_c_s
 			      printf("Randomized\n");
 
 			    /* print out info */
-			    printf("alpha[0]=%.12e, alpha[1]=%.12e", alpha[0],
+			    printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
 				   alpha[1]);;
 			    printf("   ");
-			    printf("beta[0]=%.12e, beta[1]=%.12e", beta[0],
+			    printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
 				   beta[1]);;
 			    printf("\n");
 
@@ -3501,10 +3411,11 @@ end:
   *num_bad_ratio = bad_ratio_count;
 
 }
-void do_test_cgemm_s_c
-  (int m, int n, int k,
-   int ntests, int *seed, double thresh, int debug, float test_prob,
-   double *min_ratio, double *max_ratio, int *num_bad_ratio, int *num_tests) {
+void do_test_cgemm_s_c(int m, int n, int k, int ntests, int *seed,
+		       double thresh, int debug, float test_prob,
+		       double *min_ratio, double *max_ratio,
+		       int *num_bad_ratio, int *num_tests)
+{
 
   /* Function name */
   const char fname[] = "BLAS_cgemm_s_c";
@@ -3565,13 +3476,9 @@ void do_test_cgemm_s_c
   double *ratios;
 
   /* true result calculated by testgen, in double-double */
-  double *tail_r_true;
-  double *head_r_true;
-  double tail_r_true_elem[2];
-  double head_r_true_elem[2];
+  double *head_r_true, *tail_r_true;
 
-  float rin[2];
-  float rout[2];
+
   FPU_FIX_DECL;
 
   if (n < 0 || m < 0 || k < 0 || ntests < 0)
@@ -3645,11 +3552,8 @@ void do_test_cgemm_s_c
   }
 
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && head_r_true == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && tail_r_true == NULL) {
+  if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
@@ -3678,7 +3582,6 @@ void do_test_cgemm_s_c
 
     /* vary beta */
     for (beta_val = BETA_START; beta_val <= BETA_END; beta_val++) {
-
       beta_flag = 0;
       switch (beta_val) {
       case 0:
@@ -3694,10 +3597,9 @@ void do_test_cgemm_s_c
 
 
       eps_int = power(2, -BITS_S);
+      un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_single),
+		   (double) BLAS_fpinfo_x(blas_emin, blas_prec_single));
       prec = blas_prec_single;
-      un_int =
-	pow((double) BLAS_fpinfo_x(blas_base, blas_prec_single),
-	    (double) BLAS_fpinfo_x(blas_emin, blas_prec_single));
 
       /* vary norm -- underflow, approx 1, overflow */
       for (norm = NORM_START; norm <= NORM_END; norm++) {
@@ -3829,19 +3731,11 @@ void do_test_cgemm_s_c
 			    cgemm_copy_col(order, transb,
 					   k, n, b, ldb, b_vec, j);
 
-			    rin[0] = c_gen[cij];
-			    rin[1] = c_gen[cij + 1];
-			    rout[0] = c[cij];
-			    rout[1] = c[cij + 1];
-			    head_r_true_elem[0] = head_r_true[cij];
-			    head_r_true_elem[1] = head_r_true[cij + 1];
-			    tail_r_true_elem[0] = tail_r_true[cij];
-			    tail_r_true_elem[1] = tail_r_true[cij + 1];
-
 			    test_BLAS_cdot_s_c(k, blas_no_conj,
-					       alpha, beta, rin, rout,
-					       head_r_true_elem,
-					       tail_r_true_elem, a_vec, 1,
+					       alpha, beta, &c_gen[cij],
+					       &c[cij],
+					       &head_r_true[cij],
+					       &tail_r_true[cij], a_vec, 1,
 					       b_vec, 1, eps_int, un_int,
 					       &ratios[rij]);
 
@@ -3868,39 +3762,42 @@ void do_test_cgemm_s_c
 			    printf("\nm %d   n %d   k %d\n", m, n, k);
 			    printf("LDA %d  LDB %d  LDC %d\n", lda, ldb, ldc);
 
+			    printf("A:");
 			    switch (transa) {
 			    case blas_no_trans:
-			      printf("A no_trans\n");
+			      printf("no_trans ");
 			      break;
 			    case blas_trans:
-			      printf("A trans\n");
+			      printf("trans ");
 			      break;
 			    case blas_conj_trans:
-			      printf("A conj_trans\n");
+			      printf("conj_trans ");
 			      break;
 			    }
-
+			    printf("B:");
 			    switch (transb) {
 			    case blas_no_trans:
-			      printf("B no_trans\n");
+			      printf("no_trans ");
 			      break;
 			    case blas_trans:
-			      printf("B trans\n");
+			      printf("trans ");
 			      break;
 			    case blas_conj_trans:
-			      printf("B conj_trans\n");
+			      printf("conj_trans ");
 			      break;
 			    }
 
 			    printf("NORM %d, ALPHA %d, BETA %d\n",
 				   norm, alpha_val, beta_val);
 
-			    if (order == blas_rowmajor) {
-			      printf("Row Major\n");
-			    } else {
-			      printf("Col Major\n");
+			    switch (order) {
+			    case blas_rowmajor:
+			      printf("row_major ");
+			      break;
+			    case blas_colmajor:
+			      printf("col_major ");
+			      break;
 			    }
-
 
 
 			    if (randomize_val == 0)
@@ -3909,10 +3806,10 @@ void do_test_cgemm_s_c
 			      printf("Randomized\n");
 
 			    /* print out info */
-			    printf("alpha[0]=%.12e, alpha[1]=%.12e", alpha[0],
+			    printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
 				   alpha[1]);;
 			    printf("   ");
-			    printf("beta[0]=%.12e, beta[1]=%.12e", beta[0],
+			    printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
 				   beta[1]);;
 			    printf("\n");
 
@@ -3996,10 +3893,11 @@ end:
   *num_bad_ratio = bad_ratio_count;
 
 }
-void do_test_cgemm_s_s
-  (int m, int n, int k,
-   int ntests, int *seed, double thresh, int debug, float test_prob,
-   double *min_ratio, double *max_ratio, int *num_bad_ratio, int *num_tests) {
+void do_test_cgemm_s_s(int m, int n, int k, int ntests, int *seed,
+		       double thresh, int debug, float test_prob,
+		       double *min_ratio, double *max_ratio,
+		       int *num_bad_ratio, int *num_tests)
+{
 
   /* Function name */
   const char fname[] = "BLAS_cgemm_s_s";
@@ -4060,13 +3958,9 @@ void do_test_cgemm_s_s
   double *ratios;
 
   /* true result calculated by testgen, in double-double */
-  double *tail_r_true;
-  double *head_r_true;
-  double tail_r_true_elem[2];
-  double head_r_true_elem[2];
+  double *head_r_true, *tail_r_true;
 
-  float rin[2];
-  float rout[2];
+
   FPU_FIX_DECL;
 
   if (n < 0 || m < 0 || k < 0 || ntests < 0)
@@ -4138,11 +4032,8 @@ void do_test_cgemm_s_s
   }
 
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && head_r_true == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && tail_r_true == NULL) {
+  if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
@@ -4171,7 +4062,6 @@ void do_test_cgemm_s_s
 
     /* vary beta */
     for (beta_val = BETA_START; beta_val <= BETA_END; beta_val++) {
-
       beta_flag = 0;
       switch (beta_val) {
       case 0:
@@ -4187,10 +4077,9 @@ void do_test_cgemm_s_s
 
 
       eps_int = power(2, -BITS_S);
+      un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_single),
+		   (double) BLAS_fpinfo_x(blas_emin, blas_prec_single));
       prec = blas_prec_single;
-      un_int =
-	pow((double) BLAS_fpinfo_x(blas_base, blas_prec_single),
-	    (double) BLAS_fpinfo_x(blas_emin, blas_prec_single));
 
       /* vary norm -- underflow, approx 1, overflow */
       for (norm = NORM_START; norm <= NORM_END; norm++) {
@@ -4322,19 +4211,11 @@ void do_test_cgemm_s_s
 			    sgemm_copy_col(order, transb,
 					   k, n, b, ldb, b_vec, j);
 
-			    rin[0] = c_gen[cij];
-			    rin[1] = c_gen[cij + 1];
-			    rout[0] = c[cij];
-			    rout[1] = c[cij + 1];
-			    head_r_true_elem[0] = head_r_true[cij];
-			    head_r_true_elem[1] = head_r_true[cij + 1];
-			    tail_r_true_elem[0] = tail_r_true[cij];
-			    tail_r_true_elem[1] = tail_r_true[cij + 1];
-
 			    test_BLAS_cdot_s_s(k, blas_no_conj,
-					       alpha, beta, rin, rout,
-					       head_r_true_elem,
-					       tail_r_true_elem, a_vec, 1,
+					       alpha, beta, &c_gen[cij],
+					       &c[cij],
+					       &head_r_true[cij],
+					       &tail_r_true[cij], a_vec, 1,
 					       b_vec, 1, eps_int, un_int,
 					       &ratios[rij]);
 
@@ -4361,39 +4242,42 @@ void do_test_cgemm_s_s
 			    printf("\nm %d   n %d   k %d\n", m, n, k);
 			    printf("LDA %d  LDB %d  LDC %d\n", lda, ldb, ldc);
 
+			    printf("A:");
 			    switch (transa) {
 			    case blas_no_trans:
-			      printf("A no_trans\n");
+			      printf("no_trans ");
 			      break;
 			    case blas_trans:
-			      printf("A trans\n");
+			      printf("trans ");
 			      break;
 			    case blas_conj_trans:
-			      printf("A conj_trans\n");
+			      printf("conj_trans ");
 			      break;
 			    }
-
+			    printf("B:");
 			    switch (transb) {
 			    case blas_no_trans:
-			      printf("B no_trans\n");
+			      printf("no_trans ");
 			      break;
 			    case blas_trans:
-			      printf("B trans\n");
+			      printf("trans ");
 			      break;
 			    case blas_conj_trans:
-			      printf("B conj_trans\n");
+			      printf("conj_trans ");
 			      break;
 			    }
 
 			    printf("NORM %d, ALPHA %d, BETA %d\n",
 				   norm, alpha_val, beta_val);
 
-			    if (order == blas_rowmajor) {
-			      printf("Row Major\n");
-			    } else {
-			      printf("Col Major\n");
+			    switch (order) {
+			    case blas_rowmajor:
+			      printf("row_major ");
+			      break;
+			    case blas_colmajor:
+			      printf("col_major ");
+			      break;
 			    }
-
 
 
 			    if (randomize_val == 0)
@@ -4402,10 +4286,10 @@ void do_test_cgemm_s_s
 			      printf("Randomized\n");
 
 			    /* print out info */
-			    printf("alpha[0]=%.12e, alpha[1]=%.12e", alpha[0],
+			    printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
 				   alpha[1]);;
 			    printf("   ");
-			    printf("beta[0]=%.12e, beta[1]=%.12e", beta[0],
+			    printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
 				   beta[1]);;
 			    printf("\n");
 
@@ -4489,10 +4373,11 @@ end:
   *num_bad_ratio = bad_ratio_count;
 
 }
-void do_test_zgemm_z_d
-  (int m, int n, int k,
-   int ntests, int *seed, double thresh, int debug, float test_prob,
-   double *min_ratio, double *max_ratio, int *num_bad_ratio, int *num_tests) {
+void do_test_zgemm_z_d(int m, int n, int k, int ntests, int *seed,
+		       double thresh, int debug, float test_prob,
+		       double *min_ratio, double *max_ratio,
+		       int *num_bad_ratio, int *num_tests)
+{
 
   /* Function name */
   const char fname[] = "BLAS_zgemm_z_d";
@@ -4553,13 +4438,9 @@ void do_test_zgemm_z_d
   double *ratios;
 
   /* true result calculated by testgen, in double-double */
-  double *tail_r_true;
-  double *head_r_true;
-  double tail_r_true_elem[2];
-  double head_r_true_elem[2];
+  double *head_r_true, *tail_r_true;
 
-  double rin[2];
-  double rout[2];
+
   FPU_FIX_DECL;
 
   if (n < 0 || m < 0 || k < 0 || ntests < 0)
@@ -4633,11 +4514,8 @@ void do_test_zgemm_z_d
   }
 
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && head_r_true == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && tail_r_true == NULL) {
+  if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
@@ -4666,7 +4544,6 @@ void do_test_zgemm_z_d
 
     /* vary beta */
     for (beta_val = BETA_START; beta_val <= BETA_END; beta_val++) {
-
       beta_flag = 0;
       switch (beta_val) {
       case 0:
@@ -4682,10 +4559,9 @@ void do_test_zgemm_z_d
 
 
       eps_int = power(2, -BITS_D);
+      un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		   (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
       prec = blas_prec_double;
-      un_int =
-	pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-	    (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
 
       /* vary norm -- underflow, approx 1, overflow */
       for (norm = NORM_START; norm <= NORM_END; norm++) {
@@ -4817,19 +4693,11 @@ void do_test_zgemm_z_d
 			    dgemm_copy_col(order, transb,
 					   k, n, b, ldb, b_vec, j);
 
-			    rin[0] = c_gen[cij];
-			    rin[1] = c_gen[cij + 1];
-			    rout[0] = c[cij];
-			    rout[1] = c[cij + 1];
-			    head_r_true_elem[0] = head_r_true[cij];
-			    head_r_true_elem[1] = head_r_true[cij + 1];
-			    tail_r_true_elem[0] = tail_r_true[cij];
-			    tail_r_true_elem[1] = tail_r_true[cij + 1];
-
 			    test_BLAS_zdot_z_d(k, blas_no_conj,
-					       alpha, beta, rin, rout,
-					       head_r_true_elem,
-					       tail_r_true_elem, a_vec, 1,
+					       alpha, beta, &c_gen[cij],
+					       &c[cij],
+					       &head_r_true[cij],
+					       &tail_r_true[cij], a_vec, 1,
 					       b_vec, 1, eps_int, un_int,
 					       &ratios[rij]);
 
@@ -4856,39 +4724,42 @@ void do_test_zgemm_z_d
 			    printf("\nm %d   n %d   k %d\n", m, n, k);
 			    printf("LDA %d  LDB %d  LDC %d\n", lda, ldb, ldc);
 
+			    printf("A:");
 			    switch (transa) {
 			    case blas_no_trans:
-			      printf("A no_trans\n");
+			      printf("no_trans ");
 			      break;
 			    case blas_trans:
-			      printf("A trans\n");
+			      printf("trans ");
 			      break;
 			    case blas_conj_trans:
-			      printf("A conj_trans\n");
+			      printf("conj_trans ");
 			      break;
 			    }
-
+			    printf("B:");
 			    switch (transb) {
 			    case blas_no_trans:
-			      printf("B no_trans\n");
+			      printf("no_trans ");
 			      break;
 			    case blas_trans:
-			      printf("B trans\n");
+			      printf("trans ");
 			      break;
 			    case blas_conj_trans:
-			      printf("B conj_trans\n");
+			      printf("conj_trans ");
 			      break;
 			    }
 
 			    printf("NORM %d, ALPHA %d, BETA %d\n",
 				   norm, alpha_val, beta_val);
 
-			    if (order == blas_rowmajor) {
-			      printf("Row Major\n");
-			    } else {
-			      printf("Col Major\n");
+			    switch (order) {
+			    case blas_rowmajor:
+			      printf("row_major ");
+			      break;
+			    case blas_colmajor:
+			      printf("col_major ");
+			      break;
 			    }
-
 
 
 			    if (randomize_val == 0)
@@ -4984,10 +4855,11 @@ end:
   *num_bad_ratio = bad_ratio_count;
 
 }
-void do_test_zgemm_d_z
-  (int m, int n, int k,
-   int ntests, int *seed, double thresh, int debug, float test_prob,
-   double *min_ratio, double *max_ratio, int *num_bad_ratio, int *num_tests) {
+void do_test_zgemm_d_z(int m, int n, int k, int ntests, int *seed,
+		       double thresh, int debug, float test_prob,
+		       double *min_ratio, double *max_ratio,
+		       int *num_bad_ratio, int *num_tests)
+{
 
   /* Function name */
   const char fname[] = "BLAS_zgemm_d_z";
@@ -5048,13 +4920,9 @@ void do_test_zgemm_d_z
   double *ratios;
 
   /* true result calculated by testgen, in double-double */
-  double *tail_r_true;
-  double *head_r_true;
-  double tail_r_true_elem[2];
-  double head_r_true_elem[2];
+  double *head_r_true, *tail_r_true;
 
-  double rin[2];
-  double rout[2];
+
   FPU_FIX_DECL;
 
   if (n < 0 || m < 0 || k < 0 || ntests < 0)
@@ -5128,11 +4996,8 @@ void do_test_zgemm_d_z
   }
 
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && head_r_true == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && tail_r_true == NULL) {
+  if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
@@ -5161,7 +5026,6 @@ void do_test_zgemm_d_z
 
     /* vary beta */
     for (beta_val = BETA_START; beta_val <= BETA_END; beta_val++) {
-
       beta_flag = 0;
       switch (beta_val) {
       case 0:
@@ -5177,10 +5041,9 @@ void do_test_zgemm_d_z
 
 
       eps_int = power(2, -BITS_D);
+      un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		   (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
       prec = blas_prec_double;
-      un_int =
-	pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-	    (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
 
       /* vary norm -- underflow, approx 1, overflow */
       for (norm = NORM_START; norm <= NORM_END; norm++) {
@@ -5312,19 +5175,11 @@ void do_test_zgemm_d_z
 			    zgemm_copy_col(order, transb,
 					   k, n, b, ldb, b_vec, j);
 
-			    rin[0] = c_gen[cij];
-			    rin[1] = c_gen[cij + 1];
-			    rout[0] = c[cij];
-			    rout[1] = c[cij + 1];
-			    head_r_true_elem[0] = head_r_true[cij];
-			    head_r_true_elem[1] = head_r_true[cij + 1];
-			    tail_r_true_elem[0] = tail_r_true[cij];
-			    tail_r_true_elem[1] = tail_r_true[cij + 1];
-
 			    test_BLAS_zdot_d_z(k, blas_no_conj,
-					       alpha, beta, rin, rout,
-					       head_r_true_elem,
-					       tail_r_true_elem, a_vec, 1,
+					       alpha, beta, &c_gen[cij],
+					       &c[cij],
+					       &head_r_true[cij],
+					       &tail_r_true[cij], a_vec, 1,
 					       b_vec, 1, eps_int, un_int,
 					       &ratios[rij]);
 
@@ -5351,39 +5206,42 @@ void do_test_zgemm_d_z
 			    printf("\nm %d   n %d   k %d\n", m, n, k);
 			    printf("LDA %d  LDB %d  LDC %d\n", lda, ldb, ldc);
 
+			    printf("A:");
 			    switch (transa) {
 			    case blas_no_trans:
-			      printf("A no_trans\n");
+			      printf("no_trans ");
 			      break;
 			    case blas_trans:
-			      printf("A trans\n");
+			      printf("trans ");
 			      break;
 			    case blas_conj_trans:
-			      printf("A conj_trans\n");
+			      printf("conj_trans ");
 			      break;
 			    }
-
+			    printf("B:");
 			    switch (transb) {
 			    case blas_no_trans:
-			      printf("B no_trans\n");
+			      printf("no_trans ");
 			      break;
 			    case blas_trans:
-			      printf("B trans\n");
+			      printf("trans ");
 			      break;
 			    case blas_conj_trans:
-			      printf("B conj_trans\n");
+			      printf("conj_trans ");
 			      break;
 			    }
 
 			    printf("NORM %d, ALPHA %d, BETA %d\n",
 				   norm, alpha_val, beta_val);
 
-			    if (order == blas_rowmajor) {
-			      printf("Row Major\n");
-			    } else {
-			      printf("Col Major\n");
+			    switch (order) {
+			    case blas_rowmajor:
+			      printf("row_major ");
+			      break;
+			    case blas_colmajor:
+			      printf("col_major ");
+			      break;
 			    }
-
 
 
 			    if (randomize_val == 0)
@@ -5479,10 +5337,11 @@ end:
   *num_bad_ratio = bad_ratio_count;
 
 }
-void do_test_zgemm_d_d
-  (int m, int n, int k,
-   int ntests, int *seed, double thresh, int debug, float test_prob,
-   double *min_ratio, double *max_ratio, int *num_bad_ratio, int *num_tests) {
+void do_test_zgemm_d_d(int m, int n, int k, int ntests, int *seed,
+		       double thresh, int debug, float test_prob,
+		       double *min_ratio, double *max_ratio,
+		       int *num_bad_ratio, int *num_tests)
+{
 
   /* Function name */
   const char fname[] = "BLAS_zgemm_d_d";
@@ -5543,13 +5402,9 @@ void do_test_zgemm_d_d
   double *ratios;
 
   /* true result calculated by testgen, in double-double */
-  double *tail_r_true;
-  double *head_r_true;
-  double tail_r_true_elem[2];
-  double head_r_true_elem[2];
+  double *head_r_true, *tail_r_true;
 
-  double rin[2];
-  double rout[2];
+
   FPU_FIX_DECL;
 
   if (n < 0 || m < 0 || k < 0 || ntests < 0)
@@ -5621,11 +5476,8 @@ void do_test_zgemm_d_d
   }
 
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && head_r_true == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && tail_r_true == NULL) {
+  if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
@@ -5654,7 +5506,6 @@ void do_test_zgemm_d_d
 
     /* vary beta */
     for (beta_val = BETA_START; beta_val <= BETA_END; beta_val++) {
-
       beta_flag = 0;
       switch (beta_val) {
       case 0:
@@ -5670,10 +5521,9 @@ void do_test_zgemm_d_d
 
 
       eps_int = power(2, -BITS_D);
+      un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		   (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
       prec = blas_prec_double;
-      un_int =
-	pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-	    (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
 
       /* vary norm -- underflow, approx 1, overflow */
       for (norm = NORM_START; norm <= NORM_END; norm++) {
@@ -5805,19 +5655,11 @@ void do_test_zgemm_d_d
 			    dgemm_copy_col(order, transb,
 					   k, n, b, ldb, b_vec, j);
 
-			    rin[0] = c_gen[cij];
-			    rin[1] = c_gen[cij + 1];
-			    rout[0] = c[cij];
-			    rout[1] = c[cij + 1];
-			    head_r_true_elem[0] = head_r_true[cij];
-			    head_r_true_elem[1] = head_r_true[cij + 1];
-			    tail_r_true_elem[0] = tail_r_true[cij];
-			    tail_r_true_elem[1] = tail_r_true[cij + 1];
-
 			    test_BLAS_zdot_d_d(k, blas_no_conj,
-					       alpha, beta, rin, rout,
-					       head_r_true_elem,
-					       tail_r_true_elem, a_vec, 1,
+					       alpha, beta, &c_gen[cij],
+					       &c[cij],
+					       &head_r_true[cij],
+					       &tail_r_true[cij], a_vec, 1,
 					       b_vec, 1, eps_int, un_int,
 					       &ratios[rij]);
 
@@ -5844,39 +5686,42 @@ void do_test_zgemm_d_d
 			    printf("\nm %d   n %d   k %d\n", m, n, k);
 			    printf("LDA %d  LDB %d  LDC %d\n", lda, ldb, ldc);
 
+			    printf("A:");
 			    switch (transa) {
 			    case blas_no_trans:
-			      printf("A no_trans\n");
+			      printf("no_trans ");
 			      break;
 			    case blas_trans:
-			      printf("A trans\n");
+			      printf("trans ");
 			      break;
 			    case blas_conj_trans:
-			      printf("A conj_trans\n");
+			      printf("conj_trans ");
 			      break;
 			    }
-
+			    printf("B:");
 			    switch (transb) {
 			    case blas_no_trans:
-			      printf("B no_trans\n");
+			      printf("no_trans ");
 			      break;
 			    case blas_trans:
-			      printf("B trans\n");
+			      printf("trans ");
 			      break;
 			    case blas_conj_trans:
-			      printf("B conj_trans\n");
+			      printf("conj_trans ");
 			      break;
 			    }
 
 			    printf("NORM %d, ALPHA %d, BETA %d\n",
 				   norm, alpha_val, beta_val);
 
-			    if (order == blas_rowmajor) {
-			      printf("Row Major\n");
-			    } else {
-			      printf("Col Major\n");
+			    switch (order) {
+			    case blas_rowmajor:
+			      printf("row_major ");
+			      break;
+			    case blas_colmajor:
+			      printf("col_major ");
+			      break;
 			    }
-
 
 
 			    if (randomize_val == 0)
@@ -5972,11 +5817,11 @@ end:
   *num_bad_ratio = bad_ratio_count;
 
 }
-
-void do_test_sgemm_x
-  (int m, int n, int k,
-   int ntests, int *seed, double thresh, int debug, float test_prob,
-   double *min_ratio, double *max_ratio, int *num_bad_ratio, int *num_tests) {
+void do_test_sgemm_x(int m, int n, int k, int ntests, int *seed,
+		     double thresh, int debug, float test_prob,
+		     double *min_ratio, double *max_ratio, int *num_bad_ratio,
+		     int *num_tests)
+{
 
   /* Function name */
   const char fname[] = "BLAS_sgemm_x";
@@ -6037,13 +5882,8 @@ void do_test_sgemm_x
   double *ratios;
 
   /* true result calculated by testgen, in double-double */
-  double *tail_r_true;
-  double *head_r_true;
-  double tail_r_true_elem;
-  double head_r_true_elem;
+  double *head_r_true, *tail_r_true;
 
-  float rin;
-  float rout;
   FPU_FIX_DECL;
 
   if (n < 0 || m < 0 || k < 0 || ntests < 0)
@@ -6113,11 +5953,8 @@ void do_test_sgemm_x
   }
 
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double));
-  if (2 * m * n > 0 && head_r_true == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double));
-  if (2 * m * n > 0 && tail_r_true == NULL) {
+  if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
@@ -6145,7 +5982,6 @@ void do_test_sgemm_x
 
     /* vary beta */
     for (beta_val = BETA_START; beta_val <= BETA_END; beta_val++) {
-
       beta_flag = 0;
       switch (beta_val) {
       case 0:
@@ -6161,24 +5997,24 @@ void do_test_sgemm_x
 
       /* varying extra precs */
       for (prec_val = PREC_START; prec_val <= PREC_END; prec_val++) {
-
 	switch (prec_val) {
 	case 0:
 	  eps_int = power(2, -BITS_S);
-	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_single), (double) BLAS_fpinfo_x(blas_emin, blas_prec_single));	/* get single underflow */
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_single),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_single));
 	  prec = blas_prec_single;
 	  break;
 	case 1:
 	  eps_int = power(2, -BITS_D);
-	  un_int =
-	    pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-		(double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
 	  prec = blas_prec_double;
 	  break;
 	case 2:
 	default:
 	  eps_int = power(2, -BITS_E);
-	  un_int = power(2, -1022 + 53 + 1);
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_extra),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_extra));
 	  prec = blas_prec_extra;
 	  break;
 	}
@@ -6313,15 +6149,11 @@ void do_test_sgemm_x
 			      sgemm_copy_col(order, transb,
 					     k, n, b, ldb, b_vec, j);
 
-			      rin = c_gen[cij];
-			      rout = c[cij];
-			      head_r_true_elem = head_r_true[cij];
-			      tail_r_true_elem = tail_r_true[cij];
-
 			      test_BLAS_sdot(k, blas_no_conj,
-					     alpha, beta, rin, rout,
-					     head_r_true_elem,
-					     tail_r_true_elem, a_vec, 1,
+					     alpha, beta, c_gen[cij],
+					     c[cij],
+					     head_r_true[cij],
+					     tail_r_true[cij], a_vec, 1,
 					     b_vec, 1, eps_int, un_int,
 					     &ratios[rij]);
 
@@ -6349,51 +6181,54 @@ void do_test_sgemm_x
 			      printf("LDA %d  LDB %d  LDC %d\n", lda, ldb,
 				     ldc);
 
+			      printf("A:");
 			      switch (transa) {
 			      case blas_no_trans:
-				printf("A no_trans\n");
+				printf("no_trans ");
 				break;
 			      case blas_trans:
-				printf("A trans\n");
+				printf("trans ");
 				break;
 			      case blas_conj_trans:
-				printf("A conj_trans\n");
+				printf("conj_trans ");
 				break;
 			      }
-
+			      printf("B:");
 			      switch (transb) {
 			      case blas_no_trans:
-				printf("B no_trans\n");
+				printf("no_trans ");
 				break;
 			      case blas_trans:
-				printf("B trans\n");
+				printf("trans ");
 				break;
 			      case blas_conj_trans:
-				printf("B conj_trans\n");
+				printf("conj_trans ");
 				break;
 			      }
 
 			      printf("NORM %d, ALPHA %d, BETA %d\n",
 				     norm, alpha_val, beta_val);
 
-			      if (order == blas_rowmajor) {
-				printf("Row Major\n");
-			      } else {
-				printf("Col Major\n");
+			      switch (order) {
+			      case blas_rowmajor:
+				printf("row_major ");
+				break;
+			      case blas_colmajor:
+				printf("col_major ");
+				break;
 			      }
-
 			      switch (prec) {
 			      case blas_prec_single:
-				printf("Single Prec\n");
+				printf("single ");
 				break;
 			      case blas_prec_double:
-				printf("Double Prec\n");
+				printf("double ");
 				break;
 			      case blas_prec_indigenous:
-				printf("Indigenous Prec\n");
+				printf("indigenous ");
 				break;
 			      case blas_prec_extra:
-				printf("Extra Prec\n");
+				printf("extra ");
 				break;
 			      }
 
@@ -6403,9 +6238,9 @@ void do_test_sgemm_x
 				printf("Randomized\n");
 
 			      /* print out info */
-			      printf("alpha=%.12e", alpha);;
+			      printf("alpha=%.8e", alpha);;
 			      printf("   ");
-			      printf("beta=%.12e", beta);;
+			      printf("beta=%.8e", beta);;
 			      printf("\n");
 
 			      printf("a\n");
@@ -6490,10 +6325,11 @@ end:
   *num_bad_ratio = bad_ratio_count;
 
 }
-void do_test_dgemm_x
-  (int m, int n, int k,
-   int ntests, int *seed, double thresh, int debug, float test_prob,
-   double *min_ratio, double *max_ratio, int *num_bad_ratio, int *num_tests) {
+void do_test_dgemm_x(int m, int n, int k, int ntests, int *seed,
+		     double thresh, int debug, float test_prob,
+		     double *min_ratio, double *max_ratio, int *num_bad_ratio,
+		     int *num_tests)
+{
 
   /* Function name */
   const char fname[] = "BLAS_dgemm_x";
@@ -6554,13 +6390,8 @@ void do_test_dgemm_x
   double *ratios;
 
   /* true result calculated by testgen, in double-double */
-  double *tail_r_true;
-  double *head_r_true;
-  double tail_r_true_elem;
-  double head_r_true_elem;
+  double *head_r_true, *tail_r_true;
 
-  double rin;
-  double rout;
   FPU_FIX_DECL;
 
   if (n < 0 || m < 0 || k < 0 || ntests < 0)
@@ -6630,11 +6461,8 @@ void do_test_dgemm_x
   }
 
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double));
-  if (2 * m * n > 0 && head_r_true == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double));
-  if (2 * m * n > 0 && tail_r_true == NULL) {
+  if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
@@ -6662,7 +6490,6 @@ void do_test_dgemm_x
 
     /* vary beta */
     for (beta_val = BETA_START; beta_val <= BETA_END; beta_val++) {
-
       beta_flag = 0;
       switch (beta_val) {
       case 0:
@@ -6678,24 +6505,24 @@ void do_test_dgemm_x
 
       /* varying extra precs */
       for (prec_val = PREC_START; prec_val <= PREC_END; prec_val++) {
-
 	switch (prec_val) {
 	case 0:
 	  eps_int = power(2, -BITS_D);
-	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double), (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));	/* get double underflow */
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
 	  prec = blas_prec_double;
 	  break;
 	case 1:
 	  eps_int = power(2, -BITS_D);
-	  un_int =
-	    pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-		(double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
 	  prec = blas_prec_double;
 	  break;
 	case 2:
 	default:
 	  eps_int = power(2, -BITS_E);
-	  un_int = power(2, -1022 + 53 + 1);
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_extra),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_extra));
 	  prec = blas_prec_extra;
 	  break;
 	}
@@ -6830,15 +6657,11 @@ void do_test_dgemm_x
 			      dgemm_copy_col(order, transb,
 					     k, n, b, ldb, b_vec, j);
 
-			      rin = c_gen[cij];
-			      rout = c[cij];
-			      head_r_true_elem = head_r_true[cij];
-			      tail_r_true_elem = tail_r_true[cij];
-
 			      test_BLAS_ddot(k, blas_no_conj,
-					     alpha, beta, rin, rout,
-					     head_r_true_elem,
-					     tail_r_true_elem, a_vec, 1,
+					     alpha, beta, c_gen[cij],
+					     c[cij],
+					     head_r_true[cij],
+					     tail_r_true[cij], a_vec, 1,
 					     b_vec, 1, eps_int, un_int,
 					     &ratios[rij]);
 
@@ -6866,51 +6689,54 @@ void do_test_dgemm_x
 			      printf("LDA %d  LDB %d  LDC %d\n", lda, ldb,
 				     ldc);
 
+			      printf("A:");
 			      switch (transa) {
 			      case blas_no_trans:
-				printf("A no_trans\n");
+				printf("no_trans ");
 				break;
 			      case blas_trans:
-				printf("A trans\n");
+				printf("trans ");
 				break;
 			      case blas_conj_trans:
-				printf("A conj_trans\n");
+				printf("conj_trans ");
 				break;
 			      }
-
+			      printf("B:");
 			      switch (transb) {
 			      case blas_no_trans:
-				printf("B no_trans\n");
+				printf("no_trans ");
 				break;
 			      case blas_trans:
-				printf("B trans\n");
+				printf("trans ");
 				break;
 			      case blas_conj_trans:
-				printf("B conj_trans\n");
+				printf("conj_trans ");
 				break;
 			      }
 
 			      printf("NORM %d, ALPHA %d, BETA %d\n",
 				     norm, alpha_val, beta_val);
 
-			      if (order == blas_rowmajor) {
-				printf("Row Major\n");
-			      } else {
-				printf("Col Major\n");
+			      switch (order) {
+			      case blas_rowmajor:
+				printf("row_major ");
+				break;
+			      case blas_colmajor:
+				printf("col_major ");
+				break;
 			      }
-
 			      switch (prec) {
 			      case blas_prec_single:
-				printf("Single Prec\n");
+				printf("single ");
 				break;
 			      case blas_prec_double:
-				printf("Double Prec\n");
+				printf("double ");
 				break;
 			      case blas_prec_indigenous:
-				printf("Indigenous Prec\n");
+				printf("indigenous ");
 				break;
 			      case blas_prec_extra:
-				printf("Extra Prec\n");
+				printf("extra ");
 				break;
 			      }
 
@@ -7007,10 +6833,1049 @@ end:
   *num_bad_ratio = bad_ratio_count;
 
 }
-void do_test_dgemm_d_s_x
-  (int m, int n, int k,
-   int ntests, int *seed, double thresh, int debug, float test_prob,
-   double *min_ratio, double *max_ratio, int *num_bad_ratio, int *num_tests) {
+void do_test_cgemm_x(int m, int n, int k, int ntests, int *seed,
+		     double thresh, int debug, float test_prob,
+		     double *min_ratio, double *max_ratio, int *num_bad_ratio,
+		     int *num_tests)
+{
+
+  /* Function name */
+  const char fname[] = "BLAS_cgemm_x";
+
+  int i, j;
+  int ci, cij;
+  int ri, rij;
+  int incci, inccij;
+  int incri, incrij;
+  int inca, incb, incc;
+
+  int test_count;		/* number of tests done so far   */
+  int bad_ratio_count;		/* number of failed tests so far */
+
+  double ratio;
+  double ratio_min, ratio_max;
+
+  double eps_int;		/* internal machine epsilon     */
+  double un_int;		/* internal underflow threshold */
+
+  enum blas_order_type order;
+  enum blas_trans_type transa;
+  enum blas_trans_type transb;
+  enum blas_prec_type prec;
+
+  int order_val, transa_val, transb_val;
+  int lda_val, ldb_val, ldc_val;
+  int alpha_val, beta_val;
+  int randomize_val;
+
+  int prec_val;
+
+  int lda, ldb, ldc;
+
+  int lda_0, ldb_0;
+  int tda_0, tdb_0;
+  int lda_1, ldb_1, ldc_1;
+
+  int alpha_flag, beta_flag;
+
+  int saved_seed;
+
+  int norm;
+
+  int test_no;
+
+  float alpha[2];
+  float beta[2];
+  float *a;
+  float *b;
+  float *c;
+  float *a_vec;
+  float *b_vec;
+
+  /* generated test values for c */
+  float *c_gen;
+
+  double *ratios;
+
+  /* true result calculated by testgen, in double-double */
+  double *head_r_true, *tail_r_true;
+
+
+  FPU_FIX_DECL;
+
+  if (n < 0 || m < 0 || k < 0 || ntests < 0)
+    BLAS_error(fname, 0, 0, NULL);
+
+  /* initialization */
+  saved_seed = *seed;
+  ratio = 0.0;
+  ratio_min = 1e308;
+  ratio_max = 0.0;
+
+  *max_ratio = 0.0;
+  *min_ratio = 0.0;
+  *num_bad_ratio = 0;
+  *num_tests = 0;
+
+  if (n == 0 || m == 0 || k == 0)
+    return;
+
+  FPU_FIX_START;
+
+  inca = incb = incc = 1;
+  inca *= 2;
+  incb *= 2;
+  incc *= 2;
+
+  /* allocate memory for arrays */
+  c = (float *) blas_malloc(2 * m * n * sizeof(float) * 2);
+  if (2 * m * n > 0 && c == NULL) {
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
+  }
+  c_gen = (float *) blas_malloc(2 * m * n * sizeof(float) * 2);
+  if (2 * m * n > 0 && c_gen == NULL) {
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
+  }
+  for (i = 0; i < 2 * m * n * incc; i += incc) {
+    c[i] = 0.0;
+    c[i + 1] = 0.0;
+    c_gen[i] = 0.0;
+    c_gen[i + 1] = 0.0;
+  }
+  a = (float *) blas_malloc(2 * m * k * sizeof(float) * 2);
+  if (2 * m * k > 0 && a == NULL) {
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
+  }
+  for (i = 0; i < 2 * m * k * inca; i += inca) {
+    a[i] = 0.0;
+    a[i + 1] = 0.0;
+  }
+  b = (float *) blas_malloc(2 * k * n * sizeof(float) * 2);
+  if (2 * k * n > 0 && b == NULL) {
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
+  }
+  for (i = 0; i < 2 * k * n * incb; i += incb) {
+    b[i] = 0.0;
+    b[i + 1] = 0.0;
+  }
+  a_vec = (float *) blas_malloc(k * sizeof(float) * 2);
+  if (k > 0 && a_vec == NULL) {
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
+  }
+  for (i = 0; i < k * inca; i += inca) {
+    a_vec[i] = 0.0;
+    a_vec[i + 1] = 0.0;
+  }
+  b_vec = (float *) blas_malloc(k * sizeof(float) * 2);
+  if (k > 0 && b_vec == NULL) {
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
+  }
+  for (i = 0; i < k * incb; i += incb) {
+    b_vec[i] = 0.0;
+    b_vec[i + 1] = 0.0;
+  }
+
+  head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
+  tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
+  if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
+  }
+  ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
+  if (2 * m * n > 0 && ratios == NULL) {
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
+  }
+
+  test_count = 0;
+  bad_ratio_count = 0;
+
+  /* vary alpha */
+  for (alpha_val = ALPHA_START; alpha_val <= ALPHA_END; alpha_val++) {
+
+    alpha_flag = 0;
+    switch (alpha_val) {
+    case 0:
+      alpha[0] = alpha[1] = 0.0;
+      alpha_flag = 1;
+      break;
+    case 1:
+      alpha[0] = 1.0;
+      alpha[1] = 0.0;
+      alpha_flag = 1;
+      break;
+    }
+
+    /* vary beta */
+    for (beta_val = BETA_START; beta_val <= BETA_END; beta_val++) {
+      beta_flag = 0;
+      switch (beta_val) {
+      case 0:
+	beta[0] = beta[1] = 0.0;
+	beta_flag = 1;
+	break;
+      case 1:
+	beta[0] = 1.0;
+	beta[1] = 0.0;
+	beta_flag = 1;
+	break;
+      }
+
+
+      /* varying extra precs */
+      for (prec_val = PREC_START; prec_val <= PREC_END; prec_val++) {
+	switch (prec_val) {
+	case 0:
+	  eps_int = power(2, -BITS_S);
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_single),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_single));
+	  prec = blas_prec_single;
+	  break;
+	case 1:
+	  eps_int = power(2, -BITS_D);
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+	  prec = blas_prec_double;
+	  break;
+	case 2:
+	default:
+	  eps_int = power(2, -BITS_E);
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_extra),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_extra));
+	  prec = blas_prec_extra;
+	  break;
+	}
+
+	/* vary norm -- underflow, approx 1, overflow */
+	for (norm = NORM_START; norm <= NORM_END; norm++) {
+
+	  /* number of tests */
+	  for (test_no = 0; test_no < ntests; test_no++) {
+
+	    /* vary storage format */
+	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
+
+	      if (order_val == 0) {
+		/* row major storage */
+		lda_0 = k;
+		ldb_0 = n;
+		ldc_1 = n;
+		tda_0 = m;
+		tdb_0 = k;
+		order = blas_rowmajor;
+	      } else {
+		/* column major storage */
+		lda_0 = m;
+		ldb_0 = k;
+		ldc_1 = m;
+		tda_0 = k;
+		tdb_0 = n;
+		order = blas_colmajor;
+	      }
+
+	      /* vary transpositions of A */
+	      for (transa_val = TRANSA_START; transa_val <= TRANSA_END;
+		   transa_val++) {
+
+		transa = (transa_val == 0) ? blas_no_trans :
+		  (transa_val == 1) ? blas_trans : blas_conj_trans;
+
+		if (transa == blas_no_trans) {
+		  lda_1 = lda_0;
+		} else {
+		  lda_1 = tda_0;
+		}
+
+		/* vary transpositions of B */
+		for (transb_val = TRANSB_START; transb_val <= TRANSB_END;
+		     transb_val++) {
+
+		  transb = (transb_val == 0) ? blas_no_trans :
+		    (transb_val == 1) ? blas_trans : blas_conj_trans;
+
+		  if (transb == blas_no_trans) {
+		    ldb_1 = ldb_0;
+		  } else {
+		    ldb_1 = tdb_0;
+		  }
+
+		  /* vary lda = k, k+1, 2*k */
+		  for (lda_val = LDA_START; lda_val <= LDA_END; lda_val++) {
+
+		    lda = (lda_val == 0) ? lda_1 :
+		      (lda_val == 1) ? lda_1 + 1 : 2 * lda_1;
+
+		    /* vary ldb = n, n+1, 2*n */
+		    for (ldb_val = LDB_START; ldb_val <= LDB_END; ldb_val++) {
+
+		      ldb = (ldb_val == 0) ? ldb_1 :
+			(ldb_val == 1) ? ldb_1 + 1 : 2 * ldb_1;
+
+		      /* vary ldc = k, k+1, 2*k */
+		      for (ldc_val = LDC_START; ldc_val <= LDC_END; ldc_val++) {
+
+			ldc = (ldc_val == 0) ? ldc_1 :
+			  (ldc_val == 1) ? ldc_1 + 1 : 2 * ldc_1;
+
+			for (randomize_val = RANDOMIZE_START;
+			     randomize_val <= RANDOMIZE_END;
+			     randomize_val++) {
+
+			  /* For the sake of speed, we throw out this case
+			     at random */
+			  if (((float) rand()) / ((float) RAND_MAX) >=
+			      test_prob)
+			    continue;
+
+
+			  /* finally we are here to generate the test case */
+			  BLAS_cgemm_testgen(norm, order,
+					     transa, transb, m, n, k,
+					     randomize_val, &alpha,
+					     alpha_flag, a, lda, &beta,
+					     beta_flag, b, ldb, c, ldc, seed,
+					     head_r_true, tail_r_true);
+			  test_count++;
+
+			  /* copy generated C matrix since this will be
+			     over written */
+			  cgemm_copy(order, m, n, c_gen, ldc, c, ldc);
+
+			  /* call GEMM routines to be tested */
+			  FPU_FIX_STOP;
+			  BLAS_cgemm_x(order, transa,
+				       transb, m, n, k, alpha, a, lda, b, ldb,
+				       beta, c, ldc, prec);
+			  FPU_FIX_START;
+
+			  /* now compute the ratio using test_c_xdot */
+			  /* copy a row from A, a column from B, run 
+			     dot test */
+
+			  if (order == blas_colmajor) {
+			    incci = 1;
+			    inccij = ldc;
+			  } else {
+			    incci = ldc;
+			    inccij = 1;
+			  }
+
+			  incri = incci;
+			  incrij = inccij;
+
+			  incci *= 2;
+			  inccij *= 2;
+
+			  for (i = 0, ci = 0, ri = 0; i < m;
+			       i++, ci += incci, ri += incri) {
+			    cgemm_copy_row(order, transa,
+					   m, k, a, lda, a_vec, i);
+			    for (j = 0, cij = ci, rij = ri; j < n;
+				 j++, cij += inccij, rij += incrij) {
+			      /* copy i-th row of A and j-th col of B */
+			      cgemm_copy_col(order, transb,
+					     k, n, b, ldb, b_vec, j);
+
+			      test_BLAS_cdot(k, blas_no_conj,
+					     alpha, beta, &c_gen[cij],
+					     &c[cij],
+					     &head_r_true[cij],
+					     &tail_r_true[cij], a_vec, 1,
+					     b_vec, 1, eps_int, un_int,
+					     &ratios[rij]);
+
+			      /* take the max ratio */
+			      if (rij == 0) {
+				ratio = ratios[0];
+				/* The !<= below causes NaN error to be detected.
+				   Note that (NaN > thresh) is always false. */
+			      } else if (!(ratios[rij] <= ratio)) {
+				ratio = ratios[rij];
+			      }
+
+			    }
+			  }	/* end of dot-test loop */
+
+			  /* Increase the number of bad ratio, if the ratio
+			     is bigger than the threshold.
+			     The !<= below causes NaN error to be detected.
+			     Note that (NaN > thresh) is always false. */
+			  if (!(ratio <= thresh)) {
+
+			    if (debug == 3) {
+
+			      printf("\nm %d   n %d   k %d\n", m, n, k);
+			      printf("LDA %d  LDB %d  LDC %d\n", lda, ldb,
+				     ldc);
+
+			      printf("A:");
+			      switch (transa) {
+			      case blas_no_trans:
+				printf("no_trans ");
+				break;
+			      case blas_trans:
+				printf("trans ");
+				break;
+			      case blas_conj_trans:
+				printf("conj_trans ");
+				break;
+			      }
+			      printf("B:");
+			      switch (transb) {
+			      case blas_no_trans:
+				printf("no_trans ");
+				break;
+			      case blas_trans:
+				printf("trans ");
+				break;
+			      case blas_conj_trans:
+				printf("conj_trans ");
+				break;
+			      }
+
+			      printf("NORM %d, ALPHA %d, BETA %d\n",
+				     norm, alpha_val, beta_val);
+
+			      switch (order) {
+			      case blas_rowmajor:
+				printf("row_major ");
+				break;
+			      case blas_colmajor:
+				printf("col_major ");
+				break;
+			      }
+			      switch (prec) {
+			      case blas_prec_single:
+				printf("single ");
+				break;
+			      case blas_prec_double:
+				printf("double ");
+				break;
+			      case blas_prec_indigenous:
+				printf("indigenous ");
+				break;
+			      case blas_prec_extra:
+				printf("extra ");
+				break;
+			      }
+
+			      if (randomize_val == 0)
+				printf("Not randomized\n");
+			      else
+				printf("Randomized\n");
+
+			      /* print out info */
+			      printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
+				     alpha[1]);;
+			      printf("   ");
+			      printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
+				     beta[1]);;
+			      printf("\n");
+
+			      printf("a\n");
+			      cprint_matrix(a, m, k, lda, order);
+			      printf("b\n");
+			      cprint_matrix(b, k, n, ldb, order);
+
+			      printf("c_gen\n");
+			      cprint_matrix(c_gen, m, n, ldc, order);
+
+			      printf("c\n");
+			      cprint_matrix(c, m, n, ldc, order);
+
+			      printf("truth\n");
+			      zprint_matrix(head_r_true, m, n, ldc, order);
+
+			      printf("ratio = %g\n", ratio);
+			    }
+			    bad_ratio_count++;
+			    if (bad_ratio_count >= MAX_BAD_TESTS) {
+			      printf("\ntoo many failures, exiting....");
+			      printf("\nTesting and compilation");
+			      printf(" are incomplete\n\n");
+			      goto end;
+			    }
+			    if (!(ratio <= TOTAL_FAILURE_THRESHOLD)) {
+			      printf("\nFlagrant ratio %e, exiting...",
+				     ratio);
+			      printf("\nTesting and compilation");
+			      printf(" are incomplete\n\n");
+			      goto end;
+			    }
+			  }
+
+			  if (ratio > ratio_max)
+			    ratio_max = ratio;
+
+			  if (ratio != 0.0 && ratio < ratio_min)
+			    ratio_min = ratio;
+
+			}	/* end of randomize loop */
+
+		      }		/* end of ldc loop */
+
+		    }		/* end of ldb loop */
+
+		  }		/* end of lda loop */
+
+		}		/* end of transb loop */
+
+	      }			/* end of transa loop */
+
+	    }			/* end of order loop */
+
+	  }			/* end of nr test loop */
+
+	}			/* end of norm loop */
+
+
+      }				/* end of prec loop */
+
+    }				/* end of beta loop */
+
+  }				/* end of alpha loop */
+
+end:
+  FPU_FIX_STOP;
+
+  blas_free(c);
+  blas_free(a);
+  blas_free(b);
+  blas_free(c_gen);
+  blas_free(head_r_true);
+  blas_free(tail_r_true);
+  blas_free(ratios);
+  blas_free(a_vec);
+  blas_free(b_vec);
+
+  *max_ratio = ratio_max;
+  *min_ratio = ratio_min;
+  *num_tests = test_count;
+  *num_bad_ratio = bad_ratio_count;
+
+}
+void do_test_zgemm_x(int m, int n, int k, int ntests, int *seed,
+		     double thresh, int debug, float test_prob,
+		     double *min_ratio, double *max_ratio, int *num_bad_ratio,
+		     int *num_tests)
+{
+
+  /* Function name */
+  const char fname[] = "BLAS_zgemm_x";
+
+  int i, j;
+  int ci, cij;
+  int ri, rij;
+  int incci, inccij;
+  int incri, incrij;
+  int inca, incb, incc;
+
+  int test_count;		/* number of tests done so far   */
+  int bad_ratio_count;		/* number of failed tests so far */
+
+  double ratio;
+  double ratio_min, ratio_max;
+
+  double eps_int;		/* internal machine epsilon     */
+  double un_int;		/* internal underflow threshold */
+
+  enum blas_order_type order;
+  enum blas_trans_type transa;
+  enum blas_trans_type transb;
+  enum blas_prec_type prec;
+
+  int order_val, transa_val, transb_val;
+  int lda_val, ldb_val, ldc_val;
+  int alpha_val, beta_val;
+  int randomize_val;
+
+  int prec_val;
+
+  int lda, ldb, ldc;
+
+  int lda_0, ldb_0;
+  int tda_0, tdb_0;
+  int lda_1, ldb_1, ldc_1;
+
+  int alpha_flag, beta_flag;
+
+  int saved_seed;
+
+  int norm;
+
+  int test_no;
+
+  double alpha[2];
+  double beta[2];
+  double *a;
+  double *b;
+  double *c;
+  double *a_vec;
+  double *b_vec;
+
+  /* generated test values for c */
+  double *c_gen;
+
+  double *ratios;
+
+  /* true result calculated by testgen, in double-double */
+  double *head_r_true, *tail_r_true;
+
+
+  FPU_FIX_DECL;
+
+  if (n < 0 || m < 0 || k < 0 || ntests < 0)
+    BLAS_error(fname, 0, 0, NULL);
+
+  /* initialization */
+  saved_seed = *seed;
+  ratio = 0.0;
+  ratio_min = 1e308;
+  ratio_max = 0.0;
+
+  *max_ratio = 0.0;
+  *min_ratio = 0.0;
+  *num_bad_ratio = 0;
+  *num_tests = 0;
+
+  if (n == 0 || m == 0 || k == 0)
+    return;
+
+  FPU_FIX_START;
+
+  inca = incb = incc = 1;
+  inca *= 2;
+  incb *= 2;
+  incc *= 2;
+
+  /* allocate memory for arrays */
+  c = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
+  if (2 * m * n > 0 && c == NULL) {
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
+  }
+  c_gen = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
+  if (2 * m * n > 0 && c_gen == NULL) {
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
+  }
+  for (i = 0; i < 2 * m * n * incc; i += incc) {
+    c[i] = 0.0;
+    c[i + 1] = 0.0;
+    c_gen[i] = 0.0;
+    c_gen[i + 1] = 0.0;
+  }
+  a = (double *) blas_malloc(2 * m * k * sizeof(double) * 2);
+  if (2 * m * k > 0 && a == NULL) {
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
+  }
+  for (i = 0; i < 2 * m * k * inca; i += inca) {
+    a[i] = 0.0;
+    a[i + 1] = 0.0;
+  }
+  b = (double *) blas_malloc(2 * k * n * sizeof(double) * 2);
+  if (2 * k * n > 0 && b == NULL) {
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
+  }
+  for (i = 0; i < 2 * k * n * incb; i += incb) {
+    b[i] = 0.0;
+    b[i + 1] = 0.0;
+  }
+  a_vec = (double *) blas_malloc(k * sizeof(double) * 2);
+  if (k > 0 && a_vec == NULL) {
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
+  }
+  for (i = 0; i < k * inca; i += inca) {
+    a_vec[i] = 0.0;
+    a_vec[i + 1] = 0.0;
+  }
+  b_vec = (double *) blas_malloc(k * sizeof(double) * 2);
+  if (k > 0 && b_vec == NULL) {
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
+  }
+  for (i = 0; i < k * incb; i += incb) {
+    b_vec[i] = 0.0;
+    b_vec[i + 1] = 0.0;
+  }
+
+  head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
+  tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
+  if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
+  }
+  ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
+  if (2 * m * n > 0 && ratios == NULL) {
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
+  }
+
+  test_count = 0;
+  bad_ratio_count = 0;
+
+  /* vary alpha */
+  for (alpha_val = ALPHA_START; alpha_val <= ALPHA_END; alpha_val++) {
+
+    alpha_flag = 0;
+    switch (alpha_val) {
+    case 0:
+      alpha[0] = alpha[1] = 0.0;
+      alpha_flag = 1;
+      break;
+    case 1:
+      alpha[0] = 1.0;
+      alpha[1] = 0.0;
+      alpha_flag = 1;
+      break;
+    }
+
+    /* vary beta */
+    for (beta_val = BETA_START; beta_val <= BETA_END; beta_val++) {
+      beta_flag = 0;
+      switch (beta_val) {
+      case 0:
+	beta[0] = beta[1] = 0.0;
+	beta_flag = 1;
+	break;
+      case 1:
+	beta[0] = 1.0;
+	beta[1] = 0.0;
+	beta_flag = 1;
+	break;
+      }
+
+
+      /* varying extra precs */
+      for (prec_val = PREC_START; prec_val <= PREC_END; prec_val++) {
+	switch (prec_val) {
+	case 0:
+	  eps_int = power(2, -BITS_D);
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+	  prec = blas_prec_double;
+	  break;
+	case 1:
+	  eps_int = power(2, -BITS_D);
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+	  prec = blas_prec_double;
+	  break;
+	case 2:
+	default:
+	  eps_int = power(2, -BITS_E);
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_extra),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_extra));
+	  prec = blas_prec_extra;
+	  break;
+	}
+
+	/* vary norm -- underflow, approx 1, overflow */
+	for (norm = NORM_START; norm <= NORM_END; norm++) {
+
+	  /* number of tests */
+	  for (test_no = 0; test_no < ntests; test_no++) {
+
+	    /* vary storage format */
+	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
+
+	      if (order_val == 0) {
+		/* row major storage */
+		lda_0 = k;
+		ldb_0 = n;
+		ldc_1 = n;
+		tda_0 = m;
+		tdb_0 = k;
+		order = blas_rowmajor;
+	      } else {
+		/* column major storage */
+		lda_0 = m;
+		ldb_0 = k;
+		ldc_1 = m;
+		tda_0 = k;
+		tdb_0 = n;
+		order = blas_colmajor;
+	      }
+
+	      /* vary transpositions of A */
+	      for (transa_val = TRANSA_START; transa_val <= TRANSA_END;
+		   transa_val++) {
+
+		transa = (transa_val == 0) ? blas_no_trans :
+		  (transa_val == 1) ? blas_trans : blas_conj_trans;
+
+		if (transa == blas_no_trans) {
+		  lda_1 = lda_0;
+		} else {
+		  lda_1 = tda_0;
+		}
+
+		/* vary transpositions of B */
+		for (transb_val = TRANSB_START; transb_val <= TRANSB_END;
+		     transb_val++) {
+
+		  transb = (transb_val == 0) ? blas_no_trans :
+		    (transb_val == 1) ? blas_trans : blas_conj_trans;
+
+		  if (transb == blas_no_trans) {
+		    ldb_1 = ldb_0;
+		  } else {
+		    ldb_1 = tdb_0;
+		  }
+
+		  /* vary lda = k, k+1, 2*k */
+		  for (lda_val = LDA_START; lda_val <= LDA_END; lda_val++) {
+
+		    lda = (lda_val == 0) ? lda_1 :
+		      (lda_val == 1) ? lda_1 + 1 : 2 * lda_1;
+
+		    /* vary ldb = n, n+1, 2*n */
+		    for (ldb_val = LDB_START; ldb_val <= LDB_END; ldb_val++) {
+
+		      ldb = (ldb_val == 0) ? ldb_1 :
+			(ldb_val == 1) ? ldb_1 + 1 : 2 * ldb_1;
+
+		      /* vary ldc = k, k+1, 2*k */
+		      for (ldc_val = LDC_START; ldc_val <= LDC_END; ldc_val++) {
+
+			ldc = (ldc_val == 0) ? ldc_1 :
+			  (ldc_val == 1) ? ldc_1 + 1 : 2 * ldc_1;
+
+			for (randomize_val = RANDOMIZE_START;
+			     randomize_val <= RANDOMIZE_END;
+			     randomize_val++) {
+
+			  /* For the sake of speed, we throw out this case
+			     at random */
+			  if (((float) rand()) / ((float) RAND_MAX) >=
+			      test_prob)
+			    continue;
+
+
+			  /* finally we are here to generate the test case */
+			  BLAS_zgemm_testgen(norm, order,
+					     transa, transb, m, n, k,
+					     randomize_val, &alpha,
+					     alpha_flag, a, lda, &beta,
+					     beta_flag, b, ldb, c, ldc, seed,
+					     head_r_true, tail_r_true);
+			  test_count++;
+
+			  /* copy generated C matrix since this will be
+			     over written */
+			  zgemm_copy(order, m, n, c_gen, ldc, c, ldc);
+
+			  /* call GEMM routines to be tested */
+			  FPU_FIX_STOP;
+			  BLAS_zgemm_x(order, transa,
+				       transb, m, n, k, alpha, a, lda, b, ldb,
+				       beta, c, ldc, prec);
+			  FPU_FIX_START;
+
+			  /* now compute the ratio using test_c_xdot */
+			  /* copy a row from A, a column from B, run 
+			     dot test */
+
+			  if (order == blas_colmajor) {
+			    incci = 1;
+			    inccij = ldc;
+			  } else {
+			    incci = ldc;
+			    inccij = 1;
+			  }
+
+			  incri = incci;
+			  incrij = inccij;
+
+			  incci *= 2;
+			  inccij *= 2;
+
+			  for (i = 0, ci = 0, ri = 0; i < m;
+			       i++, ci += incci, ri += incri) {
+			    zgemm_copy_row(order, transa,
+					   m, k, a, lda, a_vec, i);
+			    for (j = 0, cij = ci, rij = ri; j < n;
+				 j++, cij += inccij, rij += incrij) {
+			      /* copy i-th row of A and j-th col of B */
+			      zgemm_copy_col(order, transb,
+					     k, n, b, ldb, b_vec, j);
+
+			      test_BLAS_zdot(k, blas_no_conj,
+					     alpha, beta, &c_gen[cij],
+					     &c[cij],
+					     &head_r_true[cij],
+					     &tail_r_true[cij], a_vec, 1,
+					     b_vec, 1, eps_int, un_int,
+					     &ratios[rij]);
+
+			      /* take the max ratio */
+			      if (rij == 0) {
+				ratio = ratios[0];
+				/* The !<= below causes NaN error to be detected.
+				   Note that (NaN > thresh) is always false. */
+			      } else if (!(ratios[rij] <= ratio)) {
+				ratio = ratios[rij];
+			      }
+
+			    }
+			  }	/* end of dot-test loop */
+
+			  /* Increase the number of bad ratio, if the ratio
+			     is bigger than the threshold.
+			     The !<= below causes NaN error to be detected.
+			     Note that (NaN > thresh) is always false. */
+			  if (!(ratio <= thresh)) {
+
+			    if (debug == 3) {
+
+			      printf("\nm %d   n %d   k %d\n", m, n, k);
+			      printf("LDA %d  LDB %d  LDC %d\n", lda, ldb,
+				     ldc);
+
+			      printf("A:");
+			      switch (transa) {
+			      case blas_no_trans:
+				printf("no_trans ");
+				break;
+			      case blas_trans:
+				printf("trans ");
+				break;
+			      case blas_conj_trans:
+				printf("conj_trans ");
+				break;
+			      }
+			      printf("B:");
+			      switch (transb) {
+			      case blas_no_trans:
+				printf("no_trans ");
+				break;
+			      case blas_trans:
+				printf("trans ");
+				break;
+			      case blas_conj_trans:
+				printf("conj_trans ");
+				break;
+			      }
+
+			      printf("NORM %d, ALPHA %d, BETA %d\n",
+				     norm, alpha_val, beta_val);
+
+			      switch (order) {
+			      case blas_rowmajor:
+				printf("row_major ");
+				break;
+			      case blas_colmajor:
+				printf("col_major ");
+				break;
+			      }
+			      switch (prec) {
+			      case blas_prec_single:
+				printf("single ");
+				break;
+			      case blas_prec_double:
+				printf("double ");
+				break;
+			      case blas_prec_indigenous:
+				printf("indigenous ");
+				break;
+			      case blas_prec_extra:
+				printf("extra ");
+				break;
+			      }
+
+			      if (randomize_val == 0)
+				printf("Not randomized\n");
+			      else
+				printf("Randomized\n");
+
+			      /* print out info */
+			      printf("alpha[0]=%.16e, alpha[1]=%.16e",
+				     alpha[0], alpha[1]);;
+			      printf("   ");
+			      printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
+				     beta[1]);;
+			      printf("\n");
+
+			      printf("a\n");
+			      zprint_matrix(a, m, k, lda, order);
+			      printf("b\n");
+			      zprint_matrix(b, k, n, ldb, order);
+
+			      printf("c_gen\n");
+			      zprint_matrix(c_gen, m, n, ldc, order);
+
+			      printf("c\n");
+			      zprint_matrix(c, m, n, ldc, order);
+
+			      printf("truth\n");
+			      zprint_matrix(head_r_true, m, n, ldc, order);
+
+			      printf("ratio = %g\n", ratio);
+			    }
+			    bad_ratio_count++;
+			    if (bad_ratio_count >= MAX_BAD_TESTS) {
+			      printf("\ntoo many failures, exiting....");
+			      printf("\nTesting and compilation");
+			      printf(" are incomplete\n\n");
+			      goto end;
+			    }
+			    if (!(ratio <= TOTAL_FAILURE_THRESHOLD)) {
+			      printf("\nFlagrant ratio %e, exiting...",
+				     ratio);
+			      printf("\nTesting and compilation");
+			      printf(" are incomplete\n\n");
+			      goto end;
+			    }
+			  }
+
+			  if (ratio > ratio_max)
+			    ratio_max = ratio;
+
+			  if (ratio != 0.0 && ratio < ratio_min)
+			    ratio_min = ratio;
+
+			}	/* end of randomize loop */
+
+		      }		/* end of ldc loop */
+
+		    }		/* end of ldb loop */
+
+		  }		/* end of lda loop */
+
+		}		/* end of transb loop */
+
+	      }			/* end of transa loop */
+
+	    }			/* end of order loop */
+
+	  }			/* end of nr test loop */
+
+	}			/* end of norm loop */
+
+
+      }				/* end of prec loop */
+
+    }				/* end of beta loop */
+
+  }				/* end of alpha loop */
+
+end:
+  FPU_FIX_STOP;
+
+  blas_free(c);
+  blas_free(a);
+  blas_free(b);
+  blas_free(c_gen);
+  blas_free(head_r_true);
+  blas_free(tail_r_true);
+  blas_free(ratios);
+  blas_free(a_vec);
+  blas_free(b_vec);
+
+  *max_ratio = ratio_max;
+  *min_ratio = ratio_min;
+  *num_tests = test_count;
+  *num_bad_ratio = bad_ratio_count;
+
+}
+void do_test_dgemm_d_s_x(int m, int n, int k, int ntests, int *seed,
+			 double thresh, int debug, float test_prob,
+			 double *min_ratio, double *max_ratio,
+			 int *num_bad_ratio, int *num_tests)
+{
 
   /* Function name */
   const char fname[] = "BLAS_dgemm_d_s_x";
@@ -7071,13 +7936,8 @@ void do_test_dgemm_d_s_x
   double *ratios;
 
   /* true result calculated by testgen, in double-double */
-  double *tail_r_true;
-  double *head_r_true;
-  double tail_r_true_elem;
-  double head_r_true_elem;
+  double *head_r_true, *tail_r_true;
 
-  double rin;
-  double rout;
   FPU_FIX_DECL;
 
   if (n < 0 || m < 0 || k < 0 || ntests < 0)
@@ -7147,11 +8007,8 @@ void do_test_dgemm_d_s_x
   }
 
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double));
-  if (2 * m * n > 0 && head_r_true == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double));
-  if (2 * m * n > 0 && tail_r_true == NULL) {
+  if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
@@ -7179,7 +8036,6 @@ void do_test_dgemm_d_s_x
 
     /* vary beta */
     for (beta_val = BETA_START; beta_val <= BETA_END; beta_val++) {
-
       beta_flag = 0;
       switch (beta_val) {
       case 0:
@@ -7195,24 +8051,24 @@ void do_test_dgemm_d_s_x
 
       /* varying extra precs */
       for (prec_val = PREC_START; prec_val <= PREC_END; prec_val++) {
-
 	switch (prec_val) {
 	case 0:
 	  eps_int = power(2, -BITS_D);
-	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double), (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));	/* get double underflow */
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
 	  prec = blas_prec_double;
 	  break;
 	case 1:
 	  eps_int = power(2, -BITS_D);
-	  un_int =
-	    pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-		(double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
 	  prec = blas_prec_double;
 	  break;
 	case 2:
 	default:
 	  eps_int = power(2, -BITS_E);
-	  un_int = power(2, -1022 + 53 + 1);
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_extra),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_extra));
 	  prec = blas_prec_extra;
 	  break;
 	}
@@ -7348,15 +8204,11 @@ void do_test_dgemm_d_s_x
 			      sgemm_copy_col(order, transb,
 					     k, n, b, ldb, b_vec, j);
 
-			      rin = c_gen[cij];
-			      rout = c[cij];
-			      head_r_true_elem = head_r_true[cij];
-			      tail_r_true_elem = tail_r_true[cij];
-
 			      test_BLAS_ddot_d_s(k, blas_no_conj,
-						 alpha, beta, rin, rout,
-						 head_r_true_elem,
-						 tail_r_true_elem, a_vec, 1,
+						 alpha, beta, c_gen[cij],
+						 c[cij],
+						 head_r_true[cij],
+						 tail_r_true[cij], a_vec, 1,
 						 b_vec, 1, eps_int, un_int,
 						 &ratios[rij]);
 
@@ -7384,51 +8236,54 @@ void do_test_dgemm_d_s_x
 			      printf("LDA %d  LDB %d  LDC %d\n", lda, ldb,
 				     ldc);
 
+			      printf("A:");
 			      switch (transa) {
 			      case blas_no_trans:
-				printf("A no_trans\n");
+				printf("no_trans ");
 				break;
 			      case blas_trans:
-				printf("A trans\n");
+				printf("trans ");
 				break;
 			      case blas_conj_trans:
-				printf("A conj_trans\n");
+				printf("conj_trans ");
 				break;
 			      }
-
+			      printf("B:");
 			      switch (transb) {
 			      case blas_no_trans:
-				printf("B no_trans\n");
+				printf("no_trans ");
 				break;
 			      case blas_trans:
-				printf("B trans\n");
+				printf("trans ");
 				break;
 			      case blas_conj_trans:
-				printf("B conj_trans\n");
+				printf("conj_trans ");
 				break;
 			      }
 
 			      printf("NORM %d, ALPHA %d, BETA %d\n",
 				     norm, alpha_val, beta_val);
 
-			      if (order == blas_rowmajor) {
-				printf("Row Major\n");
-			      } else {
-				printf("Col Major\n");
+			      switch (order) {
+			      case blas_rowmajor:
+				printf("row_major ");
+				break;
+			      case blas_colmajor:
+				printf("col_major ");
+				break;
 			      }
-
 			      switch (prec) {
 			      case blas_prec_single:
-				printf("Single Prec\n");
+				printf("single ");
 				break;
 			      case blas_prec_double:
-				printf("Double Prec\n");
+				printf("double ");
 				break;
 			      case blas_prec_indigenous:
-				printf("Indigenous Prec\n");
+				printf("indigenous ");
 				break;
 			      case blas_prec_extra:
-				printf("Extra Prec\n");
+				printf("extra ");
 				break;
 			      }
 
@@ -7525,10 +8380,11 @@ end:
   *num_bad_ratio = bad_ratio_count;
 
 }
-void do_test_dgemm_s_d_x
-  (int m, int n, int k,
-   int ntests, int *seed, double thresh, int debug, float test_prob,
-   double *min_ratio, double *max_ratio, int *num_bad_ratio, int *num_tests) {
+void do_test_dgemm_s_d_x(int m, int n, int k, int ntests, int *seed,
+			 double thresh, int debug, float test_prob,
+			 double *min_ratio, double *max_ratio,
+			 int *num_bad_ratio, int *num_tests)
+{
 
   /* Function name */
   const char fname[] = "BLAS_dgemm_s_d_x";
@@ -7589,13 +8445,8 @@ void do_test_dgemm_s_d_x
   double *ratios;
 
   /* true result calculated by testgen, in double-double */
-  double *tail_r_true;
-  double *head_r_true;
-  double tail_r_true_elem;
-  double head_r_true_elem;
+  double *head_r_true, *tail_r_true;
 
-  double rin;
-  double rout;
   FPU_FIX_DECL;
 
   if (n < 0 || m < 0 || k < 0 || ntests < 0)
@@ -7665,11 +8516,8 @@ void do_test_dgemm_s_d_x
   }
 
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double));
-  if (2 * m * n > 0 && head_r_true == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double));
-  if (2 * m * n > 0 && tail_r_true == NULL) {
+  if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
@@ -7697,7 +8545,6 @@ void do_test_dgemm_s_d_x
 
     /* vary beta */
     for (beta_val = BETA_START; beta_val <= BETA_END; beta_val++) {
-
       beta_flag = 0;
       switch (beta_val) {
       case 0:
@@ -7713,24 +8560,24 @@ void do_test_dgemm_s_d_x
 
       /* varying extra precs */
       for (prec_val = PREC_START; prec_val <= PREC_END; prec_val++) {
-
 	switch (prec_val) {
 	case 0:
 	  eps_int = power(2, -BITS_D);
-	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double), (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));	/* get double underflow */
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
 	  prec = blas_prec_double;
 	  break;
 	case 1:
 	  eps_int = power(2, -BITS_D);
-	  un_int =
-	    pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-		(double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
 	  prec = blas_prec_double;
 	  break;
 	case 2:
 	default:
 	  eps_int = power(2, -BITS_E);
-	  un_int = power(2, -1022 + 53 + 1);
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_extra),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_extra));
 	  prec = blas_prec_extra;
 	  break;
 	}
@@ -7866,15 +8713,11 @@ void do_test_dgemm_s_d_x
 			      dgemm_copy_col(order, transb,
 					     k, n, b, ldb, b_vec, j);
 
-			      rin = c_gen[cij];
-			      rout = c[cij];
-			      head_r_true_elem = head_r_true[cij];
-			      tail_r_true_elem = tail_r_true[cij];
-
 			      test_BLAS_ddot_s_d(k, blas_no_conj,
-						 alpha, beta, rin, rout,
-						 head_r_true_elem,
-						 tail_r_true_elem, a_vec, 1,
+						 alpha, beta, c_gen[cij],
+						 c[cij],
+						 head_r_true[cij],
+						 tail_r_true[cij], a_vec, 1,
 						 b_vec, 1, eps_int, un_int,
 						 &ratios[rij]);
 
@@ -7902,51 +8745,54 @@ void do_test_dgemm_s_d_x
 			      printf("LDA %d  LDB %d  LDC %d\n", lda, ldb,
 				     ldc);
 
+			      printf("A:");
 			      switch (transa) {
 			      case blas_no_trans:
-				printf("A no_trans\n");
+				printf("no_trans ");
 				break;
 			      case blas_trans:
-				printf("A trans\n");
+				printf("trans ");
 				break;
 			      case blas_conj_trans:
-				printf("A conj_trans\n");
+				printf("conj_trans ");
 				break;
 			      }
-
+			      printf("B:");
 			      switch (transb) {
 			      case blas_no_trans:
-				printf("B no_trans\n");
+				printf("no_trans ");
 				break;
 			      case blas_trans:
-				printf("B trans\n");
+				printf("trans ");
 				break;
 			      case blas_conj_trans:
-				printf("B conj_trans\n");
+				printf("conj_trans ");
 				break;
 			      }
 
 			      printf("NORM %d, ALPHA %d, BETA %d\n",
 				     norm, alpha_val, beta_val);
 
-			      if (order == blas_rowmajor) {
-				printf("Row Major\n");
-			      } else {
-				printf("Col Major\n");
+			      switch (order) {
+			      case blas_rowmajor:
+				printf("row_major ");
+				break;
+			      case blas_colmajor:
+				printf("col_major ");
+				break;
 			      }
-
 			      switch (prec) {
 			      case blas_prec_single:
-				printf("Single Prec\n");
+				printf("single ");
 				break;
 			      case blas_prec_double:
-				printf("Double Prec\n");
+				printf("double ");
 				break;
 			      case blas_prec_indigenous:
-				printf("Indigenous Prec\n");
+				printf("indigenous ");
 				break;
 			      case blas_prec_extra:
-				printf("Extra Prec\n");
+				printf("extra ");
 				break;
 			      }
 
@@ -8043,10 +8889,11 @@ end:
   *num_bad_ratio = bad_ratio_count;
 
 }
-void do_test_dgemm_s_s_x
-  (int m, int n, int k,
-   int ntests, int *seed, double thresh, int debug, float test_prob,
-   double *min_ratio, double *max_ratio, int *num_bad_ratio, int *num_tests) {
+void do_test_dgemm_s_s_x(int m, int n, int k, int ntests, int *seed,
+			 double thresh, int debug, float test_prob,
+			 double *min_ratio, double *max_ratio,
+			 int *num_bad_ratio, int *num_tests)
+{
 
   /* Function name */
   const char fname[] = "BLAS_dgemm_s_s_x";
@@ -8107,13 +8954,8 @@ void do_test_dgemm_s_s_x
   double *ratios;
 
   /* true result calculated by testgen, in double-double */
-  double *tail_r_true;
-  double *head_r_true;
-  double tail_r_true_elem;
-  double head_r_true_elem;
+  double *head_r_true, *tail_r_true;
 
-  double rin;
-  double rout;
   FPU_FIX_DECL;
 
   if (n < 0 || m < 0 || k < 0 || ntests < 0)
@@ -8183,11 +9025,8 @@ void do_test_dgemm_s_s_x
   }
 
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double));
-  if (2 * m * n > 0 && head_r_true == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double));
-  if (2 * m * n > 0 && tail_r_true == NULL) {
+  if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
@@ -8215,7 +9054,6 @@ void do_test_dgemm_s_s_x
 
     /* vary beta */
     for (beta_val = BETA_START; beta_val <= BETA_END; beta_val++) {
-
       beta_flag = 0;
       switch (beta_val) {
       case 0:
@@ -8231,24 +9069,24 @@ void do_test_dgemm_s_s_x
 
       /* varying extra precs */
       for (prec_val = PREC_START; prec_val <= PREC_END; prec_val++) {
-
 	switch (prec_val) {
 	case 0:
 	  eps_int = power(2, -BITS_D);
-	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double), (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));	/* get double underflow */
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
 	  prec = blas_prec_double;
 	  break;
 	case 1:
 	  eps_int = power(2, -BITS_D);
-	  un_int =
-	    pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-		(double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
 	  prec = blas_prec_double;
 	  break;
 	case 2:
 	default:
 	  eps_int = power(2, -BITS_E);
-	  un_int = power(2, -1022 + 53 + 1);
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_extra),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_extra));
 	  prec = blas_prec_extra;
 	  break;
 	}
@@ -8384,15 +9222,11 @@ void do_test_dgemm_s_s_x
 			      sgemm_copy_col(order, transb,
 					     k, n, b, ldb, b_vec, j);
 
-			      rin = c_gen[cij];
-			      rout = c[cij];
-			      head_r_true_elem = head_r_true[cij];
-			      tail_r_true_elem = tail_r_true[cij];
-
 			      test_BLAS_ddot_s_s(k, blas_no_conj,
-						 alpha, beta, rin, rout,
-						 head_r_true_elem,
-						 tail_r_true_elem, a_vec, 1,
+						 alpha, beta, c_gen[cij],
+						 c[cij],
+						 head_r_true[cij],
+						 tail_r_true[cij], a_vec, 1,
 						 b_vec, 1, eps_int, un_int,
 						 &ratios[rij]);
 
@@ -8420,51 +9254,54 @@ void do_test_dgemm_s_s_x
 			      printf("LDA %d  LDB %d  LDC %d\n", lda, ldb,
 				     ldc);
 
+			      printf("A:");
 			      switch (transa) {
 			      case blas_no_trans:
-				printf("A no_trans\n");
+				printf("no_trans ");
 				break;
 			      case blas_trans:
-				printf("A trans\n");
+				printf("trans ");
 				break;
 			      case blas_conj_trans:
-				printf("A conj_trans\n");
+				printf("conj_trans ");
 				break;
 			      }
-
+			      printf("B:");
 			      switch (transb) {
 			      case blas_no_trans:
-				printf("B no_trans\n");
+				printf("no_trans ");
 				break;
 			      case blas_trans:
-				printf("B trans\n");
+				printf("trans ");
 				break;
 			      case blas_conj_trans:
-				printf("B conj_trans\n");
+				printf("conj_trans ");
 				break;
 			      }
 
 			      printf("NORM %d, ALPHA %d, BETA %d\n",
 				     norm, alpha_val, beta_val);
 
-			      if (order == blas_rowmajor) {
-				printf("Row Major\n");
-			      } else {
-				printf("Col Major\n");
+			      switch (order) {
+			      case blas_rowmajor:
+				printf("row_major ");
+				break;
+			      case blas_colmajor:
+				printf("col_major ");
+				break;
 			      }
-
 			      switch (prec) {
 			      case blas_prec_single:
-				printf("Single Prec\n");
+				printf("single ");
 				break;
 			      case blas_prec_double:
-				printf("Double Prec\n");
+				printf("double ");
 				break;
 			      case blas_prec_indigenous:
-				printf("Indigenous Prec\n");
+				printf("indigenous ");
 				break;
 			      case blas_prec_extra:
-				printf("Extra Prec\n");
+				printf("extra ");
 				break;
 			      }
 
@@ -8561,1073 +9398,11 @@ end:
   *num_bad_ratio = bad_ratio_count;
 
 }
-
-void do_test_cgemm_x
-  (int m, int n, int k,
-   int ntests, int *seed, double thresh, int debug, float test_prob,
-   double *min_ratio, double *max_ratio, int *num_bad_ratio, int *num_tests) {
-
-  /* Function name */
-  const char fname[] = "BLAS_cgemm_x";
-
-  int i, j;
-  int ci, cij;
-  int ri, rij;
-  int incci, inccij;
-  int incri, incrij;
-  int inca, incb, incc;
-
-  int test_count;		/* number of tests done so far   */
-  int bad_ratio_count;		/* number of failed tests so far */
-
-  double ratio;
-  double ratio_min, ratio_max;
-
-  double eps_int;		/* internal machine epsilon     */
-  double un_int;		/* internal underflow threshold */
-
-  enum blas_order_type order;
-  enum blas_trans_type transa;
-  enum blas_trans_type transb;
-  enum blas_prec_type prec;
-
-  int order_val, transa_val, transb_val;
-  int lda_val, ldb_val, ldc_val;
-  int alpha_val, beta_val;
-  int randomize_val;
-
-  int prec_val;
-
-  int lda, ldb, ldc;
-
-  int lda_0, ldb_0;
-  int tda_0, tdb_0;
-  int lda_1, ldb_1, ldc_1;
-
-  int alpha_flag, beta_flag;
-
-  int saved_seed;
-
-  int norm;
-
-  int test_no;
-
-  float alpha[2];
-  float beta[2];
-  float *a;
-  float *b;
-  float *c;
-  float *a_vec;
-  float *b_vec;
-
-  /* generated test values for c */
-  float *c_gen;
-
-  double *ratios;
-
-  /* true result calculated by testgen, in double-double */
-  double *tail_r_true;
-  double *head_r_true;
-  double tail_r_true_elem[2];
-  double head_r_true_elem[2];
-
-  float rin[2];
-  float rout[2];
-  FPU_FIX_DECL;
-
-  if (n < 0 || m < 0 || k < 0 || ntests < 0)
-    BLAS_error(fname, 0, 0, NULL);
-
-  /* initialization */
-  saved_seed = *seed;
-  ratio = 0.0;
-  ratio_min = 1e308;
-  ratio_max = 0.0;
-
-  *max_ratio = 0.0;
-  *min_ratio = 0.0;
-  *num_bad_ratio = 0;
-  *num_tests = 0;
-
-  if (n == 0 || m == 0 || k == 0)
-    return;
-
-  FPU_FIX_START;
-
-  inca = incb = incc = 1;
-  inca *= 2;
-  incb *= 2;
-  incc *= 2;
-
-  /* allocate memory for arrays */
-  c = (float *) blas_malloc(2 * m * n * sizeof(float) * 2);
-  if (2 * m * n > 0 && c == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  c_gen = (float *) blas_malloc(2 * m * n * sizeof(float) * 2);
-  if (2 * m * n > 0 && c_gen == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c[i + 1] = 0.0;
-    c_gen[i] = 0.0;
-    c_gen[i + 1] = 0.0;
-  }
-  a = (float *) blas_malloc(2 * m * k * sizeof(float) * 2);
-  if (2 * m * k > 0 && a == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m * k * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
-  }
-  b = (float *) blas_malloc(2 * k * n * sizeof(float) * 2);
-  if (2 * k * n > 0 && b == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * k * n * incb; i += incb) {
-    b[i] = 0.0;
-    b[i + 1] = 0.0;
-  }
-  a_vec = (float *) blas_malloc(k * sizeof(float) * 2);
-  if (k > 0 && a_vec == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < k * inca; i += inca) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
-  }
-  b_vec = (float *) blas_malloc(k * sizeof(float) * 2);
-  if (k > 0 && b_vec == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < k * incb; i += incb) {
-    b_vec[i] = 0.0;
-    b_vec[i + 1] = 0.0;
-  }
-
-  head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && head_r_true == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && tail_r_true == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
-  if (2 * m * n > 0 && ratios == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-
-  test_count = 0;
-  bad_ratio_count = 0;
-
-  /* vary alpha */
-  for (alpha_val = ALPHA_START; alpha_val <= ALPHA_END; alpha_val++) {
-
-    alpha_flag = 0;
-    switch (alpha_val) {
-    case 0:
-      alpha[0] = alpha[1] = 0.0;
-      alpha_flag = 1;
-      break;
-    case 1:
-      alpha[0] = 1.0;
-      alpha[1] = 0.0;
-      alpha_flag = 1;
-      break;
-    }
-
-    /* vary beta */
-    for (beta_val = BETA_START; beta_val <= BETA_END; beta_val++) {
-
-      beta_flag = 0;
-      switch (beta_val) {
-      case 0:
-	beta[0] = beta[1] = 0.0;
-	beta_flag = 1;
-	break;
-      case 1:
-	beta[0] = 1.0;
-	beta[1] = 0.0;
-	beta_flag = 1;
-	break;
-      }
-
-
-      /* varying extra precs */
-      for (prec_val = PREC_START; prec_val <= PREC_END; prec_val++) {
-
-	switch (prec_val) {
-	case 0:
-	  eps_int = power(2, -BITS_S);
-	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_single), (double) BLAS_fpinfo_x(blas_emin, blas_prec_single));	/* get single underflow */
-	  prec = blas_prec_single;
-	  break;
-	case 1:
-	  eps_int = power(2, -BITS_D);
-	  un_int =
-	    pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-		(double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
-	  prec = blas_prec_double;
-	  break;
-	case 2:
-	default:
-	  eps_int = power(2, -BITS_E);
-	  un_int = power(2, -1022 + 53 + 1);
-	  prec = blas_prec_extra;
-	  break;
-	}
-
-	/* vary norm -- underflow, approx 1, overflow */
-	for (norm = NORM_START; norm <= NORM_END; norm++) {
-
-	  /* number of tests */
-	  for (test_no = 0; test_no < ntests; test_no++) {
-
-	    /* vary storage format */
-	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
-
-	      if (order_val == 0) {
-		/* row major storage */
-		lda_0 = k;
-		ldb_0 = n;
-		ldc_1 = n;
-		tda_0 = m;
-		tdb_0 = k;
-		order = blas_rowmajor;
-	      } else {
-		/* column major storage */
-		lda_0 = m;
-		ldb_0 = k;
-		ldc_1 = m;
-		tda_0 = k;
-		tdb_0 = n;
-		order = blas_colmajor;
-	      }
-
-	      /* vary transpositions of A */
-	      for (transa_val = TRANSA_START; transa_val <= TRANSA_END;
-		   transa_val++) {
-
-		transa = (transa_val == 0) ? blas_no_trans :
-		  (transa_val == 1) ? blas_trans : blas_conj_trans;
-
-		if (transa == blas_no_trans) {
-		  lda_1 = lda_0;
-		} else {
-		  lda_1 = tda_0;
-		}
-
-		/* vary transpositions of B */
-		for (transb_val = TRANSB_START; transb_val <= TRANSB_END;
-		     transb_val++) {
-
-		  transb = (transb_val == 0) ? blas_no_trans :
-		    (transb_val == 1) ? blas_trans : blas_conj_trans;
-
-		  if (transb == blas_no_trans) {
-		    ldb_1 = ldb_0;
-		  } else {
-		    ldb_1 = tdb_0;
-		  }
-
-		  /* vary lda = k, k+1, 2*k */
-		  for (lda_val = LDA_START; lda_val <= LDA_END; lda_val++) {
-
-		    lda = (lda_val == 0) ? lda_1 :
-		      (lda_val == 1) ? lda_1 + 1 : 2 * lda_1;
-
-		    /* vary ldb = n, n+1, 2*n */
-		    for (ldb_val = LDB_START; ldb_val <= LDB_END; ldb_val++) {
-
-		      ldb = (ldb_val == 0) ? ldb_1 :
-			(ldb_val == 1) ? ldb_1 + 1 : 2 * ldb_1;
-
-		      /* vary ldc = k, k+1, 2*k */
-		      for (ldc_val = LDC_START; ldc_val <= LDC_END; ldc_val++) {
-
-			ldc = (ldc_val == 0) ? ldc_1 :
-			  (ldc_val == 1) ? ldc_1 + 1 : 2 * ldc_1;
-
-			for (randomize_val = RANDOMIZE_START;
-			     randomize_val <= RANDOMIZE_END;
-			     randomize_val++) {
-
-			  /* For the sake of speed, we throw out this case
-			     at random */
-			  if (((float) rand()) / ((float) RAND_MAX) >=
-			      test_prob)
-			    continue;
-
-
-			  /* finally we are here to generate the test case */
-			  BLAS_cgemm_testgen(norm, order,
-					     transa, transb, m, n, k,
-					     randomize_val, &alpha,
-					     alpha_flag, a, lda, &beta,
-					     beta_flag, b, ldb, c, ldc, seed,
-					     head_r_true, tail_r_true);
-			  test_count++;
-
-			  /* copy generated C matrix since this will be
-			     over written */
-			  cgemm_copy(order, m, n, c_gen, ldc, c, ldc);
-
-			  /* call GEMM routines to be tested */
-			  FPU_FIX_STOP;
-			  BLAS_cgemm_x(order, transa,
-				       transb, m, n, k, alpha, a, lda, b, ldb,
-				       beta, c, ldc, prec);
-			  FPU_FIX_START;
-
-			  /* now compute the ratio using test_c_xdot */
-			  /* copy a row from A, a column from B, run 
-			     dot test */
-
-			  if (order == blas_colmajor) {
-			    incci = 1;
-			    inccij = ldc;
-			  } else {
-			    incci = ldc;
-			    inccij = 1;
-			  }
-
-			  incri = incci;
-			  incrij = inccij;
-
-			  incci *= 2;
-			  inccij *= 2;
-
-			  for (i = 0, ci = 0, ri = 0; i < m;
-			       i++, ci += incci, ri += incri) {
-			    cgemm_copy_row(order, transa,
-					   m, k, a, lda, a_vec, i);
-			    for (j = 0, cij = ci, rij = ri; j < n;
-				 j++, cij += inccij, rij += incrij) {
-			      /* copy i-th row of A and j-th col of B */
-			      cgemm_copy_col(order, transb,
-					     k, n, b, ldb, b_vec, j);
-
-			      rin[0] = c_gen[cij];
-			      rin[1] = c_gen[cij + 1];
-			      rout[0] = c[cij];
-			      rout[1] = c[cij + 1];
-			      head_r_true_elem[0] = head_r_true[cij];
-			      head_r_true_elem[1] = head_r_true[cij + 1];
-			      tail_r_true_elem[0] = tail_r_true[cij];
-			      tail_r_true_elem[1] = tail_r_true[cij + 1];
-
-			      test_BLAS_cdot(k, blas_no_conj,
-					     alpha, beta, rin, rout,
-					     head_r_true_elem,
-					     tail_r_true_elem, a_vec, 1,
-					     b_vec, 1, eps_int, un_int,
-					     &ratios[rij]);
-
-			      /* take the max ratio */
-			      if (rij == 0) {
-				ratio = ratios[0];
-				/* The !<= below causes NaN error to be detected.
-				   Note that (NaN > thresh) is always false. */
-			      } else if (!(ratios[rij] <= ratio)) {
-				ratio = ratios[rij];
-			      }
-
-			    }
-			  }	/* end of dot-test loop */
-
-			  /* Increase the number of bad ratio, if the ratio
-			     is bigger than the threshold.
-			     The !<= below causes NaN error to be detected.
-			     Note that (NaN > thresh) is always false. */
-			  if (!(ratio <= thresh)) {
-
-			    if (debug == 3) {
-
-			      printf("\nm %d   n %d   k %d\n", m, n, k);
-			      printf("LDA %d  LDB %d  LDC %d\n", lda, ldb,
-				     ldc);
-
-			      switch (transa) {
-			      case blas_no_trans:
-				printf("A no_trans\n");
-				break;
-			      case blas_trans:
-				printf("A trans\n");
-				break;
-			      case blas_conj_trans:
-				printf("A conj_trans\n");
-				break;
-			      }
-
-			      switch (transb) {
-			      case blas_no_trans:
-				printf("B no_trans\n");
-				break;
-			      case blas_trans:
-				printf("B trans\n");
-				break;
-			      case blas_conj_trans:
-				printf("B conj_trans\n");
-				break;
-			      }
-
-			      printf("NORM %d, ALPHA %d, BETA %d\n",
-				     norm, alpha_val, beta_val);
-
-			      if (order == blas_rowmajor) {
-				printf("Row Major\n");
-			      } else {
-				printf("Col Major\n");
-			      }
-
-			      switch (prec) {
-			      case blas_prec_single:
-				printf("Single Prec\n");
-				break;
-			      case blas_prec_double:
-				printf("Double Prec\n");
-				break;
-			      case blas_prec_indigenous:
-				printf("Indigenous Prec\n");
-				break;
-			      case blas_prec_extra:
-				printf("Extra Prec\n");
-				break;
-			      }
-
-			      if (randomize_val == 0)
-				printf("Not randomized\n");
-			      else
-				printf("Randomized\n");
-
-			      /* print out info */
-			      printf("alpha[0]=%.12e, alpha[1]=%.12e",
-				     alpha[0], alpha[1]);;
-			      printf("   ");
-			      printf("beta[0]=%.12e, beta[1]=%.12e", beta[0],
-				     beta[1]);;
-			      printf("\n");
-
-			      printf("a\n");
-			      cprint_matrix(a, m, k, lda, order);
-			      printf("b\n");
-			      cprint_matrix(b, k, n, ldb, order);
-
-			      printf("c_gen\n");
-			      cprint_matrix(c_gen, m, n, ldc, order);
-
-			      printf("c\n");
-			      cprint_matrix(c, m, n, ldc, order);
-
-			      printf("truth\n");
-			      zprint_matrix(head_r_true, m, n, ldc, order);
-
-			      printf("ratio = %g\n", ratio);
-			    }
-			    bad_ratio_count++;
-			    if (bad_ratio_count >= MAX_BAD_TESTS) {
-			      printf("\ntoo many failures, exiting....");
-			      printf("\nTesting and compilation");
-			      printf(" are incomplete\n\n");
-			      goto end;
-			    }
-			    if (!(ratio <= TOTAL_FAILURE_THRESHOLD)) {
-			      printf("\nFlagrant ratio %e, exiting...",
-				     ratio);
-			      printf("\nTesting and compilation");
-			      printf(" are incomplete\n\n");
-			      goto end;
-			    }
-			  }
-
-			  if (ratio > ratio_max)
-			    ratio_max = ratio;
-
-			  if (ratio != 0.0 && ratio < ratio_min)
-			    ratio_min = ratio;
-
-			}	/* end of randomize loop */
-
-		      }		/* end of ldc loop */
-
-		    }		/* end of ldb loop */
-
-		  }		/* end of lda loop */
-
-		}		/* end of transb loop */
-
-	      }			/* end of transa loop */
-
-	    }			/* end of order loop */
-
-	  }			/* end of nr test loop */
-
-	}			/* end of norm loop */
-
-
-      }				/* end of prec loop */
-
-    }				/* end of beta loop */
-
-  }				/* end of alpha loop */
-
-end:
-  FPU_FIX_STOP;
-
-  blas_free(c);
-  blas_free(a);
-  blas_free(b);
-  blas_free(c_gen);
-  blas_free(head_r_true);
-  blas_free(tail_r_true);
-  blas_free(ratios);
-  blas_free(a_vec);
-  blas_free(b_vec);
-
-  *max_ratio = ratio_max;
-  *min_ratio = ratio_min;
-  *num_tests = test_count;
-  *num_bad_ratio = bad_ratio_count;
-
-}
-void do_test_zgemm_x
-  (int m, int n, int k,
-   int ntests, int *seed, double thresh, int debug, float test_prob,
-   double *min_ratio, double *max_ratio, int *num_bad_ratio, int *num_tests) {
-
-  /* Function name */
-  const char fname[] = "BLAS_zgemm_x";
-
-  int i, j;
-  int ci, cij;
-  int ri, rij;
-  int incci, inccij;
-  int incri, incrij;
-  int inca, incb, incc;
-
-  int test_count;		/* number of tests done so far   */
-  int bad_ratio_count;		/* number of failed tests so far */
-
-  double ratio;
-  double ratio_min, ratio_max;
-
-  double eps_int;		/* internal machine epsilon     */
-  double un_int;		/* internal underflow threshold */
-
-  enum blas_order_type order;
-  enum blas_trans_type transa;
-  enum blas_trans_type transb;
-  enum blas_prec_type prec;
-
-  int order_val, transa_val, transb_val;
-  int lda_val, ldb_val, ldc_val;
-  int alpha_val, beta_val;
-  int randomize_val;
-
-  int prec_val;
-
-  int lda, ldb, ldc;
-
-  int lda_0, ldb_0;
-  int tda_0, tdb_0;
-  int lda_1, ldb_1, ldc_1;
-
-  int alpha_flag, beta_flag;
-
-  int saved_seed;
-
-  int norm;
-
-  int test_no;
-
-  double alpha[2];
-  double beta[2];
-  double *a;
-  double *b;
-  double *c;
-  double *a_vec;
-  double *b_vec;
-
-  /* generated test values for c */
-  double *c_gen;
-
-  double *ratios;
-
-  /* true result calculated by testgen, in double-double */
-  double *tail_r_true;
-  double *head_r_true;
-  double tail_r_true_elem[2];
-  double head_r_true_elem[2];
-
-  double rin[2];
-  double rout[2];
-  FPU_FIX_DECL;
-
-  if (n < 0 || m < 0 || k < 0 || ntests < 0)
-    BLAS_error(fname, 0, 0, NULL);
-
-  /* initialization */
-  saved_seed = *seed;
-  ratio = 0.0;
-  ratio_min = 1e308;
-  ratio_max = 0.0;
-
-  *max_ratio = 0.0;
-  *min_ratio = 0.0;
-  *num_bad_ratio = 0;
-  *num_tests = 0;
-
-  if (n == 0 || m == 0 || k == 0)
-    return;
-
-  FPU_FIX_START;
-
-  inca = incb = incc = 1;
-  inca *= 2;
-  incb *= 2;
-  incc *= 2;
-
-  /* allocate memory for arrays */
-  c = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && c == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  c_gen = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && c_gen == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m * n * incc; i += incc) {
-    c[i] = 0.0;
-    c[i + 1] = 0.0;
-    c_gen[i] = 0.0;
-    c_gen[i + 1] = 0.0;
-  }
-  a = (double *) blas_malloc(2 * m * k * sizeof(double) * 2);
-  if (2 * m * k > 0 && a == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * m * k * inca; i += inca) {
-    a[i] = 0.0;
-    a[i + 1] = 0.0;
-  }
-  b = (double *) blas_malloc(2 * k * n * sizeof(double) * 2);
-  if (2 * k * n > 0 && b == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < 2 * k * n * incb; i += incb) {
-    b[i] = 0.0;
-    b[i + 1] = 0.0;
-  }
-  a_vec = (double *) blas_malloc(k * sizeof(double) * 2);
-  if (k > 0 && a_vec == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < k * inca; i += inca) {
-    a_vec[i] = 0.0;
-    a_vec[i + 1] = 0.0;
-  }
-  b_vec = (double *) blas_malloc(k * sizeof(double) * 2);
-  if (k > 0 && b_vec == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  for (i = 0; i < k * incb; i += incb) {
-    b_vec[i] = 0.0;
-    b_vec[i + 1] = 0.0;
-  }
-
-  head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && head_r_true == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && tail_r_true == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
-  if (2 * m * n > 0 && ratios == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-
-  test_count = 0;
-  bad_ratio_count = 0;
-
-  /* vary alpha */
-  for (alpha_val = ALPHA_START; alpha_val <= ALPHA_END; alpha_val++) {
-
-    alpha_flag = 0;
-    switch (alpha_val) {
-    case 0:
-      alpha[0] = alpha[1] = 0.0;
-      alpha_flag = 1;
-      break;
-    case 1:
-      alpha[0] = 1.0;
-      alpha[1] = 0.0;
-      alpha_flag = 1;
-      break;
-    }
-
-    /* vary beta */
-    for (beta_val = BETA_START; beta_val <= BETA_END; beta_val++) {
-
-      beta_flag = 0;
-      switch (beta_val) {
-      case 0:
-	beta[0] = beta[1] = 0.0;
-	beta_flag = 1;
-	break;
-      case 1:
-	beta[0] = 1.0;
-	beta[1] = 0.0;
-	beta_flag = 1;
-	break;
-      }
-
-
-      /* varying extra precs */
-      for (prec_val = PREC_START; prec_val <= PREC_END; prec_val++) {
-
-	switch (prec_val) {
-	case 0:
-	  eps_int = power(2, -BITS_D);
-	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double), (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));	/* get double underflow */
-	  prec = blas_prec_double;
-	  break;
-	case 1:
-	  eps_int = power(2, -BITS_D);
-	  un_int =
-	    pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-		(double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
-	  prec = blas_prec_double;
-	  break;
-	case 2:
-	default:
-	  eps_int = power(2, -BITS_E);
-	  un_int = power(2, -1022 + 53 + 1);
-	  prec = blas_prec_extra;
-	  break;
-	}
-
-	/* vary norm -- underflow, approx 1, overflow */
-	for (norm = NORM_START; norm <= NORM_END; norm++) {
-
-	  /* number of tests */
-	  for (test_no = 0; test_no < ntests; test_no++) {
-
-	    /* vary storage format */
-	    for (order_val = ORDER_START; order_val <= ORDER_END; order_val++) {
-
-	      if (order_val == 0) {
-		/* row major storage */
-		lda_0 = k;
-		ldb_0 = n;
-		ldc_1 = n;
-		tda_0 = m;
-		tdb_0 = k;
-		order = blas_rowmajor;
-	      } else {
-		/* column major storage */
-		lda_0 = m;
-		ldb_0 = k;
-		ldc_1 = m;
-		tda_0 = k;
-		tdb_0 = n;
-		order = blas_colmajor;
-	      }
-
-	      /* vary transpositions of A */
-	      for (transa_val = TRANSA_START; transa_val <= TRANSA_END;
-		   transa_val++) {
-
-		transa = (transa_val == 0) ? blas_no_trans :
-		  (transa_val == 1) ? blas_trans : blas_conj_trans;
-
-		if (transa == blas_no_trans) {
-		  lda_1 = lda_0;
-		} else {
-		  lda_1 = tda_0;
-		}
-
-		/* vary transpositions of B */
-		for (transb_val = TRANSB_START; transb_val <= TRANSB_END;
-		     transb_val++) {
-
-		  transb = (transb_val == 0) ? blas_no_trans :
-		    (transb_val == 1) ? blas_trans : blas_conj_trans;
-
-		  if (transb == blas_no_trans) {
-		    ldb_1 = ldb_0;
-		  } else {
-		    ldb_1 = tdb_0;
-		  }
-
-		  /* vary lda = k, k+1, 2*k */
-		  for (lda_val = LDA_START; lda_val <= LDA_END; lda_val++) {
-
-		    lda = (lda_val == 0) ? lda_1 :
-		      (lda_val == 1) ? lda_1 + 1 : 2 * lda_1;
-
-		    /* vary ldb = n, n+1, 2*n */
-		    for (ldb_val = LDB_START; ldb_val <= LDB_END; ldb_val++) {
-
-		      ldb = (ldb_val == 0) ? ldb_1 :
-			(ldb_val == 1) ? ldb_1 + 1 : 2 * ldb_1;
-
-		      /* vary ldc = k, k+1, 2*k */
-		      for (ldc_val = LDC_START; ldc_val <= LDC_END; ldc_val++) {
-
-			ldc = (ldc_val == 0) ? ldc_1 :
-			  (ldc_val == 1) ? ldc_1 + 1 : 2 * ldc_1;
-
-			for (randomize_val = RANDOMIZE_START;
-			     randomize_val <= RANDOMIZE_END;
-			     randomize_val++) {
-
-			  /* For the sake of speed, we throw out this case
-			     at random */
-			  if (((float) rand()) / ((float) RAND_MAX) >=
-			      test_prob)
-			    continue;
-
-
-			  /* finally we are here to generate the test case */
-			  BLAS_zgemm_testgen(norm, order,
-					     transa, transb, m, n, k,
-					     randomize_val, &alpha,
-					     alpha_flag, a, lda, &beta,
-					     beta_flag, b, ldb, c, ldc, seed,
-					     head_r_true, tail_r_true);
-			  test_count++;
-
-			  /* copy generated C matrix since this will be
-			     over written */
-			  zgemm_copy(order, m, n, c_gen, ldc, c, ldc);
-
-			  /* call GEMM routines to be tested */
-			  FPU_FIX_STOP;
-			  BLAS_zgemm_x(order, transa,
-				       transb, m, n, k, alpha, a, lda, b, ldb,
-				       beta, c, ldc, prec);
-			  FPU_FIX_START;
-
-			  /* now compute the ratio using test_c_xdot */
-			  /* copy a row from A, a column from B, run 
-			     dot test */
-
-			  if (order == blas_colmajor) {
-			    incci = 1;
-			    inccij = ldc;
-			  } else {
-			    incci = ldc;
-			    inccij = 1;
-			  }
-
-			  incri = incci;
-			  incrij = inccij;
-
-			  incci *= 2;
-			  inccij *= 2;
-
-			  for (i = 0, ci = 0, ri = 0; i < m;
-			       i++, ci += incci, ri += incri) {
-			    zgemm_copy_row(order, transa,
-					   m, k, a, lda, a_vec, i);
-			    for (j = 0, cij = ci, rij = ri; j < n;
-				 j++, cij += inccij, rij += incrij) {
-			      /* copy i-th row of A and j-th col of B */
-			      zgemm_copy_col(order, transb,
-					     k, n, b, ldb, b_vec, j);
-
-			      rin[0] = c_gen[cij];
-			      rin[1] = c_gen[cij + 1];
-			      rout[0] = c[cij];
-			      rout[1] = c[cij + 1];
-			      head_r_true_elem[0] = head_r_true[cij];
-			      head_r_true_elem[1] = head_r_true[cij + 1];
-			      tail_r_true_elem[0] = tail_r_true[cij];
-			      tail_r_true_elem[1] = tail_r_true[cij + 1];
-
-			      test_BLAS_zdot(k, blas_no_conj,
-					     alpha, beta, rin, rout,
-					     head_r_true_elem,
-					     tail_r_true_elem, a_vec, 1,
-					     b_vec, 1, eps_int, un_int,
-					     &ratios[rij]);
-
-			      /* take the max ratio */
-			      if (rij == 0) {
-				ratio = ratios[0];
-				/* The !<= below causes NaN error to be detected.
-				   Note that (NaN > thresh) is always false. */
-			      } else if (!(ratios[rij] <= ratio)) {
-				ratio = ratios[rij];
-			      }
-
-			    }
-			  }	/* end of dot-test loop */
-
-			  /* Increase the number of bad ratio, if the ratio
-			     is bigger than the threshold.
-			     The !<= below causes NaN error to be detected.
-			     Note that (NaN > thresh) is always false. */
-			  if (!(ratio <= thresh)) {
-
-			    if (debug == 3) {
-
-			      printf("\nm %d   n %d   k %d\n", m, n, k);
-			      printf("LDA %d  LDB %d  LDC %d\n", lda, ldb,
-				     ldc);
-
-			      switch (transa) {
-			      case blas_no_trans:
-				printf("A no_trans\n");
-				break;
-			      case blas_trans:
-				printf("A trans\n");
-				break;
-			      case blas_conj_trans:
-				printf("A conj_trans\n");
-				break;
-			      }
-
-			      switch (transb) {
-			      case blas_no_trans:
-				printf("B no_trans\n");
-				break;
-			      case blas_trans:
-				printf("B trans\n");
-				break;
-			      case blas_conj_trans:
-				printf("B conj_trans\n");
-				break;
-			      }
-
-			      printf("NORM %d, ALPHA %d, BETA %d\n",
-				     norm, alpha_val, beta_val);
-
-			      if (order == blas_rowmajor) {
-				printf("Row Major\n");
-			      } else {
-				printf("Col Major\n");
-			      }
-
-			      switch (prec) {
-			      case blas_prec_single:
-				printf("Single Prec\n");
-				break;
-			      case blas_prec_double:
-				printf("Double Prec\n");
-				break;
-			      case blas_prec_indigenous:
-				printf("Indigenous Prec\n");
-				break;
-			      case blas_prec_extra:
-				printf("Extra Prec\n");
-				break;
-			      }
-
-			      if (randomize_val == 0)
-				printf("Not randomized\n");
-			      else
-				printf("Randomized\n");
-
-			      /* print out info */
-			      printf("alpha[0]=%.16e, alpha[1]=%.16e",
-				     alpha[0], alpha[1]);;
-			      printf("   ");
-			      printf("beta[0]=%.16e, beta[1]=%.16e", beta[0],
-				     beta[1]);;
-			      printf("\n");
-
-			      printf("a\n");
-			      zprint_matrix(a, m, k, lda, order);
-			      printf("b\n");
-			      zprint_matrix(b, k, n, ldb, order);
-
-			      printf("c_gen\n");
-			      zprint_matrix(c_gen, m, n, ldc, order);
-
-			      printf("c\n");
-			      zprint_matrix(c, m, n, ldc, order);
-
-			      printf("truth\n");
-			      zprint_matrix(head_r_true, m, n, ldc, order);
-
-			      printf("ratio = %g\n", ratio);
-			    }
-			    bad_ratio_count++;
-			    if (bad_ratio_count >= MAX_BAD_TESTS) {
-			      printf("\ntoo many failures, exiting....");
-			      printf("\nTesting and compilation");
-			      printf(" are incomplete\n\n");
-			      goto end;
-			    }
-			    if (!(ratio <= TOTAL_FAILURE_THRESHOLD)) {
-			      printf("\nFlagrant ratio %e, exiting...",
-				     ratio);
-			      printf("\nTesting and compilation");
-			      printf(" are incomplete\n\n");
-			      goto end;
-			    }
-			  }
-
-			  if (ratio > ratio_max)
-			    ratio_max = ratio;
-
-			  if (ratio != 0.0 && ratio < ratio_min)
-			    ratio_min = ratio;
-
-			}	/* end of randomize loop */
-
-		      }		/* end of ldc loop */
-
-		    }		/* end of ldb loop */
-
-		  }		/* end of lda loop */
-
-		}		/* end of transb loop */
-
-	      }			/* end of transa loop */
-
-	    }			/* end of order loop */
-
-	  }			/* end of nr test loop */
-
-	}			/* end of norm loop */
-
-
-      }				/* end of prec loop */
-
-    }				/* end of beta loop */
-
-  }				/* end of alpha loop */
-
-end:
-  FPU_FIX_STOP;
-
-  blas_free(c);
-  blas_free(a);
-  blas_free(b);
-  blas_free(c_gen);
-  blas_free(head_r_true);
-  blas_free(tail_r_true);
-  blas_free(ratios);
-  blas_free(a_vec);
-  blas_free(b_vec);
-
-  *max_ratio = ratio_max;
-  *min_ratio = ratio_min;
-  *num_tests = test_count;
-  *num_bad_ratio = bad_ratio_count;
-
-}
-void do_test_zgemm_z_c_x
-  (int m, int n, int k,
-   int ntests, int *seed, double thresh, int debug, float test_prob,
-   double *min_ratio, double *max_ratio, int *num_bad_ratio, int *num_tests) {
+void do_test_zgemm_z_c_x(int m, int n, int k, int ntests, int *seed,
+			 double thresh, int debug, float test_prob,
+			 double *min_ratio, double *max_ratio,
+			 int *num_bad_ratio, int *num_tests)
+{
 
   /* Function name */
   const char fname[] = "BLAS_zgemm_z_c_x";
@@ -9688,13 +9463,9 @@ void do_test_zgemm_z_c_x
   double *ratios;
 
   /* true result calculated by testgen, in double-double */
-  double *tail_r_true;
-  double *head_r_true;
-  double tail_r_true_elem[2];
-  double head_r_true_elem[2];
+  double *head_r_true, *tail_r_true;
 
-  double rin[2];
-  double rout[2];
+
   FPU_FIX_DECL;
 
   if (n < 0 || m < 0 || k < 0 || ntests < 0)
@@ -9770,11 +9541,8 @@ void do_test_zgemm_z_c_x
   }
 
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && head_r_true == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && tail_r_true == NULL) {
+  if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
@@ -9803,7 +9571,6 @@ void do_test_zgemm_z_c_x
 
     /* vary beta */
     for (beta_val = BETA_START; beta_val <= BETA_END; beta_val++) {
-
       beta_flag = 0;
       switch (beta_val) {
       case 0:
@@ -9820,24 +9587,24 @@ void do_test_zgemm_z_c_x
 
       /* varying extra precs */
       for (prec_val = PREC_START; prec_val <= PREC_END; prec_val++) {
-
 	switch (prec_val) {
 	case 0:
 	  eps_int = power(2, -BITS_D);
-	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double), (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));	/* get double underflow */
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
 	  prec = blas_prec_double;
 	  break;
 	case 1:
 	  eps_int = power(2, -BITS_D);
-	  un_int =
-	    pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-		(double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
 	  prec = blas_prec_double;
 	  break;
 	case 2:
 	default:
 	  eps_int = power(2, -BITS_E);
-	  un_int = power(2, -1022 + 53 + 1);
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_extra),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_extra));
 	  prec = blas_prec_extra;
 	  break;
 	}
@@ -9973,19 +9740,11 @@ void do_test_zgemm_z_c_x
 			      cgemm_copy_col(order, transb,
 					     k, n, b, ldb, b_vec, j);
 
-			      rin[0] = c_gen[cij];
-			      rin[1] = c_gen[cij + 1];
-			      rout[0] = c[cij];
-			      rout[1] = c[cij + 1];
-			      head_r_true_elem[0] = head_r_true[cij];
-			      head_r_true_elem[1] = head_r_true[cij + 1];
-			      tail_r_true_elem[0] = tail_r_true[cij];
-			      tail_r_true_elem[1] = tail_r_true[cij + 1];
-
 			      test_BLAS_zdot_z_c(k, blas_no_conj,
-						 alpha, beta, rin, rout,
-						 head_r_true_elem,
-						 tail_r_true_elem, a_vec, 1,
+						 alpha, beta, &c_gen[cij],
+						 &c[cij],
+						 &head_r_true[cij],
+						 &tail_r_true[cij], a_vec, 1,
 						 b_vec, 1, eps_int, un_int,
 						 &ratios[rij]);
 
@@ -10013,51 +9772,54 @@ void do_test_zgemm_z_c_x
 			      printf("LDA %d  LDB %d  LDC %d\n", lda, ldb,
 				     ldc);
 
+			      printf("A:");
 			      switch (transa) {
 			      case blas_no_trans:
-				printf("A no_trans\n");
+				printf("no_trans ");
 				break;
 			      case blas_trans:
-				printf("A trans\n");
+				printf("trans ");
 				break;
 			      case blas_conj_trans:
-				printf("A conj_trans\n");
+				printf("conj_trans ");
 				break;
 			      }
-
+			      printf("B:");
 			      switch (transb) {
 			      case blas_no_trans:
-				printf("B no_trans\n");
+				printf("no_trans ");
 				break;
 			      case blas_trans:
-				printf("B trans\n");
+				printf("trans ");
 				break;
 			      case blas_conj_trans:
-				printf("B conj_trans\n");
+				printf("conj_trans ");
 				break;
 			      }
 
 			      printf("NORM %d, ALPHA %d, BETA %d\n",
 				     norm, alpha_val, beta_val);
 
-			      if (order == blas_rowmajor) {
-				printf("Row Major\n");
-			      } else {
-				printf("Col Major\n");
+			      switch (order) {
+			      case blas_rowmajor:
+				printf("row_major ");
+				break;
+			      case blas_colmajor:
+				printf("col_major ");
+				break;
 			      }
-
 			      switch (prec) {
 			      case blas_prec_single:
-				printf("Single Prec\n");
+				printf("single ");
 				break;
 			      case blas_prec_double:
-				printf("Double Prec\n");
+				printf("double ");
 				break;
 			      case blas_prec_indigenous:
-				printf("Indigenous Prec\n");
+				printf("indigenous ");
 				break;
 			      case blas_prec_extra:
-				printf("Extra Prec\n");
+				printf("extra ");
 				break;
 			      }
 
@@ -10156,10 +9918,11 @@ end:
   *num_bad_ratio = bad_ratio_count;
 
 }
-void do_test_zgemm_c_z_x
-  (int m, int n, int k,
-   int ntests, int *seed, double thresh, int debug, float test_prob,
-   double *min_ratio, double *max_ratio, int *num_bad_ratio, int *num_tests) {
+void do_test_zgemm_c_z_x(int m, int n, int k, int ntests, int *seed,
+			 double thresh, int debug, float test_prob,
+			 double *min_ratio, double *max_ratio,
+			 int *num_bad_ratio, int *num_tests)
+{
 
   /* Function name */
   const char fname[] = "BLAS_zgemm_c_z_x";
@@ -10220,13 +9983,9 @@ void do_test_zgemm_c_z_x
   double *ratios;
 
   /* true result calculated by testgen, in double-double */
-  double *tail_r_true;
-  double *head_r_true;
-  double tail_r_true_elem[2];
-  double head_r_true_elem[2];
+  double *head_r_true, *tail_r_true;
 
-  double rin[2];
-  double rout[2];
+
   FPU_FIX_DECL;
 
   if (n < 0 || m < 0 || k < 0 || ntests < 0)
@@ -10302,11 +10061,8 @@ void do_test_zgemm_c_z_x
   }
 
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && head_r_true == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && tail_r_true == NULL) {
+  if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
@@ -10335,7 +10091,6 @@ void do_test_zgemm_c_z_x
 
     /* vary beta */
     for (beta_val = BETA_START; beta_val <= BETA_END; beta_val++) {
-
       beta_flag = 0;
       switch (beta_val) {
       case 0:
@@ -10352,24 +10107,24 @@ void do_test_zgemm_c_z_x
 
       /* varying extra precs */
       for (prec_val = PREC_START; prec_val <= PREC_END; prec_val++) {
-
 	switch (prec_val) {
 	case 0:
 	  eps_int = power(2, -BITS_D);
-	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double), (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));	/* get double underflow */
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
 	  prec = blas_prec_double;
 	  break;
 	case 1:
 	  eps_int = power(2, -BITS_D);
-	  un_int =
-	    pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-		(double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
 	  prec = blas_prec_double;
 	  break;
 	case 2:
 	default:
 	  eps_int = power(2, -BITS_E);
-	  un_int = power(2, -1022 + 53 + 1);
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_extra),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_extra));
 	  prec = blas_prec_extra;
 	  break;
 	}
@@ -10505,19 +10260,11 @@ void do_test_zgemm_c_z_x
 			      zgemm_copy_col(order, transb,
 					     k, n, b, ldb, b_vec, j);
 
-			      rin[0] = c_gen[cij];
-			      rin[1] = c_gen[cij + 1];
-			      rout[0] = c[cij];
-			      rout[1] = c[cij + 1];
-			      head_r_true_elem[0] = head_r_true[cij];
-			      head_r_true_elem[1] = head_r_true[cij + 1];
-			      tail_r_true_elem[0] = tail_r_true[cij];
-			      tail_r_true_elem[1] = tail_r_true[cij + 1];
-
 			      test_BLAS_zdot_c_z(k, blas_no_conj,
-						 alpha, beta, rin, rout,
-						 head_r_true_elem,
-						 tail_r_true_elem, a_vec, 1,
+						 alpha, beta, &c_gen[cij],
+						 &c[cij],
+						 &head_r_true[cij],
+						 &tail_r_true[cij], a_vec, 1,
 						 b_vec, 1, eps_int, un_int,
 						 &ratios[rij]);
 
@@ -10545,51 +10292,54 @@ void do_test_zgemm_c_z_x
 			      printf("LDA %d  LDB %d  LDC %d\n", lda, ldb,
 				     ldc);
 
+			      printf("A:");
 			      switch (transa) {
 			      case blas_no_trans:
-				printf("A no_trans\n");
+				printf("no_trans ");
 				break;
 			      case blas_trans:
-				printf("A trans\n");
+				printf("trans ");
 				break;
 			      case blas_conj_trans:
-				printf("A conj_trans\n");
+				printf("conj_trans ");
 				break;
 			      }
-
+			      printf("B:");
 			      switch (transb) {
 			      case blas_no_trans:
-				printf("B no_trans\n");
+				printf("no_trans ");
 				break;
 			      case blas_trans:
-				printf("B trans\n");
+				printf("trans ");
 				break;
 			      case blas_conj_trans:
-				printf("B conj_trans\n");
+				printf("conj_trans ");
 				break;
 			      }
 
 			      printf("NORM %d, ALPHA %d, BETA %d\n",
 				     norm, alpha_val, beta_val);
 
-			      if (order == blas_rowmajor) {
-				printf("Row Major\n");
-			      } else {
-				printf("Col Major\n");
+			      switch (order) {
+			      case blas_rowmajor:
+				printf("row_major ");
+				break;
+			      case blas_colmajor:
+				printf("col_major ");
+				break;
 			      }
-
 			      switch (prec) {
 			      case blas_prec_single:
-				printf("Single Prec\n");
+				printf("single ");
 				break;
 			      case blas_prec_double:
-				printf("Double Prec\n");
+				printf("double ");
 				break;
 			      case blas_prec_indigenous:
-				printf("Indigenous Prec\n");
+				printf("indigenous ");
 				break;
 			      case blas_prec_extra:
-				printf("Extra Prec\n");
+				printf("extra ");
 				break;
 			      }
 
@@ -10688,10 +10438,11 @@ end:
   *num_bad_ratio = bad_ratio_count;
 
 }
-void do_test_zgemm_c_c_x
-  (int m, int n, int k,
-   int ntests, int *seed, double thresh, int debug, float test_prob,
-   double *min_ratio, double *max_ratio, int *num_bad_ratio, int *num_tests) {
+void do_test_zgemm_c_c_x(int m, int n, int k, int ntests, int *seed,
+			 double thresh, int debug, float test_prob,
+			 double *min_ratio, double *max_ratio,
+			 int *num_bad_ratio, int *num_tests)
+{
 
   /* Function name */
   const char fname[] = "BLAS_zgemm_c_c_x";
@@ -10752,13 +10503,9 @@ void do_test_zgemm_c_c_x
   double *ratios;
 
   /* true result calculated by testgen, in double-double */
-  double *tail_r_true;
-  double *head_r_true;
-  double tail_r_true_elem[2];
-  double head_r_true_elem[2];
+  double *head_r_true, *tail_r_true;
 
-  double rin[2];
-  double rout[2];
+
   FPU_FIX_DECL;
 
   if (n < 0 || m < 0 || k < 0 || ntests < 0)
@@ -10834,11 +10581,8 @@ void do_test_zgemm_c_c_x
   }
 
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && head_r_true == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && tail_r_true == NULL) {
+  if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
@@ -10867,7 +10611,6 @@ void do_test_zgemm_c_c_x
 
     /* vary beta */
     for (beta_val = BETA_START; beta_val <= BETA_END; beta_val++) {
-
       beta_flag = 0;
       switch (beta_val) {
       case 0:
@@ -10884,24 +10627,24 @@ void do_test_zgemm_c_c_x
 
       /* varying extra precs */
       for (prec_val = PREC_START; prec_val <= PREC_END; prec_val++) {
-
 	switch (prec_val) {
 	case 0:
 	  eps_int = power(2, -BITS_D);
-	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double), (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));	/* get double underflow */
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
 	  prec = blas_prec_double;
 	  break;
 	case 1:
 	  eps_int = power(2, -BITS_D);
-	  un_int =
-	    pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-		(double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
 	  prec = blas_prec_double;
 	  break;
 	case 2:
 	default:
 	  eps_int = power(2, -BITS_E);
-	  un_int = power(2, -1022 + 53 + 1);
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_extra),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_extra));
 	  prec = blas_prec_extra;
 	  break;
 	}
@@ -11037,19 +10780,11 @@ void do_test_zgemm_c_c_x
 			      cgemm_copy_col(order, transb,
 					     k, n, b, ldb, b_vec, j);
 
-			      rin[0] = c_gen[cij];
-			      rin[1] = c_gen[cij + 1];
-			      rout[0] = c[cij];
-			      rout[1] = c[cij + 1];
-			      head_r_true_elem[0] = head_r_true[cij];
-			      head_r_true_elem[1] = head_r_true[cij + 1];
-			      tail_r_true_elem[0] = tail_r_true[cij];
-			      tail_r_true_elem[1] = tail_r_true[cij + 1];
-
 			      test_BLAS_zdot_c_c(k, blas_no_conj,
-						 alpha, beta, rin, rout,
-						 head_r_true_elem,
-						 tail_r_true_elem, a_vec, 1,
+						 alpha, beta, &c_gen[cij],
+						 &c[cij],
+						 &head_r_true[cij],
+						 &tail_r_true[cij], a_vec, 1,
 						 b_vec, 1, eps_int, un_int,
 						 &ratios[rij]);
 
@@ -11077,51 +10812,54 @@ void do_test_zgemm_c_c_x
 			      printf("LDA %d  LDB %d  LDC %d\n", lda, ldb,
 				     ldc);
 
+			      printf("A:");
 			      switch (transa) {
 			      case blas_no_trans:
-				printf("A no_trans\n");
+				printf("no_trans ");
 				break;
 			      case blas_trans:
-				printf("A trans\n");
+				printf("trans ");
 				break;
 			      case blas_conj_trans:
-				printf("A conj_trans\n");
+				printf("conj_trans ");
 				break;
 			      }
-
+			      printf("B:");
 			      switch (transb) {
 			      case blas_no_trans:
-				printf("B no_trans\n");
+				printf("no_trans ");
 				break;
 			      case blas_trans:
-				printf("B trans\n");
+				printf("trans ");
 				break;
 			      case blas_conj_trans:
-				printf("B conj_trans\n");
+				printf("conj_trans ");
 				break;
 			      }
 
 			      printf("NORM %d, ALPHA %d, BETA %d\n",
 				     norm, alpha_val, beta_val);
 
-			      if (order == blas_rowmajor) {
-				printf("Row Major\n");
-			      } else {
-				printf("Col Major\n");
+			      switch (order) {
+			      case blas_rowmajor:
+				printf("row_major ");
+				break;
+			      case blas_colmajor:
+				printf("col_major ");
+				break;
 			      }
-
 			      switch (prec) {
 			      case blas_prec_single:
-				printf("Single Prec\n");
+				printf("single ");
 				break;
 			      case blas_prec_double:
-				printf("Double Prec\n");
+				printf("double ");
 				break;
 			      case blas_prec_indigenous:
-				printf("Indigenous Prec\n");
+				printf("indigenous ");
 				break;
 			      case blas_prec_extra:
-				printf("Extra Prec\n");
+				printf("extra ");
 				break;
 			      }
 
@@ -11220,10 +10958,11 @@ end:
   *num_bad_ratio = bad_ratio_count;
 
 }
-void do_test_cgemm_c_s_x
-  (int m, int n, int k,
-   int ntests, int *seed, double thresh, int debug, float test_prob,
-   double *min_ratio, double *max_ratio, int *num_bad_ratio, int *num_tests) {
+void do_test_cgemm_c_s_x(int m, int n, int k, int ntests, int *seed,
+			 double thresh, int debug, float test_prob,
+			 double *min_ratio, double *max_ratio,
+			 int *num_bad_ratio, int *num_tests)
+{
 
   /* Function name */
   const char fname[] = "BLAS_cgemm_c_s_x";
@@ -11284,13 +11023,9 @@ void do_test_cgemm_c_s_x
   double *ratios;
 
   /* true result calculated by testgen, in double-double */
-  double *tail_r_true;
-  double *head_r_true;
-  double tail_r_true_elem[2];
-  double head_r_true_elem[2];
+  double *head_r_true, *tail_r_true;
 
-  float rin[2];
-  float rout[2];
+
   FPU_FIX_DECL;
 
   if (n < 0 || m < 0 || k < 0 || ntests < 0)
@@ -11364,11 +11099,8 @@ void do_test_cgemm_c_s_x
   }
 
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && head_r_true == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && tail_r_true == NULL) {
+  if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
@@ -11397,7 +11129,6 @@ void do_test_cgemm_c_s_x
 
     /* vary beta */
     for (beta_val = BETA_START; beta_val <= BETA_END; beta_val++) {
-
       beta_flag = 0;
       switch (beta_val) {
       case 0:
@@ -11414,24 +11145,24 @@ void do_test_cgemm_c_s_x
 
       /* varying extra precs */
       for (prec_val = PREC_START; prec_val <= PREC_END; prec_val++) {
-
 	switch (prec_val) {
 	case 0:
 	  eps_int = power(2, -BITS_S);
-	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_single), (double) BLAS_fpinfo_x(blas_emin, blas_prec_single));	/* get single underflow */
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_single),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_single));
 	  prec = blas_prec_single;
 	  break;
 	case 1:
 	  eps_int = power(2, -BITS_D);
-	  un_int =
-	    pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-		(double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
 	  prec = blas_prec_double;
 	  break;
 	case 2:
 	default:
 	  eps_int = power(2, -BITS_E);
-	  un_int = power(2, -1022 + 53 + 1);
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_extra),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_extra));
 	  prec = blas_prec_extra;
 	  break;
 	}
@@ -11567,19 +11298,11 @@ void do_test_cgemm_c_s_x
 			      sgemm_copy_col(order, transb,
 					     k, n, b, ldb, b_vec, j);
 
-			      rin[0] = c_gen[cij];
-			      rin[1] = c_gen[cij + 1];
-			      rout[0] = c[cij];
-			      rout[1] = c[cij + 1];
-			      head_r_true_elem[0] = head_r_true[cij];
-			      head_r_true_elem[1] = head_r_true[cij + 1];
-			      tail_r_true_elem[0] = tail_r_true[cij];
-			      tail_r_true_elem[1] = tail_r_true[cij + 1];
-
 			      test_BLAS_cdot_c_s(k, blas_no_conj,
-						 alpha, beta, rin, rout,
-						 head_r_true_elem,
-						 tail_r_true_elem, a_vec, 1,
+						 alpha, beta, &c_gen[cij],
+						 &c[cij],
+						 &head_r_true[cij],
+						 &tail_r_true[cij], a_vec, 1,
 						 b_vec, 1, eps_int, un_int,
 						 &ratios[rij]);
 
@@ -11607,51 +11330,54 @@ void do_test_cgemm_c_s_x
 			      printf("LDA %d  LDB %d  LDC %d\n", lda, ldb,
 				     ldc);
 
+			      printf("A:");
 			      switch (transa) {
 			      case blas_no_trans:
-				printf("A no_trans\n");
+				printf("no_trans ");
 				break;
 			      case blas_trans:
-				printf("A trans\n");
+				printf("trans ");
 				break;
 			      case blas_conj_trans:
-				printf("A conj_trans\n");
+				printf("conj_trans ");
 				break;
 			      }
-
+			      printf("B:");
 			      switch (transb) {
 			      case blas_no_trans:
-				printf("B no_trans\n");
+				printf("no_trans ");
 				break;
 			      case blas_trans:
-				printf("B trans\n");
+				printf("trans ");
 				break;
 			      case blas_conj_trans:
-				printf("B conj_trans\n");
+				printf("conj_trans ");
 				break;
 			      }
 
 			      printf("NORM %d, ALPHA %d, BETA %d\n",
 				     norm, alpha_val, beta_val);
 
-			      if (order == blas_rowmajor) {
-				printf("Row Major\n");
-			      } else {
-				printf("Col Major\n");
+			      switch (order) {
+			      case blas_rowmajor:
+				printf("row_major ");
+				break;
+			      case blas_colmajor:
+				printf("col_major ");
+				break;
 			      }
-
 			      switch (prec) {
 			      case blas_prec_single:
-				printf("Single Prec\n");
+				printf("single ");
 				break;
 			      case blas_prec_double:
-				printf("Double Prec\n");
+				printf("double ");
 				break;
 			      case blas_prec_indigenous:
-				printf("Indigenous Prec\n");
+				printf("indigenous ");
 				break;
 			      case blas_prec_extra:
-				printf("Extra Prec\n");
+				printf("extra ");
 				break;
 			      }
 
@@ -11661,10 +11387,10 @@ void do_test_cgemm_c_s_x
 				printf("Randomized\n");
 
 			      /* print out info */
-			      printf("alpha[0]=%.12e, alpha[1]=%.12e",
-				     alpha[0], alpha[1]);;
+			      printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
+				     alpha[1]);;
 			      printf("   ");
-			      printf("beta[0]=%.12e, beta[1]=%.12e", beta[0],
+			      printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
 				     beta[1]);;
 			      printf("\n");
 
@@ -11750,10 +11476,11 @@ end:
   *num_bad_ratio = bad_ratio_count;
 
 }
-void do_test_cgemm_s_c_x
-  (int m, int n, int k,
-   int ntests, int *seed, double thresh, int debug, float test_prob,
-   double *min_ratio, double *max_ratio, int *num_bad_ratio, int *num_tests) {
+void do_test_cgemm_s_c_x(int m, int n, int k, int ntests, int *seed,
+			 double thresh, int debug, float test_prob,
+			 double *min_ratio, double *max_ratio,
+			 int *num_bad_ratio, int *num_tests)
+{
 
   /* Function name */
   const char fname[] = "BLAS_cgemm_s_c_x";
@@ -11814,13 +11541,9 @@ void do_test_cgemm_s_c_x
   double *ratios;
 
   /* true result calculated by testgen, in double-double */
-  double *tail_r_true;
-  double *head_r_true;
-  double tail_r_true_elem[2];
-  double head_r_true_elem[2];
+  double *head_r_true, *tail_r_true;
 
-  float rin[2];
-  float rout[2];
+
   FPU_FIX_DECL;
 
   if (n < 0 || m < 0 || k < 0 || ntests < 0)
@@ -11894,11 +11617,8 @@ void do_test_cgemm_s_c_x
   }
 
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && head_r_true == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && tail_r_true == NULL) {
+  if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
@@ -11927,7 +11647,6 @@ void do_test_cgemm_s_c_x
 
     /* vary beta */
     for (beta_val = BETA_START; beta_val <= BETA_END; beta_val++) {
-
       beta_flag = 0;
       switch (beta_val) {
       case 0:
@@ -11944,24 +11663,24 @@ void do_test_cgemm_s_c_x
 
       /* varying extra precs */
       for (prec_val = PREC_START; prec_val <= PREC_END; prec_val++) {
-
 	switch (prec_val) {
 	case 0:
 	  eps_int = power(2, -BITS_S);
-	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_single), (double) BLAS_fpinfo_x(blas_emin, blas_prec_single));	/* get single underflow */
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_single),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_single));
 	  prec = blas_prec_single;
 	  break;
 	case 1:
 	  eps_int = power(2, -BITS_D);
-	  un_int =
-	    pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-		(double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
 	  prec = blas_prec_double;
 	  break;
 	case 2:
 	default:
 	  eps_int = power(2, -BITS_E);
-	  un_int = power(2, -1022 + 53 + 1);
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_extra),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_extra));
 	  prec = blas_prec_extra;
 	  break;
 	}
@@ -12097,19 +11816,11 @@ void do_test_cgemm_s_c_x
 			      cgemm_copy_col(order, transb,
 					     k, n, b, ldb, b_vec, j);
 
-			      rin[0] = c_gen[cij];
-			      rin[1] = c_gen[cij + 1];
-			      rout[0] = c[cij];
-			      rout[1] = c[cij + 1];
-			      head_r_true_elem[0] = head_r_true[cij];
-			      head_r_true_elem[1] = head_r_true[cij + 1];
-			      tail_r_true_elem[0] = tail_r_true[cij];
-			      tail_r_true_elem[1] = tail_r_true[cij + 1];
-
 			      test_BLAS_cdot_s_c(k, blas_no_conj,
-						 alpha, beta, rin, rout,
-						 head_r_true_elem,
-						 tail_r_true_elem, a_vec, 1,
+						 alpha, beta, &c_gen[cij],
+						 &c[cij],
+						 &head_r_true[cij],
+						 &tail_r_true[cij], a_vec, 1,
 						 b_vec, 1, eps_int, un_int,
 						 &ratios[rij]);
 
@@ -12137,51 +11848,54 @@ void do_test_cgemm_s_c_x
 			      printf("LDA %d  LDB %d  LDC %d\n", lda, ldb,
 				     ldc);
 
+			      printf("A:");
 			      switch (transa) {
 			      case blas_no_trans:
-				printf("A no_trans\n");
+				printf("no_trans ");
 				break;
 			      case blas_trans:
-				printf("A trans\n");
+				printf("trans ");
 				break;
 			      case blas_conj_trans:
-				printf("A conj_trans\n");
+				printf("conj_trans ");
 				break;
 			      }
-
+			      printf("B:");
 			      switch (transb) {
 			      case blas_no_trans:
-				printf("B no_trans\n");
+				printf("no_trans ");
 				break;
 			      case blas_trans:
-				printf("B trans\n");
+				printf("trans ");
 				break;
 			      case blas_conj_trans:
-				printf("B conj_trans\n");
+				printf("conj_trans ");
 				break;
 			      }
 
 			      printf("NORM %d, ALPHA %d, BETA %d\n",
 				     norm, alpha_val, beta_val);
 
-			      if (order == blas_rowmajor) {
-				printf("Row Major\n");
-			      } else {
-				printf("Col Major\n");
+			      switch (order) {
+			      case blas_rowmajor:
+				printf("row_major ");
+				break;
+			      case blas_colmajor:
+				printf("col_major ");
+				break;
 			      }
-
 			      switch (prec) {
 			      case blas_prec_single:
-				printf("Single Prec\n");
+				printf("single ");
 				break;
 			      case blas_prec_double:
-				printf("Double Prec\n");
+				printf("double ");
 				break;
 			      case blas_prec_indigenous:
-				printf("Indigenous Prec\n");
+				printf("indigenous ");
 				break;
 			      case blas_prec_extra:
-				printf("Extra Prec\n");
+				printf("extra ");
 				break;
 			      }
 
@@ -12191,10 +11905,10 @@ void do_test_cgemm_s_c_x
 				printf("Randomized\n");
 
 			      /* print out info */
-			      printf("alpha[0]=%.12e, alpha[1]=%.12e",
-				     alpha[0], alpha[1]);;
+			      printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
+				     alpha[1]);;
 			      printf("   ");
-			      printf("beta[0]=%.12e, beta[1]=%.12e", beta[0],
+			      printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
 				     beta[1]);;
 			      printf("\n");
 
@@ -12280,10 +11994,11 @@ end:
   *num_bad_ratio = bad_ratio_count;
 
 }
-void do_test_cgemm_s_s_x
-  (int m, int n, int k,
-   int ntests, int *seed, double thresh, int debug, float test_prob,
-   double *min_ratio, double *max_ratio, int *num_bad_ratio, int *num_tests) {
+void do_test_cgemm_s_s_x(int m, int n, int k, int ntests, int *seed,
+			 double thresh, int debug, float test_prob,
+			 double *min_ratio, double *max_ratio,
+			 int *num_bad_ratio, int *num_tests)
+{
 
   /* Function name */
   const char fname[] = "BLAS_cgemm_s_s_x";
@@ -12344,13 +12059,9 @@ void do_test_cgemm_s_s_x
   double *ratios;
 
   /* true result calculated by testgen, in double-double */
-  double *tail_r_true;
-  double *head_r_true;
-  double tail_r_true_elem[2];
-  double head_r_true_elem[2];
+  double *head_r_true, *tail_r_true;
 
-  float rin[2];
-  float rout[2];
+
   FPU_FIX_DECL;
 
   if (n < 0 || m < 0 || k < 0 || ntests < 0)
@@ -12422,11 +12133,8 @@ void do_test_cgemm_s_s_x
   }
 
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && head_r_true == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && tail_r_true == NULL) {
+  if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
@@ -12455,7 +12163,6 @@ void do_test_cgemm_s_s_x
 
     /* vary beta */
     for (beta_val = BETA_START; beta_val <= BETA_END; beta_val++) {
-
       beta_flag = 0;
       switch (beta_val) {
       case 0:
@@ -12472,24 +12179,24 @@ void do_test_cgemm_s_s_x
 
       /* varying extra precs */
       for (prec_val = PREC_START; prec_val <= PREC_END; prec_val++) {
-
 	switch (prec_val) {
 	case 0:
 	  eps_int = power(2, -BITS_S);
-	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_single), (double) BLAS_fpinfo_x(blas_emin, blas_prec_single));	/* get single underflow */
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_single),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_single));
 	  prec = blas_prec_single;
 	  break;
 	case 1:
 	  eps_int = power(2, -BITS_D);
-	  un_int =
-	    pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-		(double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
 	  prec = blas_prec_double;
 	  break;
 	case 2:
 	default:
 	  eps_int = power(2, -BITS_E);
-	  un_int = power(2, -1022 + 53 + 1);
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_extra),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_extra));
 	  prec = blas_prec_extra;
 	  break;
 	}
@@ -12625,19 +12332,11 @@ void do_test_cgemm_s_s_x
 			      sgemm_copy_col(order, transb,
 					     k, n, b, ldb, b_vec, j);
 
-			      rin[0] = c_gen[cij];
-			      rin[1] = c_gen[cij + 1];
-			      rout[0] = c[cij];
-			      rout[1] = c[cij + 1];
-			      head_r_true_elem[0] = head_r_true[cij];
-			      head_r_true_elem[1] = head_r_true[cij + 1];
-			      tail_r_true_elem[0] = tail_r_true[cij];
-			      tail_r_true_elem[1] = tail_r_true[cij + 1];
-
 			      test_BLAS_cdot_s_s(k, blas_no_conj,
-						 alpha, beta, rin, rout,
-						 head_r_true_elem,
-						 tail_r_true_elem, a_vec, 1,
+						 alpha, beta, &c_gen[cij],
+						 &c[cij],
+						 &head_r_true[cij],
+						 &tail_r_true[cij], a_vec, 1,
 						 b_vec, 1, eps_int, un_int,
 						 &ratios[rij]);
 
@@ -12665,51 +12364,54 @@ void do_test_cgemm_s_s_x
 			      printf("LDA %d  LDB %d  LDC %d\n", lda, ldb,
 				     ldc);
 
+			      printf("A:");
 			      switch (transa) {
 			      case blas_no_trans:
-				printf("A no_trans\n");
+				printf("no_trans ");
 				break;
 			      case blas_trans:
-				printf("A trans\n");
+				printf("trans ");
 				break;
 			      case blas_conj_trans:
-				printf("A conj_trans\n");
+				printf("conj_trans ");
 				break;
 			      }
-
+			      printf("B:");
 			      switch (transb) {
 			      case blas_no_trans:
-				printf("B no_trans\n");
+				printf("no_trans ");
 				break;
 			      case blas_trans:
-				printf("B trans\n");
+				printf("trans ");
 				break;
 			      case blas_conj_trans:
-				printf("B conj_trans\n");
+				printf("conj_trans ");
 				break;
 			      }
 
 			      printf("NORM %d, ALPHA %d, BETA %d\n",
 				     norm, alpha_val, beta_val);
 
-			      if (order == blas_rowmajor) {
-				printf("Row Major\n");
-			      } else {
-				printf("Col Major\n");
+			      switch (order) {
+			      case blas_rowmajor:
+				printf("row_major ");
+				break;
+			      case blas_colmajor:
+				printf("col_major ");
+				break;
 			      }
-
 			      switch (prec) {
 			      case blas_prec_single:
-				printf("Single Prec\n");
+				printf("single ");
 				break;
 			      case blas_prec_double:
-				printf("Double Prec\n");
+				printf("double ");
 				break;
 			      case blas_prec_indigenous:
-				printf("Indigenous Prec\n");
+				printf("indigenous ");
 				break;
 			      case blas_prec_extra:
-				printf("Extra Prec\n");
+				printf("extra ");
 				break;
 			      }
 
@@ -12719,10 +12421,10 @@ void do_test_cgemm_s_s_x
 				printf("Randomized\n");
 
 			      /* print out info */
-			      printf("alpha[0]=%.12e, alpha[1]=%.12e",
-				     alpha[0], alpha[1]);;
+			      printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
+				     alpha[1]);;
 			      printf("   ");
-			      printf("beta[0]=%.12e, beta[1]=%.12e", beta[0],
+			      printf("beta[0]=%.8e, beta[1]=%.8e", beta[0],
 				     beta[1]);;
 			      printf("\n");
 
@@ -12808,10 +12510,11 @@ end:
   *num_bad_ratio = bad_ratio_count;
 
 }
-void do_test_zgemm_z_d_x
-  (int m, int n, int k,
-   int ntests, int *seed, double thresh, int debug, float test_prob,
-   double *min_ratio, double *max_ratio, int *num_bad_ratio, int *num_tests) {
+void do_test_zgemm_z_d_x(int m, int n, int k, int ntests, int *seed,
+			 double thresh, int debug, float test_prob,
+			 double *min_ratio, double *max_ratio,
+			 int *num_bad_ratio, int *num_tests)
+{
 
   /* Function name */
   const char fname[] = "BLAS_zgemm_z_d_x";
@@ -12872,13 +12575,9 @@ void do_test_zgemm_z_d_x
   double *ratios;
 
   /* true result calculated by testgen, in double-double */
-  double *tail_r_true;
-  double *head_r_true;
-  double tail_r_true_elem[2];
-  double head_r_true_elem[2];
+  double *head_r_true, *tail_r_true;
 
-  double rin[2];
-  double rout[2];
+
   FPU_FIX_DECL;
 
   if (n < 0 || m < 0 || k < 0 || ntests < 0)
@@ -12952,11 +12651,8 @@ void do_test_zgemm_z_d_x
   }
 
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && head_r_true == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && tail_r_true == NULL) {
+  if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
@@ -12985,7 +12681,6 @@ void do_test_zgemm_z_d_x
 
     /* vary beta */
     for (beta_val = BETA_START; beta_val <= BETA_END; beta_val++) {
-
       beta_flag = 0;
       switch (beta_val) {
       case 0:
@@ -13002,24 +12697,24 @@ void do_test_zgemm_z_d_x
 
       /* varying extra precs */
       for (prec_val = PREC_START; prec_val <= PREC_END; prec_val++) {
-
 	switch (prec_val) {
 	case 0:
 	  eps_int = power(2, -BITS_D);
-	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double), (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));	/* get double underflow */
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
 	  prec = blas_prec_double;
 	  break;
 	case 1:
 	  eps_int = power(2, -BITS_D);
-	  un_int =
-	    pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-		(double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
 	  prec = blas_prec_double;
 	  break;
 	case 2:
 	default:
 	  eps_int = power(2, -BITS_E);
-	  un_int = power(2, -1022 + 53 + 1);
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_extra),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_extra));
 	  prec = blas_prec_extra;
 	  break;
 	}
@@ -13155,19 +12850,11 @@ void do_test_zgemm_z_d_x
 			      dgemm_copy_col(order, transb,
 					     k, n, b, ldb, b_vec, j);
 
-			      rin[0] = c_gen[cij];
-			      rin[1] = c_gen[cij + 1];
-			      rout[0] = c[cij];
-			      rout[1] = c[cij + 1];
-			      head_r_true_elem[0] = head_r_true[cij];
-			      head_r_true_elem[1] = head_r_true[cij + 1];
-			      tail_r_true_elem[0] = tail_r_true[cij];
-			      tail_r_true_elem[1] = tail_r_true[cij + 1];
-
 			      test_BLAS_zdot_z_d(k, blas_no_conj,
-						 alpha, beta, rin, rout,
-						 head_r_true_elem,
-						 tail_r_true_elem, a_vec, 1,
+						 alpha, beta, &c_gen[cij],
+						 &c[cij],
+						 &head_r_true[cij],
+						 &tail_r_true[cij], a_vec, 1,
 						 b_vec, 1, eps_int, un_int,
 						 &ratios[rij]);
 
@@ -13195,51 +12882,54 @@ void do_test_zgemm_z_d_x
 			      printf("LDA %d  LDB %d  LDC %d\n", lda, ldb,
 				     ldc);
 
+			      printf("A:");
 			      switch (transa) {
 			      case blas_no_trans:
-				printf("A no_trans\n");
+				printf("no_trans ");
 				break;
 			      case blas_trans:
-				printf("A trans\n");
+				printf("trans ");
 				break;
 			      case blas_conj_trans:
-				printf("A conj_trans\n");
+				printf("conj_trans ");
 				break;
 			      }
-
+			      printf("B:");
 			      switch (transb) {
 			      case blas_no_trans:
-				printf("B no_trans\n");
+				printf("no_trans ");
 				break;
 			      case blas_trans:
-				printf("B trans\n");
+				printf("trans ");
 				break;
 			      case blas_conj_trans:
-				printf("B conj_trans\n");
+				printf("conj_trans ");
 				break;
 			      }
 
 			      printf("NORM %d, ALPHA %d, BETA %d\n",
 				     norm, alpha_val, beta_val);
 
-			      if (order == blas_rowmajor) {
-				printf("Row Major\n");
-			      } else {
-				printf("Col Major\n");
+			      switch (order) {
+			      case blas_rowmajor:
+				printf("row_major ");
+				break;
+			      case blas_colmajor:
+				printf("col_major ");
+				break;
 			      }
-
 			      switch (prec) {
 			      case blas_prec_single:
-				printf("Single Prec\n");
+				printf("single ");
 				break;
 			      case blas_prec_double:
-				printf("Double Prec\n");
+				printf("double ");
 				break;
 			      case blas_prec_indigenous:
-				printf("Indigenous Prec\n");
+				printf("indigenous ");
 				break;
 			      case blas_prec_extra:
-				printf("Extra Prec\n");
+				printf("extra ");
 				break;
 			      }
 
@@ -13338,10 +13028,11 @@ end:
   *num_bad_ratio = bad_ratio_count;
 
 }
-void do_test_zgemm_d_z_x
-  (int m, int n, int k,
-   int ntests, int *seed, double thresh, int debug, float test_prob,
-   double *min_ratio, double *max_ratio, int *num_bad_ratio, int *num_tests) {
+void do_test_zgemm_d_z_x(int m, int n, int k, int ntests, int *seed,
+			 double thresh, int debug, float test_prob,
+			 double *min_ratio, double *max_ratio,
+			 int *num_bad_ratio, int *num_tests)
+{
 
   /* Function name */
   const char fname[] = "BLAS_zgemm_d_z_x";
@@ -13402,13 +13093,9 @@ void do_test_zgemm_d_z_x
   double *ratios;
 
   /* true result calculated by testgen, in double-double */
-  double *tail_r_true;
-  double *head_r_true;
-  double tail_r_true_elem[2];
-  double head_r_true_elem[2];
+  double *head_r_true, *tail_r_true;
 
-  double rin[2];
-  double rout[2];
+
   FPU_FIX_DECL;
 
   if (n < 0 || m < 0 || k < 0 || ntests < 0)
@@ -13482,11 +13169,8 @@ void do_test_zgemm_d_z_x
   }
 
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && head_r_true == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && tail_r_true == NULL) {
+  if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
@@ -13515,7 +13199,6 @@ void do_test_zgemm_d_z_x
 
     /* vary beta */
     for (beta_val = BETA_START; beta_val <= BETA_END; beta_val++) {
-
       beta_flag = 0;
       switch (beta_val) {
       case 0:
@@ -13532,24 +13215,24 @@ void do_test_zgemm_d_z_x
 
       /* varying extra precs */
       for (prec_val = PREC_START; prec_val <= PREC_END; prec_val++) {
-
 	switch (prec_val) {
 	case 0:
 	  eps_int = power(2, -BITS_D);
-	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double), (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));	/* get double underflow */
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
 	  prec = blas_prec_double;
 	  break;
 	case 1:
 	  eps_int = power(2, -BITS_D);
-	  un_int =
-	    pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-		(double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
 	  prec = blas_prec_double;
 	  break;
 	case 2:
 	default:
 	  eps_int = power(2, -BITS_E);
-	  un_int = power(2, -1022 + 53 + 1);
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_extra),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_extra));
 	  prec = blas_prec_extra;
 	  break;
 	}
@@ -13685,19 +13368,11 @@ void do_test_zgemm_d_z_x
 			      zgemm_copy_col(order, transb,
 					     k, n, b, ldb, b_vec, j);
 
-			      rin[0] = c_gen[cij];
-			      rin[1] = c_gen[cij + 1];
-			      rout[0] = c[cij];
-			      rout[1] = c[cij + 1];
-			      head_r_true_elem[0] = head_r_true[cij];
-			      head_r_true_elem[1] = head_r_true[cij + 1];
-			      tail_r_true_elem[0] = tail_r_true[cij];
-			      tail_r_true_elem[1] = tail_r_true[cij + 1];
-
 			      test_BLAS_zdot_d_z(k, blas_no_conj,
-						 alpha, beta, rin, rout,
-						 head_r_true_elem,
-						 tail_r_true_elem, a_vec, 1,
+						 alpha, beta, &c_gen[cij],
+						 &c[cij],
+						 &head_r_true[cij],
+						 &tail_r_true[cij], a_vec, 1,
 						 b_vec, 1, eps_int, un_int,
 						 &ratios[rij]);
 
@@ -13725,51 +13400,54 @@ void do_test_zgemm_d_z_x
 			      printf("LDA %d  LDB %d  LDC %d\n", lda, ldb,
 				     ldc);
 
+			      printf("A:");
 			      switch (transa) {
 			      case blas_no_trans:
-				printf("A no_trans\n");
+				printf("no_trans ");
 				break;
 			      case blas_trans:
-				printf("A trans\n");
+				printf("trans ");
 				break;
 			      case blas_conj_trans:
-				printf("A conj_trans\n");
+				printf("conj_trans ");
 				break;
 			      }
-
+			      printf("B:");
 			      switch (transb) {
 			      case blas_no_trans:
-				printf("B no_trans\n");
+				printf("no_trans ");
 				break;
 			      case blas_trans:
-				printf("B trans\n");
+				printf("trans ");
 				break;
 			      case blas_conj_trans:
-				printf("B conj_trans\n");
+				printf("conj_trans ");
 				break;
 			      }
 
 			      printf("NORM %d, ALPHA %d, BETA %d\n",
 				     norm, alpha_val, beta_val);
 
-			      if (order == blas_rowmajor) {
-				printf("Row Major\n");
-			      } else {
-				printf("Col Major\n");
+			      switch (order) {
+			      case blas_rowmajor:
+				printf("row_major ");
+				break;
+			      case blas_colmajor:
+				printf("col_major ");
+				break;
 			      }
-
 			      switch (prec) {
 			      case blas_prec_single:
-				printf("Single Prec\n");
+				printf("single ");
 				break;
 			      case blas_prec_double:
-				printf("Double Prec\n");
+				printf("double ");
 				break;
 			      case blas_prec_indigenous:
-				printf("Indigenous Prec\n");
+				printf("indigenous ");
 				break;
 			      case blas_prec_extra:
-				printf("Extra Prec\n");
+				printf("extra ");
 				break;
 			      }
 
@@ -13868,10 +13546,11 @@ end:
   *num_bad_ratio = bad_ratio_count;
 
 }
-void do_test_zgemm_d_d_x
-  (int m, int n, int k,
-   int ntests, int *seed, double thresh, int debug, float test_prob,
-   double *min_ratio, double *max_ratio, int *num_bad_ratio, int *num_tests) {
+void do_test_zgemm_d_d_x(int m, int n, int k, int ntests, int *seed,
+			 double thresh, int debug, float test_prob,
+			 double *min_ratio, double *max_ratio,
+			 int *num_bad_ratio, int *num_tests)
+{
 
   /* Function name */
   const char fname[] = "BLAS_zgemm_d_d_x";
@@ -13932,13 +13611,9 @@ void do_test_zgemm_d_d_x
   double *ratios;
 
   /* true result calculated by testgen, in double-double */
-  double *tail_r_true;
-  double *head_r_true;
-  double tail_r_true_elem[2];
-  double head_r_true_elem[2];
+  double *head_r_true, *tail_r_true;
 
-  double rin[2];
-  double rout[2];
+
   FPU_FIX_DECL;
 
   if (n < 0 || m < 0 || k < 0 || ntests < 0)
@@ -14010,11 +13685,8 @@ void do_test_zgemm_d_d_x
   }
 
   head_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && head_r_true == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
   tail_r_true = (double *) blas_malloc(2 * m * n * sizeof(double) * 2);
-  if (2 * m * n > 0 && tail_r_true == NULL) {
+  if (2 * m * n > 0 && (head_r_true == NULL || tail_r_true == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   ratios = (double *) blas_malloc(2 * m * n * sizeof(double));
@@ -14043,7 +13715,6 @@ void do_test_zgemm_d_d_x
 
     /* vary beta */
     for (beta_val = BETA_START; beta_val <= BETA_END; beta_val++) {
-
       beta_flag = 0;
       switch (beta_val) {
       case 0:
@@ -14060,24 +13731,24 @@ void do_test_zgemm_d_d_x
 
       /* varying extra precs */
       for (prec_val = PREC_START; prec_val <= PREC_END; prec_val++) {
-
 	switch (prec_val) {
 	case 0:
 	  eps_int = power(2, -BITS_D);
-	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double), (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));	/* get double underflow */
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
 	  prec = blas_prec_double;
 	  break;
 	case 1:
 	  eps_int = power(2, -BITS_D);
-	  un_int =
-	    pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-		(double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
 	  prec = blas_prec_double;
 	  break;
 	case 2:
 	default:
 	  eps_int = power(2, -BITS_E);
-	  un_int = power(2, -1022 + 53 + 1);
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_extra),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_extra));
 	  prec = blas_prec_extra;
 	  break;
 	}
@@ -14213,19 +13884,11 @@ void do_test_zgemm_d_d_x
 			      dgemm_copy_col(order, transb,
 					     k, n, b, ldb, b_vec, j);
 
-			      rin[0] = c_gen[cij];
-			      rin[1] = c_gen[cij + 1];
-			      rout[0] = c[cij];
-			      rout[1] = c[cij + 1];
-			      head_r_true_elem[0] = head_r_true[cij];
-			      head_r_true_elem[1] = head_r_true[cij + 1];
-			      tail_r_true_elem[0] = tail_r_true[cij];
-			      tail_r_true_elem[1] = tail_r_true[cij + 1];
-
 			      test_BLAS_zdot_d_d(k, blas_no_conj,
-						 alpha, beta, rin, rout,
-						 head_r_true_elem,
-						 tail_r_true_elem, a_vec, 1,
+						 alpha, beta, &c_gen[cij],
+						 &c[cij],
+						 &head_r_true[cij],
+						 &tail_r_true[cij], a_vec, 1,
 						 b_vec, 1, eps_int, un_int,
 						 &ratios[rij]);
 
@@ -14253,51 +13916,54 @@ void do_test_zgemm_d_d_x
 			      printf("LDA %d  LDB %d  LDC %d\n", lda, ldb,
 				     ldc);
 
+			      printf("A:");
 			      switch (transa) {
 			      case blas_no_trans:
-				printf("A no_trans\n");
+				printf("no_trans ");
 				break;
 			      case blas_trans:
-				printf("A trans\n");
+				printf("trans ");
 				break;
 			      case blas_conj_trans:
-				printf("A conj_trans\n");
+				printf("conj_trans ");
 				break;
 			      }
-
+			      printf("B:");
 			      switch (transb) {
 			      case blas_no_trans:
-				printf("B no_trans\n");
+				printf("no_trans ");
 				break;
 			      case blas_trans:
-				printf("B trans\n");
+				printf("trans ");
 				break;
 			      case blas_conj_trans:
-				printf("B conj_trans\n");
+				printf("conj_trans ");
 				break;
 			      }
 
 			      printf("NORM %d, ALPHA %d, BETA %d\n",
 				     norm, alpha_val, beta_val);
 
-			      if (order == blas_rowmajor) {
-				printf("Row Major\n");
-			      } else {
-				printf("Col Major\n");
+			      switch (order) {
+			      case blas_rowmajor:
+				printf("row_major ");
+				break;
+			      case blas_colmajor:
+				printf("col_major ");
+				break;
 			      }
-
 			      switch (prec) {
 			      case blas_prec_single:
-				printf("Single Prec\n");
+				printf("single ");
 				break;
 			      case blas_prec_double:
-				printf("Double Prec\n");
+				printf("double ");
 				break;
 			      case blas_prec_indigenous:
-				printf("Indigenous Prec\n");
+				printf("indigenous ");
 				break;
 			      case blas_prec_extra:
-				printf("Extra Prec\n");
+				printf("extra ");
 				break;
 			      }
 
@@ -14397,8 +14063,6 @@ end:
 
 }
 
-
-
 int main(int argc, char **argv)
 {
   int nsizes, ntests, debug;
@@ -14450,6 +14114,8 @@ int main(int argc, char **argv)
   printf("Testing %s...\n", base_routine);
   printf("INPUT: nsizes = %d, ntests = %d, thresh = %4.2f, debug = %d\n\n",
 	 nsizes, ntests, thresh, debug);
+
+
 
 
 
@@ -14566,7 +14232,6 @@ int main(int argc, char **argv)
   }
   printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
 	 fname, total_bad_ratios, total_tests, max_ratio);
-
 
   fname = "BLAS_zgemm_z_c";
   printf("Testing %s...\n", fname);
@@ -14910,7 +14575,6 @@ int main(int argc, char **argv)
   printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
 	 fname, total_bad_ratios, total_tests, max_ratio);
 
-
   fname = "BLAS_sgemm_x";
   printf("Testing %s...\n", fname);
   total_tests = 0;
@@ -14961,6 +14625,82 @@ int main(int argc, char **argv)
     k = mnk_data[i][2];
 
     do_test_dgemm_x(m, n, k, ntests, &seed, thresh, debug,
+		    test_prob, &min_ratio, &max_ratio, &num_bad_ratio,
+		    &num_tests);
+
+    if (debug == 2 || (debug == 1 && num_bad_ratio > 0)) {
+      printf("   [%d %d %d]: ", m, n, k);
+      printf("bad/total = %d/%d, min_ratio = %g, max_ratio = %g\n",
+	     num_bad_ratio, num_tests, min_ratio, max_ratio);
+    }
+    total_tests += num_tests;
+    total_bad_ratios += num_bad_ratio;
+    if (total_min_ratio > min_ratio)
+      total_min_ratio = min_ratio;
+    if (total_max_ratio < max_ratio)
+      total_max_ratio = max_ratio;
+  }
+
+  nr_routines++;
+  if (total_bad_ratios == 0)
+    printf("PASS> ");
+  else {
+    printf("FAIL> ");
+    nr_failed_routines++;
+  }
+  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
+	 fname, total_bad_ratios, total_tests, max_ratio);
+
+  fname = "BLAS_cgemm_x";
+  printf("Testing %s...\n", fname);
+  total_tests = 0;
+  total_bad_ratios = 0;
+  total_min_ratio = 1e308;
+  total_max_ratio = 0.0;
+  for (i = 0; i < nsizes; i++) {
+    m = mnk_data[i][0];
+    n = mnk_data[i][1];
+    k = mnk_data[i][2];
+
+    do_test_cgemm_x(m, n, k, ntests, &seed, thresh, debug,
+		    test_prob, &min_ratio, &max_ratio, &num_bad_ratio,
+		    &num_tests);
+
+    if (debug == 2 || (debug == 1 && num_bad_ratio > 0)) {
+      printf("   [%d %d %d]: ", m, n, k);
+      printf("bad/total = %d/%d, min_ratio = %g, max_ratio = %g\n",
+	     num_bad_ratio, num_tests, min_ratio, max_ratio);
+    }
+    total_tests += num_tests;
+    total_bad_ratios += num_bad_ratio;
+    if (total_min_ratio > min_ratio)
+      total_min_ratio = min_ratio;
+    if (total_max_ratio < max_ratio)
+      total_max_ratio = max_ratio;
+  }
+
+  nr_routines++;
+  if (total_bad_ratios == 0)
+    printf("PASS> ");
+  else {
+    printf("FAIL> ");
+    nr_failed_routines++;
+  }
+  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
+	 fname, total_bad_ratios, total_tests, max_ratio);
+
+  fname = "BLAS_zgemm_x";
+  printf("Testing %s...\n", fname);
+  total_tests = 0;
+  total_bad_ratios = 0;
+  total_min_ratio = 1e308;
+  total_max_ratio = 0.0;
+  for (i = 0; i < nsizes; i++) {
+    m = mnk_data[i][0];
+    n = mnk_data[i][1];
+    k = mnk_data[i][2];
+
+    do_test_zgemm_x(m, n, k, ntests, &seed, thresh, debug,
 		    test_prob, &min_ratio, &max_ratio, &num_bad_ratio,
 		    &num_tests);
 
@@ -15077,83 +14817,6 @@ int main(int argc, char **argv)
     do_test_dgemm_s_s_x(m, n, k, ntests, &seed, thresh, debug,
 			test_prob, &min_ratio, &max_ratio, &num_bad_ratio,
 			&num_tests);
-
-    if (debug == 2 || (debug == 1 && num_bad_ratio > 0)) {
-      printf("   [%d %d %d]: ", m, n, k);
-      printf("bad/total = %d/%d, min_ratio = %g, max_ratio = %g\n",
-	     num_bad_ratio, num_tests, min_ratio, max_ratio);
-    }
-    total_tests += num_tests;
-    total_bad_ratios += num_bad_ratio;
-    if (total_min_ratio > min_ratio)
-      total_min_ratio = min_ratio;
-    if (total_max_ratio < max_ratio)
-      total_max_ratio = max_ratio;
-  }
-
-  nr_routines++;
-  if (total_bad_ratios == 0)
-    printf("PASS> ");
-  else {
-    printf("FAIL> ");
-    nr_failed_routines++;
-  }
-  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
-	 fname, total_bad_ratios, total_tests, max_ratio);
-
-
-  fname = "BLAS_cgemm_x";
-  printf("Testing %s...\n", fname);
-  total_tests = 0;
-  total_bad_ratios = 0;
-  total_min_ratio = 1e308;
-  total_max_ratio = 0.0;
-  for (i = 0; i < nsizes; i++) {
-    m = mnk_data[i][0];
-    n = mnk_data[i][1];
-    k = mnk_data[i][2];
-
-    do_test_cgemm_x(m, n, k, ntests, &seed, thresh, debug,
-		    test_prob, &min_ratio, &max_ratio, &num_bad_ratio,
-		    &num_tests);
-
-    if (debug == 2 || (debug == 1 && num_bad_ratio > 0)) {
-      printf("   [%d %d %d]: ", m, n, k);
-      printf("bad/total = %d/%d, min_ratio = %g, max_ratio = %g\n",
-	     num_bad_ratio, num_tests, min_ratio, max_ratio);
-    }
-    total_tests += num_tests;
-    total_bad_ratios += num_bad_ratio;
-    if (total_min_ratio > min_ratio)
-      total_min_ratio = min_ratio;
-    if (total_max_ratio < max_ratio)
-      total_max_ratio = max_ratio;
-  }
-
-  nr_routines++;
-  if (total_bad_ratios == 0)
-    printf("PASS> ");
-  else {
-    printf("FAIL> ");
-    nr_failed_routines++;
-  }
-  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
-	 fname, total_bad_ratios, total_tests, max_ratio);
-
-  fname = "BLAS_zgemm_x";
-  printf("Testing %s...\n", fname);
-  total_tests = 0;
-  total_bad_ratios = 0;
-  total_min_ratio = 1e308;
-  total_max_ratio = 0.0;
-  for (i = 0; i < nsizes; i++) {
-    m = mnk_data[i][0];
-    n = mnk_data[i][1];
-    k = mnk_data[i][2];
-
-    do_test_zgemm_x(m, n, k, ntests, &seed, thresh, debug,
-		    test_prob, &min_ratio, &max_ratio, &num_bad_ratio,
-		    &num_tests);
 
     if (debug == 2 || (debug == 1 && num_bad_ratio > 0)) {
       printf("   [%d %d %d]: ", m, n, k);
@@ -15519,7 +15182,6 @@ int main(int argc, char **argv)
   }
   printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
 	 fname, total_bad_ratios, total_tests, max_ratio);
-
 
 
 

@@ -19,7 +19,6 @@
 
 
 
-
 void ssymm_commit_row(enum blas_order_type order, enum blas_uplo_type uplo,
 		      enum blas_side_type side, int n, float *a, int lda,
 		      float *a_vec, int row)

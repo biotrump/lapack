@@ -117,7 +117,7 @@ double do_test_dtrmv_s(int n, int ntests, int *seed,
   int order_val;
   enum blas_order_type order_type;
 
-  enum blas_prec_type prec_type;
+  enum blas_prec_type prec;
   int uplo_val;
   enum blas_uplo_type uplo_type;
   int trans_val;
@@ -205,6 +205,7 @@ double do_test_dtrmv_s(int n, int ntests, int *seed,
 
     /* varying alpha */
     for (alpha_val = 0; alpha_val < 3; alpha_val++) {
+      alpha_flag = 0;
       switch (alpha_val) {
       case 0:
 	alpha = 0.0;
@@ -214,18 +215,13 @@ double do_test_dtrmv_s(int n, int ntests, int *seed,
 	alpha = 1.0;
 	alpha_flag = 1;
 	break;
-      default:
-      case 2:
-	alpha_flag = 0;
-	break;
       }
 
 
       eps_int = power(2, -BITS_D);
-      prec_type = blas_prec_double;
-      un_int =
-	pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-	    (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+      un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		   (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+      prec = blas_prec_double;
 
       /* values near underflow, 1, or overflow */
       for (norm = -1; norm <= 1; norm++) {
@@ -353,10 +349,11 @@ double do_test_dtrmv_s(int n, int ntests, int *seed,
 				   lda, temp, j);
 
 			test_BLAS_ddot_s_d(n, blas_no_conj,
-					   alpha, beta, rin, x[ix],
+					   alpha, beta, rin,
+					   x[ix],
 					   head_r_true[j * inc_xgen],
-					   tail_r_true[j * inc_xgen],
-					   temp, 1, x_gen, 1, eps_int, un_int,
+					   tail_r_true[j * inc_xgen], temp, 1,
+					   x_gen, 1, eps_int, un_int,
 					   &ratios[j]);
 
 			/* take the max ratio */
@@ -384,69 +381,64 @@ double do_test_dtrmv_s(int n, int ntests, int *seed,
 			     fname, n, ntests, thresh);
 
 			  /* Print test info */
-			  switch (prec_type) {
+			  switch (prec) {
 			  case blas_prec_single:
-			    printf("      Single, ");
+			    printf("single ");
 			    break;
 			  case blas_prec_double:
-			    printf("      Double, ");
+			    printf("double ");
 			    break;
 			  case blas_prec_indigenous:
-			    printf("      Indigenous, ");
+			    printf("indigenous ");
 			    break;
 			  case blas_prec_extra:
-			    printf("      Extra, ");
+			    printf("extra ");
 			    break;
 			  }
-
 			  switch (norm) {
 			  case -1:
-			    printf("Near Underflow, ");
+			    printf("near_underflow ");
 			    break;
 			  case 0:
-			    printf("Near One, ");
+			    printf("near_one ");
 			    break;
 			  case 1:
-			    printf("Near Overflow, ");
+			    printf("near_overflow ");
 			    break;
 			  }
-
 			  switch (order_type) {
 			  case blas_rowmajor:
-			    printf("Row Major, ");
+			    printf("row_major ");
 			    break;
 			  case blas_colmajor:
-			    printf("Col Major, ");
+			    printf("col_major ");
 			    break;
 			  }
-
 			  switch (uplo_type) {
 			  case blas_upper:
-			    printf("Upper, ");
+			    printf("upper ");
 			    break;
 			  case blas_lower:
-			    printf("Lower, ");
+			    printf("lower ");
 			    break;
 			  }
-
 			  switch (trans_type) {
 			  case blas_no_trans:
-			    printf("No Trans, ");
+			    printf("no_trans ");
 			    break;
 			  case blas_trans:
-			    printf("Trans, ");
+			    printf("trans ");
 			    break;
 			  case blas_conj_trans:
-			    printf("Conj Trans, ");
+			    printf("conj_trans ");
 			    break;
 			  }
-
 			  switch (diag_type) {
 			  case blas_non_unit_diag:
-			    printf("Non Unit Diag, ");
+			    printf("non_unit_diag ");
 			    break;
 			  case blas_unit_diag:
-			    printf("Unit Diag, ");
+			    printf("unit_diag ");
 			    break;
 			  }
 
@@ -668,7 +660,7 @@ double do_test_ztrmv_c(int n, int ntests, int *seed,
   int order_val;
   enum blas_order_type order_type;
 
-  enum blas_prec_type prec_type;
+  enum blas_prec_type prec;
   int uplo_val;
   enum blas_uplo_type uplo_type;
   int trans_val;
@@ -756,6 +748,7 @@ double do_test_ztrmv_c(int n, int ntests, int *seed,
 
     /* varying alpha */
     for (alpha_val = 0; alpha_val < 3; alpha_val++) {
+      alpha_flag = 0;
       switch (alpha_val) {
       case 0:
 	alpha[0] = alpha[1] = 0.0;
@@ -766,18 +759,13 @@ double do_test_ztrmv_c(int n, int ntests, int *seed,
 	alpha[1] = 0.0;
 	alpha_flag = 1;
 	break;
-      default:
-      case 2:
-	alpha_flag = 0;
-	break;
       }
 
 
       eps_int = power(2, -BITS_D);
-      prec_type = blas_prec_double;
-      un_int =
-	pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-	    (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+      un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		   (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+      prec = blas_prec_double;
 
       /* values near underflow, 1, or overflow */
       for (norm = -1; norm <= 1; norm++) {
@@ -906,10 +894,11 @@ double do_test_ztrmv_c(int n, int ntests, int *seed,
 				   lda, temp, j);
 
 			test_BLAS_zdot_c_z(n, blas_no_conj,
-					   alpha, beta, rin, &x[ix],
+					   alpha, beta, rin,
+					   &x[ix],
 					   &head_r_true[j * inc_xgen],
-					   &tail_r_true[j * inc_xgen],
-					   temp, 1, x_gen, 1, eps_int, un_int,
+					   &tail_r_true[j * inc_xgen], temp,
+					   1, x_gen, 1, eps_int, un_int,
 					   &ratios[j]);
 
 			/* take the max ratio */
@@ -937,69 +926,64 @@ double do_test_ztrmv_c(int n, int ntests, int *seed,
 			     fname, n, ntests, thresh);
 
 			  /* Print test info */
-			  switch (prec_type) {
+			  switch (prec) {
 			  case blas_prec_single:
-			    printf("      Single, ");
+			    printf("single ");
 			    break;
 			  case blas_prec_double:
-			    printf("      Double, ");
+			    printf("double ");
 			    break;
 			  case blas_prec_indigenous:
-			    printf("      Indigenous, ");
+			    printf("indigenous ");
 			    break;
 			  case blas_prec_extra:
-			    printf("      Extra, ");
+			    printf("extra ");
 			    break;
 			  }
-
 			  switch (norm) {
 			  case -1:
-			    printf("Near Underflow, ");
+			    printf("near_underflow ");
 			    break;
 			  case 0:
-			    printf("Near One, ");
+			    printf("near_one ");
 			    break;
 			  case 1:
-			    printf("Near Overflow, ");
+			    printf("near_overflow ");
 			    break;
 			  }
-
 			  switch (order_type) {
 			  case blas_rowmajor:
-			    printf("Row Major, ");
+			    printf("row_major ");
 			    break;
 			  case blas_colmajor:
-			    printf("Col Major, ");
+			    printf("col_major ");
 			    break;
 			  }
-
 			  switch (uplo_type) {
 			  case blas_upper:
-			    printf("Upper, ");
+			    printf("upper ");
 			    break;
 			  case blas_lower:
-			    printf("Lower, ");
+			    printf("lower ");
 			    break;
 			  }
-
 			  switch (trans_type) {
 			  case blas_no_trans:
-			    printf("No Trans, ");
+			    printf("no_trans ");
 			    break;
 			  case blas_trans:
-			    printf("Trans, ");
+			    printf("trans ");
 			    break;
 			  case blas_conj_trans:
-			    printf("Conj Trans, ");
+			    printf("conj_trans ");
 			    break;
 			  }
-
 			  switch (diag_type) {
 			  case blas_non_unit_diag:
-			    printf("Non Unit Diag, ");
+			    printf("non_unit_diag ");
 			    break;
 			  case blas_unit_diag:
-			    printf("Unit Diag, ");
+			    printf("unit_diag ");
 			    break;
 			  }
 
@@ -1042,7 +1026,8 @@ double do_test_ztrmv_c(int n, int ntests, int *seed,
 			  }
 
 			  printf("      ");
-			  printf("alpha=(%.16e, %.16e)", alpha[0], alpha[1]);
+			  printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
+				 alpha[1]);
 			  printf("; ");
 			  printf("\n");
 			  for (j = 0; j < n; j++) {
@@ -1050,10 +1035,7 @@ double do_test_ztrmv_c(int n, int ntests, int *seed,
 			      printf("    =>");
 			    else
 			      printf("      ");
-			    printf
-			      ("head_r_true[%d]=(%.16e, %.16e),\n      tail_r_true[%d]=(%.16e, %.16e)",
-			       j, head_r_true[j], head_r_true[j + 1], j,
-			       tail_r_true[j], tail_r_true[j + 1]);
+
 			    printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 			  }
 
@@ -1222,7 +1204,7 @@ double do_test_ctrmv_s(int n, int ntests, int *seed,
   int order_val;
   enum blas_order_type order_type;
 
-  enum blas_prec_type prec_type;
+  enum blas_prec_type prec;
   int uplo_val;
   enum blas_uplo_type uplo_type;
   int trans_val;
@@ -1310,6 +1292,7 @@ double do_test_ctrmv_s(int n, int ntests, int *seed,
 
     /* varying alpha */
     for (alpha_val = 0; alpha_val < 3; alpha_val++) {
+      alpha_flag = 0;
       switch (alpha_val) {
       case 0:
 	alpha[0] = alpha[1] = 0.0;
@@ -1320,18 +1303,13 @@ double do_test_ctrmv_s(int n, int ntests, int *seed,
 	alpha[1] = 0.0;
 	alpha_flag = 1;
 	break;
-      default:
-      case 2:
-	alpha_flag = 0;
-	break;
       }
 
 
       eps_int = power(2, -BITS_S);
-      prec_type = blas_prec_single;
-      un_int =
-	pow((double) BLAS_fpinfo_x(blas_base, blas_prec_single),
-	    (double) BLAS_fpinfo_x(blas_emin, blas_prec_single));
+      un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_single),
+		   (double) BLAS_fpinfo_x(blas_emin, blas_prec_single));
+      prec = blas_prec_single;
 
       /* values near underflow, 1, or overflow */
       for (norm = -1; norm <= 1; norm++) {
@@ -1460,10 +1438,11 @@ double do_test_ctrmv_s(int n, int ntests, int *seed,
 				   lda, temp, j);
 
 			test_BLAS_cdot_s_c(n, blas_no_conj,
-					   alpha, beta, rin, &x[ix],
+					   alpha, beta, rin,
+					   &x[ix],
 					   &head_r_true[j * inc_xgen],
-					   &tail_r_true[j * inc_xgen],
-					   temp, 1, x_gen, 1, eps_int, un_int,
+					   &tail_r_true[j * inc_xgen], temp,
+					   1, x_gen, 1, eps_int, un_int,
 					   &ratios[j]);
 
 			/* take the max ratio */
@@ -1491,69 +1470,64 @@ double do_test_ctrmv_s(int n, int ntests, int *seed,
 			     fname, n, ntests, thresh);
 
 			  /* Print test info */
-			  switch (prec_type) {
+			  switch (prec) {
 			  case blas_prec_single:
-			    printf("      Single, ");
+			    printf("single ");
 			    break;
 			  case blas_prec_double:
-			    printf("      Double, ");
+			    printf("double ");
 			    break;
 			  case blas_prec_indigenous:
-			    printf("      Indigenous, ");
+			    printf("indigenous ");
 			    break;
 			  case blas_prec_extra:
-			    printf("      Extra, ");
+			    printf("extra ");
 			    break;
 			  }
-
 			  switch (norm) {
 			  case -1:
-			    printf("Near Underflow, ");
+			    printf("near_underflow ");
 			    break;
 			  case 0:
-			    printf("Near One, ");
+			    printf("near_one ");
 			    break;
 			  case 1:
-			    printf("Near Overflow, ");
+			    printf("near_overflow ");
 			    break;
 			  }
-
 			  switch (order_type) {
 			  case blas_rowmajor:
-			    printf("Row Major, ");
+			    printf("row_major ");
 			    break;
 			  case blas_colmajor:
-			    printf("Col Major, ");
+			    printf("col_major ");
 			    break;
 			  }
-
 			  switch (uplo_type) {
 			  case blas_upper:
-			    printf("Upper, ");
+			    printf("upper ");
 			    break;
 			  case blas_lower:
-			    printf("Lower, ");
+			    printf("lower ");
 			    break;
 			  }
-
 			  switch (trans_type) {
 			  case blas_no_trans:
-			    printf("No Trans, ");
+			    printf("no_trans ");
 			    break;
 			  case blas_trans:
-			    printf("Trans, ");
+			    printf("trans ");
 			    break;
 			  case blas_conj_trans:
-			    printf("Conj Trans, ");
+			    printf("conj_trans ");
 			    break;
 			  }
-
 			  switch (diag_type) {
 			  case blas_non_unit_diag:
-			    printf("Non Unit Diag, ");
+			    printf("non_unit_diag ");
 			    break;
 			  case blas_unit_diag:
-			    printf("Unit Diag, ");
+			    printf("unit_diag ");
 			    break;
 			  }
 
@@ -1596,7 +1570,8 @@ double do_test_ctrmv_s(int n, int ntests, int *seed,
 			  }
 
 			  printf("      ");
-			  printf("alpha=(%.8e, %.8e)", alpha[0], alpha[1]);
+			  printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
+				 alpha[1]);
 			  printf("; ");
 			  printf("\n");
 			  for (j = 0; j < n; j++) {
@@ -1604,10 +1579,7 @@ double do_test_ctrmv_s(int n, int ntests, int *seed,
 			      printf("    =>");
 			    else
 			      printf("      ");
-			    printf
-			      ("head_r_true[%d]=(%.16e, %.16e),\n      tail_r_true[%d]=(%.16e, %.16e)",
-			       j, head_r_true[j], head_r_true[j + 1], j,
-			       tail_r_true[j], tail_r_true[j + 1]);
+
 			    printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 			  }
 
@@ -1776,7 +1748,7 @@ double do_test_ztrmv_d(int n, int ntests, int *seed,
   int order_val;
   enum blas_order_type order_type;
 
-  enum blas_prec_type prec_type;
+  enum blas_prec_type prec;
   int uplo_val;
   enum blas_uplo_type uplo_type;
   int trans_val;
@@ -1864,6 +1836,7 @@ double do_test_ztrmv_d(int n, int ntests, int *seed,
 
     /* varying alpha */
     for (alpha_val = 0; alpha_val < 3; alpha_val++) {
+      alpha_flag = 0;
       switch (alpha_val) {
       case 0:
 	alpha[0] = alpha[1] = 0.0;
@@ -1874,18 +1847,13 @@ double do_test_ztrmv_d(int n, int ntests, int *seed,
 	alpha[1] = 0.0;
 	alpha_flag = 1;
 	break;
-      default:
-      case 2:
-	alpha_flag = 0;
-	break;
       }
 
 
       eps_int = power(2, -BITS_D);
-      prec_type = blas_prec_double;
-      un_int =
-	pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-	    (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+      un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		   (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+      prec = blas_prec_double;
 
       /* values near underflow, 1, or overflow */
       for (norm = -1; norm <= 1; norm++) {
@@ -2014,10 +1982,11 @@ double do_test_ztrmv_d(int n, int ntests, int *seed,
 				   lda, temp, j);
 
 			test_BLAS_zdot_d_z(n, blas_no_conj,
-					   alpha, beta, rin, &x[ix],
+					   alpha, beta, rin,
+					   &x[ix],
 					   &head_r_true[j * inc_xgen],
-					   &tail_r_true[j * inc_xgen],
-					   temp, 1, x_gen, 1, eps_int, un_int,
+					   &tail_r_true[j * inc_xgen], temp,
+					   1, x_gen, 1, eps_int, un_int,
 					   &ratios[j]);
 
 			/* take the max ratio */
@@ -2045,69 +2014,64 @@ double do_test_ztrmv_d(int n, int ntests, int *seed,
 			     fname, n, ntests, thresh);
 
 			  /* Print test info */
-			  switch (prec_type) {
+			  switch (prec) {
 			  case blas_prec_single:
-			    printf("      Single, ");
+			    printf("single ");
 			    break;
 			  case blas_prec_double:
-			    printf("      Double, ");
+			    printf("double ");
 			    break;
 			  case blas_prec_indigenous:
-			    printf("      Indigenous, ");
+			    printf("indigenous ");
 			    break;
 			  case blas_prec_extra:
-			    printf("      Extra, ");
+			    printf("extra ");
 			    break;
 			  }
-
 			  switch (norm) {
 			  case -1:
-			    printf("Near Underflow, ");
+			    printf("near_underflow ");
 			    break;
 			  case 0:
-			    printf("Near One, ");
+			    printf("near_one ");
 			    break;
 			  case 1:
-			    printf("Near Overflow, ");
+			    printf("near_overflow ");
 			    break;
 			  }
-
 			  switch (order_type) {
 			  case blas_rowmajor:
-			    printf("Row Major, ");
+			    printf("row_major ");
 			    break;
 			  case blas_colmajor:
-			    printf("Col Major, ");
+			    printf("col_major ");
 			    break;
 			  }
-
 			  switch (uplo_type) {
 			  case blas_upper:
-			    printf("Upper, ");
+			    printf("upper ");
 			    break;
 			  case blas_lower:
-			    printf("Lower, ");
+			    printf("lower ");
 			    break;
 			  }
-
 			  switch (trans_type) {
 			  case blas_no_trans:
-			    printf("No Trans, ");
+			    printf("no_trans ");
 			    break;
 			  case blas_trans:
-			    printf("Trans, ");
+			    printf("trans ");
 			    break;
 			  case blas_conj_trans:
-			    printf("Conj Trans, ");
+			    printf("conj_trans ");
 			    break;
 			  }
-
 			  switch (diag_type) {
 			  case blas_non_unit_diag:
-			    printf("Non Unit Diag, ");
+			    printf("non_unit_diag ");
 			    break;
 			  case blas_unit_diag:
-			    printf("Unit Diag, ");
+			    printf("unit_diag ");
 			    break;
 			  }
 
@@ -2150,7 +2114,8 @@ double do_test_ztrmv_d(int n, int ntests, int *seed,
 			  }
 
 			  printf("      ");
-			  printf("alpha=(%.16e, %.16e)", alpha[0], alpha[1]);
+			  printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
+				 alpha[1]);
 			  printf("; ");
 			  printf("\n");
 			  for (j = 0; j < n; j++) {
@@ -2158,10 +2123,7 @@ double do_test_ztrmv_d(int n, int ntests, int *seed,
 			      printf("    =>");
 			    else
 			      printf("      ");
-			    printf
-			      ("head_r_true[%d]=(%.16e, %.16e),\n      tail_r_true[%d]=(%.16e, %.16e)",
-			       j, head_r_true[j], head_r_true[j + 1], j,
-			       tail_r_true[j], tail_r_true[j + 1]);
+
 			    printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 			  }
 
@@ -2329,7 +2291,7 @@ double do_test_strmv_x(int n, int ntests, int *seed,
   int order_val;
   enum blas_order_type order_type;
   int prec_val;
-  enum blas_prec_type prec_type;
+  enum blas_prec_type prec;
   int uplo_val;
   enum blas_uplo_type uplo_type;
   int trans_val;
@@ -2417,6 +2379,7 @@ double do_test_strmv_x(int n, int ntests, int *seed,
 
     /* varying alpha */
     for (alpha_val = 0; alpha_val < 3; alpha_val++) {
+      alpha_flag = 0;
       switch (alpha_val) {
       case 0:
 	alpha = 0.0;
@@ -2426,35 +2389,30 @@ double do_test_strmv_x(int n, int ntests, int *seed,
 	alpha = 1.0;
 	alpha_flag = 1;
 	break;
-      default:
-      case 2:
-	alpha_flag = 0;
-	break;
       }
 
 
       /* varying extra precs */
-      for (prec_val = 0; prec_val < 3; prec_val++) {
+      for (prec_val = 0; prec_val <= 2; prec_val++) {
 	switch (prec_val) {
 	case 0:
 	  eps_int = power(2, -BITS_S);
-	  un_int =
-	    pow((double) BLAS_fpinfo_x(blas_base, blas_prec_single),
-		(double) BLAS_fpinfo_x(blas_emin, blas_prec_single));
-	  prec_type = blas_prec_single;
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_single),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_single));
+	  prec = blas_prec_single;
 	  break;
 	case 1:
 	  eps_int = power(2, -BITS_D);
-	  un_int =
-	    pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-		(double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
-	  prec_type = blas_prec_double;
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+	  prec = blas_prec_double;
 	  break;
-	default:
 	case 2:
+	default:
 	  eps_int = power(2, -BITS_E);
-	  un_int = power(2, -1022 + 53 + 1);
-	  prec_type = blas_prec_extra;
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_extra),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_extra));
+	  prec = blas_prec_extra;
 	  break;
 	}
 
@@ -2568,7 +2526,7 @@ double do_test_strmv_x(int n, int ntests, int *seed,
 			FPU_FIX_STOP;
 			BLAS_strmv_x(order_type, uplo_type, trans_type,
 				     diag_type, n, alpha, T, lda, x, incx_val,
-				     prec_type);
+				     prec);
 			FPU_FIX_START;
 
 			/* set x starting index */
@@ -2585,10 +2543,11 @@ double do_test_strmv_x(int n, int ntests, int *seed,
 				     lda, temp, j);
 
 			  test_BLAS_sdot(n, blas_no_conj,
-					 alpha, beta, rin, x[ix],
+					 alpha, beta, rin,
+					 x[ix],
 					 head_r_true[j * inc_xgen],
-					 tail_r_true[j * inc_xgen],
-					 temp, 1, x_gen, 1, eps_int, un_int,
+					 tail_r_true[j * inc_xgen], temp, 1,
+					 x_gen, 1, eps_int, un_int,
 					 &ratios[j]);
 
 			  /* take the max ratio */
@@ -2616,69 +2575,64 @@ double do_test_strmv_x(int n, int ntests, int *seed,
 			       fname, n, ntests, thresh);
 
 			    /* Print test info */
-			    switch (prec_type) {
+			    switch (prec) {
 			    case blas_prec_single:
-			      printf("      Single, ");
+			      printf("single ");
 			      break;
 			    case blas_prec_double:
-			      printf("      Double, ");
+			      printf("double ");
 			      break;
 			    case blas_prec_indigenous:
-			      printf("      Indigenous, ");
+			      printf("indigenous ");
 			      break;
 			    case blas_prec_extra:
-			      printf("      Extra, ");
+			      printf("extra ");
 			      break;
 			    }
-
 			    switch (norm) {
 			    case -1:
-			      printf("Near Underflow, ");
+			      printf("near_underflow ");
 			      break;
 			    case 0:
-			      printf("Near One, ");
+			      printf("near_one ");
 			      break;
 			    case 1:
-			      printf("Near Overflow, ");
+			      printf("near_overflow ");
 			      break;
 			    }
-
 			    switch (order_type) {
 			    case blas_rowmajor:
-			      printf("Row Major, ");
+			      printf("row_major ");
 			      break;
 			    case blas_colmajor:
-			      printf("Col Major, ");
+			      printf("col_major ");
 			      break;
 			    }
-
 			    switch (uplo_type) {
 			    case blas_upper:
-			      printf("Upper, ");
+			      printf("upper ");
 			      break;
 			    case blas_lower:
-			      printf("Lower, ");
+			      printf("lower ");
 			      break;
 			    }
-
 			    switch (trans_type) {
 			    case blas_no_trans:
-			      printf("No Trans, ");
+			      printf("no_trans ");
 			      break;
 			    case blas_trans:
-			      printf("Trans, ");
+			      printf("trans ");
 			      break;
 			    case blas_conj_trans:
-			      printf("Conj Trans, ");
+			      printf("conj_trans ");
 			      break;
 			    }
-
 			    switch (diag_type) {
 			    case blas_non_unit_diag:
-			      printf("Non Unit Diag, ");
+			      printf("non_unit_diag ");
 			      break;
 			    case blas_unit_diag:
-			      printf("Unit Diag, ");
+			      printf("unit_diag ");
 			      break;
 			    }
 
@@ -2899,7 +2853,7 @@ double do_test_dtrmv_x(int n, int ntests, int *seed,
   int order_val;
   enum blas_order_type order_type;
   int prec_val;
-  enum blas_prec_type prec_type;
+  enum blas_prec_type prec;
   int uplo_val;
   enum blas_uplo_type uplo_type;
   int trans_val;
@@ -2987,6 +2941,7 @@ double do_test_dtrmv_x(int n, int ntests, int *seed,
 
     /* varying alpha */
     for (alpha_val = 0; alpha_val < 3; alpha_val++) {
+      alpha_flag = 0;
       switch (alpha_val) {
       case 0:
 	alpha = 0.0;
@@ -2996,35 +2951,30 @@ double do_test_dtrmv_x(int n, int ntests, int *seed,
 	alpha = 1.0;
 	alpha_flag = 1;
 	break;
-      default:
-      case 2:
-	alpha_flag = 0;
-	break;
       }
 
 
       /* varying extra precs */
-      for (prec_val = 0; prec_val < 3; prec_val++) {
+      for (prec_val = 0; prec_val <= 2; prec_val++) {
 	switch (prec_val) {
 	case 0:
 	  eps_int = power(2, -BITS_D);
-	  un_int =
-	    pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-		(double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
-	  prec_type = blas_prec_double;
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+	  prec = blas_prec_double;
 	  break;
 	case 1:
 	  eps_int = power(2, -BITS_D);
-	  un_int =
-	    pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-		(double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
-	  prec_type = blas_prec_double;
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+	  prec = blas_prec_double;
 	  break;
-	default:
 	case 2:
+	default:
 	  eps_int = power(2, -BITS_E);
-	  un_int = power(2, -1022 + 53 + 1);
-	  prec_type = blas_prec_extra;
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_extra),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_extra));
+	  prec = blas_prec_extra;
 	  break;
 	}
 
@@ -3138,7 +3088,7 @@ double do_test_dtrmv_x(int n, int ntests, int *seed,
 			FPU_FIX_STOP;
 			BLAS_dtrmv_x(order_type, uplo_type, trans_type,
 				     diag_type, n, alpha, T, lda, x, incx_val,
-				     prec_type);
+				     prec);
 			FPU_FIX_START;
 
 			/* set x starting index */
@@ -3155,10 +3105,11 @@ double do_test_dtrmv_x(int n, int ntests, int *seed,
 				     lda, temp, j);
 
 			  test_BLAS_ddot(n, blas_no_conj,
-					 alpha, beta, rin, x[ix],
+					 alpha, beta, rin,
+					 x[ix],
 					 head_r_true[j * inc_xgen],
-					 tail_r_true[j * inc_xgen],
-					 temp, 1, x_gen, 1, eps_int, un_int,
+					 tail_r_true[j * inc_xgen], temp, 1,
+					 x_gen, 1, eps_int, un_int,
 					 &ratios[j]);
 
 			  /* take the max ratio */
@@ -3186,69 +3137,64 @@ double do_test_dtrmv_x(int n, int ntests, int *seed,
 			       fname, n, ntests, thresh);
 
 			    /* Print test info */
-			    switch (prec_type) {
+			    switch (prec) {
 			    case blas_prec_single:
-			      printf("      Single, ");
+			      printf("single ");
 			      break;
 			    case blas_prec_double:
-			      printf("      Double, ");
+			      printf("double ");
 			      break;
 			    case blas_prec_indigenous:
-			      printf("      Indigenous, ");
+			      printf("indigenous ");
 			      break;
 			    case blas_prec_extra:
-			      printf("      Extra, ");
+			      printf("extra ");
 			      break;
 			    }
-
 			    switch (norm) {
 			    case -1:
-			      printf("Near Underflow, ");
+			      printf("near_underflow ");
 			      break;
 			    case 0:
-			      printf("Near One, ");
+			      printf("near_one ");
 			      break;
 			    case 1:
-			      printf("Near Overflow, ");
+			      printf("near_overflow ");
 			      break;
 			    }
-
 			    switch (order_type) {
 			    case blas_rowmajor:
-			      printf("Row Major, ");
+			      printf("row_major ");
 			      break;
 			    case blas_colmajor:
-			      printf("Col Major, ");
+			      printf("col_major ");
 			      break;
 			    }
-
 			    switch (uplo_type) {
 			    case blas_upper:
-			      printf("Upper, ");
+			      printf("upper ");
 			      break;
 			    case blas_lower:
-			      printf("Lower, ");
+			      printf("lower ");
 			      break;
 			    }
-
 			    switch (trans_type) {
 			    case blas_no_trans:
-			      printf("No Trans, ");
+			      printf("no_trans ");
 			      break;
 			    case blas_trans:
-			      printf("Trans, ");
+			      printf("trans ");
 			      break;
 			    case blas_conj_trans:
-			      printf("Conj Trans, ");
+			      printf("conj_trans ");
 			      break;
 			    }
-
 			    switch (diag_type) {
 			    case blas_non_unit_diag:
-			      printf("Non Unit Diag, ");
+			      printf("non_unit_diag ");
 			      break;
 			    case blas_unit_diag:
-			      printf("Unit Diag, ");
+			      printf("unit_diag ");
 			      break;
 			    }
 
@@ -3470,7 +3416,7 @@ double do_test_ctrmv_x(int n, int ntests, int *seed,
   int order_val;
   enum blas_order_type order_type;
   int prec_val;
-  enum blas_prec_type prec_type;
+  enum blas_prec_type prec;
   int uplo_val;
   enum blas_uplo_type uplo_type;
   int trans_val;
@@ -3558,6 +3504,7 @@ double do_test_ctrmv_x(int n, int ntests, int *seed,
 
     /* varying alpha */
     for (alpha_val = 0; alpha_val < 3; alpha_val++) {
+      alpha_flag = 0;
       switch (alpha_val) {
       case 0:
 	alpha[0] = alpha[1] = 0.0;
@@ -3568,35 +3515,30 @@ double do_test_ctrmv_x(int n, int ntests, int *seed,
 	alpha[1] = 0.0;
 	alpha_flag = 1;
 	break;
-      default:
-      case 2:
-	alpha_flag = 0;
-	break;
       }
 
 
       /* varying extra precs */
-      for (prec_val = 0; prec_val < 3; prec_val++) {
+      for (prec_val = 0; prec_val <= 2; prec_val++) {
 	switch (prec_val) {
 	case 0:
 	  eps_int = power(2, -BITS_S);
-	  un_int =
-	    pow((double) BLAS_fpinfo_x(blas_base, blas_prec_single),
-		(double) BLAS_fpinfo_x(blas_emin, blas_prec_single));
-	  prec_type = blas_prec_single;
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_single),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_single));
+	  prec = blas_prec_single;
 	  break;
 	case 1:
 	  eps_int = power(2, -BITS_D);
-	  un_int =
-	    pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-		(double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
-	  prec_type = blas_prec_double;
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+	  prec = blas_prec_double;
 	  break;
-	default:
 	case 2:
+	default:
 	  eps_int = power(2, -BITS_E);
-	  un_int = power(2, -1022 + 53 + 1);
-	  prec_type = blas_prec_extra;
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_extra),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_extra));
+	  prec = blas_prec_extra;
 	  break;
 	}
 
@@ -3711,7 +3653,7 @@ double do_test_ctrmv_x(int n, int ntests, int *seed,
 			FPU_FIX_STOP;
 			BLAS_ctrmv_x(order_type, uplo_type, trans_type,
 				     diag_type, n, alpha, T, lda, x, incx_val,
-				     prec_type);
+				     prec);
 			FPU_FIX_START;
 
 			/* set x starting index */
@@ -3728,10 +3670,11 @@ double do_test_ctrmv_x(int n, int ntests, int *seed,
 				     lda, temp, j);
 
 			  test_BLAS_cdot(n, blas_no_conj,
-					 alpha, beta, rin, &x[ix],
+					 alpha, beta, rin,
+					 &x[ix],
 					 &head_r_true[j * inc_xgen],
-					 &tail_r_true[j * inc_xgen],
-					 temp, 1, x_gen, 1, eps_int, un_int,
+					 &tail_r_true[j * inc_xgen], temp, 1,
+					 x_gen, 1, eps_int, un_int,
 					 &ratios[j]);
 
 			  /* take the max ratio */
@@ -3759,69 +3702,64 @@ double do_test_ctrmv_x(int n, int ntests, int *seed,
 			       fname, n, ntests, thresh);
 
 			    /* Print test info */
-			    switch (prec_type) {
+			    switch (prec) {
 			    case blas_prec_single:
-			      printf("      Single, ");
+			      printf("single ");
 			      break;
 			    case blas_prec_double:
-			      printf("      Double, ");
+			      printf("double ");
 			      break;
 			    case blas_prec_indigenous:
-			      printf("      Indigenous, ");
+			      printf("indigenous ");
 			      break;
 			    case blas_prec_extra:
-			      printf("      Extra, ");
+			      printf("extra ");
 			      break;
 			    }
-
 			    switch (norm) {
 			    case -1:
-			      printf("Near Underflow, ");
+			      printf("near_underflow ");
 			      break;
 			    case 0:
-			      printf("Near One, ");
+			      printf("near_one ");
 			      break;
 			    case 1:
-			      printf("Near Overflow, ");
+			      printf("near_overflow ");
 			      break;
 			    }
-
 			    switch (order_type) {
 			    case blas_rowmajor:
-			      printf("Row Major, ");
+			      printf("row_major ");
 			      break;
 			    case blas_colmajor:
-			      printf("Col Major, ");
+			      printf("col_major ");
 			      break;
 			    }
-
 			    switch (uplo_type) {
 			    case blas_upper:
-			      printf("Upper, ");
+			      printf("upper ");
 			      break;
 			    case blas_lower:
-			      printf("Lower, ");
+			      printf("lower ");
 			      break;
 			    }
-
 			    switch (trans_type) {
 			    case blas_no_trans:
-			      printf("No Trans, ");
+			      printf("no_trans ");
 			      break;
 			    case blas_trans:
-			      printf("Trans, ");
+			      printf("trans ");
 			      break;
 			    case blas_conj_trans:
-			      printf("Conj Trans, ");
+			      printf("conj_trans ");
 			      break;
 			    }
-
 			    switch (diag_type) {
 			    case blas_non_unit_diag:
-			      printf("Non Unit Diag, ");
+			      printf("non_unit_diag ");
 			      break;
 			    case blas_unit_diag:
-			      printf("Unit Diag, ");
+			      printf("unit_diag ");
 			      break;
 			    }
 
@@ -3864,7 +3802,8 @@ double do_test_ctrmv_x(int n, int ntests, int *seed,
 			    }
 
 			    printf("      ");
-			    printf("alpha=(%.8e, %.8e)", alpha[0], alpha[1]);
+			    printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
+				   alpha[1]);
 			    printf("; ");
 			    printf("\n");
 			    for (j = 0; j < n; j++) {
@@ -3872,10 +3811,7 @@ double do_test_ctrmv_x(int n, int ntests, int *seed,
 				printf("    =>");
 			      else
 				printf("      ");
-			      printf
-				("head_r_true[%d]=(%.16e, %.16e),\n      tail_r_true[%d]=(%.16e, %.16e)",
-				 j, head_r_true[j], head_r_true[j + 1], j,
-				 tail_r_true[j], tail_r_true[j + 1]);
+
 			      printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 			    }
 
@@ -4044,7 +3980,7 @@ double do_test_ztrmv_x(int n, int ntests, int *seed,
   int order_val;
   enum blas_order_type order_type;
   int prec_val;
-  enum blas_prec_type prec_type;
+  enum blas_prec_type prec;
   int uplo_val;
   enum blas_uplo_type uplo_type;
   int trans_val;
@@ -4132,6 +4068,7 @@ double do_test_ztrmv_x(int n, int ntests, int *seed,
 
     /* varying alpha */
     for (alpha_val = 0; alpha_val < 3; alpha_val++) {
+      alpha_flag = 0;
       switch (alpha_val) {
       case 0:
 	alpha[0] = alpha[1] = 0.0;
@@ -4142,35 +4079,30 @@ double do_test_ztrmv_x(int n, int ntests, int *seed,
 	alpha[1] = 0.0;
 	alpha_flag = 1;
 	break;
-      default:
-      case 2:
-	alpha_flag = 0;
-	break;
       }
 
 
       /* varying extra precs */
-      for (prec_val = 0; prec_val < 3; prec_val++) {
+      for (prec_val = 0; prec_val <= 2; prec_val++) {
 	switch (prec_val) {
 	case 0:
 	  eps_int = power(2, -BITS_D);
-	  un_int =
-	    pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-		(double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
-	  prec_type = blas_prec_double;
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+	  prec = blas_prec_double;
 	  break;
 	case 1:
 	  eps_int = power(2, -BITS_D);
-	  un_int =
-	    pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-		(double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
-	  prec_type = blas_prec_double;
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+	  prec = blas_prec_double;
 	  break;
-	default:
 	case 2:
+	default:
 	  eps_int = power(2, -BITS_E);
-	  un_int = power(2, -1022 + 53 + 1);
-	  prec_type = blas_prec_extra;
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_extra),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_extra));
+	  prec = blas_prec_extra;
 	  break;
 	}
 
@@ -4285,7 +4217,7 @@ double do_test_ztrmv_x(int n, int ntests, int *seed,
 			FPU_FIX_STOP;
 			BLAS_ztrmv_x(order_type, uplo_type, trans_type,
 				     diag_type, n, alpha, T, lda, x, incx_val,
-				     prec_type);
+				     prec);
 			FPU_FIX_START;
 
 			/* set x starting index */
@@ -4302,10 +4234,11 @@ double do_test_ztrmv_x(int n, int ntests, int *seed,
 				     lda, temp, j);
 
 			  test_BLAS_zdot(n, blas_no_conj,
-					 alpha, beta, rin, &x[ix],
+					 alpha, beta, rin,
+					 &x[ix],
 					 &head_r_true[j * inc_xgen],
-					 &tail_r_true[j * inc_xgen],
-					 temp, 1, x_gen, 1, eps_int, un_int,
+					 &tail_r_true[j * inc_xgen], temp, 1,
+					 x_gen, 1, eps_int, un_int,
 					 &ratios[j]);
 
 			  /* take the max ratio */
@@ -4333,69 +4266,64 @@ double do_test_ztrmv_x(int n, int ntests, int *seed,
 			       fname, n, ntests, thresh);
 
 			    /* Print test info */
-			    switch (prec_type) {
+			    switch (prec) {
 			    case blas_prec_single:
-			      printf("      Single, ");
+			      printf("single ");
 			      break;
 			    case blas_prec_double:
-			      printf("      Double, ");
+			      printf("double ");
 			      break;
 			    case blas_prec_indigenous:
-			      printf("      Indigenous, ");
+			      printf("indigenous ");
 			      break;
 			    case blas_prec_extra:
-			      printf("      Extra, ");
+			      printf("extra ");
 			      break;
 			    }
-
 			    switch (norm) {
 			    case -1:
-			      printf("Near Underflow, ");
+			      printf("near_underflow ");
 			      break;
 			    case 0:
-			      printf("Near One, ");
+			      printf("near_one ");
 			      break;
 			    case 1:
-			      printf("Near Overflow, ");
+			      printf("near_overflow ");
 			      break;
 			    }
-
 			    switch (order_type) {
 			    case blas_rowmajor:
-			      printf("Row Major, ");
+			      printf("row_major ");
 			      break;
 			    case blas_colmajor:
-			      printf("Col Major, ");
+			      printf("col_major ");
 			      break;
 			    }
-
 			    switch (uplo_type) {
 			    case blas_upper:
-			      printf("Upper, ");
+			      printf("upper ");
 			      break;
 			    case blas_lower:
-			      printf("Lower, ");
+			      printf("lower ");
 			      break;
 			    }
-
 			    switch (trans_type) {
 			    case blas_no_trans:
-			      printf("No Trans, ");
+			      printf("no_trans ");
 			      break;
 			    case blas_trans:
-			      printf("Trans, ");
+			      printf("trans ");
 			      break;
 			    case blas_conj_trans:
-			      printf("Conj Trans, ");
+			      printf("conj_trans ");
 			      break;
 			    }
-
 			    switch (diag_type) {
 			    case blas_non_unit_diag:
-			      printf("Non Unit Diag, ");
+			      printf("non_unit_diag ");
 			      break;
 			    case blas_unit_diag:
-			      printf("Unit Diag, ");
+			      printf("unit_diag ");
 			      break;
 			    }
 
@@ -4440,7 +4368,7 @@ double do_test_ztrmv_x(int n, int ntests, int *seed,
 			    }
 
 			    printf("      ");
-			    printf("alpha=(%.16e, %.16e)", alpha[0],
+			    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
 				   alpha[1]);
 			    printf("; ");
 			    printf("\n");
@@ -4449,10 +4377,7 @@ double do_test_ztrmv_x(int n, int ntests, int *seed,
 				printf("    =>");
 			      else
 				printf("      ");
-			      printf
-				("head_r_true[%d]=(%.16e, %.16e),\n      tail_r_true[%d]=(%.16e, %.16e)",
-				 j, head_r_true[j], head_r_true[j + 1], j,
-				 tail_r_true[j], tail_r_true[j + 1]);
+
 			      printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 			    }
 
@@ -4621,7 +4546,7 @@ double do_test_dtrmv_s_x(int n, int ntests, int *seed,
   int order_val;
   enum blas_order_type order_type;
   int prec_val;
-  enum blas_prec_type prec_type;
+  enum blas_prec_type prec;
   int uplo_val;
   enum blas_uplo_type uplo_type;
   int trans_val;
@@ -4709,6 +4634,7 @@ double do_test_dtrmv_s_x(int n, int ntests, int *seed,
 
     /* varying alpha */
     for (alpha_val = 0; alpha_val < 3; alpha_val++) {
+      alpha_flag = 0;
       switch (alpha_val) {
       case 0:
 	alpha = 0.0;
@@ -4718,35 +4644,30 @@ double do_test_dtrmv_s_x(int n, int ntests, int *seed,
 	alpha = 1.0;
 	alpha_flag = 1;
 	break;
-      default:
-      case 2:
-	alpha_flag = 0;
-	break;
       }
 
 
       /* varying extra precs */
-      for (prec_val = 0; prec_val < 3; prec_val++) {
+      for (prec_val = 0; prec_val <= 2; prec_val++) {
 	switch (prec_val) {
 	case 0:
 	  eps_int = power(2, -BITS_D);
-	  un_int =
-	    pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-		(double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
-	  prec_type = blas_prec_double;
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+	  prec = blas_prec_double;
 	  break;
 	case 1:
 	  eps_int = power(2, -BITS_D);
-	  un_int =
-	    pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-		(double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
-	  prec_type = blas_prec_double;
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+	  prec = blas_prec_double;
 	  break;
-	default:
 	case 2:
+	default:
 	  eps_int = power(2, -BITS_E);
-	  un_int = power(2, -1022 + 53 + 1);
-	  prec_type = blas_prec_extra;
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_extra),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_extra));
+	  prec = blas_prec_extra;
 	  break;
 	}
 
@@ -4860,7 +4781,7 @@ double do_test_dtrmv_s_x(int n, int ntests, int *seed,
 			FPU_FIX_STOP;
 			BLAS_dtrmv_s_x(order_type, uplo_type, trans_type,
 				       diag_type, n, alpha, T, lda, x,
-				       incx_val, prec_type);
+				       incx_val, prec);
 			FPU_FIX_START;
 
 			/* set x starting index */
@@ -4877,11 +4798,12 @@ double do_test_dtrmv_s_x(int n, int ntests, int *seed,
 				     lda, temp, j);
 
 			  test_BLAS_ddot_s_d(n, blas_no_conj,
-					     alpha, beta, rin, x[ix],
+					     alpha, beta, rin,
+					     x[ix],
 					     head_r_true[j * inc_xgen],
-					     tail_r_true[j * inc_xgen],
-					     temp, 1, x_gen, 1, eps_int,
-					     un_int, &ratios[j]);
+					     tail_r_true[j * inc_xgen], temp,
+					     1, x_gen, 1, eps_int, un_int,
+					     &ratios[j]);
 
 			  /* take the max ratio */
 			  if (j == 0)
@@ -4908,69 +4830,64 @@ double do_test_dtrmv_s_x(int n, int ntests, int *seed,
 			       fname, n, ntests, thresh);
 
 			    /* Print test info */
-			    switch (prec_type) {
+			    switch (prec) {
 			    case blas_prec_single:
-			      printf("      Single, ");
+			      printf("single ");
 			      break;
 			    case blas_prec_double:
-			      printf("      Double, ");
+			      printf("double ");
 			      break;
 			    case blas_prec_indigenous:
-			      printf("      Indigenous, ");
+			      printf("indigenous ");
 			      break;
 			    case blas_prec_extra:
-			      printf("      Extra, ");
+			      printf("extra ");
 			      break;
 			    }
-
 			    switch (norm) {
 			    case -1:
-			      printf("Near Underflow, ");
+			      printf("near_underflow ");
 			      break;
 			    case 0:
-			      printf("Near One, ");
+			      printf("near_one ");
 			      break;
 			    case 1:
-			      printf("Near Overflow, ");
+			      printf("near_overflow ");
 			      break;
 			    }
-
 			    switch (order_type) {
 			    case blas_rowmajor:
-			      printf("Row Major, ");
+			      printf("row_major ");
 			      break;
 			    case blas_colmajor:
-			      printf("Col Major, ");
+			      printf("col_major ");
 			      break;
 			    }
-
 			    switch (uplo_type) {
 			    case blas_upper:
-			      printf("Upper, ");
+			      printf("upper ");
 			      break;
 			    case blas_lower:
-			      printf("Lower, ");
+			      printf("lower ");
 			      break;
 			    }
-
 			    switch (trans_type) {
 			    case blas_no_trans:
-			      printf("No Trans, ");
+			      printf("no_trans ");
 			      break;
 			    case blas_trans:
-			      printf("Trans, ");
+			      printf("trans ");
 			      break;
 			    case blas_conj_trans:
-			      printf("Conj Trans, ");
+			      printf("conj_trans ");
 			      break;
 			    }
-
 			    switch (diag_type) {
 			    case blas_non_unit_diag:
-			      printf("Non Unit Diag, ");
+			      printf("non_unit_diag ");
 			      break;
 			    case blas_unit_diag:
-			      printf("Unit Diag, ");
+			      printf("unit_diag ");
 			      break;
 			    }
 
@@ -5193,7 +5110,7 @@ double do_test_ztrmv_c_x(int n, int ntests, int *seed,
   int order_val;
   enum blas_order_type order_type;
   int prec_val;
-  enum blas_prec_type prec_type;
+  enum blas_prec_type prec;
   int uplo_val;
   enum blas_uplo_type uplo_type;
   int trans_val;
@@ -5281,6 +5198,7 @@ double do_test_ztrmv_c_x(int n, int ntests, int *seed,
 
     /* varying alpha */
     for (alpha_val = 0; alpha_val < 3; alpha_val++) {
+      alpha_flag = 0;
       switch (alpha_val) {
       case 0:
 	alpha[0] = alpha[1] = 0.0;
@@ -5291,35 +5209,30 @@ double do_test_ztrmv_c_x(int n, int ntests, int *seed,
 	alpha[1] = 0.0;
 	alpha_flag = 1;
 	break;
-      default:
-      case 2:
-	alpha_flag = 0;
-	break;
       }
 
 
       /* varying extra precs */
-      for (prec_val = 0; prec_val < 3; prec_val++) {
+      for (prec_val = 0; prec_val <= 2; prec_val++) {
 	switch (prec_val) {
 	case 0:
 	  eps_int = power(2, -BITS_D);
-	  un_int =
-	    pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-		(double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
-	  prec_type = blas_prec_double;
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+	  prec = blas_prec_double;
 	  break;
 	case 1:
 	  eps_int = power(2, -BITS_D);
-	  un_int =
-	    pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-		(double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
-	  prec_type = blas_prec_double;
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+	  prec = blas_prec_double;
 	  break;
-	default:
 	case 2:
+	default:
 	  eps_int = power(2, -BITS_E);
-	  un_int = power(2, -1022 + 53 + 1);
-	  prec_type = blas_prec_extra;
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_extra),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_extra));
+	  prec = blas_prec_extra;
 	  break;
 	}
 
@@ -5434,7 +5347,7 @@ double do_test_ztrmv_c_x(int n, int ntests, int *seed,
 			FPU_FIX_STOP;
 			BLAS_ztrmv_c_x(order_type, uplo_type, trans_type,
 				       diag_type, n, alpha, T, lda, x,
-				       incx_val, prec_type);
+				       incx_val, prec);
 			FPU_FIX_START;
 
 			/* set x starting index */
@@ -5451,11 +5364,12 @@ double do_test_ztrmv_c_x(int n, int ntests, int *seed,
 				     lda, temp, j);
 
 			  test_BLAS_zdot_c_z(n, blas_no_conj,
-					     alpha, beta, rin, &x[ix],
+					     alpha, beta, rin,
+					     &x[ix],
 					     &head_r_true[j * inc_xgen],
-					     &tail_r_true[j * inc_xgen],
-					     temp, 1, x_gen, 1, eps_int,
-					     un_int, &ratios[j]);
+					     &tail_r_true[j * inc_xgen], temp,
+					     1, x_gen, 1, eps_int, un_int,
+					     &ratios[j]);
 
 			  /* take the max ratio */
 			  if (j == 0)
@@ -5482,69 +5396,64 @@ double do_test_ztrmv_c_x(int n, int ntests, int *seed,
 			       fname, n, ntests, thresh);
 
 			    /* Print test info */
-			    switch (prec_type) {
+			    switch (prec) {
 			    case blas_prec_single:
-			      printf("      Single, ");
+			      printf("single ");
 			      break;
 			    case blas_prec_double:
-			      printf("      Double, ");
+			      printf("double ");
 			      break;
 			    case blas_prec_indigenous:
-			      printf("      Indigenous, ");
+			      printf("indigenous ");
 			      break;
 			    case blas_prec_extra:
-			      printf("      Extra, ");
+			      printf("extra ");
 			      break;
 			    }
-
 			    switch (norm) {
 			    case -1:
-			      printf("Near Underflow, ");
+			      printf("near_underflow ");
 			      break;
 			    case 0:
-			      printf("Near One, ");
+			      printf("near_one ");
 			      break;
 			    case 1:
-			      printf("Near Overflow, ");
+			      printf("near_overflow ");
 			      break;
 			    }
-
 			    switch (order_type) {
 			    case blas_rowmajor:
-			      printf("Row Major, ");
+			      printf("row_major ");
 			      break;
 			    case blas_colmajor:
-			      printf("Col Major, ");
+			      printf("col_major ");
 			      break;
 			    }
-
 			    switch (uplo_type) {
 			    case blas_upper:
-			      printf("Upper, ");
+			      printf("upper ");
 			      break;
 			    case blas_lower:
-			      printf("Lower, ");
+			      printf("lower ");
 			      break;
 			    }
-
 			    switch (trans_type) {
 			    case blas_no_trans:
-			      printf("No Trans, ");
+			      printf("no_trans ");
 			      break;
 			    case blas_trans:
-			      printf("Trans, ");
+			      printf("trans ");
 			      break;
 			    case blas_conj_trans:
-			      printf("Conj Trans, ");
+			      printf("conj_trans ");
 			      break;
 			    }
-
 			    switch (diag_type) {
 			    case blas_non_unit_diag:
-			      printf("Non Unit Diag, ");
+			      printf("non_unit_diag ");
 			      break;
 			    case blas_unit_diag:
-			      printf("Unit Diag, ");
+			      printf("unit_diag ");
 			      break;
 			    }
 
@@ -5588,7 +5497,7 @@ double do_test_ztrmv_c_x(int n, int ntests, int *seed,
 			    }
 
 			    printf("      ");
-			    printf("alpha=(%.16e, %.16e)", alpha[0],
+			    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
 				   alpha[1]);
 			    printf("; ");
 			    printf("\n");
@@ -5597,10 +5506,7 @@ double do_test_ztrmv_c_x(int n, int ntests, int *seed,
 				printf("    =>");
 			      else
 				printf("      ");
-			      printf
-				("head_r_true[%d]=(%.16e, %.16e),\n      tail_r_true[%d]=(%.16e, %.16e)",
-				 j, head_r_true[j], head_r_true[j + 1], j,
-				 tail_r_true[j], tail_r_true[j + 1]);
+
 			      printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 			    }
 
@@ -5770,7 +5676,7 @@ double do_test_ctrmv_s_x(int n, int ntests, int *seed,
   int order_val;
   enum blas_order_type order_type;
   int prec_val;
-  enum blas_prec_type prec_type;
+  enum blas_prec_type prec;
   int uplo_val;
   enum blas_uplo_type uplo_type;
   int trans_val;
@@ -5858,6 +5764,7 @@ double do_test_ctrmv_s_x(int n, int ntests, int *seed,
 
     /* varying alpha */
     for (alpha_val = 0; alpha_val < 3; alpha_val++) {
+      alpha_flag = 0;
       switch (alpha_val) {
       case 0:
 	alpha[0] = alpha[1] = 0.0;
@@ -5868,35 +5775,30 @@ double do_test_ctrmv_s_x(int n, int ntests, int *seed,
 	alpha[1] = 0.0;
 	alpha_flag = 1;
 	break;
-      default:
-      case 2:
-	alpha_flag = 0;
-	break;
       }
 
 
       /* varying extra precs */
-      for (prec_val = 0; prec_val < 3; prec_val++) {
+      for (prec_val = 0; prec_val <= 2; prec_val++) {
 	switch (prec_val) {
 	case 0:
 	  eps_int = power(2, -BITS_S);
-	  un_int =
-	    pow((double) BLAS_fpinfo_x(blas_base, blas_prec_single),
-		(double) BLAS_fpinfo_x(blas_emin, blas_prec_single));
-	  prec_type = blas_prec_single;
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_single),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_single));
+	  prec = blas_prec_single;
 	  break;
 	case 1:
 	  eps_int = power(2, -BITS_D);
-	  un_int =
-	    pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-		(double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
-	  prec_type = blas_prec_double;
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+	  prec = blas_prec_double;
 	  break;
-	default:
 	case 2:
+	default:
 	  eps_int = power(2, -BITS_E);
-	  un_int = power(2, -1022 + 53 + 1);
-	  prec_type = blas_prec_extra;
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_extra),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_extra));
+	  prec = blas_prec_extra;
 	  break;
 	}
 
@@ -6011,7 +5913,7 @@ double do_test_ctrmv_s_x(int n, int ntests, int *seed,
 			FPU_FIX_STOP;
 			BLAS_ctrmv_s_x(order_type, uplo_type, trans_type,
 				       diag_type, n, alpha, T, lda, x,
-				       incx_val, prec_type);
+				       incx_val, prec);
 			FPU_FIX_START;
 
 			/* set x starting index */
@@ -6028,11 +5930,12 @@ double do_test_ctrmv_s_x(int n, int ntests, int *seed,
 				     lda, temp, j);
 
 			  test_BLAS_cdot_s_c(n, blas_no_conj,
-					     alpha, beta, rin, &x[ix],
+					     alpha, beta, rin,
+					     &x[ix],
 					     &head_r_true[j * inc_xgen],
-					     &tail_r_true[j * inc_xgen],
-					     temp, 1, x_gen, 1, eps_int,
-					     un_int, &ratios[j]);
+					     &tail_r_true[j * inc_xgen], temp,
+					     1, x_gen, 1, eps_int, un_int,
+					     &ratios[j]);
 
 			  /* take the max ratio */
 			  if (j == 0)
@@ -6059,69 +5962,64 @@ double do_test_ctrmv_s_x(int n, int ntests, int *seed,
 			       fname, n, ntests, thresh);
 
 			    /* Print test info */
-			    switch (prec_type) {
+			    switch (prec) {
 			    case blas_prec_single:
-			      printf("      Single, ");
+			      printf("single ");
 			      break;
 			    case blas_prec_double:
-			      printf("      Double, ");
+			      printf("double ");
 			      break;
 			    case blas_prec_indigenous:
-			      printf("      Indigenous, ");
+			      printf("indigenous ");
 			      break;
 			    case blas_prec_extra:
-			      printf("      Extra, ");
+			      printf("extra ");
 			      break;
 			    }
-
 			    switch (norm) {
 			    case -1:
-			      printf("Near Underflow, ");
+			      printf("near_underflow ");
 			      break;
 			    case 0:
-			      printf("Near One, ");
+			      printf("near_one ");
 			      break;
 			    case 1:
-			      printf("Near Overflow, ");
+			      printf("near_overflow ");
 			      break;
 			    }
-
 			    switch (order_type) {
 			    case blas_rowmajor:
-			      printf("Row Major, ");
+			      printf("row_major ");
 			      break;
 			    case blas_colmajor:
-			      printf("Col Major, ");
+			      printf("col_major ");
 			      break;
 			    }
-
 			    switch (uplo_type) {
 			    case blas_upper:
-			      printf("Upper, ");
+			      printf("upper ");
 			      break;
 			    case blas_lower:
-			      printf("Lower, ");
+			      printf("lower ");
 			      break;
 			    }
-
 			    switch (trans_type) {
 			    case blas_no_trans:
-			      printf("No Trans, ");
+			      printf("no_trans ");
 			      break;
 			    case blas_trans:
-			      printf("Trans, ");
+			      printf("trans ");
 			      break;
 			    case blas_conj_trans:
-			      printf("Conj Trans, ");
+			      printf("conj_trans ");
 			      break;
 			    }
-
 			    switch (diag_type) {
 			    case blas_non_unit_diag:
-			      printf("Non Unit Diag, ");
+			      printf("non_unit_diag ");
 			      break;
 			    case blas_unit_diag:
-			      printf("Unit Diag, ");
+			      printf("unit_diag ");
 			      break;
 			    }
 
@@ -6164,7 +6062,8 @@ double do_test_ctrmv_s_x(int n, int ntests, int *seed,
 			    }
 
 			    printf("      ");
-			    printf("alpha=(%.8e, %.8e)", alpha[0], alpha[1]);
+			    printf("alpha[0]=%.8e, alpha[1]=%.8e", alpha[0],
+				   alpha[1]);
 			    printf("; ");
 			    printf("\n");
 			    for (j = 0; j < n; j++) {
@@ -6172,10 +6071,7 @@ double do_test_ctrmv_s_x(int n, int ntests, int *seed,
 				printf("    =>");
 			      else
 				printf("      ");
-			      printf
-				("head_r_true[%d]=(%.16e, %.16e),\n      tail_r_true[%d]=(%.16e, %.16e)",
-				 j, head_r_true[j], head_r_true[j + 1], j,
-				 tail_r_true[j], tail_r_true[j + 1]);
+
 			      printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 			    }
 
@@ -6345,7 +6241,7 @@ double do_test_ztrmv_d_x(int n, int ntests, int *seed,
   int order_val;
   enum blas_order_type order_type;
   int prec_val;
-  enum blas_prec_type prec_type;
+  enum blas_prec_type prec;
   int uplo_val;
   enum blas_uplo_type uplo_type;
   int trans_val;
@@ -6433,6 +6329,7 @@ double do_test_ztrmv_d_x(int n, int ntests, int *seed,
 
     /* varying alpha */
     for (alpha_val = 0; alpha_val < 3; alpha_val++) {
+      alpha_flag = 0;
       switch (alpha_val) {
       case 0:
 	alpha[0] = alpha[1] = 0.0;
@@ -6443,35 +6340,30 @@ double do_test_ztrmv_d_x(int n, int ntests, int *seed,
 	alpha[1] = 0.0;
 	alpha_flag = 1;
 	break;
-      default:
-      case 2:
-	alpha_flag = 0;
-	break;
       }
 
 
       /* varying extra precs */
-      for (prec_val = 0; prec_val < 3; prec_val++) {
+      for (prec_val = 0; prec_val <= 2; prec_val++) {
 	switch (prec_val) {
 	case 0:
 	  eps_int = power(2, -BITS_D);
-	  un_int =
-	    pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-		(double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
-	  prec_type = blas_prec_double;
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+	  prec = blas_prec_double;
 	  break;
 	case 1:
 	  eps_int = power(2, -BITS_D);
-	  un_int =
-	    pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
-		(double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
-	  prec_type = blas_prec_double;
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_double),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_double));
+	  prec = blas_prec_double;
 	  break;
-	default:
 	case 2:
+	default:
 	  eps_int = power(2, -BITS_E);
-	  un_int = power(2, -1022 + 53 + 1);
-	  prec_type = blas_prec_extra;
+	  un_int = pow((double) BLAS_fpinfo_x(blas_base, blas_prec_extra),
+		       (double) BLAS_fpinfo_x(blas_emin, blas_prec_extra));
+	  prec = blas_prec_extra;
 	  break;
 	}
 
@@ -6586,7 +6478,7 @@ double do_test_ztrmv_d_x(int n, int ntests, int *seed,
 			FPU_FIX_STOP;
 			BLAS_ztrmv_d_x(order_type, uplo_type, trans_type,
 				       diag_type, n, alpha, T, lda, x,
-				       incx_val, prec_type);
+				       incx_val, prec);
 			FPU_FIX_START;
 
 			/* set x starting index */
@@ -6603,11 +6495,12 @@ double do_test_ztrmv_d_x(int n, int ntests, int *seed,
 				     lda, temp, j);
 
 			  test_BLAS_zdot_d_z(n, blas_no_conj,
-					     alpha, beta, rin, &x[ix],
+					     alpha, beta, rin,
+					     &x[ix],
 					     &head_r_true[j * inc_xgen],
-					     &tail_r_true[j * inc_xgen],
-					     temp, 1, x_gen, 1, eps_int,
-					     un_int, &ratios[j]);
+					     &tail_r_true[j * inc_xgen], temp,
+					     1, x_gen, 1, eps_int, un_int,
+					     &ratios[j]);
 
 			  /* take the max ratio */
 			  if (j == 0)
@@ -6634,69 +6527,64 @@ double do_test_ztrmv_d_x(int n, int ntests, int *seed,
 			       fname, n, ntests, thresh);
 
 			    /* Print test info */
-			    switch (prec_type) {
+			    switch (prec) {
 			    case blas_prec_single:
-			      printf("      Single, ");
+			      printf("single ");
 			      break;
 			    case blas_prec_double:
-			      printf("      Double, ");
+			      printf("double ");
 			      break;
 			    case blas_prec_indigenous:
-			      printf("      Indigenous, ");
+			      printf("indigenous ");
 			      break;
 			    case blas_prec_extra:
-			      printf("      Extra, ");
+			      printf("extra ");
 			      break;
 			    }
-
 			    switch (norm) {
 			    case -1:
-			      printf("Near Underflow, ");
+			      printf("near_underflow ");
 			      break;
 			    case 0:
-			      printf("Near One, ");
+			      printf("near_one ");
 			      break;
 			    case 1:
-			      printf("Near Overflow, ");
+			      printf("near_overflow ");
 			      break;
 			    }
-
 			    switch (order_type) {
 			    case blas_rowmajor:
-			      printf("Row Major, ");
+			      printf("row_major ");
 			      break;
 			    case blas_colmajor:
-			      printf("Col Major, ");
+			      printf("col_major ");
 			      break;
 			    }
-
 			    switch (uplo_type) {
 			    case blas_upper:
-			      printf("Upper, ");
+			      printf("upper ");
 			      break;
 			    case blas_lower:
-			      printf("Lower, ");
+			      printf("lower ");
 			      break;
 			    }
-
 			    switch (trans_type) {
 			    case blas_no_trans:
-			      printf("No Trans, ");
+			      printf("no_trans ");
 			      break;
 			    case blas_trans:
-			      printf("Trans, ");
+			      printf("trans ");
 			      break;
 			    case blas_conj_trans:
-			      printf("Conj Trans, ");
+			      printf("conj_trans ");
 			      break;
 			    }
-
 			    switch (diag_type) {
 			    case blas_non_unit_diag:
-			      printf("Non Unit Diag, ");
+			      printf("non_unit_diag ");
 			      break;
 			    case blas_unit_diag:
-			      printf("Unit Diag, ");
+			      printf("unit_diag ");
 			      break;
 			    }
 
@@ -6740,7 +6628,7 @@ double do_test_ztrmv_d_x(int n, int ntests, int *seed,
 			    }
 
 			    printf("      ");
-			    printf("alpha=(%.16e, %.16e)", alpha[0],
+			    printf("alpha[0]=%.16e, alpha[1]=%.16e", alpha[0],
 				   alpha[1]);
 			    printf("; ");
 			    printf("\n");
@@ -6749,10 +6637,7 @@ double do_test_ztrmv_d_x(int n, int ntests, int *seed,
 				printf("    =>");
 			      else
 				printf("      ");
-			      printf
-				("head_r_true[%d]=(%.16e, %.16e),\n      tail_r_true[%d]=(%.16e, %.16e)",
-				 j, head_r_true[j], head_r_true[j + 1], j,
-				 tail_r_true[j], tail_r_true[j + 1]);
+
 			      printf(", ratio[%d]=%.4e\n", j, ratios[j]);
 			    }
 
@@ -6808,7 +6693,6 @@ double do_test_ztrmv_d_x(int n, int ntests, int *seed,
   return ratio_max;
 }				/* end of do_test_ztrmv_d_x */
 
-
 #define NSIZES  12
 
 int main(int argc, char **argv)
@@ -6859,6 +6743,9 @@ int main(int argc, char **argv)
   printf("Testing %s...\n", base_routine);
   printf("INPUT: nsizes = %d, ntests = %d, thresh = %4.2f, debug = %d\n\n",
 	 nsizes, ntests, thresh, debug);
+
+
+
 
 
   fname = "BLAS_dtrmv_s";
@@ -7304,7 +7191,6 @@ int main(int argc, char **argv)
 
   printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
 	 fname, total_bad_ratios, total_tests, max_ratio);
-
 
 
 

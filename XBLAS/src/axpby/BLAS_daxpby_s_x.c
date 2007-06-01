@@ -1,8 +1,8 @@
 #include "blas_extended.h"
 #include "blas_extended_private.h"
 void BLAS_daxpby_s_x(int n, double alpha, const float *x, int incx,
-		     double beta, double *y, int incy,
-		     enum blas_prec_type prec)
+		     double beta, double *y,
+		     int incy, enum blas_prec_type prec)
 
 /*
  * Purpose

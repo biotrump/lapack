@@ -135,7 +135,6 @@ void BLAS_sgemv_testgen(int norm, enum blas_order_type order,
     sgemv_commit(order, trans, m, n, A, lda, temp, i);
   }
 
-
   blas_free(temp);
 }				/* end of BLAS_sgemv_testgen */
 
@@ -267,7 +266,6 @@ void BLAS_dgemv_testgen(int norm, enum blas_order_type order,
     /* copy temp to A */
     dgemv_commit(order, trans, m, n, A, lda, temp, i);
   }
-
 
   blas_free(temp);
 }				/* end of BLAS_dgemv_testgen */
@@ -407,7 +405,6 @@ void BLAS_cgemv_testgen(int norm, enum blas_order_type order,
     cgemv_commit(order, trans, m, n, A, lda, temp, i);
   }
 
-
   blas_free(temp);
 }				/* end of BLAS_cgemv_testgen */
 
@@ -546,7 +543,6 @@ void BLAS_zgemv_testgen(int norm, enum blas_order_type order,
     zgemv_commit(order, trans, m, n, A, lda, temp, i);
   }
 
-
   blas_free(temp);
 }				/* end of BLAS_zgemv_testgen */
 
@@ -678,7 +674,6 @@ void BLAS_dgemv_s_s_testgen(int norm, enum blas_order_type order,
     /* copy temp to A */
     sgemv_commit(order, trans, m, n, A, lda, temp, i);
   }
-
 
   blas_free(temp);
 }				/* end of BLAS_dgemv_s_s_testgen */
@@ -812,7 +807,6 @@ void BLAS_dgemv_s_d_testgen(int norm, enum blas_order_type order,
     sgemv_commit(order, trans, m, n, A, lda, temp, i);
   }
 
-
   blas_free(temp);
 }				/* end of BLAS_dgemv_s_d_testgen */
 
@@ -944,7 +938,6 @@ void BLAS_dgemv_d_s_testgen(int norm, enum blas_order_type order,
     /* copy temp to A */
     dgemv_commit(order, trans, m, n, A, lda, temp, i);
   }
-
 
   blas_free(temp);
 }				/* end of BLAS_dgemv_d_s_testgen */
@@ -1084,7 +1077,6 @@ void BLAS_zgemv_c_c_testgen(int norm, enum blas_order_type order,
     cgemv_commit(order, trans, m, n, A, lda, temp, i);
   }
 
-
   blas_free(temp);
 }				/* end of BLAS_zgemv_c_c_testgen */
 
@@ -1222,7 +1214,6 @@ void BLAS_zgemv_c_z_testgen(int norm, enum blas_order_type order,
     /* copy temp to A */
     cgemv_commit(order, trans, m, n, A, lda, temp, i);
   }
-
 
   blas_free(temp);
 }				/* end of BLAS_zgemv_c_z_testgen */
@@ -1362,7 +1353,6 @@ void BLAS_zgemv_z_c_testgen(int norm, enum blas_order_type order,
     zgemv_commit(order, trans, m, n, A, lda, temp, i);
   }
 
-
   blas_free(temp);
 }				/* end of BLAS_zgemv_z_c_testgen */
 
@@ -1496,7 +1486,6 @@ void BLAS_cgemv_s_s_testgen(int norm, enum blas_order_type order,
     sgemv_commit(order, trans, m, n, A, lda, temp, i);
   }
 
-
   blas_free(temp);
 }				/* end of BLAS_cgemv_s_s_testgen */
 
@@ -1629,7 +1618,6 @@ void BLAS_cgemv_s_c_testgen(int norm, enum blas_order_type order,
     /* copy temp to A */
     sgemv_commit(order, trans, m, n, A, lda, temp, i);
   }
-
 
   blas_free(temp);
 }				/* end of BLAS_cgemv_s_c_testgen */
@@ -1769,7 +1757,6 @@ void BLAS_cgemv_c_s_testgen(int norm, enum blas_order_type order,
     cgemv_commit(order, trans, m, n, A, lda, temp, i);
   }
 
-
   blas_free(temp);
 }				/* end of BLAS_cgemv_c_s_testgen */
 
@@ -1903,7 +1890,6 @@ void BLAS_zgemv_d_d_testgen(int norm, enum blas_order_type order,
     dgemv_commit(order, trans, m, n, A, lda, temp, i);
   }
 
-
   blas_free(temp);
 }				/* end of BLAS_zgemv_d_d_testgen */
 
@@ -2036,7 +2022,6 @@ void BLAS_zgemv_d_z_testgen(int norm, enum blas_order_type order,
     /* copy temp to A */
     dgemv_commit(order, trans, m, n, A, lda, temp, i);
   }
-
 
   blas_free(temp);
 }				/* end of BLAS_zgemv_d_z_testgen */
@@ -2175,7 +2160,6 @@ void BLAS_zgemv_z_d_testgen(int norm, enum blas_order_type order,
     /* copy temp to A */
     zgemv_commit(order, trans, m, n, A, lda, temp, i);
   }
-
 
   blas_free(temp);
 }				/* end of BLAS_zgemv_z_d_testgen */

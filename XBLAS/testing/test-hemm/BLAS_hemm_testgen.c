@@ -23,16 +23,13 @@
 
 
 
-
-
-
 void BLAS_chemm_testgen(int norm, enum blas_order_type order,
 			enum blas_uplo_type uplo, enum blas_side_type side,
 			int m, int n, int randomize,
 			void *alpha, int alpha_flag, void *beta,
 			int beta_flag, void *a, int lda, void *b, int ldb,
-			void *c, int ldc, int *seed, double *r_true_l,
-			double *r_true_t)
+			void *c, int ldc, int *seed, double *head_r_true,
+			double *tail_r_true)
 
 /*
  * Purpose
@@ -102,10 +99,10 @@ void BLAS_chemm_testgen(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * r_true_l  (output) double *
+ * head_r_true  (output) double *
  *         the leading part of the truth in double-double.
  *
- * r_true_t  (output) double *
+ * tail_r_true  (output) double *
  *         the trailing part of the truth in double-double
  *
  */
@@ -141,10 +138,8 @@ void BLAS_chemm_testgen(int norm, enum blas_order_type order,
   float *c2;
   float *b0;
 
-  double *r1_true_l;
-  double *r1_true_t;
-  double *r2_true_l;
-  double *r2_true_t;
+  double *head_r1_true, *tail_r1_true;
+  double *head_r2_true, *tail_r2_true;
 
   double head_r_elem1, tail_r_elem1;
   double head_r_elem2, tail_r_elem2;
@@ -244,20 +239,14 @@ void BLAS_chemm_testgen(int norm, enum blas_order_type order,
     for (i = 0; i < m_i * n_i; ++i) {
       c1[i] = c2[i] = b0[i] = 0.0;
     }
-    r1_true_l = (double *) blas_malloc(m_i * n_i * sizeof(double));
-    if (m_i * n_i > 0 && r1_true_l == NULL) {
+    head_r1_true = (double *) blas_malloc(m_i * n_i * sizeof(double));
+    tail_r1_true = (double *) blas_malloc(m_i * n_i * sizeof(double));
+    if (m_i * n_i > 0 && (head_r1_true == NULL || tail_r1_true == NULL)) {
       BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     };
-    r1_true_t = (double *) blas_malloc(m_i * n_i * sizeof(double));
-    if (m_i * n_i > 0 && r1_true_t == NULL) {
-      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-    };
-    r2_true_l = (double *) blas_malloc(m_i * n_i * sizeof(double));
-    if (m_i * n_i > 0 && r2_true_l == NULL) {
-      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-    };
-    r2_true_t = (double *) blas_malloc(m_i * n_i * sizeof(double));
-    if (m_i * n_i > 0 && r2_true_t == NULL) {
+    head_r2_true = (double *) blas_malloc(m_i * n_i * sizeof(double));
+    tail_r2_true = (double *) blas_malloc(m_i * n_i * sizeof(double));
+    if (m_i * n_i > 0 && (head_r2_true == NULL || tail_r2_true == NULL)) {
       BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     };
 
@@ -265,11 +254,11 @@ void BLAS_chemm_testgen(int norm, enum blas_order_type order,
        Note that Re(A) is a symmetric matrix. */
     BLAS_ssymm_testgen
       (norm, order, uplo, side, m, n, 0, alpha_i, alpha_flag, beta_i,
-       beta_flag, a1, m_i, b0, ld, c1, ld, seed, r1_true_l, r1_true_t);
+       beta_flag, a1, m_i, b0, ld, c1, ld, seed, head_r1_true, tail_r1_true);
 
     BLAS_sskew_testgen
       (norm, order, uplo, side, m, n, alpha_i, 1, beta_i, 1, a2, m_i, b0, ld,
-       c2, ld, seed, r2_true_l, r2_true_t);
+       c2, ld, seed, head_r2_true, tail_r2_true);
 
 
     /* The case where B is a complex matrix.  Since B is generated
@@ -356,17 +345,17 @@ void BLAS_chemm_testgen(int norm, enum blas_order_type order,
       for (j = 0, cij = ci, mij = mi; j < n_i;
 	   j++, cij += inccij, mij += incij) {
 
-	head_r_elem1 = r1_true_l[mij];
-	tail_r_elem1 = r1_true_t[mij];
+	head_r_elem1 = head_r1_true[mij];
+	tail_r_elem1 = tail_r1_true[mij];
 
-	head_r_elem2 = r2_true_l[mij];
-	tail_r_elem2 = r2_true_t[mij];
+	head_r_elem2 = head_r2_true[mij];
+	tail_r_elem2 = tail_r2_true[mij];
 
 	if (ab == 0) {
-	  r_true_l[cij] = -head_r_elem2;
-	  r_true_t[cij] = -tail_r_elem2;
-	  r_true_l[cij + 1] = head_r_elem1;
-	  r_true_t[cij + 1] = tail_r_elem1;
+	  head_r_true[cij] = -head_r_elem2;
+	  tail_r_true[cij] = -tail_r_elem2;
+	  head_r_true[cij + 1] = head_r_elem1;
+	  tail_r_true[cij + 1] = tail_r_elem1;
 	} else if (ab == 1) {
 	  {
 	    /* Compute double-double = double-double + double-double. */
@@ -397,8 +386,8 @@ void BLAS_chemm_testgen(int norm, enum blas_order_type order,
 	  }
 
 	  /* Set the imaginary part to  R1 + R2 */
-	  r_true_t[cij + 1] = tail_r_elem;
-	  r_true_l[cij + 1] = head_r_elem;
+	  tail_r_true[cij + 1] = tail_r_elem;
+	  head_r_true[cij + 1] = head_r_elem;
 
 	  /* Set the real part to R1 - R2. */
 	  {
@@ -433,8 +422,8 @@ void BLAS_chemm_testgen(int norm, enum blas_order_type order,
 	      tail_r_elem = t2 - (head_r_elem - t1);
 	    }
 	  }
-	  r_true_t[cij] = tail_r_elem;
-	  r_true_l[cij] = head_r_elem;
+	  tail_r_true[cij] = tail_r_elem;
+	  head_r_true[cij] = head_r_elem;
 	} else {
 
 	  /* Real part */
@@ -461,8 +450,8 @@ void BLAS_chemm_testgen(int norm, enum blas_order_type order,
 	    head_r_elem = t1 + t2;
 	    tail_r_elem = t2 - (head_r_elem - t1);
 	  }
-	  r_true_l[cij] = head_r_elem;
-	  r_true_t[cij] = tail_r_elem;
+	  head_r_true[cij] = head_r_elem;
+	  tail_r_true[cij] = tail_r_elem;
 
 	  /* Imaginary Part */
 	  {
@@ -488,8 +477,8 @@ void BLAS_chemm_testgen(int norm, enum blas_order_type order,
 	    head_r_elem = t1 + t2;
 	    tail_r_elem = t2 - (head_r_elem - t1);
 	  }
-	  r_true_l[cij + 1] = head_r_elem;
-	  r_true_t[cij + 1] = tail_r_elem;
+	  head_r_true[cij + 1] = head_r_elem;
+	  tail_r_true[cij + 1] = tail_r_elem;
 	}
       }
     }
@@ -499,23 +488,21 @@ void BLAS_chemm_testgen(int norm, enum blas_order_type order,
     blas_free(c1);
     blas_free(c2);
     blas_free(b0);
-    blas_free(r1_true_l);
-    blas_free(r1_true_t);
-    blas_free(r2_true_l);
-    blas_free(r2_true_t);
+    blas_free(head_r1_true);
+    blas_free(tail_r1_true);
+    blas_free(head_r2_true);
+    blas_free(tail_r2_true);
 
   } else {
     /* random matrix */
     float a_elem[2];
     float b_elem[2];
     float c_elem[2];
-    double r_true_t_elem[2];
-    double r_true_l_elem[2];
+    double head_r_true_elem[2], tail_r_true_elem[2];
 
     /* Since mixed real/complex test generator for dot
        scales the vectors, we need to used the non-mixed
        version if B is real (since A is always complex). */
-
 
 
     if (alpha_flag == 0) {
@@ -563,14 +550,14 @@ void BLAS_chemm_testgen(int norm, enum blas_order_type order,
 
 	BLAS_cdot_testgen(m_i, m_i, 0, norm, blas_no_conj,
 			  alpha, 1, beta, 1, a_vec, b_vec, seed,
-			  c_elem, r_true_l_elem, r_true_t_elem);
+			  c_elem, head_r_true_elem, tail_r_true_elem);
 
 	c_i[cij] = c_elem[0];
 	c_i[cij + 1] = c_elem[1];
-	r_true_l[cij] = r_true_l_elem[0];
-	r_true_l[cij + 1] = r_true_l_elem[1];
-	r_true_t[cij] = r_true_t_elem[0];
-	r_true_t[cij + 1] = r_true_t_elem[1];
+	head_r_true[cij] = head_r_true_elem[0];
+	head_r_true[cij + 1] = head_r_true_elem[1];
+	tail_r_true[cij] = tail_r_true_elem[0];
+	tail_r_true[cij + 1] = tail_r_true_elem[1];
       }
     }
 
@@ -586,8 +573,8 @@ void BLAS_zhemm_testgen(int norm, enum blas_order_type order,
 			int m, int n, int randomize,
 			void *alpha, int alpha_flag, void *beta,
 			int beta_flag, void *a, int lda, void *b, int ldb,
-			void *c, int ldc, int *seed, double *r_true_l,
-			double *r_true_t)
+			void *c, int ldc, int *seed, double *head_r_true,
+			double *tail_r_true)
 
 /*
  * Purpose
@@ -657,10 +644,10 @@ void BLAS_zhemm_testgen(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * r_true_l  (output) double *
+ * head_r_true  (output) double *
  *         the leading part of the truth in double-double.
  *
- * r_true_t  (output) double *
+ * tail_r_true  (output) double *
  *         the trailing part of the truth in double-double
  *
  */
@@ -696,10 +683,8 @@ void BLAS_zhemm_testgen(int norm, enum blas_order_type order,
   double *c2;
   double *b0;
 
-  double *r1_true_l;
-  double *r1_true_t;
-  double *r2_true_l;
-  double *r2_true_t;
+  double *head_r1_true, *tail_r1_true;
+  double *head_r2_true, *tail_r2_true;
 
   double head_r_elem1, tail_r_elem1;
   double head_r_elem2, tail_r_elem2;
@@ -799,20 +784,14 @@ void BLAS_zhemm_testgen(int norm, enum blas_order_type order,
     for (i = 0; i < m_i * n_i; ++i) {
       c1[i] = c2[i] = b0[i] = 0.0;
     }
-    r1_true_l = (double *) blas_malloc(m_i * n_i * sizeof(double));
-    if (m_i * n_i > 0 && r1_true_l == NULL) {
+    head_r1_true = (double *) blas_malloc(m_i * n_i * sizeof(double));
+    tail_r1_true = (double *) blas_malloc(m_i * n_i * sizeof(double));
+    if (m_i * n_i > 0 && (head_r1_true == NULL || tail_r1_true == NULL)) {
       BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     };
-    r1_true_t = (double *) blas_malloc(m_i * n_i * sizeof(double));
-    if (m_i * n_i > 0 && r1_true_t == NULL) {
-      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-    };
-    r2_true_l = (double *) blas_malloc(m_i * n_i * sizeof(double));
-    if (m_i * n_i > 0 && r2_true_l == NULL) {
-      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-    };
-    r2_true_t = (double *) blas_malloc(m_i * n_i * sizeof(double));
-    if (m_i * n_i > 0 && r2_true_t == NULL) {
+    head_r2_true = (double *) blas_malloc(m_i * n_i * sizeof(double));
+    tail_r2_true = (double *) blas_malloc(m_i * n_i * sizeof(double));
+    if (m_i * n_i > 0 && (head_r2_true == NULL || tail_r2_true == NULL)) {
       BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     };
 
@@ -820,11 +799,11 @@ void BLAS_zhemm_testgen(int norm, enum blas_order_type order,
        Note that Re(A) is a symmetric matrix. */
     BLAS_dsymm_testgen
       (norm, order, uplo, side, m, n, 0, alpha_i, alpha_flag, beta_i,
-       beta_flag, a1, m_i, b0, ld, c1, ld, seed, r1_true_l, r1_true_t);
+       beta_flag, a1, m_i, b0, ld, c1, ld, seed, head_r1_true, tail_r1_true);
 
     BLAS_dskew_testgen
       (norm, order, uplo, side, m, n, alpha_i, 1, beta_i, 1, a2, m_i, b0, ld,
-       c2, ld, seed, r2_true_l, r2_true_t);
+       c2, ld, seed, head_r2_true, tail_r2_true);
 
 
     /* The case where B is a complex matrix.  Since B is generated
@@ -911,17 +890,17 @@ void BLAS_zhemm_testgen(int norm, enum blas_order_type order,
       for (j = 0, cij = ci, mij = mi; j < n_i;
 	   j++, cij += inccij, mij += incij) {
 
-	head_r_elem1 = r1_true_l[mij];
-	tail_r_elem1 = r1_true_t[mij];
+	head_r_elem1 = head_r1_true[mij];
+	tail_r_elem1 = tail_r1_true[mij];
 
-	head_r_elem2 = r2_true_l[mij];
-	tail_r_elem2 = r2_true_t[mij];
+	head_r_elem2 = head_r2_true[mij];
+	tail_r_elem2 = tail_r2_true[mij];
 
 	if (ab == 0) {
-	  r_true_l[cij] = -head_r_elem2;
-	  r_true_t[cij] = -tail_r_elem2;
-	  r_true_l[cij + 1] = head_r_elem1;
-	  r_true_t[cij + 1] = tail_r_elem1;
+	  head_r_true[cij] = -head_r_elem2;
+	  tail_r_true[cij] = -tail_r_elem2;
+	  head_r_true[cij + 1] = head_r_elem1;
+	  tail_r_true[cij + 1] = tail_r_elem1;
 	} else if (ab == 1) {
 	  {
 	    /* Compute double-double = double-double + double-double. */
@@ -952,8 +931,8 @@ void BLAS_zhemm_testgen(int norm, enum blas_order_type order,
 	  }
 
 	  /* Set the imaginary part to  R1 + R2 */
-	  r_true_t[cij + 1] = tail_r_elem;
-	  r_true_l[cij + 1] = head_r_elem;
+	  tail_r_true[cij + 1] = tail_r_elem;
+	  head_r_true[cij + 1] = head_r_elem;
 
 	  /* Set the real part to R1 - R2. */
 	  {
@@ -988,8 +967,8 @@ void BLAS_zhemm_testgen(int norm, enum blas_order_type order,
 	      tail_r_elem = t2 - (head_r_elem - t1);
 	    }
 	  }
-	  r_true_t[cij] = tail_r_elem;
-	  r_true_l[cij] = head_r_elem;
+	  tail_r_true[cij] = tail_r_elem;
+	  head_r_true[cij] = head_r_elem;
 	} else {
 
 	  /* Real part */
@@ -1016,8 +995,8 @@ void BLAS_zhemm_testgen(int norm, enum blas_order_type order,
 	    head_r_elem = t1 + t2;
 	    tail_r_elem = t2 - (head_r_elem - t1);
 	  }
-	  r_true_l[cij] = head_r_elem;
-	  r_true_t[cij] = tail_r_elem;
+	  head_r_true[cij] = head_r_elem;
+	  tail_r_true[cij] = tail_r_elem;
 
 	  /* Imaginary Part */
 	  {
@@ -1043,8 +1022,8 @@ void BLAS_zhemm_testgen(int norm, enum blas_order_type order,
 	    head_r_elem = t1 + t2;
 	    tail_r_elem = t2 - (head_r_elem - t1);
 	  }
-	  r_true_l[cij + 1] = head_r_elem;
-	  r_true_t[cij + 1] = tail_r_elem;
+	  head_r_true[cij + 1] = head_r_elem;
+	  tail_r_true[cij + 1] = tail_r_elem;
 	}
       }
     }
@@ -1054,23 +1033,21 @@ void BLAS_zhemm_testgen(int norm, enum blas_order_type order,
     blas_free(c1);
     blas_free(c2);
     blas_free(b0);
-    blas_free(r1_true_l);
-    blas_free(r1_true_t);
-    blas_free(r2_true_l);
-    blas_free(r2_true_t);
+    blas_free(head_r1_true);
+    blas_free(tail_r1_true);
+    blas_free(head_r2_true);
+    blas_free(tail_r2_true);
 
   } else {
     /* random matrix */
     double a_elem[2];
     double b_elem[2];
     double c_elem[2];
-    double r_true_t_elem[2];
-    double r_true_l_elem[2];
+    double head_r_true_elem[2], tail_r_true_elem[2];
 
     /* Since mixed real/complex test generator for dot
        scales the vectors, we need to used the non-mixed
        version if B is real (since A is always complex). */
-
 
 
     if (alpha_flag == 0) {
@@ -1118,14 +1095,14 @@ void BLAS_zhemm_testgen(int norm, enum blas_order_type order,
 
 	BLAS_zdot_testgen(m_i, m_i, 0, norm, blas_no_conj,
 			  alpha, 1, beta, 1, a_vec, b_vec, seed,
-			  c_elem, r_true_l_elem, r_true_t_elem);
+			  c_elem, head_r_true_elem, tail_r_true_elem);
 
 	c_i[cij] = c_elem[0];
 	c_i[cij + 1] = c_elem[1];
-	r_true_l[cij] = r_true_l_elem[0];
-	r_true_l[cij + 1] = r_true_l_elem[1];
-	r_true_t[cij] = r_true_t_elem[0];
-	r_true_t[cij + 1] = r_true_t_elem[1];
+	head_r_true[cij] = head_r_true_elem[0];
+	head_r_true[cij + 1] = head_r_true_elem[1];
+	tail_r_true[cij] = tail_r_true_elem[0];
+	tail_r_true[cij + 1] = tail_r_true_elem[1];
       }
     }
 
@@ -1142,7 +1119,7 @@ void BLAS_zhemm_c_z_testgen(int norm, enum blas_order_type order,
 			    int randomize, void *alpha, int alpha_flag,
 			    void *beta, int beta_flag, void *a, int lda,
 			    void *b, int ldb, void *c, int ldc, int *seed,
-			    double *r_true_l, double *r_true_t)
+			    double *head_r_true, double *tail_r_true)
 
 /*
  * Purpose
@@ -1212,10 +1189,10 @@ void BLAS_zhemm_c_z_testgen(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * r_true_l  (output) double *
+ * head_r_true  (output) double *
  *         the leading part of the truth in double-double.
  *
- * r_true_t  (output) double *
+ * tail_r_true  (output) double *
  *         the trailing part of the truth in double-double
  *
  */
@@ -1251,10 +1228,8 @@ void BLAS_zhemm_c_z_testgen(int norm, enum blas_order_type order,
   double *c2;
   double *b0;
 
-  double *r1_true_l;
-  double *r1_true_t;
-  double *r2_true_l;
-  double *r2_true_t;
+  double *head_r1_true, *tail_r1_true;
+  double *head_r2_true, *tail_r2_true;
 
   double head_r_elem1, tail_r_elem1;
   double head_r_elem2, tail_r_elem2;
@@ -1354,20 +1329,14 @@ void BLAS_zhemm_c_z_testgen(int norm, enum blas_order_type order,
     for (i = 0; i < m_i * n_i; ++i) {
       c1[i] = c2[i] = b0[i] = 0.0;
     }
-    r1_true_l = (double *) blas_malloc(m_i * n_i * sizeof(double));
-    if (m_i * n_i > 0 && r1_true_l == NULL) {
+    head_r1_true = (double *) blas_malloc(m_i * n_i * sizeof(double));
+    tail_r1_true = (double *) blas_malloc(m_i * n_i * sizeof(double));
+    if (m_i * n_i > 0 && (head_r1_true == NULL || tail_r1_true == NULL)) {
       BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     };
-    r1_true_t = (double *) blas_malloc(m_i * n_i * sizeof(double));
-    if (m_i * n_i > 0 && r1_true_t == NULL) {
-      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-    };
-    r2_true_l = (double *) blas_malloc(m_i * n_i * sizeof(double));
-    if (m_i * n_i > 0 && r2_true_l == NULL) {
-      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-    };
-    r2_true_t = (double *) blas_malloc(m_i * n_i * sizeof(double));
-    if (m_i * n_i > 0 && r2_true_t == NULL) {
+    head_r2_true = (double *) blas_malloc(m_i * n_i * sizeof(double));
+    tail_r2_true = (double *) blas_malloc(m_i * n_i * sizeof(double));
+    if (m_i * n_i > 0 && (head_r2_true == NULL || tail_r2_true == NULL)) {
       BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     };
 
@@ -1375,11 +1344,11 @@ void BLAS_zhemm_c_z_testgen(int norm, enum blas_order_type order,
        Note that Re(A) is a symmetric matrix. */
     BLAS_dsymm_s_d_testgen
       (norm, order, uplo, side, m, n, 0, alpha_i, alpha_flag, beta_i,
-       beta_flag, a1, m_i, b0, ld, c1, ld, seed, r1_true_l, r1_true_t);
+       beta_flag, a1, m_i, b0, ld, c1, ld, seed, head_r1_true, tail_r1_true);
 
     BLAS_dskew_s_d_testgen
       (norm, order, uplo, side, m, n, alpha_i, 1, beta_i, 1, a2, m_i, b0, ld,
-       c2, ld, seed, r2_true_l, r2_true_t);
+       c2, ld, seed, head_r2_true, tail_r2_true);
 
 
     /* The case where B is a complex matrix.  Since B is generated
@@ -1466,17 +1435,17 @@ void BLAS_zhemm_c_z_testgen(int norm, enum blas_order_type order,
       for (j = 0, cij = ci, mij = mi; j < n_i;
 	   j++, cij += inccij, mij += incij) {
 
-	head_r_elem1 = r1_true_l[mij];
-	tail_r_elem1 = r1_true_t[mij];
+	head_r_elem1 = head_r1_true[mij];
+	tail_r_elem1 = tail_r1_true[mij];
 
-	head_r_elem2 = r2_true_l[mij];
-	tail_r_elem2 = r2_true_t[mij];
+	head_r_elem2 = head_r2_true[mij];
+	tail_r_elem2 = tail_r2_true[mij];
 
 	if (ab == 0) {
-	  r_true_l[cij] = -head_r_elem2;
-	  r_true_t[cij] = -tail_r_elem2;
-	  r_true_l[cij + 1] = head_r_elem1;
-	  r_true_t[cij + 1] = tail_r_elem1;
+	  head_r_true[cij] = -head_r_elem2;
+	  tail_r_true[cij] = -tail_r_elem2;
+	  head_r_true[cij + 1] = head_r_elem1;
+	  tail_r_true[cij + 1] = tail_r_elem1;
 	} else if (ab == 1) {
 	  {
 	    /* Compute double-double = double-double + double-double. */
@@ -1507,8 +1476,8 @@ void BLAS_zhemm_c_z_testgen(int norm, enum blas_order_type order,
 	  }
 
 	  /* Set the imaginary part to  R1 + R2 */
-	  r_true_t[cij + 1] = tail_r_elem;
-	  r_true_l[cij + 1] = head_r_elem;
+	  tail_r_true[cij + 1] = tail_r_elem;
+	  head_r_true[cij + 1] = head_r_elem;
 
 	  /* Set the real part to R1 - R2. */
 	  {
@@ -1543,8 +1512,8 @@ void BLAS_zhemm_c_z_testgen(int norm, enum blas_order_type order,
 	      tail_r_elem = t2 - (head_r_elem - t1);
 	    }
 	  }
-	  r_true_t[cij] = tail_r_elem;
-	  r_true_l[cij] = head_r_elem;
+	  tail_r_true[cij] = tail_r_elem;
+	  head_r_true[cij] = head_r_elem;
 	} else {
 
 	  /* Real part */
@@ -1571,8 +1540,8 @@ void BLAS_zhemm_c_z_testgen(int norm, enum blas_order_type order,
 	    head_r_elem = t1 + t2;
 	    tail_r_elem = t2 - (head_r_elem - t1);
 	  }
-	  r_true_l[cij] = head_r_elem;
-	  r_true_t[cij] = tail_r_elem;
+	  head_r_true[cij] = head_r_elem;
+	  tail_r_true[cij] = tail_r_elem;
 
 	  /* Imaginary Part */
 	  {
@@ -1598,8 +1567,8 @@ void BLAS_zhemm_c_z_testgen(int norm, enum blas_order_type order,
 	    head_r_elem = t1 + t2;
 	    tail_r_elem = t2 - (head_r_elem - t1);
 	  }
-	  r_true_l[cij + 1] = head_r_elem;
-	  r_true_t[cij + 1] = tail_r_elem;
+	  head_r_true[cij + 1] = head_r_elem;
+	  tail_r_true[cij + 1] = tail_r_elem;
 	}
       }
     }
@@ -1609,23 +1578,21 @@ void BLAS_zhemm_c_z_testgen(int norm, enum blas_order_type order,
     blas_free(c1);
     blas_free(c2);
     blas_free(b0);
-    blas_free(r1_true_l);
-    blas_free(r1_true_t);
-    blas_free(r2_true_l);
-    blas_free(r2_true_t);
+    blas_free(head_r1_true);
+    blas_free(tail_r1_true);
+    blas_free(head_r2_true);
+    blas_free(tail_r2_true);
 
   } else {
     /* random matrix */
     float a_elem[2];
     double b_elem[2];
     double c_elem[2];
-    double r_true_t_elem[2];
-    double r_true_l_elem[2];
+    double head_r_true_elem[2], tail_r_true_elem[2];
 
     /* Since mixed real/complex test generator for dot
        scales the vectors, we need to used the non-mixed
        version if B is real (since A is always complex). */
-
 
 
     if (alpha_flag == 0) {
@@ -1673,14 +1640,14 @@ void BLAS_zhemm_c_z_testgen(int norm, enum blas_order_type order,
 
 	BLAS_zdot_c_z_testgen(m_i, m_i, 0, norm, blas_no_conj,
 			      alpha, 1, beta, 1, a_vec, b_vec, seed,
-			      c_elem, r_true_l_elem, r_true_t_elem);
+			      c_elem, head_r_true_elem, tail_r_true_elem);
 
 	c_i[cij] = c_elem[0];
 	c_i[cij + 1] = c_elem[1];
-	r_true_l[cij] = r_true_l_elem[0];
-	r_true_l[cij + 1] = r_true_l_elem[1];
-	r_true_t[cij] = r_true_t_elem[0];
-	r_true_t[cij + 1] = r_true_t_elem[1];
+	head_r_true[cij] = head_r_true_elem[0];
+	head_r_true[cij + 1] = head_r_true_elem[1];
+	tail_r_true[cij] = tail_r_true_elem[0];
+	tail_r_true[cij + 1] = tail_r_true_elem[1];
       }
     }
 
@@ -1697,7 +1664,7 @@ void BLAS_zhemm_z_c_testgen(int norm, enum blas_order_type order,
 			    int randomize, void *alpha, int alpha_flag,
 			    void *beta, int beta_flag, void *a, int lda,
 			    void *b, int ldb, void *c, int ldc, int *seed,
-			    double *r_true_l, double *r_true_t)
+			    double *head_r_true, double *tail_r_true)
 
 /*
  * Purpose
@@ -1767,10 +1734,10 @@ void BLAS_zhemm_z_c_testgen(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * r_true_l  (output) double *
+ * head_r_true  (output) double *
  *         the leading part of the truth in double-double.
  *
- * r_true_t  (output) double *
+ * tail_r_true  (output) double *
  *         the trailing part of the truth in double-double
  *
  */
@@ -1806,10 +1773,8 @@ void BLAS_zhemm_z_c_testgen(int norm, enum blas_order_type order,
   double *c2;
   float *b0;
 
-  double *r1_true_l;
-  double *r1_true_t;
-  double *r2_true_l;
-  double *r2_true_t;
+  double *head_r1_true, *tail_r1_true;
+  double *head_r2_true, *tail_r2_true;
 
   double head_r_elem1, tail_r_elem1;
   double head_r_elem2, tail_r_elem2;
@@ -1909,20 +1874,14 @@ void BLAS_zhemm_z_c_testgen(int norm, enum blas_order_type order,
     for (i = 0; i < m_i * n_i; ++i) {
       c1[i] = c2[i] = b0[i] = 0.0;
     }
-    r1_true_l = (double *) blas_malloc(m_i * n_i * sizeof(double));
-    if (m_i * n_i > 0 && r1_true_l == NULL) {
+    head_r1_true = (double *) blas_malloc(m_i * n_i * sizeof(double));
+    tail_r1_true = (double *) blas_malloc(m_i * n_i * sizeof(double));
+    if (m_i * n_i > 0 && (head_r1_true == NULL || tail_r1_true == NULL)) {
       BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     };
-    r1_true_t = (double *) blas_malloc(m_i * n_i * sizeof(double));
-    if (m_i * n_i > 0 && r1_true_t == NULL) {
-      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-    };
-    r2_true_l = (double *) blas_malloc(m_i * n_i * sizeof(double));
-    if (m_i * n_i > 0 && r2_true_l == NULL) {
-      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-    };
-    r2_true_t = (double *) blas_malloc(m_i * n_i * sizeof(double));
-    if (m_i * n_i > 0 && r2_true_t == NULL) {
+    head_r2_true = (double *) blas_malloc(m_i * n_i * sizeof(double));
+    tail_r2_true = (double *) blas_malloc(m_i * n_i * sizeof(double));
+    if (m_i * n_i > 0 && (head_r2_true == NULL || tail_r2_true == NULL)) {
       BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     };
 
@@ -1930,11 +1889,11 @@ void BLAS_zhemm_z_c_testgen(int norm, enum blas_order_type order,
        Note that Re(A) is a symmetric matrix. */
     BLAS_dsymm_d_s_testgen
       (norm, order, uplo, side, m, n, 0, alpha_i, alpha_flag, beta_i,
-       beta_flag, a1, m_i, b0, ld, c1, ld, seed, r1_true_l, r1_true_t);
+       beta_flag, a1, m_i, b0, ld, c1, ld, seed, head_r1_true, tail_r1_true);
 
     BLAS_dskew_d_s_testgen
       (norm, order, uplo, side, m, n, alpha_i, 1, beta_i, 1, a2, m_i, b0, ld,
-       c2, ld, seed, r2_true_l, r2_true_t);
+       c2, ld, seed, head_r2_true, tail_r2_true);
 
 
     /* The case where B is a complex matrix.  Since B is generated
@@ -2021,17 +1980,17 @@ void BLAS_zhemm_z_c_testgen(int norm, enum blas_order_type order,
       for (j = 0, cij = ci, mij = mi; j < n_i;
 	   j++, cij += inccij, mij += incij) {
 
-	head_r_elem1 = r1_true_l[mij];
-	tail_r_elem1 = r1_true_t[mij];
+	head_r_elem1 = head_r1_true[mij];
+	tail_r_elem1 = tail_r1_true[mij];
 
-	head_r_elem2 = r2_true_l[mij];
-	tail_r_elem2 = r2_true_t[mij];
+	head_r_elem2 = head_r2_true[mij];
+	tail_r_elem2 = tail_r2_true[mij];
 
 	if (ab == 0) {
-	  r_true_l[cij] = -head_r_elem2;
-	  r_true_t[cij] = -tail_r_elem2;
-	  r_true_l[cij + 1] = head_r_elem1;
-	  r_true_t[cij + 1] = tail_r_elem1;
+	  head_r_true[cij] = -head_r_elem2;
+	  tail_r_true[cij] = -tail_r_elem2;
+	  head_r_true[cij + 1] = head_r_elem1;
+	  tail_r_true[cij + 1] = tail_r_elem1;
 	} else if (ab == 1) {
 	  {
 	    /* Compute double-double = double-double + double-double. */
@@ -2062,8 +2021,8 @@ void BLAS_zhemm_z_c_testgen(int norm, enum blas_order_type order,
 	  }
 
 	  /* Set the imaginary part to  R1 + R2 */
-	  r_true_t[cij + 1] = tail_r_elem;
-	  r_true_l[cij + 1] = head_r_elem;
+	  tail_r_true[cij + 1] = tail_r_elem;
+	  head_r_true[cij + 1] = head_r_elem;
 
 	  /* Set the real part to R1 - R2. */
 	  {
@@ -2098,8 +2057,8 @@ void BLAS_zhemm_z_c_testgen(int norm, enum blas_order_type order,
 	      tail_r_elem = t2 - (head_r_elem - t1);
 	    }
 	  }
-	  r_true_t[cij] = tail_r_elem;
-	  r_true_l[cij] = head_r_elem;
+	  tail_r_true[cij] = tail_r_elem;
+	  head_r_true[cij] = head_r_elem;
 	} else {
 
 	  /* Real part */
@@ -2126,8 +2085,8 @@ void BLAS_zhemm_z_c_testgen(int norm, enum blas_order_type order,
 	    head_r_elem = t1 + t2;
 	    tail_r_elem = t2 - (head_r_elem - t1);
 	  }
-	  r_true_l[cij] = head_r_elem;
-	  r_true_t[cij] = tail_r_elem;
+	  head_r_true[cij] = head_r_elem;
+	  tail_r_true[cij] = tail_r_elem;
 
 	  /* Imaginary Part */
 	  {
@@ -2153,8 +2112,8 @@ void BLAS_zhemm_z_c_testgen(int norm, enum blas_order_type order,
 	    head_r_elem = t1 + t2;
 	    tail_r_elem = t2 - (head_r_elem - t1);
 	  }
-	  r_true_l[cij + 1] = head_r_elem;
-	  r_true_t[cij + 1] = tail_r_elem;
+	  head_r_true[cij + 1] = head_r_elem;
+	  tail_r_true[cij + 1] = tail_r_elem;
 	}
       }
     }
@@ -2164,23 +2123,21 @@ void BLAS_zhemm_z_c_testgen(int norm, enum blas_order_type order,
     blas_free(c1);
     blas_free(c2);
     blas_free(b0);
-    blas_free(r1_true_l);
-    blas_free(r1_true_t);
-    blas_free(r2_true_l);
-    blas_free(r2_true_t);
+    blas_free(head_r1_true);
+    blas_free(tail_r1_true);
+    blas_free(head_r2_true);
+    blas_free(tail_r2_true);
 
   } else {
     /* random matrix */
     double a_elem[2];
     float b_elem[2];
     double c_elem[2];
-    double r_true_t_elem[2];
-    double r_true_l_elem[2];
+    double head_r_true_elem[2], tail_r_true_elem[2];
 
     /* Since mixed real/complex test generator for dot
        scales the vectors, we need to used the non-mixed
        version if B is real (since A is always complex). */
-
 
 
     if (alpha_flag == 0) {
@@ -2228,14 +2185,14 @@ void BLAS_zhemm_z_c_testgen(int norm, enum blas_order_type order,
 
 	BLAS_zdot_z_c_testgen(m_i, m_i, 0, norm, blas_no_conj,
 			      alpha, 1, beta, 1, a_vec, b_vec, seed,
-			      c_elem, r_true_l_elem, r_true_t_elem);
+			      c_elem, head_r_true_elem, tail_r_true_elem);
 
 	c_i[cij] = c_elem[0];
 	c_i[cij + 1] = c_elem[1];
-	r_true_l[cij] = r_true_l_elem[0];
-	r_true_l[cij + 1] = r_true_l_elem[1];
-	r_true_t[cij] = r_true_t_elem[0];
-	r_true_t[cij + 1] = r_true_t_elem[1];
+	head_r_true[cij] = head_r_true_elem[0];
+	head_r_true[cij + 1] = head_r_true_elem[1];
+	tail_r_true[cij] = tail_r_true_elem[0];
+	tail_r_true[cij + 1] = tail_r_true_elem[1];
       }
     }
 
@@ -2252,7 +2209,7 @@ void BLAS_zhemm_c_c_testgen(int norm, enum blas_order_type order,
 			    int randomize, void *alpha, int alpha_flag,
 			    void *beta, int beta_flag, void *a, int lda,
 			    void *b, int ldb, void *c, int ldc, int *seed,
-			    double *r_true_l, double *r_true_t)
+			    double *head_r_true, double *tail_r_true)
 
 /*
  * Purpose
@@ -2322,10 +2279,10 @@ void BLAS_zhemm_c_c_testgen(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * r_true_l  (output) double *
+ * head_r_true  (output) double *
  *         the leading part of the truth in double-double.
  *
- * r_true_t  (output) double *
+ * tail_r_true  (output) double *
  *         the trailing part of the truth in double-double
  *
  */
@@ -2361,10 +2318,8 @@ void BLAS_zhemm_c_c_testgen(int norm, enum blas_order_type order,
   double *c2;
   float *b0;
 
-  double *r1_true_l;
-  double *r1_true_t;
-  double *r2_true_l;
-  double *r2_true_t;
+  double *head_r1_true, *tail_r1_true;
+  double *head_r2_true, *tail_r2_true;
 
   double head_r_elem1, tail_r_elem1;
   double head_r_elem2, tail_r_elem2;
@@ -2464,20 +2419,14 @@ void BLAS_zhemm_c_c_testgen(int norm, enum blas_order_type order,
     for (i = 0; i < m_i * n_i; ++i) {
       c1[i] = c2[i] = b0[i] = 0.0;
     }
-    r1_true_l = (double *) blas_malloc(m_i * n_i * sizeof(double));
-    if (m_i * n_i > 0 && r1_true_l == NULL) {
+    head_r1_true = (double *) blas_malloc(m_i * n_i * sizeof(double));
+    tail_r1_true = (double *) blas_malloc(m_i * n_i * sizeof(double));
+    if (m_i * n_i > 0 && (head_r1_true == NULL || tail_r1_true == NULL)) {
       BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     };
-    r1_true_t = (double *) blas_malloc(m_i * n_i * sizeof(double));
-    if (m_i * n_i > 0 && r1_true_t == NULL) {
-      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-    };
-    r2_true_l = (double *) blas_malloc(m_i * n_i * sizeof(double));
-    if (m_i * n_i > 0 && r2_true_l == NULL) {
-      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-    };
-    r2_true_t = (double *) blas_malloc(m_i * n_i * sizeof(double));
-    if (m_i * n_i > 0 && r2_true_t == NULL) {
+    head_r2_true = (double *) blas_malloc(m_i * n_i * sizeof(double));
+    tail_r2_true = (double *) blas_malloc(m_i * n_i * sizeof(double));
+    if (m_i * n_i > 0 && (head_r2_true == NULL || tail_r2_true == NULL)) {
       BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     };
 
@@ -2485,11 +2434,11 @@ void BLAS_zhemm_c_c_testgen(int norm, enum blas_order_type order,
        Note that Re(A) is a symmetric matrix. */
     BLAS_dsymm_s_s_testgen
       (norm, order, uplo, side, m, n, 0, alpha_i, alpha_flag, beta_i,
-       beta_flag, a1, m_i, b0, ld, c1, ld, seed, r1_true_l, r1_true_t);
+       beta_flag, a1, m_i, b0, ld, c1, ld, seed, head_r1_true, tail_r1_true);
 
     BLAS_dskew_s_s_testgen
       (norm, order, uplo, side, m, n, alpha_i, 1, beta_i, 1, a2, m_i, b0, ld,
-       c2, ld, seed, r2_true_l, r2_true_t);
+       c2, ld, seed, head_r2_true, tail_r2_true);
 
 
     /* The case where B is a complex matrix.  Since B is generated
@@ -2576,17 +2525,17 @@ void BLAS_zhemm_c_c_testgen(int norm, enum blas_order_type order,
       for (j = 0, cij = ci, mij = mi; j < n_i;
 	   j++, cij += inccij, mij += incij) {
 
-	head_r_elem1 = r1_true_l[mij];
-	tail_r_elem1 = r1_true_t[mij];
+	head_r_elem1 = head_r1_true[mij];
+	tail_r_elem1 = tail_r1_true[mij];
 
-	head_r_elem2 = r2_true_l[mij];
-	tail_r_elem2 = r2_true_t[mij];
+	head_r_elem2 = head_r2_true[mij];
+	tail_r_elem2 = tail_r2_true[mij];
 
 	if (ab == 0) {
-	  r_true_l[cij] = -head_r_elem2;
-	  r_true_t[cij] = -tail_r_elem2;
-	  r_true_l[cij + 1] = head_r_elem1;
-	  r_true_t[cij + 1] = tail_r_elem1;
+	  head_r_true[cij] = -head_r_elem2;
+	  tail_r_true[cij] = -tail_r_elem2;
+	  head_r_true[cij + 1] = head_r_elem1;
+	  tail_r_true[cij + 1] = tail_r_elem1;
 	} else if (ab == 1) {
 	  {
 	    /* Compute double-double = double-double + double-double. */
@@ -2617,8 +2566,8 @@ void BLAS_zhemm_c_c_testgen(int norm, enum blas_order_type order,
 	  }
 
 	  /* Set the imaginary part to  R1 + R2 */
-	  r_true_t[cij + 1] = tail_r_elem;
-	  r_true_l[cij + 1] = head_r_elem;
+	  tail_r_true[cij + 1] = tail_r_elem;
+	  head_r_true[cij + 1] = head_r_elem;
 
 	  /* Set the real part to R1 - R2. */
 	  {
@@ -2653,8 +2602,8 @@ void BLAS_zhemm_c_c_testgen(int norm, enum blas_order_type order,
 	      tail_r_elem = t2 - (head_r_elem - t1);
 	    }
 	  }
-	  r_true_t[cij] = tail_r_elem;
-	  r_true_l[cij] = head_r_elem;
+	  tail_r_true[cij] = tail_r_elem;
+	  head_r_true[cij] = head_r_elem;
 	} else {
 
 	  /* Real part */
@@ -2681,8 +2630,8 @@ void BLAS_zhemm_c_c_testgen(int norm, enum blas_order_type order,
 	    head_r_elem = t1 + t2;
 	    tail_r_elem = t2 - (head_r_elem - t1);
 	  }
-	  r_true_l[cij] = head_r_elem;
-	  r_true_t[cij] = tail_r_elem;
+	  head_r_true[cij] = head_r_elem;
+	  tail_r_true[cij] = tail_r_elem;
 
 	  /* Imaginary Part */
 	  {
@@ -2708,8 +2657,8 @@ void BLAS_zhemm_c_c_testgen(int norm, enum blas_order_type order,
 	    head_r_elem = t1 + t2;
 	    tail_r_elem = t2 - (head_r_elem - t1);
 	  }
-	  r_true_l[cij + 1] = head_r_elem;
-	  r_true_t[cij + 1] = tail_r_elem;
+	  head_r_true[cij + 1] = head_r_elem;
+	  tail_r_true[cij + 1] = tail_r_elem;
 	}
       }
     }
@@ -2719,23 +2668,21 @@ void BLAS_zhemm_c_c_testgen(int norm, enum blas_order_type order,
     blas_free(c1);
     blas_free(c2);
     blas_free(b0);
-    blas_free(r1_true_l);
-    blas_free(r1_true_t);
-    blas_free(r2_true_l);
-    blas_free(r2_true_t);
+    blas_free(head_r1_true);
+    blas_free(tail_r1_true);
+    blas_free(head_r2_true);
+    blas_free(tail_r2_true);
 
   } else {
     /* random matrix */
     float a_elem[2];
     float b_elem[2];
     double c_elem[2];
-    double r_true_t_elem[2];
-    double r_true_l_elem[2];
+    double head_r_true_elem[2], tail_r_true_elem[2];
 
     /* Since mixed real/complex test generator for dot
        scales the vectors, we need to used the non-mixed
        version if B is real (since A is always complex). */
-
 
 
     if (alpha_flag == 0) {
@@ -2783,14 +2730,14 @@ void BLAS_zhemm_c_c_testgen(int norm, enum blas_order_type order,
 
 	BLAS_zdot_c_c_testgen(m_i, m_i, 0, norm, blas_no_conj,
 			      alpha, 1, beta, 1, a_vec, b_vec, seed,
-			      c_elem, r_true_l_elem, r_true_t_elem);
+			      c_elem, head_r_true_elem, tail_r_true_elem);
 
 	c_i[cij] = c_elem[0];
 	c_i[cij + 1] = c_elem[1];
-	r_true_l[cij] = r_true_l_elem[0];
-	r_true_l[cij + 1] = r_true_l_elem[1];
-	r_true_t[cij] = r_true_t_elem[0];
-	r_true_t[cij + 1] = r_true_t_elem[1];
+	head_r_true[cij] = head_r_true_elem[0];
+	head_r_true[cij + 1] = head_r_true_elem[1];
+	tail_r_true[cij] = tail_r_true_elem[0];
+	tail_r_true[cij + 1] = tail_r_true_elem[1];
       }
     }
 
@@ -2808,7 +2755,7 @@ void BLAS_zhemm_z_d_testgen(int norm, enum blas_order_type order,
 			    int randomize, void *alpha, int alpha_flag,
 			    void *beta, int beta_flag, void *a, int lda,
 			    double *b, int ldb, void *c, int ldc, int *seed,
-			    double *r_true_l, double *r_true_t)
+			    double *head_r_true, double *tail_r_true)
 
 /*
  * Purpose
@@ -2878,10 +2825,10 @@ void BLAS_zhemm_z_d_testgen(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * r_true_l  (output) double *
+ * head_r_true  (output) double *
  *         the leading part of the truth in double-double.
  *
- * r_true_t  (output) double *
+ * tail_r_true  (output) double *
  *         the trailing part of the truth in double-double
  *
  */
@@ -2917,10 +2864,8 @@ void BLAS_zhemm_z_d_testgen(int norm, enum blas_order_type order,
   double *c2;
   double *b0;
 
-  double *r1_true_l;
-  double *r1_true_t;
-  double *r2_true_l;
-  double *r2_true_t;
+  double *head_r1_true, *tail_r1_true;
+  double *head_r2_true, *tail_r2_true;
 
   double head_r_elem1, tail_r_elem1;
   double head_r_elem2, tail_r_elem2;
@@ -3019,20 +2964,14 @@ void BLAS_zhemm_z_d_testgen(int norm, enum blas_order_type order,
     for (i = 0; i < m_i * n_i; ++i) {
       c1[i] = c2[i] = b0[i] = 0.0;
     }
-    r1_true_l = (double *) blas_malloc(m_i * n_i * sizeof(double));
-    if (m_i * n_i > 0 && r1_true_l == NULL) {
+    head_r1_true = (double *) blas_malloc(m_i * n_i * sizeof(double));
+    tail_r1_true = (double *) blas_malloc(m_i * n_i * sizeof(double));
+    if (m_i * n_i > 0 && (head_r1_true == NULL || tail_r1_true == NULL)) {
       BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     };
-    r1_true_t = (double *) blas_malloc(m_i * n_i * sizeof(double));
-    if (m_i * n_i > 0 && r1_true_t == NULL) {
-      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-    };
-    r2_true_l = (double *) blas_malloc(m_i * n_i * sizeof(double));
-    if (m_i * n_i > 0 && r2_true_l == NULL) {
-      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-    };
-    r2_true_t = (double *) blas_malloc(m_i * n_i * sizeof(double));
-    if (m_i * n_i > 0 && r2_true_t == NULL) {
+    head_r2_true = (double *) blas_malloc(m_i * n_i * sizeof(double));
+    tail_r2_true = (double *) blas_malloc(m_i * n_i * sizeof(double));
+    if (m_i * n_i > 0 && (head_r2_true == NULL || tail_r2_true == NULL)) {
       BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     };
 
@@ -3040,11 +2979,11 @@ void BLAS_zhemm_z_d_testgen(int norm, enum blas_order_type order,
        Note that Re(A) is a symmetric matrix. */
     BLAS_dsymm_testgen
       (norm, order, uplo, side, m, n, 0, alpha_i, alpha_flag, beta_i,
-       beta_flag, a1, m_i, b0, ld, c1, ld, seed, r1_true_l, r1_true_t);
+       beta_flag, a1, m_i, b0, ld, c1, ld, seed, head_r1_true, tail_r1_true);
 
     BLAS_dskew_testgen
       (norm, order, uplo, side, m, n, alpha_i, 1, beta_i, 1, a2, m_i, b0, ld,
-       c2, ld, seed, r2_true_l, r2_true_t);
+       c2, ld, seed, head_r2_true, tail_r2_true);
 
 
     /* The case where B is a real matrix. 
@@ -3122,21 +3061,21 @@ void BLAS_zhemm_z_d_testgen(int norm, enum blas_order_type order,
 	   j++, cij += inccij, mij += incij) {
 
 	if (ab == 0 || ab == 1) {
-	  r_true_l[cij] = r1_true_l[mij];
-	  r_true_t[cij] = r1_true_t[mij];
-	  r_true_l[cij + 1] = r2_true_l[mij];
-	  r_true_t[cij + 1] = r2_true_t[mij];
+	  head_r_true[cij] = head_r1_true[mij];
+	  tail_r_true[cij] = tail_r1_true[mij];
+	  head_r_true[cij + 1] = head_r2_true[mij];
+	  tail_r_true[cij + 1] = tail_r2_true[mij];
 	} else if (ab == 2) {
-	  r_true_l[cij] = -r2_true_l[mij];
-	  r_true_t[cij] = -r2_true_t[mij];
-	  r_true_l[cij + 1] = r1_true_l[mij];
-	  r_true_t[cij + 1] = r1_true_t[mij];
+	  head_r_true[cij] = -head_r2_true[mij];
+	  tail_r_true[cij] = -tail_r2_true[mij];
+	  head_r_true[cij + 1] = head_r1_true[mij];
+	  tail_r_true[cij + 1] = tail_r1_true[mij];
 	} else {
-	  head_r_elem1 = r1_true_l[mij];
-	  tail_r_elem1 = r1_true_t[mij];
+	  head_r_elem1 = head_r1_true[mij];
+	  tail_r_elem1 = tail_r1_true[mij];
 
-	  head_r_elem2 = r2_true_l[mij];
-	  tail_r_elem2 = r2_true_t[mij];
+	  head_r_elem2 = head_r2_true[mij];
+	  tail_r_elem2 = tail_r2_true[mij];
 
 	  {
 	    /* Compute double-double = double-double + double-double. */
@@ -3167,8 +3106,8 @@ void BLAS_zhemm_z_d_testgen(int norm, enum blas_order_type order,
 	  }
 
 	  /* Set the imaginary part to  R1 + R2 */
-	  r_true_t[cij + 1] = tail_r_elem;
-	  r_true_l[cij + 1] = head_r_elem;
+	  tail_r_true[cij + 1] = tail_r_elem;
+	  head_r_true[cij + 1] = head_r_elem;
 
 	  /* Set the real part to R1 - R2. */
 	  {
@@ -3203,8 +3142,8 @@ void BLAS_zhemm_z_d_testgen(int norm, enum blas_order_type order,
 	      tail_r_elem = t2 - (head_r_elem - t1);
 	    }
 	  }
-	  r_true_t[cij] = tail_r_elem;
-	  r_true_l[cij] = head_r_elem;
+	  tail_r_true[cij] = tail_r_elem;
+	  head_r_true[cij] = head_r_elem;
 	}
 
       }
@@ -3215,23 +3154,21 @@ void BLAS_zhemm_z_d_testgen(int norm, enum blas_order_type order,
     blas_free(c1);
     blas_free(c2);
     blas_free(b0);
-    blas_free(r1_true_l);
-    blas_free(r1_true_t);
-    blas_free(r2_true_l);
-    blas_free(r2_true_t);
+    blas_free(head_r1_true);
+    blas_free(tail_r1_true);
+    blas_free(head_r2_true);
+    blas_free(tail_r2_true);
 
   } else {
     /* random matrix */
     double a_elem[2];
     double b_elem;
     double c_elem[2];
-    double r_true_t_elem[2];
-    double r_true_l_elem[2];
+    double head_r_true_elem[2], tail_r_true_elem[2];
 
     /* Since mixed real/complex test generator for dot
        scales the vectors, we need to used the non-mixed
        version if B is real (since A is always complex). */
-
     double *bb_vec;
     bb_vec = (double *) blas_malloc(m_i * sizeof(double) * 2);
     if (m_i > 0 && bb_vec == NULL) {
@@ -3288,14 +3225,14 @@ void BLAS_zhemm_z_d_testgen(int norm, enum blas_order_type order,
 	}
 	BLAS_zdot_testgen(m_i, m_i, 0, norm, blas_no_conj,
 			  alpha, 1, beta, 1, a_vec, bb_vec, seed,
-			  c_elem, r_true_l_elem, r_true_t_elem);
+			  c_elem, head_r_true_elem, tail_r_true_elem);
 
 	c_i[cij] = c_elem[0];
 	c_i[cij + 1] = c_elem[1];
-	r_true_l[cij] = r_true_l_elem[0];
-	r_true_l[cij + 1] = r_true_l_elem[1];
-	r_true_t[cij] = r_true_t_elem[0];
-	r_true_t[cij + 1] = r_true_t_elem[1];
+	head_r_true[cij] = head_r_true_elem[0];
+	head_r_true[cij + 1] = head_r_true_elem[1];
+	tail_r_true[cij] = tail_r_true_elem[0];
+	tail_r_true[cij + 1] = tail_r_true_elem[1];
       }
     }
 
@@ -3312,7 +3249,7 @@ void BLAS_chemm_c_s_testgen(int norm, enum blas_order_type order,
 			    int randomize, void *alpha, int alpha_flag,
 			    void *beta, int beta_flag, void *a, int lda,
 			    float *b, int ldb, void *c, int ldc, int *seed,
-			    double *r_true_l, double *r_true_t)
+			    double *head_r_true, double *tail_r_true)
 
 /*
  * Purpose
@@ -3382,10 +3319,10 @@ void BLAS_chemm_c_s_testgen(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * r_true_l  (output) double *
+ * head_r_true  (output) double *
  *         the leading part of the truth in double-double.
  *
- * r_true_t  (output) double *
+ * tail_r_true  (output) double *
  *         the trailing part of the truth in double-double
  *
  */
@@ -3421,10 +3358,8 @@ void BLAS_chemm_c_s_testgen(int norm, enum blas_order_type order,
   float *c2;
   float *b0;
 
-  double *r1_true_l;
-  double *r1_true_t;
-  double *r2_true_l;
-  double *r2_true_t;
+  double *head_r1_true, *tail_r1_true;
+  double *head_r2_true, *tail_r2_true;
 
   double head_r_elem1, tail_r_elem1;
   double head_r_elem2, tail_r_elem2;
@@ -3523,20 +3458,14 @@ void BLAS_chemm_c_s_testgen(int norm, enum blas_order_type order,
     for (i = 0; i < m_i * n_i; ++i) {
       c1[i] = c2[i] = b0[i] = 0.0;
     }
-    r1_true_l = (double *) blas_malloc(m_i * n_i * sizeof(double));
-    if (m_i * n_i > 0 && r1_true_l == NULL) {
+    head_r1_true = (double *) blas_malloc(m_i * n_i * sizeof(double));
+    tail_r1_true = (double *) blas_malloc(m_i * n_i * sizeof(double));
+    if (m_i * n_i > 0 && (head_r1_true == NULL || tail_r1_true == NULL)) {
       BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     };
-    r1_true_t = (double *) blas_malloc(m_i * n_i * sizeof(double));
-    if (m_i * n_i > 0 && r1_true_t == NULL) {
-      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-    };
-    r2_true_l = (double *) blas_malloc(m_i * n_i * sizeof(double));
-    if (m_i * n_i > 0 && r2_true_l == NULL) {
-      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-    };
-    r2_true_t = (double *) blas_malloc(m_i * n_i * sizeof(double));
-    if (m_i * n_i > 0 && r2_true_t == NULL) {
+    head_r2_true = (double *) blas_malloc(m_i * n_i * sizeof(double));
+    tail_r2_true = (double *) blas_malloc(m_i * n_i * sizeof(double));
+    if (m_i * n_i > 0 && (head_r2_true == NULL || tail_r2_true == NULL)) {
       BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
     };
 
@@ -3544,11 +3473,11 @@ void BLAS_chemm_c_s_testgen(int norm, enum blas_order_type order,
        Note that Re(A) is a symmetric matrix. */
     BLAS_ssymm_testgen
       (norm, order, uplo, side, m, n, 0, alpha_i, alpha_flag, beta_i,
-       beta_flag, a1, m_i, b0, ld, c1, ld, seed, r1_true_l, r1_true_t);
+       beta_flag, a1, m_i, b0, ld, c1, ld, seed, head_r1_true, tail_r1_true);
 
     BLAS_sskew_testgen
       (norm, order, uplo, side, m, n, alpha_i, 1, beta_i, 1, a2, m_i, b0, ld,
-       c2, ld, seed, r2_true_l, r2_true_t);
+       c2, ld, seed, head_r2_true, tail_r2_true);
 
 
     /* The case where B is a real matrix. 
@@ -3626,21 +3555,21 @@ void BLAS_chemm_c_s_testgen(int norm, enum blas_order_type order,
 	   j++, cij += inccij, mij += incij) {
 
 	if (ab == 0 || ab == 1) {
-	  r_true_l[cij] = r1_true_l[mij];
-	  r_true_t[cij] = r1_true_t[mij];
-	  r_true_l[cij + 1] = r2_true_l[mij];
-	  r_true_t[cij + 1] = r2_true_t[mij];
+	  head_r_true[cij] = head_r1_true[mij];
+	  tail_r_true[cij] = tail_r1_true[mij];
+	  head_r_true[cij + 1] = head_r2_true[mij];
+	  tail_r_true[cij + 1] = tail_r2_true[mij];
 	} else if (ab == 2) {
-	  r_true_l[cij] = -r2_true_l[mij];
-	  r_true_t[cij] = -r2_true_t[mij];
-	  r_true_l[cij + 1] = r1_true_l[mij];
-	  r_true_t[cij + 1] = r1_true_t[mij];
+	  head_r_true[cij] = -head_r2_true[mij];
+	  tail_r_true[cij] = -tail_r2_true[mij];
+	  head_r_true[cij + 1] = head_r1_true[mij];
+	  tail_r_true[cij + 1] = tail_r1_true[mij];
 	} else {
-	  head_r_elem1 = r1_true_l[mij];
-	  tail_r_elem1 = r1_true_t[mij];
+	  head_r_elem1 = head_r1_true[mij];
+	  tail_r_elem1 = tail_r1_true[mij];
 
-	  head_r_elem2 = r2_true_l[mij];
-	  tail_r_elem2 = r2_true_t[mij];
+	  head_r_elem2 = head_r2_true[mij];
+	  tail_r_elem2 = tail_r2_true[mij];
 
 	  {
 	    /* Compute double-double = double-double + double-double. */
@@ -3671,8 +3600,8 @@ void BLAS_chemm_c_s_testgen(int norm, enum blas_order_type order,
 	  }
 
 	  /* Set the imaginary part to  R1 + R2 */
-	  r_true_t[cij + 1] = tail_r_elem;
-	  r_true_l[cij + 1] = head_r_elem;
+	  tail_r_true[cij + 1] = tail_r_elem;
+	  head_r_true[cij + 1] = head_r_elem;
 
 	  /* Set the real part to R1 - R2. */
 	  {
@@ -3707,8 +3636,8 @@ void BLAS_chemm_c_s_testgen(int norm, enum blas_order_type order,
 	      tail_r_elem = t2 - (head_r_elem - t1);
 	    }
 	  }
-	  r_true_t[cij] = tail_r_elem;
-	  r_true_l[cij] = head_r_elem;
+	  tail_r_true[cij] = tail_r_elem;
+	  head_r_true[cij] = head_r_elem;
 	}
 
       }
@@ -3719,23 +3648,21 @@ void BLAS_chemm_c_s_testgen(int norm, enum blas_order_type order,
     blas_free(c1);
     blas_free(c2);
     blas_free(b0);
-    blas_free(r1_true_l);
-    blas_free(r1_true_t);
-    blas_free(r2_true_l);
-    blas_free(r2_true_t);
+    blas_free(head_r1_true);
+    blas_free(tail_r1_true);
+    blas_free(head_r2_true);
+    blas_free(tail_r2_true);
 
   } else {
     /* random matrix */
     float a_elem[2];
     float b_elem;
     float c_elem[2];
-    double r_true_t_elem[2];
-    double r_true_l_elem[2];
+    double head_r_true_elem[2], tail_r_true_elem[2];
 
     /* Since mixed real/complex test generator for dot
        scales the vectors, we need to used the non-mixed
        version if B is real (since A is always complex). */
-
     float *bb_vec;
     bb_vec = (float *) blas_malloc(m_i * sizeof(float) * 2);
     if (m_i > 0 && bb_vec == NULL) {
@@ -3792,14 +3719,14 @@ void BLAS_chemm_c_s_testgen(int norm, enum blas_order_type order,
 	}
 	BLAS_cdot_testgen(m_i, m_i, 0, norm, blas_no_conj,
 			  alpha, 1, beta, 1, a_vec, bb_vec, seed,
-			  c_elem, r_true_l_elem, r_true_t_elem);
+			  c_elem, head_r_true_elem, tail_r_true_elem);
 
 	c_i[cij] = c_elem[0];
 	c_i[cij + 1] = c_elem[1];
-	r_true_l[cij] = r_true_l_elem[0];
-	r_true_l[cij + 1] = r_true_l_elem[1];
-	r_true_t[cij] = r_true_t_elem[0];
-	r_true_t[cij + 1] = r_true_t_elem[1];
+	head_r_true[cij] = head_r_true_elem[0];
+	head_r_true[cij + 1] = head_r_true_elem[1];
+	tail_r_true[cij] = tail_r_true_elem[0];
+	tail_r_true[cij + 1] = tail_r_true_elem[1];
       }
     }
 
@@ -3816,8 +3743,8 @@ void BLAS_sskew_testgen(int norm, enum blas_order_type order,
 			int m, int n,
 			float *alpha, int alpha_flag, float *beta,
 			int beta_flag, float *a, int lda, float *b, int ldb,
-			float *c, int ldc, int *seed, double *r_true_l,
-			double *r_true_t)
+			float *c, int ldc, int *seed, double *head_r_true,
+			double *tail_r_true)
 {
 
   int i, j;
@@ -3827,9 +3754,7 @@ void BLAS_sskew_testgen(int norm, enum blas_order_type order,
   int m_i, n_i;
 
   float c_elem;
-  double r_elem;
-  double r_true_t_elem;
-  double r_true_l_elem;
+  double head_r_true_elem, tail_r_true_elem;
 
   float *a_vec;
   float *b_vec;
@@ -3886,39 +3811,35 @@ void BLAS_sskew_testgen(int norm, enum blas_order_type order,
     BLAS_sdot_testgen(m_i, i, m_i - i, norm,
 		      blas_no_conj, alpha, 1,
 		      beta, 1, b_vec, a_vec, seed,
-		      &c_elem, &r_true_l_elem, &r_true_t_elem);
+		      &c_elem, &head_r_true_elem, &tail_r_true_elem);
 
     sskew_commit_row(order, uplo, side, m_i, a, lda, a_vec, i);
 
     c_i[cij] = c_elem;
-    r_true_l[cij] = r_true_l_elem;
-    r_true_t[cij] = r_true_t_elem;
+    head_r_true[cij] = head_r_true_elem;
+    tail_r_true[cij] = tail_r_true_elem;
   }
 
   /* Now fill in c and r_true */
 
   for (i = 0, ci = 0; i < m_i; i++, ci += incci) {
     for (j = 1, cij = ci + inccij; j < n_i; j++, cij += inccij) {
-      c_elem = c_i[ci];
-      c_i[cij] = c_elem;
-      r_elem = r_true_l[ci];
-      r_true_l[cij] = r_elem;
-      r_elem = r_true_t[ci];
-      r_true_t[cij] = r_elem;
+      c_i[cij] = c_i[ci];
+      head_r_true[cij] = head_r_true[ci];
+      tail_r_true[cij] = tail_r_true[ci];
     }
   }
 
   blas_free(a_vec);
   blas_free(b_vec);
-
 }
 void BLAS_dskew_testgen(int norm, enum blas_order_type order,
 			enum blas_uplo_type uplo, enum blas_side_type side,
 			int m, int n,
 			double *alpha, int alpha_flag, double *beta,
 			int beta_flag, double *a, int lda, double *b, int ldb,
-			double *c, int ldc, int *seed, double *r_true_l,
-			double *r_true_t)
+			double *c, int ldc, int *seed, double *head_r_true,
+			double *tail_r_true)
 {
 
   int i, j;
@@ -3928,9 +3849,7 @@ void BLAS_dskew_testgen(int norm, enum blas_order_type order,
   int m_i, n_i;
 
   double c_elem;
-  double r_elem;
-  double r_true_t_elem;
-  double r_true_l_elem;
+  double head_r_true_elem, tail_r_true_elem;
 
   double *a_vec;
   double *b_vec;
@@ -3987,31 +3906,27 @@ void BLAS_dskew_testgen(int norm, enum blas_order_type order,
     BLAS_ddot_testgen(m_i, i, m_i - i, norm,
 		      blas_no_conj, alpha, 1,
 		      beta, 1, b_vec, a_vec, seed,
-		      &c_elem, &r_true_l_elem, &r_true_t_elem);
+		      &c_elem, &head_r_true_elem, &tail_r_true_elem);
 
     dskew_commit_row(order, uplo, side, m_i, a, lda, a_vec, i);
 
     c_i[cij] = c_elem;
-    r_true_l[cij] = r_true_l_elem;
-    r_true_t[cij] = r_true_t_elem;
+    head_r_true[cij] = head_r_true_elem;
+    tail_r_true[cij] = tail_r_true_elem;
   }
 
   /* Now fill in c and r_true */
 
   for (i = 0, ci = 0; i < m_i; i++, ci += incci) {
     for (j = 1, cij = ci + inccij; j < n_i; j++, cij += inccij) {
-      c_elem = c_i[ci];
-      c_i[cij] = c_elem;
-      r_elem = r_true_l[ci];
-      r_true_l[cij] = r_elem;
-      r_elem = r_true_t[ci];
-      r_true_t[cij] = r_elem;
+      c_i[cij] = c_i[ci];
+      head_r_true[cij] = head_r_true[ci];
+      tail_r_true[cij] = tail_r_true[ci];
     }
   }
 
   blas_free(a_vec);
   blas_free(b_vec);
-
 }
 void BLAS_dskew_d_s_testgen(int norm, enum blas_order_type order,
 			    enum blas_uplo_type uplo,
@@ -4019,7 +3934,7 @@ void BLAS_dskew_d_s_testgen(int norm, enum blas_order_type order,
 			    double *alpha, int alpha_flag, double *beta,
 			    int beta_flag, double *a, int lda, float *b,
 			    int ldb, double *c, int ldc, int *seed,
-			    double *r_true_l, double *r_true_t)
+			    double *head_r_true, double *tail_r_true)
 {
 
   int i, j;
@@ -4029,9 +3944,7 @@ void BLAS_dskew_d_s_testgen(int norm, enum blas_order_type order,
   int m_i, n_i;
 
   double c_elem;
-  double r_elem;
-  double r_true_t_elem;
-  double r_true_l_elem;
+  double head_r_true_elem, tail_r_true_elem;
 
   double *a_vec;
   float *b_vec;
@@ -4088,31 +4001,27 @@ void BLAS_dskew_d_s_testgen(int norm, enum blas_order_type order,
     BLAS_ddot_s_d_testgen(m_i, i, m_i - i, norm,
 			  blas_no_conj, alpha, 1,
 			  beta, 1, b_vec, a_vec, seed,
-			  &c_elem, &r_true_l_elem, &r_true_t_elem);
+			  &c_elem, &head_r_true_elem, &tail_r_true_elem);
 
     dskew_commit_row(order, uplo, side, m_i, a, lda, a_vec, i);
 
     c_i[cij] = c_elem;
-    r_true_l[cij] = r_true_l_elem;
-    r_true_t[cij] = r_true_t_elem;
+    head_r_true[cij] = head_r_true_elem;
+    tail_r_true[cij] = tail_r_true_elem;
   }
 
   /* Now fill in c and r_true */
 
   for (i = 0, ci = 0; i < m_i; i++, ci += incci) {
     for (j = 1, cij = ci + inccij; j < n_i; j++, cij += inccij) {
-      c_elem = c_i[ci];
-      c_i[cij] = c_elem;
-      r_elem = r_true_l[ci];
-      r_true_l[cij] = r_elem;
-      r_elem = r_true_t[ci];
-      r_true_t[cij] = r_elem;
+      c_i[cij] = c_i[ci];
+      head_r_true[cij] = head_r_true[ci];
+      tail_r_true[cij] = tail_r_true[ci];
     }
   }
 
   blas_free(a_vec);
   blas_free(b_vec);
-
 }
 void BLAS_dskew_s_d_testgen(int norm, enum blas_order_type order,
 			    enum blas_uplo_type uplo,
@@ -4120,7 +4029,7 @@ void BLAS_dskew_s_d_testgen(int norm, enum blas_order_type order,
 			    double *alpha, int alpha_flag, double *beta,
 			    int beta_flag, float *a, int lda, double *b,
 			    int ldb, double *c, int ldc, int *seed,
-			    double *r_true_l, double *r_true_t)
+			    double *head_r_true, double *tail_r_true)
 {
 
   int i, j;
@@ -4130,9 +4039,7 @@ void BLAS_dskew_s_d_testgen(int norm, enum blas_order_type order,
   int m_i, n_i;
 
   double c_elem;
-  double r_elem;
-  double r_true_t_elem;
-  double r_true_l_elem;
+  double head_r_true_elem, tail_r_true_elem;
 
   float *a_vec;
   double *b_vec;
@@ -4189,31 +4096,27 @@ void BLAS_dskew_s_d_testgen(int norm, enum blas_order_type order,
     BLAS_ddot_d_s_testgen(m_i, i, m_i - i, norm,
 			  blas_no_conj, alpha, 1,
 			  beta, 1, b_vec, a_vec, seed,
-			  &c_elem, &r_true_l_elem, &r_true_t_elem);
+			  &c_elem, &head_r_true_elem, &tail_r_true_elem);
 
     sskew_commit_row(order, uplo, side, m_i, a, lda, a_vec, i);
 
     c_i[cij] = c_elem;
-    r_true_l[cij] = r_true_l_elem;
-    r_true_t[cij] = r_true_t_elem;
+    head_r_true[cij] = head_r_true_elem;
+    tail_r_true[cij] = tail_r_true_elem;
   }
 
   /* Now fill in c and r_true */
 
   for (i = 0, ci = 0; i < m_i; i++, ci += incci) {
     for (j = 1, cij = ci + inccij; j < n_i; j++, cij += inccij) {
-      c_elem = c_i[ci];
-      c_i[cij] = c_elem;
-      r_elem = r_true_l[ci];
-      r_true_l[cij] = r_elem;
-      r_elem = r_true_t[ci];
-      r_true_t[cij] = r_elem;
+      c_i[cij] = c_i[ci];
+      head_r_true[cij] = head_r_true[ci];
+      tail_r_true[cij] = tail_r_true[ci];
     }
   }
 
   blas_free(a_vec);
   blas_free(b_vec);
-
 }
 void BLAS_dskew_s_s_testgen(int norm, enum blas_order_type order,
 			    enum blas_uplo_type uplo,
@@ -4221,7 +4124,7 @@ void BLAS_dskew_s_s_testgen(int norm, enum blas_order_type order,
 			    double *alpha, int alpha_flag, double *beta,
 			    int beta_flag, float *a, int lda, float *b,
 			    int ldb, double *c, int ldc, int *seed,
-			    double *r_true_l, double *r_true_t)
+			    double *head_r_true, double *tail_r_true)
 {
 
   int i, j;
@@ -4231,9 +4134,7 @@ void BLAS_dskew_s_s_testgen(int norm, enum blas_order_type order,
   int m_i, n_i;
 
   double c_elem;
-  double r_elem;
-  double r_true_t_elem;
-  double r_true_l_elem;
+  double head_r_true_elem, tail_r_true_elem;
 
   float *a_vec;
   float *b_vec;
@@ -4290,29 +4191,25 @@ void BLAS_dskew_s_s_testgen(int norm, enum blas_order_type order,
     BLAS_ddot_s_s_testgen(m_i, i, m_i - i, norm,
 			  blas_no_conj, alpha, 1,
 			  beta, 1, b_vec, a_vec, seed,
-			  &c_elem, &r_true_l_elem, &r_true_t_elem);
+			  &c_elem, &head_r_true_elem, &tail_r_true_elem);
 
     sskew_commit_row(order, uplo, side, m_i, a, lda, a_vec, i);
 
     c_i[cij] = c_elem;
-    r_true_l[cij] = r_true_l_elem;
-    r_true_t[cij] = r_true_t_elem;
+    head_r_true[cij] = head_r_true_elem;
+    tail_r_true[cij] = tail_r_true_elem;
   }
 
   /* Now fill in c and r_true */
 
   for (i = 0, ci = 0; i < m_i; i++, ci += incci) {
     for (j = 1, cij = ci + inccij; j < n_i; j++, cij += inccij) {
-      c_elem = c_i[ci];
-      c_i[cij] = c_elem;
-      r_elem = r_true_l[ci];
-      r_true_l[cij] = r_elem;
-      r_elem = r_true_t[ci];
-      r_true_t[cij] = r_elem;
+      c_i[cij] = c_i[ci];
+      head_r_true[cij] = head_r_true[ci];
+      tail_r_true[cij] = tail_r_true[ci];
     }
   }
 
   blas_free(a_vec);
   blas_free(b_vec);
-
 }

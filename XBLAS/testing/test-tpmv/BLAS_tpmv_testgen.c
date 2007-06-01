@@ -209,7 +209,6 @@ void BLAS_stpmv_testgen(int norm, enum blas_order_type order,
   }
 
   blas_free(temp);
-
 }				/* end of BLAS_stpmv_testgen */
 
 void BLAS_dtpmv_testgen(int norm, enum blas_order_type order,
@@ -414,7 +413,6 @@ void BLAS_dtpmv_testgen(int norm, enum blas_order_type order,
   }
 
   blas_free(temp);
-
 }				/* end of BLAS_dtpmv_testgen */
 
 void BLAS_ctpmv_testgen(int norm, enum blas_order_type order,
@@ -640,7 +638,6 @@ void BLAS_ctpmv_testgen(int norm, enum blas_order_type order,
   }
 
   blas_free(temp);
-
 }				/* end of BLAS_ctpmv_testgen */
 
 void BLAS_ztpmv_testgen(int norm, enum blas_order_type order,
@@ -866,7 +863,6 @@ void BLAS_ztpmv_testgen(int norm, enum blas_order_type order,
   }
 
   blas_free(temp);
-
 }				/* end of BLAS_ztpmv_testgen */
 
 void BLAS_dtpmv_s_testgen(int norm, enum blas_order_type order,
@@ -1072,7 +1068,6 @@ void BLAS_dtpmv_s_testgen(int norm, enum blas_order_type order,
   }
 
   blas_free(temp);
-
 }				/* end of BLAS_dtpmv_s_testgen */
 
 void BLAS_ztpmv_c_testgen(int norm, enum blas_order_type order,
@@ -1300,7 +1295,6 @@ void BLAS_ztpmv_c_testgen(int norm, enum blas_order_type order,
   }
 
   blas_free(temp);
-
 }				/* end of BLAS_ztpmv_c_testgen */
 
 void BLAS_ctpmv_s_testgen(int norm, enum blas_order_type order,
@@ -1520,7 +1514,6 @@ void BLAS_ctpmv_s_testgen(int norm, enum blas_order_type order,
   }
 
   blas_free(temp);
-
 }				/* end of BLAS_ctpmv_s_testgen */
 
 void BLAS_ztpmv_d_testgen(int norm, enum blas_order_type order,
@@ -1740,5 +1733,4 @@ void BLAS_ztpmv_d_testgen(int norm, enum blas_order_type order,
   }
 
   blas_free(temp);
-
 }				/* end of BLAS_ztpmv_d_testgen */

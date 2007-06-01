@@ -32,7 +32,8 @@ void BLAS_sge_sum_mv_testgen(int norm, enum blas_order_type order,
 			     int beta_flag, float *a, int lda, float *b,
 			     int ldb, float *x, int incx,
 			     float *alpha_use_ptr, float *a_use, float *b_use,
-			     int *seed, double *r_true_l, double *r_true_t)
+			     int *seed, double *head_r_true,
+			     double *tail_r_true)
 
 /*
  * Purpose
@@ -108,10 +109,10 @@ void BLAS_sge_sum_mv_testgen(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * double  (output) *r_true_l
+ * double  (output) *head_r_true
  *         the leading part of the truth in double-double.
  *
- * double  (output) *r_true_t
+ * double  (output) *tail_r_true
  *         the trailing part of the truth in double-double
  *
  *
@@ -166,15 +167,13 @@ void BLAS_sge_sum_mv_testgen(int norm, enum blas_order_type order,
   float beta_zero_fake;
   float a_elem;
   float x_elem;
-  double r_true_t_elem;
-  double r_true_l_elem;
+  double head_r_true_elem, tail_r_true_elem;
   float multiplier;
   float divider;
   float alpha_use;
 
   float *a_vec;
   float *x_vec;
-
 
   float *alpha_use_ptr_i = alpha_use_ptr;
   float *alpha_i = alpha;
@@ -194,8 +193,6 @@ void BLAS_sge_sum_mv_testgen(int norm, enum blas_order_type order,
   inca_veci = 1;
 
 
-
-
   a_vec = (float *) blas_malloc(2 * n_i * sizeof(float));
   if (2 * n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -204,13 +201,11 @@ void BLAS_sge_sum_mv_testgen(int norm, enum blas_order_type order,
     a_vec[i] = 0.0;
   }
 
-
   incri = 1;
 
 
   incxi = incx;
   incx_veci = 1;
-
 
 
 
@@ -328,15 +323,13 @@ void BLAS_sge_sum_mv_testgen(int norm, enum blas_order_type order,
 	  BLAS_sdot_testgen(n_i, 0, n_i, norm,
 			    blas_no_conj, &alpha_use, 1,
 			    &beta_zero_fake, 1, x_vec, a_vec, seed,
-			    ((float *) &y_elem),
-			    ((double *) &r_true_l_elem),
-			    ((double *) &r_true_t_elem));
+			    &y_elem, &head_r_true_elem, &tail_r_true_elem);
 
 	  sge_sum_mv_commit(order, m_i, n_i, a, lda, a_vec, i);
 
 	  /*commits an element to the truth */
-	  r_true_l[ri] = r_true_l_elem;
-	  r_true_t[ri] = r_true_t_elem;
+	  head_r_true[ri] = head_r_true_elem;
+	  tail_r_true[ri] = tail_r_true_elem;
 	}
 
 	/*now fill a, x, and return */
@@ -396,8 +389,8 @@ void BLAS_sge_sum_mv_testgen(int norm, enum blas_order_type order,
 	(*alpha_use_ptr_i) = alpha_use;
 	(*alpha_i) = alpha_use;
 	ssymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 	return;
       } else {
 
@@ -408,15 +401,13 @@ void BLAS_sge_sum_mv_testgen(int norm, enum blas_order_type order,
 	  BLAS_sdot_testgen(n_i, 0, n_i, norm,
 			    blas_no_conj, &alpha_use, 1,
 			    &beta_zero_fake, 1, x_vec, a_vec, seed,
-			    ((float *) &y_elem),
-			    ((double *) &r_true_l_elem),
-			    ((double *) &r_true_t_elem));
+			    &y_elem, &head_r_true_elem, &tail_r_true_elem);
 
 	  sge_sum_mv_commit(order, m_i, n_i, b, ldb, a_vec, i);
 
 	  /*commits an element to the truth */
-	  r_true_l[ri] = r_true_l_elem;
-	  r_true_t[ri] = r_true_t_elem;
+	  head_r_true[ri] = head_r_true_elem;
+	  tail_r_true[ri] = tail_r_true_elem;
 	}
 
 	/*now fill b, x, and return */
@@ -476,8 +467,8 @@ void BLAS_sge_sum_mv_testgen(int norm, enum blas_order_type order,
 	(*alpha_use_ptr_i) = alpha_use;
 	(*beta_i) = alpha_use;
 	ssymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 	return;
       }
     }
@@ -491,17 +482,15 @@ void BLAS_sge_sum_mv_testgen(int norm, enum blas_order_type order,
       BLAS_sdot_testgen(2 * n_i, 0, 2 * n_i, norm,
 			blas_no_conj, &alpha_use, 1,
 			&beta_zero_fake, 1, x_vec, a_vec, seed,
-			((float *) &y_elem),
-			((double *) &r_true_l_elem),
-			((double *) &r_true_t_elem));
+			&y_elem, &head_r_true_elem, &tail_r_true_elem);
 
       sge_sum_mv_commit(order, m_i, n_i, a, lda, a_vec, i);
       sge_sum_mv_commit(order,
 			m_i, n_i, b, ldb, (a_vec + inca_veci * n_i), i);
 
       /*commits an element to the truth */
-      r_true_l[ri] = r_true_l_elem;
-      r_true_t[ri] = r_true_t_elem;
+      head_r_true[ri] = head_r_true_elem;
+      tail_r_true[ri] = tail_r_true_elem;
     }
 
 
@@ -579,12 +568,10 @@ void BLAS_sge_sum_mv_testgen(int norm, enum blas_order_type order,
 			    &alpha_use, 1,
 			    &beta_zero_fake, 1,
 			    x_vec, a_vec, seed,
-			    ((float *) &y_elem),
-			    ((double *) &r_true_l_elem),
-			    ((double *) &r_true_t_elem));
+			    &y_elem, &head_r_true_elem, &tail_r_true_elem);
 
-	  r_true_l[ri] = r_true_l_elem;
-	  r_true_t[ri] = r_true_t_elem;
+	  head_r_true[ri] = head_r_true_elem;
+	  tail_r_true[ri] = tail_r_true_elem;
 	}
 
 	/*set a_use = 0 */
@@ -623,8 +610,8 @@ void BLAS_sge_sum_mv_testgen(int norm, enum blas_order_type order,
 	}
 	(*alpha_use_ptr_i) = alpha_use;
 	ssymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 
 
 	return;
@@ -642,12 +629,10 @@ void BLAS_sge_sum_mv_testgen(int norm, enum blas_order_type order,
 			    &alpha_use, 1,
 			    &beta_zero_fake, 1,
 			    x_vec, a_vec, seed,
-			    ((float *) &y_elem),
-			    ((double *) &r_true_l_elem),
-			    ((double *) &r_true_t_elem));
+			    &y_elem, &head_r_true_elem, &tail_r_true_elem);
 
-	  r_true_l[ri] = r_true_l_elem;
-	  r_true_t[ri] = r_true_t_elem;
+	  head_r_true[ri] = head_r_true_elem;
+	  tail_r_true[ri] = tail_r_true_elem;
 	}
 
 	/*set b_use = 0 */
@@ -686,8 +671,8 @@ void BLAS_sge_sum_mv_testgen(int norm, enum blas_order_type order,
 	}
 	(*alpha_use_ptr_i) = alpha_use;
 	ssymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 
 
 	return;
@@ -708,12 +693,10 @@ void BLAS_sge_sum_mv_testgen(int norm, enum blas_order_type order,
 			  &alpha_use, 1,
 			  &beta_zero_fake, 1,
 			  x_vec, a_vec, seed,
-			  ((float *) &y_elem),
-			  ((double *) &r_true_l_elem),
-			  ((double *) &r_true_t_elem));
+			  &y_elem, &head_r_true_elem, &tail_r_true_elem);
 
-	r_true_l[ri] = r_true_l_elem;
-	r_true_t[ri] = r_true_t_elem;
+	head_r_true[ri] = head_r_true_elem;
+	tail_r_true[ri] = tail_r_true_elem;
       }
     }
 
@@ -848,8 +831,8 @@ void BLAS_sge_sum_mv_testgen(int norm, enum blas_order_type order,
   /*copy x_vec into x : it is possible that the generator
      changed x_vec, even though none were free */
   ssymv_copy_vector(n_i, x, incx, x_vec, 1);
-  free(a_vec);
-  free(x_vec);
+  blas_free(a_vec);
+  blas_free(x_vec);
 }
 void BLAS_dge_sum_mv_testgen(int norm, enum blas_order_type order,
 			     int m, int n, int randomize,
@@ -857,8 +840,8 @@ void BLAS_dge_sum_mv_testgen(int norm, enum blas_order_type order,
 			     int beta_flag, double *a, int lda, double *b,
 			     int ldb, double *x, int incx,
 			     double *alpha_use_ptr, double *a_use,
-			     double *b_use, int *seed, double *r_true_l,
-			     double *r_true_t)
+			     double *b_use, int *seed, double *head_r_true,
+			     double *tail_r_true)
 
 /*
  * Purpose
@@ -934,10 +917,10 @@ void BLAS_dge_sum_mv_testgen(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * double  (output) *r_true_l
+ * double  (output) *head_r_true
  *         the leading part of the truth in double-double.
  *
- * double  (output) *r_true_t
+ * double  (output) *tail_r_true
  *         the trailing part of the truth in double-double
  *
  *
@@ -992,15 +975,13 @@ void BLAS_dge_sum_mv_testgen(int norm, enum blas_order_type order,
   double beta_zero_fake;
   double a_elem;
   double x_elem;
-  double r_true_t_elem;
-  double r_true_l_elem;
+  double head_r_true_elem, tail_r_true_elem;
   double multiplier;
   double divider;
   double alpha_use;
 
   double *a_vec;
   double *x_vec;
-
 
   double *alpha_use_ptr_i = alpha_use_ptr;
   double *alpha_i = alpha;
@@ -1020,8 +1001,6 @@ void BLAS_dge_sum_mv_testgen(int norm, enum blas_order_type order,
   inca_veci = 1;
 
 
-
-
   a_vec = (double *) blas_malloc(2 * n_i * sizeof(double));
   if (2 * n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -1030,13 +1009,11 @@ void BLAS_dge_sum_mv_testgen(int norm, enum blas_order_type order,
     a_vec[i] = 0.0;
   }
 
-
   incri = 1;
 
 
   incxi = incx;
   incx_veci = 1;
-
 
 
 
@@ -1154,15 +1131,13 @@ void BLAS_dge_sum_mv_testgen(int norm, enum blas_order_type order,
 	  BLAS_ddot_testgen(n_i, 0, n_i, norm,
 			    blas_no_conj, &alpha_use, 1,
 			    &beta_zero_fake, 1, x_vec, a_vec, seed,
-			    ((double *) &y_elem),
-			    ((double *) &r_true_l_elem),
-			    ((double *) &r_true_t_elem));
+			    &y_elem, &head_r_true_elem, &tail_r_true_elem);
 
 	  dge_sum_mv_commit(order, m_i, n_i, a, lda, a_vec, i);
 
 	  /*commits an element to the truth */
-	  r_true_l[ri] = r_true_l_elem;
-	  r_true_t[ri] = r_true_t_elem;
+	  head_r_true[ri] = head_r_true_elem;
+	  tail_r_true[ri] = tail_r_true_elem;
 	}
 
 	/*now fill a, x, and return */
@@ -1222,8 +1197,8 @@ void BLAS_dge_sum_mv_testgen(int norm, enum blas_order_type order,
 	(*alpha_use_ptr_i) = alpha_use;
 	(*alpha_i) = alpha_use;
 	dsymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 	return;
       } else {
 
@@ -1234,15 +1209,13 @@ void BLAS_dge_sum_mv_testgen(int norm, enum blas_order_type order,
 	  BLAS_ddot_testgen(n_i, 0, n_i, norm,
 			    blas_no_conj, &alpha_use, 1,
 			    &beta_zero_fake, 1, x_vec, a_vec, seed,
-			    ((double *) &y_elem),
-			    ((double *) &r_true_l_elem),
-			    ((double *) &r_true_t_elem));
+			    &y_elem, &head_r_true_elem, &tail_r_true_elem);
 
 	  dge_sum_mv_commit(order, m_i, n_i, b, ldb, a_vec, i);
 
 	  /*commits an element to the truth */
-	  r_true_l[ri] = r_true_l_elem;
-	  r_true_t[ri] = r_true_t_elem;
+	  head_r_true[ri] = head_r_true_elem;
+	  tail_r_true[ri] = tail_r_true_elem;
 	}
 
 	/*now fill b, x, and return */
@@ -1302,8 +1275,8 @@ void BLAS_dge_sum_mv_testgen(int norm, enum blas_order_type order,
 	(*alpha_use_ptr_i) = alpha_use;
 	(*beta_i) = alpha_use;
 	dsymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 	return;
       }
     }
@@ -1317,17 +1290,15 @@ void BLAS_dge_sum_mv_testgen(int norm, enum blas_order_type order,
       BLAS_ddot_testgen(2 * n_i, 0, 2 * n_i, norm,
 			blas_no_conj, &alpha_use, 1,
 			&beta_zero_fake, 1, x_vec, a_vec, seed,
-			((double *) &y_elem),
-			((double *) &r_true_l_elem),
-			((double *) &r_true_t_elem));
+			&y_elem, &head_r_true_elem, &tail_r_true_elem);
 
       dge_sum_mv_commit(order, m_i, n_i, a, lda, a_vec, i);
       dge_sum_mv_commit(order,
 			m_i, n_i, b, ldb, (a_vec + inca_veci * n_i), i);
 
       /*commits an element to the truth */
-      r_true_l[ri] = r_true_l_elem;
-      r_true_t[ri] = r_true_t_elem;
+      head_r_true[ri] = head_r_true_elem;
+      tail_r_true[ri] = tail_r_true_elem;
     }
 
 
@@ -1405,12 +1376,10 @@ void BLAS_dge_sum_mv_testgen(int norm, enum blas_order_type order,
 			    &alpha_use, 1,
 			    &beta_zero_fake, 1,
 			    x_vec, a_vec, seed,
-			    ((double *) &y_elem),
-			    ((double *) &r_true_l_elem),
-			    ((double *) &r_true_t_elem));
+			    &y_elem, &head_r_true_elem, &tail_r_true_elem);
 
-	  r_true_l[ri] = r_true_l_elem;
-	  r_true_t[ri] = r_true_t_elem;
+	  head_r_true[ri] = head_r_true_elem;
+	  tail_r_true[ri] = tail_r_true_elem;
 	}
 
 	/*set a_use = 0 */
@@ -1449,8 +1418,8 @@ void BLAS_dge_sum_mv_testgen(int norm, enum blas_order_type order,
 	}
 	(*alpha_use_ptr_i) = alpha_use;
 	dsymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 
 
 	return;
@@ -1468,12 +1437,10 @@ void BLAS_dge_sum_mv_testgen(int norm, enum blas_order_type order,
 			    &alpha_use, 1,
 			    &beta_zero_fake, 1,
 			    x_vec, a_vec, seed,
-			    ((double *) &y_elem),
-			    ((double *) &r_true_l_elem),
-			    ((double *) &r_true_t_elem));
+			    &y_elem, &head_r_true_elem, &tail_r_true_elem);
 
-	  r_true_l[ri] = r_true_l_elem;
-	  r_true_t[ri] = r_true_t_elem;
+	  head_r_true[ri] = head_r_true_elem;
+	  tail_r_true[ri] = tail_r_true_elem;
 	}
 
 	/*set b_use = 0 */
@@ -1512,8 +1479,8 @@ void BLAS_dge_sum_mv_testgen(int norm, enum blas_order_type order,
 	}
 	(*alpha_use_ptr_i) = alpha_use;
 	dsymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 
 
 	return;
@@ -1534,12 +1501,10 @@ void BLAS_dge_sum_mv_testgen(int norm, enum blas_order_type order,
 			  &alpha_use, 1,
 			  &beta_zero_fake, 1,
 			  x_vec, a_vec, seed,
-			  ((double *) &y_elem),
-			  ((double *) &r_true_l_elem),
-			  ((double *) &r_true_t_elem));
+			  &y_elem, &head_r_true_elem, &tail_r_true_elem);
 
-	r_true_l[ri] = r_true_l_elem;
-	r_true_t[ri] = r_true_t_elem;
+	head_r_true[ri] = head_r_true_elem;
+	tail_r_true[ri] = tail_r_true_elem;
       }
     }
 
@@ -1674,8 +1639,8 @@ void BLAS_dge_sum_mv_testgen(int norm, enum blas_order_type order,
   /*copy x_vec into x : it is possible that the generator
      changed x_vec, even though none were free */
   dsymv_copy_vector(n_i, x, incx, x_vec, 1);
-  free(a_vec);
-  free(x_vec);
+  blas_free(a_vec);
+  blas_free(x_vec);
 }
 void BLAS_dge_sum_mv_d_s_testgen(int norm, enum blas_order_type order,
 				 int m, int n, int randomize,
@@ -1683,8 +1648,8 @@ void BLAS_dge_sum_mv_d_s_testgen(int norm, enum blas_order_type order,
 				 int beta_flag, double *a, int lda, double *b,
 				 int ldb, float *x, int incx,
 				 double *alpha_use_ptr, double *a_use,
-				 double *b_use, int *seed, double *r_true_l,
-				 double *r_true_t)
+				 double *b_use, int *seed,
+				 double *head_r_true, double *tail_r_true)
 
 /*
  * Purpose
@@ -1760,10 +1725,10 @@ void BLAS_dge_sum_mv_d_s_testgen(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * double  (output) *r_true_l
+ * double  (output) *head_r_true
  *         the leading part of the truth in double-double.
  *
- * double  (output) *r_true_t
+ * double  (output) *tail_r_true
  *         the trailing part of the truth in double-double
  *
  *
@@ -1818,15 +1783,13 @@ void BLAS_dge_sum_mv_d_s_testgen(int norm, enum blas_order_type order,
   double beta_zero_fake;
   double a_elem;
   float x_elem;
-  double r_true_t_elem;
-  double r_true_l_elem;
+  double head_r_true_elem, tail_r_true_elem;
   double multiplier;
   double divider;
   double alpha_use;
 
   double *a_vec;
   float *x_vec;
-
 
   double *alpha_use_ptr_i = alpha_use_ptr;
   double *alpha_i = alpha;
@@ -1846,8 +1809,6 @@ void BLAS_dge_sum_mv_d_s_testgen(int norm, enum blas_order_type order,
   inca_veci = 1;
 
 
-
-
   a_vec = (double *) blas_malloc(2 * n_i * sizeof(double));
   if (2 * n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -1856,13 +1817,11 @@ void BLAS_dge_sum_mv_d_s_testgen(int norm, enum blas_order_type order,
     a_vec[i] = 0.0;
   }
 
-
   incri = 1;
 
 
   incxi = incx;
   incx_veci = 1;
-
 
 
 
@@ -1980,15 +1939,14 @@ void BLAS_dge_sum_mv_d_s_testgen(int norm, enum blas_order_type order,
 	  BLAS_ddot_s_d_testgen(n_i, 0, n_i, norm,
 				blas_no_conj, &alpha_use, 1,
 				&beta_zero_fake, 1, x_vec, a_vec, seed,
-				((double *) &y_elem),
-				((double *) &r_true_l_elem),
-				((double *) &r_true_t_elem));
+				&y_elem,
+				&head_r_true_elem, &tail_r_true_elem);
 
 	  dge_sum_mv_commit(order, m_i, n_i, a, lda, a_vec, i);
 
 	  /*commits an element to the truth */
-	  r_true_l[ri] = r_true_l_elem;
-	  r_true_t[ri] = r_true_t_elem;
+	  head_r_true[ri] = head_r_true_elem;
+	  tail_r_true[ri] = tail_r_true_elem;
 	}
 
 	/*now fill a, x, and return */
@@ -2048,8 +2006,8 @@ void BLAS_dge_sum_mv_d_s_testgen(int norm, enum blas_order_type order,
 	(*alpha_use_ptr_i) = alpha_use;
 	(*alpha_i) = alpha_use;
 	ssymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 	return;
       } else {
 
@@ -2060,15 +2018,14 @@ void BLAS_dge_sum_mv_d_s_testgen(int norm, enum blas_order_type order,
 	  BLAS_ddot_s_d_testgen(n_i, 0, n_i, norm,
 				blas_no_conj, &alpha_use, 1,
 				&beta_zero_fake, 1, x_vec, a_vec, seed,
-				((double *) &y_elem),
-				((double *) &r_true_l_elem),
-				((double *) &r_true_t_elem));
+				&y_elem,
+				&head_r_true_elem, &tail_r_true_elem);
 
 	  dge_sum_mv_commit(order, m_i, n_i, b, ldb, a_vec, i);
 
 	  /*commits an element to the truth */
-	  r_true_l[ri] = r_true_l_elem;
-	  r_true_t[ri] = r_true_t_elem;
+	  head_r_true[ri] = head_r_true_elem;
+	  tail_r_true[ri] = tail_r_true_elem;
 	}
 
 	/*now fill b, x, and return */
@@ -2128,8 +2085,8 @@ void BLAS_dge_sum_mv_d_s_testgen(int norm, enum blas_order_type order,
 	(*alpha_use_ptr_i) = alpha_use;
 	(*beta_i) = alpha_use;
 	ssymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 	return;
       }
     }
@@ -2143,17 +2100,15 @@ void BLAS_dge_sum_mv_d_s_testgen(int norm, enum blas_order_type order,
       BLAS_ddot_s_d_testgen(2 * n_i, 0, 2 * n_i, norm,
 			    blas_no_conj, &alpha_use, 1,
 			    &beta_zero_fake, 1, x_vec, a_vec, seed,
-			    ((double *) &y_elem),
-			    ((double *) &r_true_l_elem),
-			    ((double *) &r_true_t_elem));
+			    &y_elem, &head_r_true_elem, &tail_r_true_elem);
 
       dge_sum_mv_commit(order, m_i, n_i, a, lda, a_vec, i);
       dge_sum_mv_commit(order,
 			m_i, n_i, b, ldb, (a_vec + inca_veci * n_i), i);
 
       /*commits an element to the truth */
-      r_true_l[ri] = r_true_l_elem;
-      r_true_t[ri] = r_true_t_elem;
+      head_r_true[ri] = head_r_true_elem;
+      tail_r_true[ri] = tail_r_true_elem;
     }
 
 
@@ -2231,12 +2186,11 @@ void BLAS_dge_sum_mv_d_s_testgen(int norm, enum blas_order_type order,
 				&alpha_use, 1,
 				&beta_zero_fake, 1,
 				x_vec, a_vec, seed,
-				((double *) &y_elem),
-				((double *) &r_true_l_elem),
-				((double *) &r_true_t_elem));
+				&y_elem,
+				&head_r_true_elem, &tail_r_true_elem);
 
-	  r_true_l[ri] = r_true_l_elem;
-	  r_true_t[ri] = r_true_t_elem;
+	  head_r_true[ri] = head_r_true_elem;
+	  tail_r_true[ri] = tail_r_true_elem;
 	}
 
 	/*set a_use = 0 */
@@ -2275,8 +2229,8 @@ void BLAS_dge_sum_mv_d_s_testgen(int norm, enum blas_order_type order,
 	}
 	(*alpha_use_ptr_i) = alpha_use;
 	ssymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 
 
 	return;
@@ -2294,12 +2248,11 @@ void BLAS_dge_sum_mv_d_s_testgen(int norm, enum blas_order_type order,
 				&alpha_use, 1,
 				&beta_zero_fake, 1,
 				x_vec, a_vec, seed,
-				((double *) &y_elem),
-				((double *) &r_true_l_elem),
-				((double *) &r_true_t_elem));
+				&y_elem,
+				&head_r_true_elem, &tail_r_true_elem);
 
-	  r_true_l[ri] = r_true_l_elem;
-	  r_true_t[ri] = r_true_t_elem;
+	  head_r_true[ri] = head_r_true_elem;
+	  tail_r_true[ri] = tail_r_true_elem;
 	}
 
 	/*set b_use = 0 */
@@ -2338,8 +2291,8 @@ void BLAS_dge_sum_mv_d_s_testgen(int norm, enum blas_order_type order,
 	}
 	(*alpha_use_ptr_i) = alpha_use;
 	ssymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 
 
 	return;
@@ -2360,12 +2313,10 @@ void BLAS_dge_sum_mv_d_s_testgen(int norm, enum blas_order_type order,
 			      &alpha_use, 1,
 			      &beta_zero_fake, 1,
 			      x_vec, a_vec, seed,
-			      ((double *) &y_elem),
-			      ((double *) &r_true_l_elem),
-			      ((double *) &r_true_t_elem));
+			      &y_elem, &head_r_true_elem, &tail_r_true_elem);
 
-	r_true_l[ri] = r_true_l_elem;
-	r_true_t[ri] = r_true_t_elem;
+	head_r_true[ri] = head_r_true_elem;
+	tail_r_true[ri] = tail_r_true_elem;
       }
     }
 
@@ -2500,8 +2451,8 @@ void BLAS_dge_sum_mv_d_s_testgen(int norm, enum blas_order_type order,
   /*copy x_vec into x : it is possible that the generator
      changed x_vec, even though none were free */
   ssymv_copy_vector(n_i, x, incx, x_vec, 1);
-  free(a_vec);
-  free(x_vec);
+  blas_free(a_vec);
+  blas_free(x_vec);
 }
 void BLAS_dge_sum_mv_s_d_testgen(int norm, enum blas_order_type order,
 				 int m, int n, int randomize,
@@ -2509,8 +2460,8 @@ void BLAS_dge_sum_mv_s_d_testgen(int norm, enum blas_order_type order,
 				 int beta_flag, float *a, int lda, float *b,
 				 int ldb, double *x, int incx,
 				 double *alpha_use_ptr, float *a_use,
-				 float *b_use, int *seed, double *r_true_l,
-				 double *r_true_t)
+				 float *b_use, int *seed, double *head_r_true,
+				 double *tail_r_true)
 
 /*
  * Purpose
@@ -2586,10 +2537,10 @@ void BLAS_dge_sum_mv_s_d_testgen(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * double  (output) *r_true_l
+ * double  (output) *head_r_true
  *         the leading part of the truth in double-double.
  *
- * double  (output) *r_true_t
+ * double  (output) *tail_r_true
  *         the trailing part of the truth in double-double
  *
  *
@@ -2644,15 +2595,13 @@ void BLAS_dge_sum_mv_s_d_testgen(int norm, enum blas_order_type order,
   double beta_zero_fake;
   float a_elem;
   double x_elem;
-  double r_true_t_elem;
-  double r_true_l_elem;
+  double head_r_true_elem, tail_r_true_elem;
   double multiplier;
   double divider;
   double alpha_use;
 
   float *a_vec;
   double *x_vec;
-
 
   double *alpha_use_ptr_i = alpha_use_ptr;
   double *alpha_i = alpha;
@@ -2672,8 +2621,6 @@ void BLAS_dge_sum_mv_s_d_testgen(int norm, enum blas_order_type order,
   inca_veci = 1;
 
 
-
-
   a_vec = (float *) blas_malloc(2 * n_i * sizeof(float));
   if (2 * n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -2682,13 +2629,11 @@ void BLAS_dge_sum_mv_s_d_testgen(int norm, enum blas_order_type order,
     a_vec[i] = 0.0;
   }
 
-
   incri = 1;
 
 
   incxi = incx;
   incx_veci = 1;
-
 
 
 
@@ -2806,15 +2751,14 @@ void BLAS_dge_sum_mv_s_d_testgen(int norm, enum blas_order_type order,
 	  BLAS_ddot_d_s_testgen(n_i, 0, n_i, norm,
 				blas_no_conj, &alpha_use, 1,
 				&beta_zero_fake, 1, x_vec, a_vec, seed,
-				((double *) &y_elem),
-				((double *) &r_true_l_elem),
-				((double *) &r_true_t_elem));
+				&y_elem,
+				&head_r_true_elem, &tail_r_true_elem);
 
 	  sge_sum_mv_commit(order, m_i, n_i, a, lda, a_vec, i);
 
 	  /*commits an element to the truth */
-	  r_true_l[ri] = r_true_l_elem;
-	  r_true_t[ri] = r_true_t_elem;
+	  head_r_true[ri] = head_r_true_elem;
+	  tail_r_true[ri] = tail_r_true_elem;
 	}
 
 	/*now fill a, x, and return */
@@ -2874,8 +2818,8 @@ void BLAS_dge_sum_mv_s_d_testgen(int norm, enum blas_order_type order,
 	(*alpha_use_ptr_i) = alpha_use;
 	(*alpha_i) = alpha_use;
 	dsymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 	return;
       } else {
 
@@ -2886,15 +2830,14 @@ void BLAS_dge_sum_mv_s_d_testgen(int norm, enum blas_order_type order,
 	  BLAS_ddot_d_s_testgen(n_i, 0, n_i, norm,
 				blas_no_conj, &alpha_use, 1,
 				&beta_zero_fake, 1, x_vec, a_vec, seed,
-				((double *) &y_elem),
-				((double *) &r_true_l_elem),
-				((double *) &r_true_t_elem));
+				&y_elem,
+				&head_r_true_elem, &tail_r_true_elem);
 
 	  sge_sum_mv_commit(order, m_i, n_i, b, ldb, a_vec, i);
 
 	  /*commits an element to the truth */
-	  r_true_l[ri] = r_true_l_elem;
-	  r_true_t[ri] = r_true_t_elem;
+	  head_r_true[ri] = head_r_true_elem;
+	  tail_r_true[ri] = tail_r_true_elem;
 	}
 
 	/*now fill b, x, and return */
@@ -2954,8 +2897,8 @@ void BLAS_dge_sum_mv_s_d_testgen(int norm, enum blas_order_type order,
 	(*alpha_use_ptr_i) = alpha_use;
 	(*beta_i) = alpha_use;
 	dsymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 	return;
       }
     }
@@ -2969,17 +2912,15 @@ void BLAS_dge_sum_mv_s_d_testgen(int norm, enum blas_order_type order,
       BLAS_ddot_d_s_testgen(2 * n_i, 0, 2 * n_i, norm,
 			    blas_no_conj, &alpha_use, 1,
 			    &beta_zero_fake, 1, x_vec, a_vec, seed,
-			    ((double *) &y_elem),
-			    ((double *) &r_true_l_elem),
-			    ((double *) &r_true_t_elem));
+			    &y_elem, &head_r_true_elem, &tail_r_true_elem);
 
       sge_sum_mv_commit(order, m_i, n_i, a, lda, a_vec, i);
       sge_sum_mv_commit(order,
 			m_i, n_i, b, ldb, (a_vec + inca_veci * n_i), i);
 
       /*commits an element to the truth */
-      r_true_l[ri] = r_true_l_elem;
-      r_true_t[ri] = r_true_t_elem;
+      head_r_true[ri] = head_r_true_elem;
+      tail_r_true[ri] = tail_r_true_elem;
     }
 
 
@@ -3057,12 +2998,11 @@ void BLAS_dge_sum_mv_s_d_testgen(int norm, enum blas_order_type order,
 				&alpha_use, 1,
 				&beta_zero_fake, 1,
 				x_vec, a_vec, seed,
-				((double *) &y_elem),
-				((double *) &r_true_l_elem),
-				((double *) &r_true_t_elem));
+				&y_elem,
+				&head_r_true_elem, &tail_r_true_elem);
 
-	  r_true_l[ri] = r_true_l_elem;
-	  r_true_t[ri] = r_true_t_elem;
+	  head_r_true[ri] = head_r_true_elem;
+	  tail_r_true[ri] = tail_r_true_elem;
 	}
 
 	/*set a_use = 0 */
@@ -3101,8 +3041,8 @@ void BLAS_dge_sum_mv_s_d_testgen(int norm, enum blas_order_type order,
 	}
 	(*alpha_use_ptr_i) = alpha_use;
 	dsymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 
 
 	return;
@@ -3120,12 +3060,11 @@ void BLAS_dge_sum_mv_s_d_testgen(int norm, enum blas_order_type order,
 				&alpha_use, 1,
 				&beta_zero_fake, 1,
 				x_vec, a_vec, seed,
-				((double *) &y_elem),
-				((double *) &r_true_l_elem),
-				((double *) &r_true_t_elem));
+				&y_elem,
+				&head_r_true_elem, &tail_r_true_elem);
 
-	  r_true_l[ri] = r_true_l_elem;
-	  r_true_t[ri] = r_true_t_elem;
+	  head_r_true[ri] = head_r_true_elem;
+	  tail_r_true[ri] = tail_r_true_elem;
 	}
 
 	/*set b_use = 0 */
@@ -3164,8 +3103,8 @@ void BLAS_dge_sum_mv_s_d_testgen(int norm, enum blas_order_type order,
 	}
 	(*alpha_use_ptr_i) = alpha_use;
 	dsymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 
 
 	return;
@@ -3186,12 +3125,10 @@ void BLAS_dge_sum_mv_s_d_testgen(int norm, enum blas_order_type order,
 			      &alpha_use, 1,
 			      &beta_zero_fake, 1,
 			      x_vec, a_vec, seed,
-			      ((double *) &y_elem),
-			      ((double *) &r_true_l_elem),
-			      ((double *) &r_true_t_elem));
+			      &y_elem, &head_r_true_elem, &tail_r_true_elem);
 
-	r_true_l[ri] = r_true_l_elem;
-	r_true_t[ri] = r_true_t_elem;
+	head_r_true[ri] = head_r_true_elem;
+	tail_r_true[ri] = tail_r_true_elem;
       }
     }
 
@@ -3326,8 +3263,8 @@ void BLAS_dge_sum_mv_s_d_testgen(int norm, enum blas_order_type order,
   /*copy x_vec into x : it is possible that the generator
      changed x_vec, even though none were free */
   dsymv_copy_vector(n_i, x, incx, x_vec, 1);
-  free(a_vec);
-  free(x_vec);
+  blas_free(a_vec);
+  blas_free(x_vec);
 }
 void BLAS_dge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 				 int m, int n, int randomize,
@@ -3335,8 +3272,8 @@ void BLAS_dge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 				 int beta_flag, float *a, int lda, float *b,
 				 int ldb, float *x, int incx,
 				 double *alpha_use_ptr, float *a_use,
-				 float *b_use, int *seed, double *r_true_l,
-				 double *r_true_t)
+				 float *b_use, int *seed, double *head_r_true,
+				 double *tail_r_true)
 
 /*
  * Purpose
@@ -3412,10 +3349,10 @@ void BLAS_dge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * double  (output) *r_true_l
+ * double  (output) *head_r_true
  *         the leading part of the truth in double-double.
  *
- * double  (output) *r_true_t
+ * double  (output) *tail_r_true
  *         the trailing part of the truth in double-double
  *
  *
@@ -3470,15 +3407,13 @@ void BLAS_dge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
   double beta_zero_fake;
   float a_elem;
   float x_elem;
-  double r_true_t_elem;
-  double r_true_l_elem;
+  double head_r_true_elem, tail_r_true_elem;
   double multiplier;
   double divider;
   double alpha_use;
 
   float *a_vec;
   float *x_vec;
-
 
   double *alpha_use_ptr_i = alpha_use_ptr;
   double *alpha_i = alpha;
@@ -3498,8 +3433,6 @@ void BLAS_dge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
   inca_veci = 1;
 
 
-
-
   a_vec = (float *) blas_malloc(2 * n_i * sizeof(float));
   if (2 * n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -3508,13 +3441,11 @@ void BLAS_dge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
     a_vec[i] = 0.0;
   }
 
-
   incri = 1;
 
 
   incxi = incx;
   incx_veci = 1;
-
 
 
 
@@ -3632,15 +3563,14 @@ void BLAS_dge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 	  BLAS_ddot_s_s_testgen(n_i, 0, n_i, norm,
 				blas_no_conj, &alpha_use, 1,
 				&beta_zero_fake, 1, x_vec, a_vec, seed,
-				((double *) &y_elem),
-				((double *) &r_true_l_elem),
-				((double *) &r_true_t_elem));
+				&y_elem,
+				&head_r_true_elem, &tail_r_true_elem);
 
 	  sge_sum_mv_commit(order, m_i, n_i, a, lda, a_vec, i);
 
 	  /*commits an element to the truth */
-	  r_true_l[ri] = r_true_l_elem;
-	  r_true_t[ri] = r_true_t_elem;
+	  head_r_true[ri] = head_r_true_elem;
+	  tail_r_true[ri] = tail_r_true_elem;
 	}
 
 	/*now fill a, x, and return */
@@ -3700,8 +3630,8 @@ void BLAS_dge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 	(*alpha_use_ptr_i) = alpha_use;
 	(*alpha_i) = alpha_use;
 	ssymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 	return;
       } else {
 
@@ -3712,15 +3642,14 @@ void BLAS_dge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 	  BLAS_ddot_s_s_testgen(n_i, 0, n_i, norm,
 				blas_no_conj, &alpha_use, 1,
 				&beta_zero_fake, 1, x_vec, a_vec, seed,
-				((double *) &y_elem),
-				((double *) &r_true_l_elem),
-				((double *) &r_true_t_elem));
+				&y_elem,
+				&head_r_true_elem, &tail_r_true_elem);
 
 	  sge_sum_mv_commit(order, m_i, n_i, b, ldb, a_vec, i);
 
 	  /*commits an element to the truth */
-	  r_true_l[ri] = r_true_l_elem;
-	  r_true_t[ri] = r_true_t_elem;
+	  head_r_true[ri] = head_r_true_elem;
+	  tail_r_true[ri] = tail_r_true_elem;
 	}
 
 	/*now fill b, x, and return */
@@ -3780,8 +3709,8 @@ void BLAS_dge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 	(*alpha_use_ptr_i) = alpha_use;
 	(*beta_i) = alpha_use;
 	ssymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 	return;
       }
     }
@@ -3795,17 +3724,15 @@ void BLAS_dge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
       BLAS_ddot_s_s_testgen(2 * n_i, 0, 2 * n_i, norm,
 			    blas_no_conj, &alpha_use, 1,
 			    &beta_zero_fake, 1, x_vec, a_vec, seed,
-			    ((double *) &y_elem),
-			    ((double *) &r_true_l_elem),
-			    ((double *) &r_true_t_elem));
+			    &y_elem, &head_r_true_elem, &tail_r_true_elem);
 
       sge_sum_mv_commit(order, m_i, n_i, a, lda, a_vec, i);
       sge_sum_mv_commit(order,
 			m_i, n_i, b, ldb, (a_vec + inca_veci * n_i), i);
 
       /*commits an element to the truth */
-      r_true_l[ri] = r_true_l_elem;
-      r_true_t[ri] = r_true_t_elem;
+      head_r_true[ri] = head_r_true_elem;
+      tail_r_true[ri] = tail_r_true_elem;
     }
 
 
@@ -3883,12 +3810,11 @@ void BLAS_dge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 				&alpha_use, 1,
 				&beta_zero_fake, 1,
 				x_vec, a_vec, seed,
-				((double *) &y_elem),
-				((double *) &r_true_l_elem),
-				((double *) &r_true_t_elem));
+				&y_elem,
+				&head_r_true_elem, &tail_r_true_elem);
 
-	  r_true_l[ri] = r_true_l_elem;
-	  r_true_t[ri] = r_true_t_elem;
+	  head_r_true[ri] = head_r_true_elem;
+	  tail_r_true[ri] = tail_r_true_elem;
 	}
 
 	/*set a_use = 0 */
@@ -3927,8 +3853,8 @@ void BLAS_dge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 	}
 	(*alpha_use_ptr_i) = alpha_use;
 	ssymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 
 
 	return;
@@ -3946,12 +3872,11 @@ void BLAS_dge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 				&alpha_use, 1,
 				&beta_zero_fake, 1,
 				x_vec, a_vec, seed,
-				((double *) &y_elem),
-				((double *) &r_true_l_elem),
-				((double *) &r_true_t_elem));
+				&y_elem,
+				&head_r_true_elem, &tail_r_true_elem);
 
-	  r_true_l[ri] = r_true_l_elem;
-	  r_true_t[ri] = r_true_t_elem;
+	  head_r_true[ri] = head_r_true_elem;
+	  tail_r_true[ri] = tail_r_true_elem;
 	}
 
 	/*set b_use = 0 */
@@ -3990,8 +3915,8 @@ void BLAS_dge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 	}
 	(*alpha_use_ptr_i) = alpha_use;
 	ssymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 
 
 	return;
@@ -4012,12 +3937,10 @@ void BLAS_dge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 			      &alpha_use, 1,
 			      &beta_zero_fake, 1,
 			      x_vec, a_vec, seed,
-			      ((double *) &y_elem),
-			      ((double *) &r_true_l_elem),
-			      ((double *) &r_true_t_elem));
+			      &y_elem, &head_r_true_elem, &tail_r_true_elem);
 
-	r_true_l[ri] = r_true_l_elem;
-	r_true_t[ri] = r_true_t_elem;
+	head_r_true[ri] = head_r_true_elem;
+	tail_r_true[ri] = tail_r_true_elem;
       }
     }
 
@@ -4152,8 +4075,8 @@ void BLAS_dge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
   /*copy x_vec into x : it is possible that the generator
      changed x_vec, even though none were free */
   ssymv_copy_vector(n_i, x, incx, x_vec, 1);
-  free(a_vec);
-  free(x_vec);
+  blas_free(a_vec);
+  blas_free(x_vec);
 }
 
 void BLAS_cge_sum_mv_testgen(int norm, enum blas_order_type order,
@@ -4162,7 +4085,7 @@ void BLAS_cge_sum_mv_testgen(int norm, enum blas_order_type order,
 			     int beta_flag, void *a, int lda, void *b,
 			     int ldb, void *x, int incx, void *alpha_use_ptr,
 			     void *a_use, void *b_use, int *seed,
-			     double *r_true_l, double *r_true_t)
+			     double *head_r_true, double *tail_r_true)
 
 /*
  * Purpose
@@ -4238,10 +4161,10 @@ void BLAS_cge_sum_mv_testgen(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * double  (output) *r_true_l
+ * double  (output) *head_r_true
  *         the leading part of the truth in double-double.
  *
- * double  (output) *r_true_t
+ * double  (output) *tail_r_true
  *         the trailing part of the truth in double-double
  *
  *
@@ -4306,15 +4229,13 @@ void BLAS_cge_sum_mv_testgen(int norm, enum blas_order_type order,
   float beta_zero_fake[2];
   float a_elem[2];
   float x_elem[2];
-  double r_true_t_elem[2];
-  double r_true_l_elem[2];
+  double head_r_true_elem[2], tail_r_true_elem[2];
   float multiplier;
   float divider;
   float alpha_use[2];
 
   float *a_vec;
   float *x_vec;
-
 
   float *alpha_use_ptr_i = (float *) alpha_use_ptr;
   float *alpha_i = (float *) alpha;
@@ -4334,8 +4255,6 @@ void BLAS_cge_sum_mv_testgen(int norm, enum blas_order_type order,
   inca_veci = 1;
   inca_veci *= 2;
 
-
-
   a_vec = (float *) blas_malloc(2 * n_i * sizeof(float) * 2);
   if (2 * n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -4345,7 +4264,6 @@ void BLAS_cge_sum_mv_testgen(int norm, enum blas_order_type order,
     a_vec[i + 1] = 0.0;
   }
 
-
   incri = 1;
   incri *= 2;
 
@@ -4353,7 +4271,6 @@ void BLAS_cge_sum_mv_testgen(int norm, enum blas_order_type order,
   incx_veci = 1;
   incx_veci *= 2;
   incxi *= 2;
-
 
   if (incxi < 0) {
     x_starti = (-n + 1) * incxi;
@@ -4479,15 +4396,15 @@ void BLAS_cge_sum_mv_testgen(int norm, enum blas_order_type order,
 	  BLAS_cdot_testgen(n_i, 0, n_i, norm,
 			    blas_no_conj, &alpha_use, 1,
 			    &beta_zero_fake, 1, x_vec, a_vec, seed,
-			    y_elem, r_true_l_elem, r_true_t_elem);
+			    y_elem, head_r_true_elem, tail_r_true_elem);
 
 	  cge_sum_mv_commit(order, m_i, n_i, a, lda, a_vec, i);
 
 	  /*commits an element to the truth */
-	  r_true_l[ri] = r_true_l_elem[0];
-	  r_true_l[ri + 1] = r_true_l_elem[1];
-	  r_true_t[ri] = r_true_t_elem[0];
-	  r_true_t[ri + 1] = r_true_t_elem[1];
+	  head_r_true[ri] = head_r_true_elem[0];
+	  head_r_true[ri + 1] = head_r_true_elem[1];
+	  tail_r_true[ri] = tail_r_true_elem[0];
+	  tail_r_true[ri + 1] = tail_r_true_elem[1];
 	}
 
 	/*now fill a, x, and return */
@@ -4554,8 +4471,8 @@ void BLAS_cge_sum_mv_testgen(int norm, enum blas_order_type order,
 	alpha_i[0] = alpha_use[0];
 	alpha_i[1] = alpha_use[1];
 	csymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 	return;
       } else {
 
@@ -4566,15 +4483,15 @@ void BLAS_cge_sum_mv_testgen(int norm, enum blas_order_type order,
 	  BLAS_cdot_testgen(n_i, 0, n_i, norm,
 			    blas_no_conj, &alpha_use, 1,
 			    &beta_zero_fake, 1, x_vec, a_vec, seed,
-			    y_elem, r_true_l_elem, r_true_t_elem);
+			    y_elem, head_r_true_elem, tail_r_true_elem);
 
 	  cge_sum_mv_commit(order, m_i, n_i, b, ldb, a_vec, i);
 
 	  /*commits an element to the truth */
-	  r_true_l[ri] = r_true_l_elem[0];
-	  r_true_l[ri + 1] = r_true_l_elem[1];
-	  r_true_t[ri] = r_true_t_elem[0];
-	  r_true_t[ri + 1] = r_true_t_elem[1];
+	  head_r_true[ri] = head_r_true_elem[0];
+	  head_r_true[ri + 1] = head_r_true_elem[1];
+	  tail_r_true[ri] = tail_r_true_elem[0];
+	  tail_r_true[ri + 1] = tail_r_true_elem[1];
 	}
 
 	/*now fill b, x, and return */
@@ -4641,8 +4558,8 @@ void BLAS_cge_sum_mv_testgen(int norm, enum blas_order_type order,
 	beta_i[0] = alpha_use[0];
 	beta_i[1] = alpha_use[1];
 	csymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 	return;
       }
     }
@@ -4685,17 +4602,16 @@ void BLAS_cge_sum_mv_testgen(int norm, enum blas_order_type order,
 	y_elem[0] = y_elem[1] = 0.0;
 	BLAS_sdot_testgen(2 * n_i, 0, 2 * n_i, norm,
 			  blas_no_conj,
-			  (void *) alpha_use, 1,
-			  (void *) beta_zero_fake, 1,
+			  alpha_use, 1,
+			  beta_zero_fake, 1,
 			  x_vec_2,
 			  a_vec_2, seed,
-			  y_elem, r_true_l_elem, r_true_t_elem);
+			  y_elem, head_r_true_elem, tail_r_true_elem);
 
 
-	/*multiply truth by 1+i 
-	   (we will multiply 1+i to x later) */
-	r_true_l_elem[1] = r_true_l_elem[0];
-	r_true_t_elem[1] = r_true_t_elem[0];
+	/*multiply truth by 1+i (we will multiply 1+i to x later) */
+	head_r_true_elem[1] = head_r_true_elem[0];
+	tail_r_true_elem[1] = tail_r_true_elem[0];
 	for (j = 0; j < 2 * n_i; j++) {
 	  a_vec[2 * j] = a_vec_2[j];
 	  a_vec[2 * j + 1] = 0.0;
@@ -4705,10 +4621,10 @@ void BLAS_cge_sum_mv_testgen(int norm, enum blas_order_type order,
 			  m_i, n_i, b, ldb, (a_vec + inca_veci * n_i), i);
 
 	/*commits an element to the truth */
-	r_true_l[ri] = r_true_l_elem[0];
-	r_true_l[ri + 1] = r_true_l_elem[1];
-	r_true_t[ri] = r_true_t_elem[0];
-	r_true_t[ri + 1] = r_true_t_elem[1];
+	head_r_true[ri] = head_r_true_elem[0];
+	head_r_true[ri + 1] = head_r_true_elem[1];
+	tail_r_true[ri] = tail_r_true_elem[0];
+	tail_r_true[ri + 1] = tail_r_true_elem[1];
       }
       /* copy to x_vec - will be copied to x_i later */
 
@@ -4718,8 +4634,8 @@ void BLAS_cge_sum_mv_testgen(int norm, enum blas_order_type order,
 	x_vec[2 * j] = x_vec_2[j];
 	x_vec[2 * j + 1] = x_vec_2[j];
       }
-      free(x_vec_2);
-      free(a_vec_2);
+      blas_free(x_vec_2);
+      blas_free(a_vec_2);
     } else {
       /*not case 3 */
 
@@ -4729,17 +4645,17 @@ void BLAS_cge_sum_mv_testgen(int norm, enum blas_order_type order,
 	BLAS_cdot_testgen(2 * n_i, 0, 2 * n_i, norm,
 			  blas_no_conj, &alpha_use, 1,
 			  &beta_zero_fake, 1, x_vec, a_vec, seed,
-			  y_elem, r_true_l_elem, r_true_t_elem);
+			  y_elem, head_r_true_elem, tail_r_true_elem);
 
 	cge_sum_mv_commit(order, m_i, n_i, a, lda, a_vec, i);
 	cge_sum_mv_commit(order,
 			  m_i, n_i, b, ldb, (a_vec + inca_veci * n_i), i);
 
 	/*commits an element to the truth */
-	r_true_l[ri] = r_true_l_elem[0];
-	r_true_l[ri + 1] = r_true_l_elem[1];
-	r_true_t[ri] = r_true_t_elem[0];
-	r_true_t[ri + 1] = r_true_t_elem[1];
+	head_r_true[ri] = head_r_true_elem[0];
+	head_r_true[ri + 1] = head_r_true_elem[1];
+	tail_r_true[ri] = tail_r_true_elem[0];
+	tail_r_true[ri + 1] = tail_r_true_elem[1];
       }
 
     }
@@ -4824,12 +4740,12 @@ void BLAS_cge_sum_mv_testgen(int norm, enum blas_order_type order,
 			    &alpha_use, 1,
 			    &beta_zero_fake, 1,
 			    x_vec, a_vec, seed,
-			    y_elem, r_true_l_elem, r_true_t_elem);
+			    y_elem, head_r_true_elem, tail_r_true_elem);
 
-	  r_true_l[ri] = r_true_l_elem[0];
-	  r_true_l[ri + 1] = r_true_l_elem[1];
-	  r_true_t[ri] = r_true_t_elem[0];
-	  r_true_t[ri + 1] = r_true_t_elem[1];
+	  head_r_true[ri] = head_r_true_elem[0];
+	  head_r_true[ri + 1] = head_r_true_elem[1];
+	  tail_r_true[ri] = tail_r_true_elem[0];
+	  tail_r_true[ri + 1] = tail_r_true_elem[1];
 	}
 
 	/*set a_use = 0 */
@@ -4872,8 +4788,8 @@ void BLAS_cge_sum_mv_testgen(int norm, enum blas_order_type order,
 	alpha_use_ptr_i[0] = alpha_use[0];
 	alpha_use_ptr_i[1] = alpha_use[1];
 	csymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 
 
 	return;
@@ -4891,12 +4807,12 @@ void BLAS_cge_sum_mv_testgen(int norm, enum blas_order_type order,
 			    &alpha_use, 1,
 			    &beta_zero_fake, 1,
 			    x_vec, a_vec, seed,
-			    y_elem, r_true_l_elem, r_true_t_elem);
+			    y_elem, head_r_true_elem, tail_r_true_elem);
 
-	  r_true_l[ri] = r_true_l_elem[0];
-	  r_true_l[ri + 1] = r_true_l_elem[1];
-	  r_true_t[ri] = r_true_t_elem[0];
-	  r_true_t[ri + 1] = r_true_t_elem[1];
+	  head_r_true[ri] = head_r_true_elem[0];
+	  head_r_true[ri + 1] = head_r_true_elem[1];
+	  tail_r_true[ri] = tail_r_true_elem[0];
+	  tail_r_true[ri + 1] = tail_r_true_elem[1];
 	}
 
 	/*set b_use = 0 */
@@ -4939,8 +4855,8 @@ void BLAS_cge_sum_mv_testgen(int norm, enum blas_order_type order,
 	alpha_use_ptr_i[0] = alpha_use[0];
 	alpha_use_ptr_i[1] = alpha_use[1];
 	csymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 
 
 	return;
@@ -4961,12 +4877,12 @@ void BLAS_cge_sum_mv_testgen(int norm, enum blas_order_type order,
 			  &alpha_use, 1,
 			  &beta_zero_fake, 1,
 			  x_vec, a_vec, seed,
-			  y_elem, r_true_l_elem, r_true_t_elem);
+			  y_elem, head_r_true_elem, tail_r_true_elem);
 
-	r_true_l[ri] = r_true_l_elem[0];
-	r_true_l[ri + 1] = r_true_l_elem[1];
-	r_true_t[ri] = r_true_t_elem[0];
-	r_true_t[ri + 1] = r_true_t_elem[1];
+	head_r_true[ri] = head_r_true_elem[0];
+	head_r_true[ri + 1] = head_r_true_elem[1];
+	tail_r_true[ri] = tail_r_true_elem[0];
+	tail_r_true[ri + 1] = tail_r_true_elem[1];
       }
     }
 
@@ -5520,8 +5436,8 @@ void BLAS_cge_sum_mv_testgen(int norm, enum blas_order_type order,
   /*copy x_vec into x : it is possible that the generator
      changed x_vec, even though none were free */
   csymv_copy_vector(n_i, x, incx, x_vec, 1);
-  free(a_vec);
-  free(x_vec);
+  blas_free(a_vec);
+  blas_free(x_vec);
 }
 void BLAS_zge_sum_mv_testgen(int norm, enum blas_order_type order,
 			     int m, int n, int randomize,
@@ -5529,7 +5445,7 @@ void BLAS_zge_sum_mv_testgen(int norm, enum blas_order_type order,
 			     int beta_flag, void *a, int lda, void *b,
 			     int ldb, void *x, int incx, void *alpha_use_ptr,
 			     void *a_use, void *b_use, int *seed,
-			     double *r_true_l, double *r_true_t)
+			     double *head_r_true, double *tail_r_true)
 
 /*
  * Purpose
@@ -5605,10 +5521,10 @@ void BLAS_zge_sum_mv_testgen(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * double  (output) *r_true_l
+ * double  (output) *head_r_true
  *         the leading part of the truth in double-double.
  *
- * double  (output) *r_true_t
+ * double  (output) *tail_r_true
  *         the trailing part of the truth in double-double
  *
  *
@@ -5673,15 +5589,13 @@ void BLAS_zge_sum_mv_testgen(int norm, enum blas_order_type order,
   double beta_zero_fake[2];
   double a_elem[2];
   double x_elem[2];
-  double r_true_t_elem[2];
-  double r_true_l_elem[2];
+  double head_r_true_elem[2], tail_r_true_elem[2];
   double multiplier;
   double divider;
   double alpha_use[2];
 
   double *a_vec;
   double *x_vec;
-
 
   double *alpha_use_ptr_i = (double *) alpha_use_ptr;
   double *alpha_i = (double *) alpha;
@@ -5701,8 +5615,6 @@ void BLAS_zge_sum_mv_testgen(int norm, enum blas_order_type order,
   inca_veci = 1;
   inca_veci *= 2;
 
-
-
   a_vec = (double *) blas_malloc(2 * n_i * sizeof(double) * 2);
   if (2 * n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -5712,7 +5624,6 @@ void BLAS_zge_sum_mv_testgen(int norm, enum blas_order_type order,
     a_vec[i + 1] = 0.0;
   }
 
-
   incri = 1;
   incri *= 2;
 
@@ -5720,7 +5631,6 @@ void BLAS_zge_sum_mv_testgen(int norm, enum blas_order_type order,
   incx_veci = 1;
   incx_veci *= 2;
   incxi *= 2;
-
 
   if (incxi < 0) {
     x_starti = (-n + 1) * incxi;
@@ -5846,15 +5756,15 @@ void BLAS_zge_sum_mv_testgen(int norm, enum blas_order_type order,
 	  BLAS_zdot_testgen(n_i, 0, n_i, norm,
 			    blas_no_conj, &alpha_use, 1,
 			    &beta_zero_fake, 1, x_vec, a_vec, seed,
-			    y_elem, r_true_l_elem, r_true_t_elem);
+			    y_elem, head_r_true_elem, tail_r_true_elem);
 
 	  zge_sum_mv_commit(order, m_i, n_i, a, lda, a_vec, i);
 
 	  /*commits an element to the truth */
-	  r_true_l[ri] = r_true_l_elem[0];
-	  r_true_l[ri + 1] = r_true_l_elem[1];
-	  r_true_t[ri] = r_true_t_elem[0];
-	  r_true_t[ri + 1] = r_true_t_elem[1];
+	  head_r_true[ri] = head_r_true_elem[0];
+	  head_r_true[ri + 1] = head_r_true_elem[1];
+	  tail_r_true[ri] = tail_r_true_elem[0];
+	  tail_r_true[ri + 1] = tail_r_true_elem[1];
 	}
 
 	/*now fill a, x, and return */
@@ -5921,8 +5831,8 @@ void BLAS_zge_sum_mv_testgen(int norm, enum blas_order_type order,
 	alpha_i[0] = alpha_use[0];
 	alpha_i[1] = alpha_use[1];
 	zsymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 	return;
       } else {
 
@@ -5933,15 +5843,15 @@ void BLAS_zge_sum_mv_testgen(int norm, enum blas_order_type order,
 	  BLAS_zdot_testgen(n_i, 0, n_i, norm,
 			    blas_no_conj, &alpha_use, 1,
 			    &beta_zero_fake, 1, x_vec, a_vec, seed,
-			    y_elem, r_true_l_elem, r_true_t_elem);
+			    y_elem, head_r_true_elem, tail_r_true_elem);
 
 	  zge_sum_mv_commit(order, m_i, n_i, b, ldb, a_vec, i);
 
 	  /*commits an element to the truth */
-	  r_true_l[ri] = r_true_l_elem[0];
-	  r_true_l[ri + 1] = r_true_l_elem[1];
-	  r_true_t[ri] = r_true_t_elem[0];
-	  r_true_t[ri + 1] = r_true_t_elem[1];
+	  head_r_true[ri] = head_r_true_elem[0];
+	  head_r_true[ri + 1] = head_r_true_elem[1];
+	  tail_r_true[ri] = tail_r_true_elem[0];
+	  tail_r_true[ri + 1] = tail_r_true_elem[1];
 	}
 
 	/*now fill b, x, and return */
@@ -6008,8 +5918,8 @@ void BLAS_zge_sum_mv_testgen(int norm, enum blas_order_type order,
 	beta_i[0] = alpha_use[0];
 	beta_i[1] = alpha_use[1];
 	zsymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 	return;
       }
     }
@@ -6052,17 +5962,16 @@ void BLAS_zge_sum_mv_testgen(int norm, enum blas_order_type order,
 	y_elem[0] = y_elem[1] = 0.0;
 	BLAS_ddot_testgen(2 * n_i, 0, 2 * n_i, norm,
 			  blas_no_conj,
-			  (void *) alpha_use, 1,
-			  (void *) beta_zero_fake, 1,
+			  alpha_use, 1,
+			  beta_zero_fake, 1,
 			  x_vec_2,
 			  a_vec_2, seed,
-			  y_elem, r_true_l_elem, r_true_t_elem);
+			  y_elem, head_r_true_elem, tail_r_true_elem);
 
 
-	/*multiply truth by 1+i 
-	   (we will multiply 1+i to x later) */
-	r_true_l_elem[1] = r_true_l_elem[0];
-	r_true_t_elem[1] = r_true_t_elem[0];
+	/*multiply truth by 1+i (we will multiply 1+i to x later) */
+	head_r_true_elem[1] = head_r_true_elem[0];
+	tail_r_true_elem[1] = tail_r_true_elem[0];
 	for (j = 0; j < 2 * n_i; j++) {
 	  a_vec[2 * j] = a_vec_2[j];
 	  a_vec[2 * j + 1] = 0.0;
@@ -6072,10 +5981,10 @@ void BLAS_zge_sum_mv_testgen(int norm, enum blas_order_type order,
 			  m_i, n_i, b, ldb, (a_vec + inca_veci * n_i), i);
 
 	/*commits an element to the truth */
-	r_true_l[ri] = r_true_l_elem[0];
-	r_true_l[ri + 1] = r_true_l_elem[1];
-	r_true_t[ri] = r_true_t_elem[0];
-	r_true_t[ri + 1] = r_true_t_elem[1];
+	head_r_true[ri] = head_r_true_elem[0];
+	head_r_true[ri + 1] = head_r_true_elem[1];
+	tail_r_true[ri] = tail_r_true_elem[0];
+	tail_r_true[ri + 1] = tail_r_true_elem[1];
       }
       /* copy to x_vec - will be copied to x_i later */
 
@@ -6085,8 +5994,8 @@ void BLAS_zge_sum_mv_testgen(int norm, enum blas_order_type order,
 	x_vec[2 * j] = x_vec_2[j];
 	x_vec[2 * j + 1] = x_vec_2[j];
       }
-      free(x_vec_2);
-      free(a_vec_2);
+      blas_free(x_vec_2);
+      blas_free(a_vec_2);
     } else {
       /*not case 3 */
 
@@ -6096,17 +6005,17 @@ void BLAS_zge_sum_mv_testgen(int norm, enum blas_order_type order,
 	BLAS_zdot_testgen(2 * n_i, 0, 2 * n_i, norm,
 			  blas_no_conj, &alpha_use, 1,
 			  &beta_zero_fake, 1, x_vec, a_vec, seed,
-			  y_elem, r_true_l_elem, r_true_t_elem);
+			  y_elem, head_r_true_elem, tail_r_true_elem);
 
 	zge_sum_mv_commit(order, m_i, n_i, a, lda, a_vec, i);
 	zge_sum_mv_commit(order,
 			  m_i, n_i, b, ldb, (a_vec + inca_veci * n_i), i);
 
 	/*commits an element to the truth */
-	r_true_l[ri] = r_true_l_elem[0];
-	r_true_l[ri + 1] = r_true_l_elem[1];
-	r_true_t[ri] = r_true_t_elem[0];
-	r_true_t[ri + 1] = r_true_t_elem[1];
+	head_r_true[ri] = head_r_true_elem[0];
+	head_r_true[ri + 1] = head_r_true_elem[1];
+	tail_r_true[ri] = tail_r_true_elem[0];
+	tail_r_true[ri + 1] = tail_r_true_elem[1];
       }
 
     }
@@ -6233,12 +6142,12 @@ void BLAS_zge_sum_mv_testgen(int norm, enum blas_order_type order,
 			    &alpha_use, 1,
 			    &beta_zero_fake, 1,
 			    x_vec, a_vec, seed,
-			    y_elem, r_true_l_elem, r_true_t_elem);
+			    y_elem, head_r_true_elem, tail_r_true_elem);
 
-	  r_true_l[ri] = r_true_l_elem[0];
-	  r_true_l[ri + 1] = r_true_l_elem[1];
-	  r_true_t[ri] = r_true_t_elem[0];
-	  r_true_t[ri + 1] = r_true_t_elem[1];
+	  head_r_true[ri] = head_r_true_elem[0];
+	  head_r_true[ri + 1] = head_r_true_elem[1];
+	  tail_r_true[ri] = tail_r_true_elem[0];
+	  tail_r_true[ri + 1] = tail_r_true_elem[1];
 	}
 
 	/*set a_use = 0 */
@@ -6281,8 +6190,8 @@ void BLAS_zge_sum_mv_testgen(int norm, enum blas_order_type order,
 	alpha_use_ptr_i[0] = alpha_use[0];
 	alpha_use_ptr_i[1] = alpha_use[1];
 	zsymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 
 
 	return;
@@ -6300,12 +6209,12 @@ void BLAS_zge_sum_mv_testgen(int norm, enum blas_order_type order,
 			    &alpha_use, 1,
 			    &beta_zero_fake, 1,
 			    x_vec, a_vec, seed,
-			    y_elem, r_true_l_elem, r_true_t_elem);
+			    y_elem, head_r_true_elem, tail_r_true_elem);
 
-	  r_true_l[ri] = r_true_l_elem[0];
-	  r_true_l[ri + 1] = r_true_l_elem[1];
-	  r_true_t[ri] = r_true_t_elem[0];
-	  r_true_t[ri + 1] = r_true_t_elem[1];
+	  head_r_true[ri] = head_r_true_elem[0];
+	  head_r_true[ri + 1] = head_r_true_elem[1];
+	  tail_r_true[ri] = tail_r_true_elem[0];
+	  tail_r_true[ri + 1] = tail_r_true_elem[1];
 	}
 
 	/*set b_use = 0 */
@@ -6348,8 +6257,8 @@ void BLAS_zge_sum_mv_testgen(int norm, enum blas_order_type order,
 	alpha_use_ptr_i[0] = alpha_use[0];
 	alpha_use_ptr_i[1] = alpha_use[1];
 	zsymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 
 
 	return;
@@ -6370,12 +6279,12 @@ void BLAS_zge_sum_mv_testgen(int norm, enum blas_order_type order,
 			  &alpha_use, 1,
 			  &beta_zero_fake, 1,
 			  x_vec, a_vec, seed,
-			  y_elem, r_true_l_elem, r_true_t_elem);
+			  y_elem, head_r_true_elem, tail_r_true_elem);
 
-	r_true_l[ri] = r_true_l_elem[0];
-	r_true_l[ri + 1] = r_true_l_elem[1];
-	r_true_t[ri] = r_true_t_elem[0];
-	r_true_t[ri + 1] = r_true_t_elem[1];
+	head_r_true[ri] = head_r_true_elem[0];
+	head_r_true[ri + 1] = head_r_true_elem[1];
+	tail_r_true[ri] = tail_r_true_elem[0];
+	tail_r_true[ri + 1] = tail_r_true_elem[1];
       }
     }
 
@@ -6985,8 +6894,8 @@ void BLAS_zge_sum_mv_testgen(int norm, enum blas_order_type order,
   /*copy x_vec into x : it is possible that the generator
      changed x_vec, even though none were free */
   zsymv_copy_vector(n_i, x, incx, x_vec, 1);
-  free(a_vec);
-  free(x_vec);
+  blas_free(a_vec);
+  blas_free(x_vec);
 }
 void BLAS_zge_sum_mv_c_z_testgen(int norm, enum blas_order_type order,
 				 int m, int n, int randomize,
@@ -6994,8 +6903,8 @@ void BLAS_zge_sum_mv_c_z_testgen(int norm, enum blas_order_type order,
 				 int beta_flag, void *a, int lda, void *b,
 				 int ldb, void *x, int incx,
 				 void *alpha_use_ptr, void *a_use,
-				 void *b_use, int *seed, double *r_true_l,
-				 double *r_true_t)
+				 void *b_use, int *seed, double *head_r_true,
+				 double *tail_r_true)
 
 /*
  * Purpose
@@ -7071,10 +6980,10 @@ void BLAS_zge_sum_mv_c_z_testgen(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * double  (output) *r_true_l
+ * double  (output) *head_r_true
  *         the leading part of the truth in double-double.
  *
- * double  (output) *r_true_t
+ * double  (output) *tail_r_true
  *         the trailing part of the truth in double-double
  *
  *
@@ -7139,15 +7048,13 @@ void BLAS_zge_sum_mv_c_z_testgen(int norm, enum blas_order_type order,
   double beta_zero_fake[2];
   float a_elem[2];
   double x_elem[2];
-  double r_true_t_elem[2];
-  double r_true_l_elem[2];
+  double head_r_true_elem[2], tail_r_true_elem[2];
   double multiplier;
   double divider;
   double alpha_use[2];
 
   float *a_vec;
   double *x_vec;
-
 
   double *alpha_use_ptr_i = (double *) alpha_use_ptr;
   double *alpha_i = (double *) alpha;
@@ -7167,8 +7074,6 @@ void BLAS_zge_sum_mv_c_z_testgen(int norm, enum blas_order_type order,
   inca_veci = 1;
   inca_veci *= 2;
 
-
-
   a_vec = (float *) blas_malloc(2 * n_i * sizeof(float) * 2);
   if (2 * n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -7178,7 +7083,6 @@ void BLAS_zge_sum_mv_c_z_testgen(int norm, enum blas_order_type order,
     a_vec[i + 1] = 0.0;
   }
 
-
   incri = 1;
   incri *= 2;
 
@@ -7186,7 +7090,6 @@ void BLAS_zge_sum_mv_c_z_testgen(int norm, enum blas_order_type order,
   incx_veci = 1;
   incx_veci *= 2;
   incxi *= 2;
-
 
   if (incxi < 0) {
     x_starti = (-n + 1) * incxi;
@@ -7312,15 +7215,15 @@ void BLAS_zge_sum_mv_c_z_testgen(int norm, enum blas_order_type order,
 	  BLAS_zdot_z_c_testgen(n_i, 0, n_i, norm,
 				blas_no_conj, &alpha_use, 1,
 				&beta_zero_fake, 1, x_vec, a_vec, seed,
-				y_elem, r_true_l_elem, r_true_t_elem);
+				y_elem, head_r_true_elem, tail_r_true_elem);
 
 	  cge_sum_mv_commit(order, m_i, n_i, a, lda, a_vec, i);
 
 	  /*commits an element to the truth */
-	  r_true_l[ri] = r_true_l_elem[0];
-	  r_true_l[ri + 1] = r_true_l_elem[1];
-	  r_true_t[ri] = r_true_t_elem[0];
-	  r_true_t[ri + 1] = r_true_t_elem[1];
+	  head_r_true[ri] = head_r_true_elem[0];
+	  head_r_true[ri + 1] = head_r_true_elem[1];
+	  tail_r_true[ri] = tail_r_true_elem[0];
+	  tail_r_true[ri + 1] = tail_r_true_elem[1];
 	}
 
 	/*now fill a, x, and return */
@@ -7387,8 +7290,8 @@ void BLAS_zge_sum_mv_c_z_testgen(int norm, enum blas_order_type order,
 	alpha_i[0] = alpha_use[0];
 	alpha_i[1] = alpha_use[1];
 	zsymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 	return;
       } else {
 
@@ -7399,15 +7302,15 @@ void BLAS_zge_sum_mv_c_z_testgen(int norm, enum blas_order_type order,
 	  BLAS_zdot_z_c_testgen(n_i, 0, n_i, norm,
 				blas_no_conj, &alpha_use, 1,
 				&beta_zero_fake, 1, x_vec, a_vec, seed,
-				y_elem, r_true_l_elem, r_true_t_elem);
+				y_elem, head_r_true_elem, tail_r_true_elem);
 
 	  cge_sum_mv_commit(order, m_i, n_i, b, ldb, a_vec, i);
 
 	  /*commits an element to the truth */
-	  r_true_l[ri] = r_true_l_elem[0];
-	  r_true_l[ri + 1] = r_true_l_elem[1];
-	  r_true_t[ri] = r_true_t_elem[0];
-	  r_true_t[ri + 1] = r_true_t_elem[1];
+	  head_r_true[ri] = head_r_true_elem[0];
+	  head_r_true[ri + 1] = head_r_true_elem[1];
+	  tail_r_true[ri] = tail_r_true_elem[0];
+	  tail_r_true[ri + 1] = tail_r_true_elem[1];
 	}
 
 	/*now fill b, x, and return */
@@ -7474,8 +7377,8 @@ void BLAS_zge_sum_mv_c_z_testgen(int norm, enum blas_order_type order,
 	beta_i[0] = alpha_use[0];
 	beta_i[1] = alpha_use[1];
 	zsymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 	return;
       }
     }
@@ -7518,17 +7421,16 @@ void BLAS_zge_sum_mv_c_z_testgen(int norm, enum blas_order_type order,
 	y_elem[0] = y_elem[1] = 0.0;
 	BLAS_ddot_d_s_testgen(2 * n_i, 0, 2 * n_i, norm,
 			      blas_no_conj,
-			      (void *) alpha_use, 1,
-			      (void *) beta_zero_fake, 1,
+			      alpha_use, 1,
+			      beta_zero_fake, 1,
 			      x_vec_2,
 			      a_vec_2, seed,
-			      y_elem, r_true_l_elem, r_true_t_elem);
+			      y_elem, head_r_true_elem, tail_r_true_elem);
 
 
-	/*multiply truth by 1+i 
-	   (we will multiply 1+i to x later) */
-	r_true_l_elem[1] = r_true_l_elem[0];
-	r_true_t_elem[1] = r_true_t_elem[0];
+	/*multiply truth by 1+i (we will multiply 1+i to x later) */
+	head_r_true_elem[1] = head_r_true_elem[0];
+	tail_r_true_elem[1] = tail_r_true_elem[0];
 	for (j = 0; j < 2 * n_i; j++) {
 	  a_vec[2 * j] = a_vec_2[j];
 	  a_vec[2 * j + 1] = 0.0;
@@ -7538,10 +7440,10 @@ void BLAS_zge_sum_mv_c_z_testgen(int norm, enum blas_order_type order,
 			  m_i, n_i, b, ldb, (a_vec + inca_veci * n_i), i);
 
 	/*commits an element to the truth */
-	r_true_l[ri] = r_true_l_elem[0];
-	r_true_l[ri + 1] = r_true_l_elem[1];
-	r_true_t[ri] = r_true_t_elem[0];
-	r_true_t[ri + 1] = r_true_t_elem[1];
+	head_r_true[ri] = head_r_true_elem[0];
+	head_r_true[ri + 1] = head_r_true_elem[1];
+	tail_r_true[ri] = tail_r_true_elem[0];
+	tail_r_true[ri + 1] = tail_r_true_elem[1];
       }
       /* copy to x_vec - will be copied to x_i later */
 
@@ -7551,8 +7453,8 @@ void BLAS_zge_sum_mv_c_z_testgen(int norm, enum blas_order_type order,
 	x_vec[2 * j] = x_vec_2[j];
 	x_vec[2 * j + 1] = x_vec_2[j];
       }
-      free(x_vec_2);
-      free(a_vec_2);
+      blas_free(x_vec_2);
+      blas_free(a_vec_2);
     } else {
       /*not case 3 */
 
@@ -7562,17 +7464,17 @@ void BLAS_zge_sum_mv_c_z_testgen(int norm, enum blas_order_type order,
 	BLAS_zdot_z_c_testgen(2 * n_i, 0, 2 * n_i, norm,
 			      blas_no_conj, &alpha_use, 1,
 			      &beta_zero_fake, 1, x_vec, a_vec, seed,
-			      y_elem, r_true_l_elem, r_true_t_elem);
+			      y_elem, head_r_true_elem, tail_r_true_elem);
 
 	cge_sum_mv_commit(order, m_i, n_i, a, lda, a_vec, i);
 	cge_sum_mv_commit(order,
 			  m_i, n_i, b, ldb, (a_vec + inca_veci * n_i), i);
 
 	/*commits an element to the truth */
-	r_true_l[ri] = r_true_l_elem[0];
-	r_true_l[ri + 1] = r_true_l_elem[1];
-	r_true_t[ri] = r_true_t_elem[0];
-	r_true_t[ri + 1] = r_true_t_elem[1];
+	head_r_true[ri] = head_r_true_elem[0];
+	head_r_true[ri + 1] = head_r_true_elem[1];
+	tail_r_true[ri] = tail_r_true_elem[0];
+	tail_r_true[ri + 1] = tail_r_true_elem[1];
       }
 
     }
@@ -7699,12 +7601,12 @@ void BLAS_zge_sum_mv_c_z_testgen(int norm, enum blas_order_type order,
 				&alpha_use, 1,
 				&beta_zero_fake, 1,
 				x_vec, a_vec, seed,
-				y_elem, r_true_l_elem, r_true_t_elem);
+				y_elem, head_r_true_elem, tail_r_true_elem);
 
-	  r_true_l[ri] = r_true_l_elem[0];
-	  r_true_l[ri + 1] = r_true_l_elem[1];
-	  r_true_t[ri] = r_true_t_elem[0];
-	  r_true_t[ri + 1] = r_true_t_elem[1];
+	  head_r_true[ri] = head_r_true_elem[0];
+	  head_r_true[ri + 1] = head_r_true_elem[1];
+	  tail_r_true[ri] = tail_r_true_elem[0];
+	  tail_r_true[ri + 1] = tail_r_true_elem[1];
 	}
 
 	/*set a_use = 0 */
@@ -7747,8 +7649,8 @@ void BLAS_zge_sum_mv_c_z_testgen(int norm, enum blas_order_type order,
 	alpha_use_ptr_i[0] = alpha_use[0];
 	alpha_use_ptr_i[1] = alpha_use[1];
 	zsymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 
 
 	return;
@@ -7766,12 +7668,12 @@ void BLAS_zge_sum_mv_c_z_testgen(int norm, enum blas_order_type order,
 				&alpha_use, 1,
 				&beta_zero_fake, 1,
 				x_vec, a_vec, seed,
-				y_elem, r_true_l_elem, r_true_t_elem);
+				y_elem, head_r_true_elem, tail_r_true_elem);
 
-	  r_true_l[ri] = r_true_l_elem[0];
-	  r_true_l[ri + 1] = r_true_l_elem[1];
-	  r_true_t[ri] = r_true_t_elem[0];
-	  r_true_t[ri + 1] = r_true_t_elem[1];
+	  head_r_true[ri] = head_r_true_elem[0];
+	  head_r_true[ri + 1] = head_r_true_elem[1];
+	  tail_r_true[ri] = tail_r_true_elem[0];
+	  tail_r_true[ri + 1] = tail_r_true_elem[1];
 	}
 
 	/*set b_use = 0 */
@@ -7814,8 +7716,8 @@ void BLAS_zge_sum_mv_c_z_testgen(int norm, enum blas_order_type order,
 	alpha_use_ptr_i[0] = alpha_use[0];
 	alpha_use_ptr_i[1] = alpha_use[1];
 	zsymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 
 
 	return;
@@ -7836,12 +7738,12 @@ void BLAS_zge_sum_mv_c_z_testgen(int norm, enum blas_order_type order,
 			      &alpha_use, 1,
 			      &beta_zero_fake, 1,
 			      x_vec, a_vec, seed,
-			      y_elem, r_true_l_elem, r_true_t_elem);
+			      y_elem, head_r_true_elem, tail_r_true_elem);
 
-	r_true_l[ri] = r_true_l_elem[0];
-	r_true_l[ri + 1] = r_true_l_elem[1];
-	r_true_t[ri] = r_true_t_elem[0];
-	r_true_t[ri + 1] = r_true_t_elem[1];
+	head_r_true[ri] = head_r_true_elem[0];
+	head_r_true[ri + 1] = head_r_true_elem[1];
+	tail_r_true[ri] = tail_r_true_elem[0];
+	tail_r_true[ri + 1] = tail_r_true_elem[1];
       }
     }
 
@@ -8395,8 +8297,8 @@ void BLAS_zge_sum_mv_c_z_testgen(int norm, enum blas_order_type order,
   /*copy x_vec into x : it is possible that the generator
      changed x_vec, even though none were free */
   zsymv_copy_vector(n_i, x, incx, x_vec, 1);
-  free(a_vec);
-  free(x_vec);
+  blas_free(a_vec);
+  blas_free(x_vec);
 }
 void BLAS_zge_sum_mv_z_c_testgen(int norm, enum blas_order_type order,
 				 int m, int n, int randomize,
@@ -8404,8 +8306,8 @@ void BLAS_zge_sum_mv_z_c_testgen(int norm, enum blas_order_type order,
 				 int beta_flag, void *a, int lda, void *b,
 				 int ldb, void *x, int incx,
 				 void *alpha_use_ptr, void *a_use,
-				 void *b_use, int *seed, double *r_true_l,
-				 double *r_true_t)
+				 void *b_use, int *seed, double *head_r_true,
+				 double *tail_r_true)
 
 /*
  * Purpose
@@ -8481,10 +8383,10 @@ void BLAS_zge_sum_mv_z_c_testgen(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * double  (output) *r_true_l
+ * double  (output) *head_r_true
  *         the leading part of the truth in double-double.
  *
- * double  (output) *r_true_t
+ * double  (output) *tail_r_true
  *         the trailing part of the truth in double-double
  *
  *
@@ -8549,15 +8451,13 @@ void BLAS_zge_sum_mv_z_c_testgen(int norm, enum blas_order_type order,
   double beta_zero_fake[2];
   double a_elem[2];
   float x_elem[2];
-  double r_true_t_elem[2];
-  double r_true_l_elem[2];
+  double head_r_true_elem[2], tail_r_true_elem[2];
   double multiplier;
   double divider;
   double alpha_use[2];
 
   double *a_vec;
   float *x_vec;
-
 
   double *alpha_use_ptr_i = (double *) alpha_use_ptr;
   double *alpha_i = (double *) alpha;
@@ -8577,8 +8477,6 @@ void BLAS_zge_sum_mv_z_c_testgen(int norm, enum blas_order_type order,
   inca_veci = 1;
   inca_veci *= 2;
 
-
-
   a_vec = (double *) blas_malloc(2 * n_i * sizeof(double) * 2);
   if (2 * n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -8588,7 +8486,6 @@ void BLAS_zge_sum_mv_z_c_testgen(int norm, enum blas_order_type order,
     a_vec[i + 1] = 0.0;
   }
 
-
   incri = 1;
   incri *= 2;
 
@@ -8596,7 +8493,6 @@ void BLAS_zge_sum_mv_z_c_testgen(int norm, enum blas_order_type order,
   incx_veci = 1;
   incx_veci *= 2;
   incxi *= 2;
-
 
   if (incxi < 0) {
     x_starti = (-n + 1) * incxi;
@@ -8722,15 +8618,15 @@ void BLAS_zge_sum_mv_z_c_testgen(int norm, enum blas_order_type order,
 	  BLAS_zdot_c_z_testgen(n_i, 0, n_i, norm,
 				blas_no_conj, &alpha_use, 1,
 				&beta_zero_fake, 1, x_vec, a_vec, seed,
-				y_elem, r_true_l_elem, r_true_t_elem);
+				y_elem, head_r_true_elem, tail_r_true_elem);
 
 	  zge_sum_mv_commit(order, m_i, n_i, a, lda, a_vec, i);
 
 	  /*commits an element to the truth */
-	  r_true_l[ri] = r_true_l_elem[0];
-	  r_true_l[ri + 1] = r_true_l_elem[1];
-	  r_true_t[ri] = r_true_t_elem[0];
-	  r_true_t[ri + 1] = r_true_t_elem[1];
+	  head_r_true[ri] = head_r_true_elem[0];
+	  head_r_true[ri + 1] = head_r_true_elem[1];
+	  tail_r_true[ri] = tail_r_true_elem[0];
+	  tail_r_true[ri + 1] = tail_r_true_elem[1];
 	}
 
 	/*now fill a, x, and return */
@@ -8797,8 +8693,8 @@ void BLAS_zge_sum_mv_z_c_testgen(int norm, enum blas_order_type order,
 	alpha_i[0] = alpha_use[0];
 	alpha_i[1] = alpha_use[1];
 	csymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 	return;
       } else {
 
@@ -8809,15 +8705,15 @@ void BLAS_zge_sum_mv_z_c_testgen(int norm, enum blas_order_type order,
 	  BLAS_zdot_c_z_testgen(n_i, 0, n_i, norm,
 				blas_no_conj, &alpha_use, 1,
 				&beta_zero_fake, 1, x_vec, a_vec, seed,
-				y_elem, r_true_l_elem, r_true_t_elem);
+				y_elem, head_r_true_elem, tail_r_true_elem);
 
 	  zge_sum_mv_commit(order, m_i, n_i, b, ldb, a_vec, i);
 
 	  /*commits an element to the truth */
-	  r_true_l[ri] = r_true_l_elem[0];
-	  r_true_l[ri + 1] = r_true_l_elem[1];
-	  r_true_t[ri] = r_true_t_elem[0];
-	  r_true_t[ri + 1] = r_true_t_elem[1];
+	  head_r_true[ri] = head_r_true_elem[0];
+	  head_r_true[ri + 1] = head_r_true_elem[1];
+	  tail_r_true[ri] = tail_r_true_elem[0];
+	  tail_r_true[ri + 1] = tail_r_true_elem[1];
 	}
 
 	/*now fill b, x, and return */
@@ -8884,8 +8780,8 @@ void BLAS_zge_sum_mv_z_c_testgen(int norm, enum blas_order_type order,
 	beta_i[0] = alpha_use[0];
 	beta_i[1] = alpha_use[1];
 	csymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 	return;
       }
     }
@@ -8928,17 +8824,16 @@ void BLAS_zge_sum_mv_z_c_testgen(int norm, enum blas_order_type order,
 	y_elem[0] = y_elem[1] = 0.0;
 	BLAS_ddot_s_d_testgen(2 * n_i, 0, 2 * n_i, norm,
 			      blas_no_conj,
-			      (void *) alpha_use, 1,
-			      (void *) beta_zero_fake, 1,
+			      alpha_use, 1,
+			      beta_zero_fake, 1,
 			      x_vec_2,
 			      a_vec_2, seed,
-			      y_elem, r_true_l_elem, r_true_t_elem);
+			      y_elem, head_r_true_elem, tail_r_true_elem);
 
 
-	/*multiply truth by 1+i 
-	   (we will multiply 1+i to x later) */
-	r_true_l_elem[1] = r_true_l_elem[0];
-	r_true_t_elem[1] = r_true_t_elem[0];
+	/*multiply truth by 1+i (we will multiply 1+i to x later) */
+	head_r_true_elem[1] = head_r_true_elem[0];
+	tail_r_true_elem[1] = tail_r_true_elem[0];
 	for (j = 0; j < 2 * n_i; j++) {
 	  a_vec[2 * j] = a_vec_2[j];
 	  a_vec[2 * j + 1] = 0.0;
@@ -8948,10 +8843,10 @@ void BLAS_zge_sum_mv_z_c_testgen(int norm, enum blas_order_type order,
 			  m_i, n_i, b, ldb, (a_vec + inca_veci * n_i), i);
 
 	/*commits an element to the truth */
-	r_true_l[ri] = r_true_l_elem[0];
-	r_true_l[ri + 1] = r_true_l_elem[1];
-	r_true_t[ri] = r_true_t_elem[0];
-	r_true_t[ri + 1] = r_true_t_elem[1];
+	head_r_true[ri] = head_r_true_elem[0];
+	head_r_true[ri + 1] = head_r_true_elem[1];
+	tail_r_true[ri] = tail_r_true_elem[0];
+	tail_r_true[ri + 1] = tail_r_true_elem[1];
       }
       /* copy to x_vec - will be copied to x_i later */
 
@@ -8961,8 +8856,8 @@ void BLAS_zge_sum_mv_z_c_testgen(int norm, enum blas_order_type order,
 	x_vec[2 * j] = x_vec_2[j];
 	x_vec[2 * j + 1] = x_vec_2[j];
       }
-      free(x_vec_2);
-      free(a_vec_2);
+      blas_free(x_vec_2);
+      blas_free(a_vec_2);
     } else {
       /*not case 3 */
 
@@ -8972,17 +8867,17 @@ void BLAS_zge_sum_mv_z_c_testgen(int norm, enum blas_order_type order,
 	BLAS_zdot_c_z_testgen(2 * n_i, 0, 2 * n_i, norm,
 			      blas_no_conj, &alpha_use, 1,
 			      &beta_zero_fake, 1, x_vec, a_vec, seed,
-			      y_elem, r_true_l_elem, r_true_t_elem);
+			      y_elem, head_r_true_elem, tail_r_true_elem);
 
 	zge_sum_mv_commit(order, m_i, n_i, a, lda, a_vec, i);
 	zge_sum_mv_commit(order,
 			  m_i, n_i, b, ldb, (a_vec + inca_veci * n_i), i);
 
 	/*commits an element to the truth */
-	r_true_l[ri] = r_true_l_elem[0];
-	r_true_l[ri + 1] = r_true_l_elem[1];
-	r_true_t[ri] = r_true_t_elem[0];
-	r_true_t[ri + 1] = r_true_t_elem[1];
+	head_r_true[ri] = head_r_true_elem[0];
+	head_r_true[ri + 1] = head_r_true_elem[1];
+	tail_r_true[ri] = tail_r_true_elem[0];
+	tail_r_true[ri + 1] = tail_r_true_elem[1];
       }
 
     }
@@ -9109,12 +9004,12 @@ void BLAS_zge_sum_mv_z_c_testgen(int norm, enum blas_order_type order,
 				&alpha_use, 1,
 				&beta_zero_fake, 1,
 				x_vec, a_vec, seed,
-				y_elem, r_true_l_elem, r_true_t_elem);
+				y_elem, head_r_true_elem, tail_r_true_elem);
 
-	  r_true_l[ri] = r_true_l_elem[0];
-	  r_true_l[ri + 1] = r_true_l_elem[1];
-	  r_true_t[ri] = r_true_t_elem[0];
-	  r_true_t[ri + 1] = r_true_t_elem[1];
+	  head_r_true[ri] = head_r_true_elem[0];
+	  head_r_true[ri + 1] = head_r_true_elem[1];
+	  tail_r_true[ri] = tail_r_true_elem[0];
+	  tail_r_true[ri + 1] = tail_r_true_elem[1];
 	}
 
 	/*set a_use = 0 */
@@ -9157,8 +9052,8 @@ void BLAS_zge_sum_mv_z_c_testgen(int norm, enum blas_order_type order,
 	alpha_use_ptr_i[0] = alpha_use[0];
 	alpha_use_ptr_i[1] = alpha_use[1];
 	csymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 
 
 	return;
@@ -9176,12 +9071,12 @@ void BLAS_zge_sum_mv_z_c_testgen(int norm, enum blas_order_type order,
 				&alpha_use, 1,
 				&beta_zero_fake, 1,
 				x_vec, a_vec, seed,
-				y_elem, r_true_l_elem, r_true_t_elem);
+				y_elem, head_r_true_elem, tail_r_true_elem);
 
-	  r_true_l[ri] = r_true_l_elem[0];
-	  r_true_l[ri + 1] = r_true_l_elem[1];
-	  r_true_t[ri] = r_true_t_elem[0];
-	  r_true_t[ri + 1] = r_true_t_elem[1];
+	  head_r_true[ri] = head_r_true_elem[0];
+	  head_r_true[ri + 1] = head_r_true_elem[1];
+	  tail_r_true[ri] = tail_r_true_elem[0];
+	  tail_r_true[ri + 1] = tail_r_true_elem[1];
 	}
 
 	/*set b_use = 0 */
@@ -9224,8 +9119,8 @@ void BLAS_zge_sum_mv_z_c_testgen(int norm, enum blas_order_type order,
 	alpha_use_ptr_i[0] = alpha_use[0];
 	alpha_use_ptr_i[1] = alpha_use[1];
 	csymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 
 
 	return;
@@ -9246,12 +9141,12 @@ void BLAS_zge_sum_mv_z_c_testgen(int norm, enum blas_order_type order,
 			      &alpha_use, 1,
 			      &beta_zero_fake, 1,
 			      x_vec, a_vec, seed,
-			      y_elem, r_true_l_elem, r_true_t_elem);
+			      y_elem, head_r_true_elem, tail_r_true_elem);
 
-	r_true_l[ri] = r_true_l_elem[0];
-	r_true_l[ri + 1] = r_true_l_elem[1];
-	r_true_t[ri] = r_true_t_elem[0];
-	r_true_t[ri + 1] = r_true_t_elem[1];
+	head_r_true[ri] = head_r_true_elem[0];
+	head_r_true[ri + 1] = head_r_true_elem[1];
+	tail_r_true[ri] = tail_r_true_elem[0];
+	tail_r_true[ri + 1] = tail_r_true_elem[1];
       }
     }
 
@@ -9861,8 +9756,8 @@ void BLAS_zge_sum_mv_z_c_testgen(int norm, enum blas_order_type order,
   /*copy x_vec into x : it is possible that the generator
      changed x_vec, even though none were free */
   csymv_copy_vector(n_i, x, incx, x_vec, 1);
-  free(a_vec);
-  free(x_vec);
+  blas_free(a_vec);
+  blas_free(x_vec);
 }
 void BLAS_zge_sum_mv_c_c_testgen(int norm, enum blas_order_type order,
 				 int m, int n, int randomize,
@@ -9870,8 +9765,8 @@ void BLAS_zge_sum_mv_c_c_testgen(int norm, enum blas_order_type order,
 				 int beta_flag, void *a, int lda, void *b,
 				 int ldb, void *x, int incx,
 				 void *alpha_use_ptr, void *a_use,
-				 void *b_use, int *seed, double *r_true_l,
-				 double *r_true_t)
+				 void *b_use, int *seed, double *head_r_true,
+				 double *tail_r_true)
 
 /*
  * Purpose
@@ -9947,10 +9842,10 @@ void BLAS_zge_sum_mv_c_c_testgen(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * double  (output) *r_true_l
+ * double  (output) *head_r_true
  *         the leading part of the truth in double-double.
  *
- * double  (output) *r_true_t
+ * double  (output) *tail_r_true
  *         the trailing part of the truth in double-double
  *
  *
@@ -10015,15 +9910,13 @@ void BLAS_zge_sum_mv_c_c_testgen(int norm, enum blas_order_type order,
   double beta_zero_fake[2];
   float a_elem[2];
   float x_elem[2];
-  double r_true_t_elem[2];
-  double r_true_l_elem[2];
+  double head_r_true_elem[2], tail_r_true_elem[2];
   double multiplier;
   double divider;
   double alpha_use[2];
 
   float *a_vec;
   float *x_vec;
-
 
   double *alpha_use_ptr_i = (double *) alpha_use_ptr;
   double *alpha_i = (double *) alpha;
@@ -10043,8 +9936,6 @@ void BLAS_zge_sum_mv_c_c_testgen(int norm, enum blas_order_type order,
   inca_veci = 1;
   inca_veci *= 2;
 
-
-
   a_vec = (float *) blas_malloc(2 * n_i * sizeof(float) * 2);
   if (2 * n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -10054,7 +9945,6 @@ void BLAS_zge_sum_mv_c_c_testgen(int norm, enum blas_order_type order,
     a_vec[i + 1] = 0.0;
   }
 
-
   incri = 1;
   incri *= 2;
 
@@ -10062,7 +9952,6 @@ void BLAS_zge_sum_mv_c_c_testgen(int norm, enum blas_order_type order,
   incx_veci = 1;
   incx_veci *= 2;
   incxi *= 2;
-
 
   if (incxi < 0) {
     x_starti = (-n + 1) * incxi;
@@ -10188,15 +10077,15 @@ void BLAS_zge_sum_mv_c_c_testgen(int norm, enum blas_order_type order,
 	  BLAS_zdot_c_c_testgen(n_i, 0, n_i, norm,
 				blas_no_conj, &alpha_use, 1,
 				&beta_zero_fake, 1, x_vec, a_vec, seed,
-				y_elem, r_true_l_elem, r_true_t_elem);
+				y_elem, head_r_true_elem, tail_r_true_elem);
 
 	  cge_sum_mv_commit(order, m_i, n_i, a, lda, a_vec, i);
 
 	  /*commits an element to the truth */
-	  r_true_l[ri] = r_true_l_elem[0];
-	  r_true_l[ri + 1] = r_true_l_elem[1];
-	  r_true_t[ri] = r_true_t_elem[0];
-	  r_true_t[ri + 1] = r_true_t_elem[1];
+	  head_r_true[ri] = head_r_true_elem[0];
+	  head_r_true[ri + 1] = head_r_true_elem[1];
+	  tail_r_true[ri] = tail_r_true_elem[0];
+	  tail_r_true[ri + 1] = tail_r_true_elem[1];
 	}
 
 	/*now fill a, x, and return */
@@ -10263,8 +10152,8 @@ void BLAS_zge_sum_mv_c_c_testgen(int norm, enum blas_order_type order,
 	alpha_i[0] = alpha_use[0];
 	alpha_i[1] = alpha_use[1];
 	csymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 	return;
       } else {
 
@@ -10275,15 +10164,15 @@ void BLAS_zge_sum_mv_c_c_testgen(int norm, enum blas_order_type order,
 	  BLAS_zdot_c_c_testgen(n_i, 0, n_i, norm,
 				blas_no_conj, &alpha_use, 1,
 				&beta_zero_fake, 1, x_vec, a_vec, seed,
-				y_elem, r_true_l_elem, r_true_t_elem);
+				y_elem, head_r_true_elem, tail_r_true_elem);
 
 	  cge_sum_mv_commit(order, m_i, n_i, b, ldb, a_vec, i);
 
 	  /*commits an element to the truth */
-	  r_true_l[ri] = r_true_l_elem[0];
-	  r_true_l[ri + 1] = r_true_l_elem[1];
-	  r_true_t[ri] = r_true_t_elem[0];
-	  r_true_t[ri + 1] = r_true_t_elem[1];
+	  head_r_true[ri] = head_r_true_elem[0];
+	  head_r_true[ri + 1] = head_r_true_elem[1];
+	  tail_r_true[ri] = tail_r_true_elem[0];
+	  tail_r_true[ri + 1] = tail_r_true_elem[1];
 	}
 
 	/*now fill b, x, and return */
@@ -10350,8 +10239,8 @@ void BLAS_zge_sum_mv_c_c_testgen(int norm, enum blas_order_type order,
 	beta_i[0] = alpha_use[0];
 	beta_i[1] = alpha_use[1];
 	csymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 	return;
       }
     }
@@ -10394,17 +10283,16 @@ void BLAS_zge_sum_mv_c_c_testgen(int norm, enum blas_order_type order,
 	y_elem[0] = y_elem[1] = 0.0;
 	BLAS_ddot_s_s_testgen(2 * n_i, 0, 2 * n_i, norm,
 			      blas_no_conj,
-			      (void *) alpha_use, 1,
-			      (void *) beta_zero_fake, 1,
+			      alpha_use, 1,
+			      beta_zero_fake, 1,
 			      x_vec_2,
 			      a_vec_2, seed,
-			      y_elem, r_true_l_elem, r_true_t_elem);
+			      y_elem, head_r_true_elem, tail_r_true_elem);
 
 
-	/*multiply truth by 1+i 
-	   (we will multiply 1+i to x later) */
-	r_true_l_elem[1] = r_true_l_elem[0];
-	r_true_t_elem[1] = r_true_t_elem[0];
+	/*multiply truth by 1+i (we will multiply 1+i to x later) */
+	head_r_true_elem[1] = head_r_true_elem[0];
+	tail_r_true_elem[1] = tail_r_true_elem[0];
 	for (j = 0; j < 2 * n_i; j++) {
 	  a_vec[2 * j] = a_vec_2[j];
 	  a_vec[2 * j + 1] = 0.0;
@@ -10414,10 +10302,10 @@ void BLAS_zge_sum_mv_c_c_testgen(int norm, enum blas_order_type order,
 			  m_i, n_i, b, ldb, (a_vec + inca_veci * n_i), i);
 
 	/*commits an element to the truth */
-	r_true_l[ri] = r_true_l_elem[0];
-	r_true_l[ri + 1] = r_true_l_elem[1];
-	r_true_t[ri] = r_true_t_elem[0];
-	r_true_t[ri + 1] = r_true_t_elem[1];
+	head_r_true[ri] = head_r_true_elem[0];
+	head_r_true[ri + 1] = head_r_true_elem[1];
+	tail_r_true[ri] = tail_r_true_elem[0];
+	tail_r_true[ri + 1] = tail_r_true_elem[1];
       }
       /* copy to x_vec - will be copied to x_i later */
 
@@ -10427,8 +10315,8 @@ void BLAS_zge_sum_mv_c_c_testgen(int norm, enum blas_order_type order,
 	x_vec[2 * j] = x_vec_2[j];
 	x_vec[2 * j + 1] = x_vec_2[j];
       }
-      free(x_vec_2);
-      free(a_vec_2);
+      blas_free(x_vec_2);
+      blas_free(a_vec_2);
     } else {
       /*not case 3 */
 
@@ -10438,17 +10326,17 @@ void BLAS_zge_sum_mv_c_c_testgen(int norm, enum blas_order_type order,
 	BLAS_zdot_c_c_testgen(2 * n_i, 0, 2 * n_i, norm,
 			      blas_no_conj, &alpha_use, 1,
 			      &beta_zero_fake, 1, x_vec, a_vec, seed,
-			      y_elem, r_true_l_elem, r_true_t_elem);
+			      y_elem, head_r_true_elem, tail_r_true_elem);
 
 	cge_sum_mv_commit(order, m_i, n_i, a, lda, a_vec, i);
 	cge_sum_mv_commit(order,
 			  m_i, n_i, b, ldb, (a_vec + inca_veci * n_i), i);
 
 	/*commits an element to the truth */
-	r_true_l[ri] = r_true_l_elem[0];
-	r_true_l[ri + 1] = r_true_l_elem[1];
-	r_true_t[ri] = r_true_t_elem[0];
-	r_true_t[ri + 1] = r_true_t_elem[1];
+	head_r_true[ri] = head_r_true_elem[0];
+	head_r_true[ri + 1] = head_r_true_elem[1];
+	tail_r_true[ri] = tail_r_true_elem[0];
+	tail_r_true[ri + 1] = tail_r_true_elem[1];
       }
 
     }
@@ -10575,12 +10463,12 @@ void BLAS_zge_sum_mv_c_c_testgen(int norm, enum blas_order_type order,
 				&alpha_use, 1,
 				&beta_zero_fake, 1,
 				x_vec, a_vec, seed,
-				y_elem, r_true_l_elem, r_true_t_elem);
+				y_elem, head_r_true_elem, tail_r_true_elem);
 
-	  r_true_l[ri] = r_true_l_elem[0];
-	  r_true_l[ri + 1] = r_true_l_elem[1];
-	  r_true_t[ri] = r_true_t_elem[0];
-	  r_true_t[ri + 1] = r_true_t_elem[1];
+	  head_r_true[ri] = head_r_true_elem[0];
+	  head_r_true[ri + 1] = head_r_true_elem[1];
+	  tail_r_true[ri] = tail_r_true_elem[0];
+	  tail_r_true[ri + 1] = tail_r_true_elem[1];
 	}
 
 	/*set a_use = 0 */
@@ -10623,8 +10511,8 @@ void BLAS_zge_sum_mv_c_c_testgen(int norm, enum blas_order_type order,
 	alpha_use_ptr_i[0] = alpha_use[0];
 	alpha_use_ptr_i[1] = alpha_use[1];
 	csymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 
 
 	return;
@@ -10642,12 +10530,12 @@ void BLAS_zge_sum_mv_c_c_testgen(int norm, enum blas_order_type order,
 				&alpha_use, 1,
 				&beta_zero_fake, 1,
 				x_vec, a_vec, seed,
-				y_elem, r_true_l_elem, r_true_t_elem);
+				y_elem, head_r_true_elem, tail_r_true_elem);
 
-	  r_true_l[ri] = r_true_l_elem[0];
-	  r_true_l[ri + 1] = r_true_l_elem[1];
-	  r_true_t[ri] = r_true_t_elem[0];
-	  r_true_t[ri + 1] = r_true_t_elem[1];
+	  head_r_true[ri] = head_r_true_elem[0];
+	  head_r_true[ri + 1] = head_r_true_elem[1];
+	  tail_r_true[ri] = tail_r_true_elem[0];
+	  tail_r_true[ri + 1] = tail_r_true_elem[1];
 	}
 
 	/*set b_use = 0 */
@@ -10690,8 +10578,8 @@ void BLAS_zge_sum_mv_c_c_testgen(int norm, enum blas_order_type order,
 	alpha_use_ptr_i[0] = alpha_use[0];
 	alpha_use_ptr_i[1] = alpha_use[1];
 	csymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 
 
 	return;
@@ -10712,12 +10600,12 @@ void BLAS_zge_sum_mv_c_c_testgen(int norm, enum blas_order_type order,
 			      &alpha_use, 1,
 			      &beta_zero_fake, 1,
 			      x_vec, a_vec, seed,
-			      y_elem, r_true_l_elem, r_true_t_elem);
+			      y_elem, head_r_true_elem, tail_r_true_elem);
 
-	r_true_l[ri] = r_true_l_elem[0];
-	r_true_l[ri + 1] = r_true_l_elem[1];
-	r_true_t[ri] = r_true_t_elem[0];
-	r_true_t[ri + 1] = r_true_t_elem[1];
+	head_r_true[ri] = head_r_true_elem[0];
+	head_r_true[ri + 1] = head_r_true_elem[1];
+	tail_r_true[ri] = tail_r_true_elem[0];
+	tail_r_true[ri + 1] = tail_r_true_elem[1];
       }
     }
 
@@ -11271,8 +11159,8 @@ void BLAS_zge_sum_mv_c_c_testgen(int norm, enum blas_order_type order,
   /*copy x_vec into x : it is possible that the generator
      changed x_vec, even though none were free */
   csymv_copy_vector(n_i, x, incx, x_vec, 1);
-  free(a_vec);
-  free(x_vec);
+  blas_free(a_vec);
+  blas_free(x_vec);
 }
 
 void BLAS_zge_sum_mv_z_d_testgen(int norm, enum blas_order_type order,
@@ -11281,8 +11169,8 @@ void BLAS_zge_sum_mv_z_d_testgen(int norm, enum blas_order_type order,
 				 int beta_flag, void *a, int lda, void *b,
 				 int ldb, double *x, int incx,
 				 void *alpha_use_ptr, void *a_use,
-				 void *b_use, int *seed, double *r_true_l,
-				 double *r_true_t)
+				 void *b_use, int *seed, double *head_r_true,
+				 double *tail_r_true)
 
 /*
  * Purpose
@@ -11358,10 +11246,10 @@ void BLAS_zge_sum_mv_z_d_testgen(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * double  (output) *r_true_l
+ * double  (output) *head_r_true
  *         the leading part of the truth in double-double.
  *
- * double  (output) *r_true_t
+ * double  (output) *tail_r_true
  *         the trailing part of the truth in double-double
  *
  *
@@ -11426,15 +11314,13 @@ void BLAS_zge_sum_mv_z_d_testgen(int norm, enum blas_order_type order,
   double beta_zero_fake[2];
   double a_elem[2];
   double x_elem;
-  double r_true_t_elem[2];
-  double r_true_l_elem[2];
+  double head_r_true_elem[2], tail_r_true_elem[2];
   double multiplier;
   double divider;
   double alpha_use[2];
 
   double *a_vec;
   double *x_vec;
-
 
   double *alpha_use_ptr_i = (double *) alpha_use_ptr;
   double *alpha_i = (double *) alpha;
@@ -11454,8 +11340,6 @@ void BLAS_zge_sum_mv_z_d_testgen(int norm, enum blas_order_type order,
   inca_veci = 1;
   inca_veci *= 2;
 
-
-
   a_vec = (double *) blas_malloc(2 * n_i * sizeof(double) * 2);
   if (2 * n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -11465,13 +11349,11 @@ void BLAS_zge_sum_mv_z_d_testgen(int norm, enum blas_order_type order,
     a_vec[i + 1] = 0.0;
   }
 
-
   incri = 1;
   incri *= 2;
 
   incxi = incx;
   incx_veci = 1;
-
 
 
 
@@ -11596,15 +11478,15 @@ void BLAS_zge_sum_mv_z_d_testgen(int norm, enum blas_order_type order,
 	  BLAS_zdot_d_z_testgen(n_i, 0, n_i, norm,
 				blas_no_conj, &alpha_use, 1,
 				&beta_zero_fake, 1, x_vec, a_vec, seed,
-				y_elem, r_true_l_elem, r_true_t_elem);
+				y_elem, head_r_true_elem, tail_r_true_elem);
 
 	  zge_sum_mv_commit(order, m_i, n_i, a, lda, a_vec, i);
 
 	  /*commits an element to the truth */
-	  r_true_l[ri] = r_true_l_elem[0];
-	  r_true_l[ri + 1] = r_true_l_elem[1];
-	  r_true_t[ri] = r_true_t_elem[0];
-	  r_true_t[ri + 1] = r_true_t_elem[1];
+	  head_r_true[ri] = head_r_true_elem[0];
+	  head_r_true[ri + 1] = head_r_true_elem[1];
+	  tail_r_true[ri] = tail_r_true_elem[0];
+	  tail_r_true[ri + 1] = tail_r_true_elem[1];
 	}
 
 	/*now fill a, x, and return */
@@ -11671,8 +11553,8 @@ void BLAS_zge_sum_mv_z_d_testgen(int norm, enum blas_order_type order,
 	alpha_i[0] = alpha_use[0];
 	alpha_i[1] = alpha_use[1];
 	dsymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 	return;
       } else {
 
@@ -11683,15 +11565,15 @@ void BLAS_zge_sum_mv_z_d_testgen(int norm, enum blas_order_type order,
 	  BLAS_zdot_d_z_testgen(n_i, 0, n_i, norm,
 				blas_no_conj, &alpha_use, 1,
 				&beta_zero_fake, 1, x_vec, a_vec, seed,
-				y_elem, r_true_l_elem, r_true_t_elem);
+				y_elem, head_r_true_elem, tail_r_true_elem);
 
 	  zge_sum_mv_commit(order, m_i, n_i, b, ldb, a_vec, i);
 
 	  /*commits an element to the truth */
-	  r_true_l[ri] = r_true_l_elem[0];
-	  r_true_l[ri + 1] = r_true_l_elem[1];
-	  r_true_t[ri] = r_true_t_elem[0];
-	  r_true_t[ri + 1] = r_true_t_elem[1];
+	  head_r_true[ri] = head_r_true_elem[0];
+	  head_r_true[ri + 1] = head_r_true_elem[1];
+	  tail_r_true[ri] = tail_r_true_elem[0];
+	  tail_r_true[ri + 1] = tail_r_true_elem[1];
 	}
 
 	/*now fill b, x, and return */
@@ -11758,8 +11640,8 @@ void BLAS_zge_sum_mv_z_d_testgen(int norm, enum blas_order_type order,
 	beta_i[0] = alpha_use[0];
 	beta_i[1] = alpha_use[1];
 	dsymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 	return;
       }
     }
@@ -11800,13 +11682,13 @@ void BLAS_zge_sum_mv_z_d_testgen(int norm, enum blas_order_type order,
 	y_elem[0] = y_elem[1] = 0.0;
 	BLAS_ddot_testgen(2 * n_i, 0, 2 * n_i, norm,
 			  blas_no_conj,
-			  (void *) alpha_use, 1,
-			  (void *) beta_zero_fake, 1,
+			  alpha_use, 1,
+			  beta_zero_fake, 1,
 			  x_vec_2,
 			  a_vec_2, seed,
-			  y_elem, r_true_l_elem, r_true_t_elem);
+			  y_elem, head_r_true_elem, tail_r_true_elem);
 
-	r_true_l_elem[1] = r_true_t_elem[1] = 0.0;
+	head_r_true_elem[1] = tail_r_true_elem[1] = 0.0;
 	for (j = 0; j < 2 * n_i; j++) {
 	  a_vec[2 * j] = a_vec_2[j];
 	  a_vec[2 * j + 1] = 0.0;
@@ -11816,17 +11698,17 @@ void BLAS_zge_sum_mv_z_d_testgen(int norm, enum blas_order_type order,
 			  m_i, n_i, b, ldb, (a_vec + inca_veci * n_i), i);
 
 	/*commits an element to the truth */
-	r_true_l[ri] = r_true_l_elem[0];
-	r_true_l[ri + 1] = r_true_l_elem[1];
-	r_true_t[ri] = r_true_t_elem[0];
-	r_true_t[ri + 1] = r_true_t_elem[1];
+	head_r_true[ri] = head_r_true_elem[0];
+	head_r_true[ri + 1] = head_r_true_elem[1];
+	tail_r_true[ri] = tail_r_true_elem[0];
+	tail_r_true[ri + 1] = tail_r_true_elem[1];
       }
       /* copy to x_vec - will be copied to x_i later */
       for (j = 0; j < n_i; j++) {
 	x_vec[j] = x_vec_2[j];
       }
-      free(x_vec_2);
-      free(a_vec_2);
+      blas_free(x_vec_2);
+      blas_free(a_vec_2);
     } else {
       /*not case 3 */
 
@@ -11836,17 +11718,17 @@ void BLAS_zge_sum_mv_z_d_testgen(int norm, enum blas_order_type order,
 	BLAS_zdot_d_z_testgen(2 * n_i, 0, 2 * n_i, norm,
 			      blas_no_conj, &alpha_use, 1,
 			      &beta_zero_fake, 1, x_vec, a_vec, seed,
-			      y_elem, r_true_l_elem, r_true_t_elem);
+			      y_elem, head_r_true_elem, tail_r_true_elem);
 
 	zge_sum_mv_commit(order, m_i, n_i, a, lda, a_vec, i);
 	zge_sum_mv_commit(order,
 			  m_i, n_i, b, ldb, (a_vec + inca_veci * n_i), i);
 
 	/*commits an element to the truth */
-	r_true_l[ri] = r_true_l_elem[0];
-	r_true_l[ri + 1] = r_true_l_elem[1];
-	r_true_t[ri] = r_true_t_elem[0];
-	r_true_t[ri + 1] = r_true_t_elem[1];
+	head_r_true[ri] = head_r_true_elem[0];
+	head_r_true[ri + 1] = head_r_true_elem[1];
+	tail_r_true[ri] = tail_r_true_elem[0];
+	tail_r_true[ri + 1] = tail_r_true_elem[1];
       }
 
     }
@@ -11982,12 +11864,12 @@ void BLAS_zge_sum_mv_z_d_testgen(int norm, enum blas_order_type order,
 			    &beta_zero_fake, 1,
 			    xx_vec,
 			    a_vec,
-			    seed, y_elem, r_true_l_elem, r_true_t_elem);
+			    seed, y_elem, head_r_true_elem, tail_r_true_elem);
 
-	  r_true_l[ri] = r_true_l_elem[0];
-	  r_true_l[ri + 1] = r_true_l_elem[1];
-	  r_true_t[ri] = r_true_t_elem[0];
-	  r_true_t[ri + 1] = r_true_t_elem[1];
+	  head_r_true[ri] = head_r_true_elem[0];
+	  head_r_true[ri + 1] = head_r_true_elem[1];
+	  tail_r_true[ri] = tail_r_true_elem[0];
+	  tail_r_true[ri + 1] = tail_r_true_elem[1];
 	}
 
 	/*set a_use = 0 */
@@ -12030,11 +11912,11 @@ void BLAS_zge_sum_mv_z_d_testgen(int norm, enum blas_order_type order,
 	alpha_use_ptr_i[0] = alpha_use[0];
 	alpha_use_ptr_i[1] = alpha_use[1];
 	dsymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 
 
-	free(xx_vec);
+	blas_free(xx_vec);
 
 	return;
 
@@ -12052,12 +11934,12 @@ void BLAS_zge_sum_mv_z_d_testgen(int norm, enum blas_order_type order,
 			    &beta_zero_fake, 1,
 			    xx_vec,
 			    a_vec,
-			    seed, y_elem, r_true_l_elem, r_true_t_elem);
+			    seed, y_elem, head_r_true_elem, tail_r_true_elem);
 
-	  r_true_l[ri] = r_true_l_elem[0];
-	  r_true_l[ri + 1] = r_true_l_elem[1];
-	  r_true_t[ri] = r_true_t_elem[0];
-	  r_true_t[ri + 1] = r_true_t_elem[1];
+	  head_r_true[ri] = head_r_true_elem[0];
+	  head_r_true[ri + 1] = head_r_true_elem[1];
+	  tail_r_true[ri] = tail_r_true_elem[0];
+	  tail_r_true[ri + 1] = tail_r_true_elem[1];
 	}
 
 	/*set b_use = 0 */
@@ -12100,11 +11982,11 @@ void BLAS_zge_sum_mv_z_d_testgen(int norm, enum blas_order_type order,
 	alpha_use_ptr_i[0] = alpha_use[0];
 	alpha_use_ptr_i[1] = alpha_use[1];
 	dsymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 
 
-	free(xx_vec);
+	blas_free(xx_vec);
 
 	return;
 
@@ -12124,17 +12006,18 @@ void BLAS_zge_sum_mv_z_d_testgen(int norm, enum blas_order_type order,
 			  &alpha_use, 1,
 			  &beta_zero_fake, 1,
 			  xx_vec,
-			  a_vec, seed, y_elem, r_true_l_elem, r_true_t_elem);
+			  a_vec,
+			  seed, y_elem, head_r_true_elem, tail_r_true_elem);
 
-	r_true_l[ri] = r_true_l_elem[0];
-	r_true_l[ri + 1] = r_true_l_elem[1];
-	r_true_t[ri] = r_true_t_elem[0];
-	r_true_t[ri + 1] = r_true_t_elem[1];
+	head_r_true[ri] = head_r_true_elem[0];
+	head_r_true[ri + 1] = head_r_true_elem[1];
+	tail_r_true[ri] = tail_r_true_elem[0];
+	tail_r_true[ri + 1] = tail_r_true_elem[1];
       }
     }
 
 
-    free(xx_vec);
+    blas_free(xx_vec);
 
   }
 
@@ -12741,8 +12624,8 @@ void BLAS_zge_sum_mv_z_d_testgen(int norm, enum blas_order_type order,
   /*copy x_vec into x : it is possible that the generator
      changed x_vec, even though none were free */
   dsymv_copy_vector(n_i, x, incx, x_vec, 1);
-  free(a_vec);
-  free(x_vec);
+  blas_free(a_vec);
+  blas_free(x_vec);
 }
 void BLAS_zge_sum_mv_d_z_testgen(int norm, enum blas_order_type order,
 				 int m, int n, int randomize,
@@ -12750,8 +12633,8 @@ void BLAS_zge_sum_mv_d_z_testgen(int norm, enum blas_order_type order,
 				 int beta_flag, double *a, int lda, double *b,
 				 int ldb, void *x, int incx,
 				 void *alpha_use_ptr, double *a_use,
-				 double *b_use, int *seed, double *r_true_l,
-				 double *r_true_t)
+				 double *b_use, int *seed,
+				 double *head_r_true, double *tail_r_true)
 
 /*
  * Purpose
@@ -12827,10 +12710,10 @@ void BLAS_zge_sum_mv_d_z_testgen(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * double  (output) *r_true_l
+ * double  (output) *head_r_true
  *         the leading part of the truth in double-double.
  *
- * double  (output) *r_true_t
+ * double  (output) *tail_r_true
  *         the trailing part of the truth in double-double
  *
  *
@@ -12890,15 +12773,13 @@ void BLAS_zge_sum_mv_d_z_testgen(int norm, enum blas_order_type order,
   double beta_zero_fake[2];
   double a_elem;
   double x_elem[2];
-  double r_true_t_elem[2];
-  double r_true_l_elem[2];
+  double head_r_true_elem[2], tail_r_true_elem[2];
   double multiplier;
   double divider;
   double alpha_use[2];
 
   double *a_vec;
   double *x_vec;
-
 
   double *alpha_use_ptr_i = (double *) alpha_use_ptr;
   double *alpha_i = (double *) alpha;
@@ -12918,8 +12799,6 @@ void BLAS_zge_sum_mv_d_z_testgen(int norm, enum blas_order_type order,
   inca_veci = 1;
 
 
-
-
   a_vec = (double *) blas_malloc(2 * n_i * sizeof(double));
   if (2 * n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -12928,7 +12807,6 @@ void BLAS_zge_sum_mv_d_z_testgen(int norm, enum blas_order_type order,
     a_vec[i] = 0.0;
   }
 
-
   incri = 1;
   incri *= 2;
 
@@ -12936,7 +12814,6 @@ void BLAS_zge_sum_mv_d_z_testgen(int norm, enum blas_order_type order,
   incx_veci = 1;
   incx_veci *= 2;
   incxi *= 2;
-
 
   if (incxi < 0) {
     x_starti = (-n + 1) * incxi;
@@ -13062,15 +12939,15 @@ void BLAS_zge_sum_mv_d_z_testgen(int norm, enum blas_order_type order,
 	  BLAS_zdot_z_d_testgen(n_i, 0, n_i, norm,
 				blas_no_conj, &alpha_use, 1,
 				&beta_zero_fake, 1, x_vec, a_vec, seed,
-				y_elem, r_true_l_elem, r_true_t_elem);
+				y_elem, head_r_true_elem, tail_r_true_elem);
 
 	  dge_sum_mv_commit(order, m_i, n_i, a, lda, a_vec, i);
 
 	  /*commits an element to the truth */
-	  r_true_l[ri] = r_true_l_elem[0];
-	  r_true_l[ri + 1] = r_true_l_elem[1];
-	  r_true_t[ri] = r_true_t_elem[0];
-	  r_true_t[ri + 1] = r_true_t_elem[1];
+	  head_r_true[ri] = head_r_true_elem[0];
+	  head_r_true[ri + 1] = head_r_true_elem[1];
+	  tail_r_true[ri] = tail_r_true_elem[0];
+	  tail_r_true[ri + 1] = tail_r_true_elem[1];
 	}
 
 	/*now fill a, x, and return */
@@ -13132,8 +13009,8 @@ void BLAS_zge_sum_mv_d_z_testgen(int norm, enum blas_order_type order,
 	alpha_i[0] = alpha_use[0];
 	alpha_i[1] = alpha_use[1];
 	zsymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 	return;
       } else {
 
@@ -13144,15 +13021,15 @@ void BLAS_zge_sum_mv_d_z_testgen(int norm, enum blas_order_type order,
 	  BLAS_zdot_z_d_testgen(n_i, 0, n_i, norm,
 				blas_no_conj, &alpha_use, 1,
 				&beta_zero_fake, 1, x_vec, a_vec, seed,
-				y_elem, r_true_l_elem, r_true_t_elem);
+				y_elem, head_r_true_elem, tail_r_true_elem);
 
 	  dge_sum_mv_commit(order, m_i, n_i, b, ldb, a_vec, i);
 
 	  /*commits an element to the truth */
-	  r_true_l[ri] = r_true_l_elem[0];
-	  r_true_l[ri + 1] = r_true_l_elem[1];
-	  r_true_t[ri] = r_true_t_elem[0];
-	  r_true_t[ri + 1] = r_true_t_elem[1];
+	  head_r_true[ri] = head_r_true_elem[0];
+	  head_r_true[ri + 1] = head_r_true_elem[1];
+	  tail_r_true[ri] = tail_r_true_elem[0];
+	  tail_r_true[ri + 1] = tail_r_true_elem[1];
 	}
 
 	/*now fill b, x, and return */
@@ -13214,8 +13091,8 @@ void BLAS_zge_sum_mv_d_z_testgen(int norm, enum blas_order_type order,
 	beta_i[0] = alpha_use[0];
 	beta_i[1] = alpha_use[1];
 	zsymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 	return;
       }
     }
@@ -13226,9 +13103,9 @@ void BLAS_zge_sum_mv_d_z_testgen(int norm, enum blas_order_type order,
 				  alpha_i, alpha_flag, beta_i, beta_flag,
 				  a, lda, b, ldb, x, incx,
 				  alpha_use_ptr_i, a_use, b_use,
-				  seed, r_true_l, r_true_t);
-      free(a_vec);
-      free(x_vec);
+				  seed, head_r_true, tail_r_true);
+      blas_free(a_vec);
+      blas_free(x_vec);
       return;
     }
 
@@ -13239,17 +13116,17 @@ void BLAS_zge_sum_mv_d_z_testgen(int norm, enum blas_order_type order,
       BLAS_zdot_z_d_testgen(2 * n_i, 0, 2 * n_i, norm,
 			    blas_no_conj, &alpha_use, 1,
 			    &beta_zero_fake, 1, x_vec, a_vec, seed,
-			    y_elem, r_true_l_elem, r_true_t_elem);
+			    y_elem, head_r_true_elem, tail_r_true_elem);
 
       dge_sum_mv_commit(order, m_i, n_i, a, lda, a_vec, i);
       dge_sum_mv_commit(order,
 			m_i, n_i, b, ldb, (a_vec + inca_veci * n_i), i);
 
       /*commits an element to the truth */
-      r_true_l[ri] = r_true_l_elem[0];
-      r_true_l[ri + 1] = r_true_l_elem[1];
-      r_true_t[ri] = r_true_t_elem[0];
-      r_true_t[ri + 1] = r_true_t_elem[1];
+      head_r_true[ri] = head_r_true_elem[0];
+      head_r_true[ri + 1] = head_r_true_elem[1];
+      tail_r_true[ri] = tail_r_true_elem[0];
+      tail_r_true[ri + 1] = tail_r_true_elem[1];
     }
 
 
@@ -13340,12 +13217,12 @@ void BLAS_zge_sum_mv_d_z_testgen(int norm, enum blas_order_type order,
 			    &beta_zero_fake, 1,
 			    x_vec,
 			    aa_vec,
-			    seed, y_elem, r_true_l_elem, r_true_t_elem);
+			    seed, y_elem, head_r_true_elem, tail_r_true_elem);
 
-	  r_true_l[ri] = r_true_l_elem[0];
-	  r_true_l[ri + 1] = r_true_l_elem[1];
-	  r_true_t[ri] = r_true_t_elem[0];
-	  r_true_t[ri + 1] = r_true_t_elem[1];
+	  head_r_true[ri] = head_r_true_elem[0];
+	  head_r_true[ri + 1] = head_r_true_elem[1];
+	  tail_r_true[ri] = tail_r_true_elem[0];
+	  tail_r_true[ri + 1] = tail_r_true_elem[1];
 	}
 
 	/*set a_use = 0 */
@@ -13385,10 +13262,10 @@ void BLAS_zge_sum_mv_d_z_testgen(int norm, enum blas_order_type order,
 	alpha_use_ptr_i[0] = alpha_use[0];
 	alpha_use_ptr_i[1] = alpha_use[1];
 	zsymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 
-	free(aa_vec);
+	blas_free(aa_vec);
 
 
 	return;
@@ -13414,12 +13291,12 @@ void BLAS_zge_sum_mv_d_z_testgen(int norm, enum blas_order_type order,
 			    &beta_zero_fake, 1,
 			    x_vec,
 			    aa_vec,
-			    seed, y_elem, r_true_l_elem, r_true_t_elem);
+			    seed, y_elem, head_r_true_elem, tail_r_true_elem);
 
-	  r_true_l[ri] = r_true_l_elem[0];
-	  r_true_l[ri + 1] = r_true_l_elem[1];
-	  r_true_t[ri] = r_true_t_elem[0];
-	  r_true_t[ri + 1] = r_true_t_elem[1];
+	  head_r_true[ri] = head_r_true_elem[0];
+	  head_r_true[ri + 1] = head_r_true_elem[1];
+	  tail_r_true[ri] = tail_r_true_elem[0];
+	  tail_r_true[ri + 1] = tail_r_true_elem[1];
 	}
 
 	/*set b_use = 0 */
@@ -13459,10 +13336,10 @@ void BLAS_zge_sum_mv_d_z_testgen(int norm, enum blas_order_type order,
 	alpha_use_ptr_i[0] = alpha_use[0];
 	alpha_use_ptr_i[1] = alpha_use[1];
 	zsymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 
-	free(aa_vec);
+	blas_free(aa_vec);
 
 
 	return;
@@ -13490,16 +13367,17 @@ void BLAS_zge_sum_mv_d_z_testgen(int norm, enum blas_order_type order,
 			  &alpha_use, 1,
 			  &beta_zero_fake, 1,
 			  x_vec,
-			  aa_vec, seed, y_elem, r_true_l_elem, r_true_t_elem);
+			  aa_vec,
+			  seed, y_elem, head_r_true_elem, tail_r_true_elem);
 
-	r_true_l[ri] = r_true_l_elem[0];
-	r_true_l[ri + 1] = r_true_l_elem[1];
-	r_true_t[ri] = r_true_t_elem[0];
-	r_true_t[ri + 1] = r_true_t_elem[1];
+	head_r_true[ri] = head_r_true_elem[0];
+	head_r_true[ri + 1] = head_r_true_elem[1];
+	tail_r_true[ri] = tail_r_true_elem[0];
+	tail_r_true[ri + 1] = tail_r_true_elem[1];
       }
     }
 
-    free(aa_vec);
+    blas_free(aa_vec);
 
 
   }
@@ -13667,8 +13545,8 @@ void BLAS_zge_sum_mv_d_z_testgen(int norm, enum blas_order_type order,
   /*copy x_vec into x : it is possible that the generator
      changed x_vec, even though none were free */
   zsymv_copy_vector(n_i, x, incx, x_vec, 1);
-  free(a_vec);
-  free(x_vec);
+  blas_free(a_vec);
+  blas_free(x_vec);
 }
 void BLAS_zge_sum_mv_d_d_testgen(int norm, enum blas_order_type order,
 				 int m, int n, int randomize,
@@ -13676,8 +13554,8 @@ void BLAS_zge_sum_mv_d_d_testgen(int norm, enum blas_order_type order,
 				 int beta_flag, double *a, int lda, double *b,
 				 int ldb, double *x, int incx,
 				 void *alpha_use_ptr, double *a_use,
-				 double *b_use, int *seed, double *r_true_l,
-				 double *r_true_t)
+				 double *b_use, int *seed,
+				 double *head_r_true, double *tail_r_true)
 
 /*
  * Purpose
@@ -13753,10 +13631,10 @@ void BLAS_zge_sum_mv_d_d_testgen(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * double  (output) *r_true_l
+ * double  (output) *head_r_true
  *         the leading part of the truth in double-double.
  *
- * double  (output) *r_true_t
+ * double  (output) *tail_r_true
  *         the trailing part of the truth in double-double
  *
  *
@@ -13816,15 +13694,13 @@ void BLAS_zge_sum_mv_d_d_testgen(int norm, enum blas_order_type order,
   double beta_zero_fake[2];
   double a_elem;
   double x_elem;
-  double r_true_t_elem[2];
-  double r_true_l_elem[2];
+  double head_r_true_elem[2], tail_r_true_elem[2];
   double multiplier;
   double divider;
   double alpha_use[2];
 
   double *a_vec;
   double *x_vec;
-
 
   double *alpha_use_ptr_i = (double *) alpha_use_ptr;
   double *alpha_i = (double *) alpha;
@@ -13844,8 +13720,6 @@ void BLAS_zge_sum_mv_d_d_testgen(int norm, enum blas_order_type order,
   inca_veci = 1;
 
 
-
-
   a_vec = (double *) blas_malloc(2 * n_i * sizeof(double));
   if (2 * n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -13854,13 +13728,11 @@ void BLAS_zge_sum_mv_d_d_testgen(int norm, enum blas_order_type order,
     a_vec[i] = 0.0;
   }
 
-
   incri = 1;
   incri *= 2;
 
   incxi = incx;
   incx_veci = 1;
-
 
 
 
@@ -13985,15 +13857,15 @@ void BLAS_zge_sum_mv_d_d_testgen(int norm, enum blas_order_type order,
 	  BLAS_zdot_d_d_testgen(n_i, 0, n_i, norm,
 				blas_no_conj, &alpha_use, 1,
 				&beta_zero_fake, 1, x_vec, a_vec, seed,
-				y_elem, r_true_l_elem, r_true_t_elem);
+				y_elem, head_r_true_elem, tail_r_true_elem);
 
 	  dge_sum_mv_commit(order, m_i, n_i, a, lda, a_vec, i);
 
 	  /*commits an element to the truth */
-	  r_true_l[ri] = r_true_l_elem[0];
-	  r_true_l[ri + 1] = r_true_l_elem[1];
-	  r_true_t[ri] = r_true_t_elem[0];
-	  r_true_t[ri + 1] = r_true_t_elem[1];
+	  head_r_true[ri] = head_r_true_elem[0];
+	  head_r_true[ri + 1] = head_r_true_elem[1];
+	  tail_r_true[ri] = tail_r_true_elem[0];
+	  tail_r_true[ri + 1] = tail_r_true_elem[1];
 	}
 
 	/*now fill a, x, and return */
@@ -14055,8 +13927,8 @@ void BLAS_zge_sum_mv_d_d_testgen(int norm, enum blas_order_type order,
 	alpha_i[0] = alpha_use[0];
 	alpha_i[1] = alpha_use[1];
 	dsymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 	return;
       } else {
 
@@ -14067,15 +13939,15 @@ void BLAS_zge_sum_mv_d_d_testgen(int norm, enum blas_order_type order,
 	  BLAS_zdot_d_d_testgen(n_i, 0, n_i, norm,
 				blas_no_conj, &alpha_use, 1,
 				&beta_zero_fake, 1, x_vec, a_vec, seed,
-				y_elem, r_true_l_elem, r_true_t_elem);
+				y_elem, head_r_true_elem, tail_r_true_elem);
 
 	  dge_sum_mv_commit(order, m_i, n_i, b, ldb, a_vec, i);
 
 	  /*commits an element to the truth */
-	  r_true_l[ri] = r_true_l_elem[0];
-	  r_true_l[ri + 1] = r_true_l_elem[1];
-	  r_true_t[ri] = r_true_t_elem[0];
-	  r_true_t[ri + 1] = r_true_t_elem[1];
+	  head_r_true[ri] = head_r_true_elem[0];
+	  head_r_true[ri + 1] = head_r_true_elem[1];
+	  tail_r_true[ri] = tail_r_true_elem[0];
+	  tail_r_true[ri + 1] = tail_r_true_elem[1];
 	}
 
 	/*now fill b, x, and return */
@@ -14137,8 +14009,8 @@ void BLAS_zge_sum_mv_d_d_testgen(int norm, enum blas_order_type order,
 	beta_i[0] = alpha_use[0];
 	beta_i[1] = alpha_use[1];
 	dsymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 	return;
       }
     }
@@ -14149,9 +14021,9 @@ void BLAS_zge_sum_mv_d_d_testgen(int norm, enum blas_order_type order,
 				  alpha_i, alpha_flag, beta_i, beta_flag,
 				  a, lda, b, ldb, x, incx,
 				  alpha_use_ptr_i, a_use, b_use,
-				  seed, r_true_l, r_true_t);
-      free(a_vec);
-      free(x_vec);
+				  seed, head_r_true, tail_r_true);
+      blas_free(a_vec);
+      blas_free(x_vec);
       return;
     }
 
@@ -14162,17 +14034,17 @@ void BLAS_zge_sum_mv_d_d_testgen(int norm, enum blas_order_type order,
       BLAS_zdot_d_d_testgen(2 * n_i, 0, 2 * n_i, norm,
 			    blas_no_conj, &alpha_use, 1,
 			    &beta_zero_fake, 1, x_vec, a_vec, seed,
-			    y_elem, r_true_l_elem, r_true_t_elem);
+			    y_elem, head_r_true_elem, tail_r_true_elem);
 
       dge_sum_mv_commit(order, m_i, n_i, a, lda, a_vec, i);
       dge_sum_mv_commit(order,
 			m_i, n_i, b, ldb, (a_vec + inca_veci * n_i), i);
 
       /*commits an element to the truth */
-      r_true_l[ri] = r_true_l_elem[0];
-      r_true_l[ri + 1] = r_true_l_elem[1];
-      r_true_t[ri] = r_true_t_elem[0];
-      r_true_t[ri + 1] = r_true_t_elem[1];
+      head_r_true[ri] = head_r_true_elem[0];
+      head_r_true[ri + 1] = head_r_true_elem[1];
+      tail_r_true[ri] = tail_r_true_elem[0];
+      tail_r_true[ri + 1] = tail_r_true_elem[1];
     }
 
 
@@ -14271,12 +14143,12 @@ void BLAS_zge_sum_mv_d_d_testgen(int norm, enum blas_order_type order,
 			    &beta_zero_fake, 1,
 			    xx_vec,
 			    aa_vec,
-			    seed, y_elem, r_true_l_elem, r_true_t_elem);
+			    seed, y_elem, head_r_true_elem, tail_r_true_elem);
 
-	  r_true_l[ri] = r_true_l_elem[0];
-	  r_true_l[ri + 1] = r_true_l_elem[1];
-	  r_true_t[ri] = r_true_t_elem[0];
-	  r_true_t[ri + 1] = r_true_t_elem[1];
+	  head_r_true[ri] = head_r_true_elem[0];
+	  head_r_true[ri + 1] = head_r_true_elem[1];
+	  tail_r_true[ri] = tail_r_true_elem[0];
+	  tail_r_true[ri + 1] = tail_r_true_elem[1];
 	}
 
 	/*set a_use = 0 */
@@ -14316,13 +14188,13 @@ void BLAS_zge_sum_mv_d_d_testgen(int norm, enum blas_order_type order,
 	alpha_use_ptr_i[0] = alpha_use[0];
 	alpha_use_ptr_i[1] = alpha_use[1];
 	dsymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 
-	free(aa_vec);
+	blas_free(aa_vec);
 
 
-	free(xx_vec);
+	blas_free(xx_vec);
 
 	return;
 
@@ -14347,12 +14219,12 @@ void BLAS_zge_sum_mv_d_d_testgen(int norm, enum blas_order_type order,
 			    &beta_zero_fake, 1,
 			    xx_vec,
 			    aa_vec,
-			    seed, y_elem, r_true_l_elem, r_true_t_elem);
+			    seed, y_elem, head_r_true_elem, tail_r_true_elem);
 
-	  r_true_l[ri] = r_true_l_elem[0];
-	  r_true_l[ri + 1] = r_true_l_elem[1];
-	  r_true_t[ri] = r_true_t_elem[0];
-	  r_true_t[ri + 1] = r_true_t_elem[1];
+	  head_r_true[ri] = head_r_true_elem[0];
+	  head_r_true[ri + 1] = head_r_true_elem[1];
+	  tail_r_true[ri] = tail_r_true_elem[0];
+	  tail_r_true[ri + 1] = tail_r_true_elem[1];
 	}
 
 	/*set b_use = 0 */
@@ -14392,13 +14264,13 @@ void BLAS_zge_sum_mv_d_d_testgen(int norm, enum blas_order_type order,
 	alpha_use_ptr_i[0] = alpha_use[0];
 	alpha_use_ptr_i[1] = alpha_use[1];
 	dsymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 
-	free(aa_vec);
+	blas_free(aa_vec);
 
 
-	free(xx_vec);
+	blas_free(xx_vec);
 
 	return;
 
@@ -14425,19 +14297,20 @@ void BLAS_zge_sum_mv_d_d_testgen(int norm, enum blas_order_type order,
 			  &alpha_use, 1,
 			  &beta_zero_fake, 1,
 			  xx_vec,
-			  aa_vec, seed, y_elem, r_true_l_elem, r_true_t_elem);
+			  aa_vec,
+			  seed, y_elem, head_r_true_elem, tail_r_true_elem);
 
-	r_true_l[ri] = r_true_l_elem[0];
-	r_true_l[ri + 1] = r_true_l_elem[1];
-	r_true_t[ri] = r_true_t_elem[0];
-	r_true_t[ri + 1] = r_true_t_elem[1];
+	head_r_true[ri] = head_r_true_elem[0];
+	head_r_true[ri + 1] = head_r_true_elem[1];
+	tail_r_true[ri] = tail_r_true_elem[0];
+	tail_r_true[ri + 1] = tail_r_true_elem[1];
       }
     }
 
-    free(aa_vec);
+    blas_free(aa_vec);
 
 
-    free(xx_vec);
+    blas_free(xx_vec);
 
   }
 
@@ -14604,8 +14477,8 @@ void BLAS_zge_sum_mv_d_d_testgen(int norm, enum blas_order_type order,
   /*copy x_vec into x : it is possible that the generator
      changed x_vec, even though none were free */
   dsymv_copy_vector(n_i, x, incx, x_vec, 1);
-  free(a_vec);
-  free(x_vec);
+  blas_free(a_vec);
+  blas_free(x_vec);
 }
 
 void BLAS_cge_sum_mv_c_s_testgen(int norm, enum blas_order_type order,
@@ -14614,8 +14487,8 @@ void BLAS_cge_sum_mv_c_s_testgen(int norm, enum blas_order_type order,
 				 int beta_flag, void *a, int lda, void *b,
 				 int ldb, float *x, int incx,
 				 void *alpha_use_ptr, void *a_use,
-				 void *b_use, int *seed, double *r_true_l,
-				 double *r_true_t)
+				 void *b_use, int *seed, double *head_r_true,
+				 double *tail_r_true)
 
 /*
  * Purpose
@@ -14691,10 +14564,10 @@ void BLAS_cge_sum_mv_c_s_testgen(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * double  (output) *r_true_l
+ * double  (output) *head_r_true
  *         the leading part of the truth in double-double.
  *
- * double  (output) *r_true_t
+ * double  (output) *tail_r_true
  *         the trailing part of the truth in double-double
  *
  *
@@ -14759,15 +14632,13 @@ void BLAS_cge_sum_mv_c_s_testgen(int norm, enum blas_order_type order,
   float beta_zero_fake[2];
   float a_elem[2];
   float x_elem;
-  double r_true_t_elem[2];
-  double r_true_l_elem[2];
+  double head_r_true_elem[2], tail_r_true_elem[2];
   float multiplier;
   float divider;
   float alpha_use[2];
 
   float *a_vec;
   float *x_vec;
-
 
   float *alpha_use_ptr_i = (float *) alpha_use_ptr;
   float *alpha_i = (float *) alpha;
@@ -14787,8 +14658,6 @@ void BLAS_cge_sum_mv_c_s_testgen(int norm, enum blas_order_type order,
   inca_veci = 1;
   inca_veci *= 2;
 
-
-
   a_vec = (float *) blas_malloc(2 * n_i * sizeof(float) * 2);
   if (2 * n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -14798,13 +14667,11 @@ void BLAS_cge_sum_mv_c_s_testgen(int norm, enum blas_order_type order,
     a_vec[i + 1] = 0.0;
   }
 
-
   incri = 1;
   incri *= 2;
 
   incxi = incx;
   incx_veci = 1;
-
 
 
 
@@ -14929,15 +14796,15 @@ void BLAS_cge_sum_mv_c_s_testgen(int norm, enum blas_order_type order,
 	  BLAS_cdot_s_c_testgen(n_i, 0, n_i, norm,
 				blas_no_conj, &alpha_use, 1,
 				&beta_zero_fake, 1, x_vec, a_vec, seed,
-				y_elem, r_true_l_elem, r_true_t_elem);
+				y_elem, head_r_true_elem, tail_r_true_elem);
 
 	  cge_sum_mv_commit(order, m_i, n_i, a, lda, a_vec, i);
 
 	  /*commits an element to the truth */
-	  r_true_l[ri] = r_true_l_elem[0];
-	  r_true_l[ri + 1] = r_true_l_elem[1];
-	  r_true_t[ri] = r_true_t_elem[0];
-	  r_true_t[ri + 1] = r_true_t_elem[1];
+	  head_r_true[ri] = head_r_true_elem[0];
+	  head_r_true[ri + 1] = head_r_true_elem[1];
+	  tail_r_true[ri] = tail_r_true_elem[0];
+	  tail_r_true[ri + 1] = tail_r_true_elem[1];
 	}
 
 	/*now fill a, x, and return */
@@ -15004,8 +14871,8 @@ void BLAS_cge_sum_mv_c_s_testgen(int norm, enum blas_order_type order,
 	alpha_i[0] = alpha_use[0];
 	alpha_i[1] = alpha_use[1];
 	ssymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 	return;
       } else {
 
@@ -15016,15 +14883,15 @@ void BLAS_cge_sum_mv_c_s_testgen(int norm, enum blas_order_type order,
 	  BLAS_cdot_s_c_testgen(n_i, 0, n_i, norm,
 				blas_no_conj, &alpha_use, 1,
 				&beta_zero_fake, 1, x_vec, a_vec, seed,
-				y_elem, r_true_l_elem, r_true_t_elem);
+				y_elem, head_r_true_elem, tail_r_true_elem);
 
 	  cge_sum_mv_commit(order, m_i, n_i, b, ldb, a_vec, i);
 
 	  /*commits an element to the truth */
-	  r_true_l[ri] = r_true_l_elem[0];
-	  r_true_l[ri + 1] = r_true_l_elem[1];
-	  r_true_t[ri] = r_true_t_elem[0];
-	  r_true_t[ri + 1] = r_true_t_elem[1];
+	  head_r_true[ri] = head_r_true_elem[0];
+	  head_r_true[ri + 1] = head_r_true_elem[1];
+	  tail_r_true[ri] = tail_r_true_elem[0];
+	  tail_r_true[ri + 1] = tail_r_true_elem[1];
 	}
 
 	/*now fill b, x, and return */
@@ -15091,8 +14958,8 @@ void BLAS_cge_sum_mv_c_s_testgen(int norm, enum blas_order_type order,
 	beta_i[0] = alpha_use[0];
 	beta_i[1] = alpha_use[1];
 	ssymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 	return;
       }
     }
@@ -15133,13 +15000,13 @@ void BLAS_cge_sum_mv_c_s_testgen(int norm, enum blas_order_type order,
 	y_elem[0] = y_elem[1] = 0.0;
 	BLAS_sdot_testgen(2 * n_i, 0, 2 * n_i, norm,
 			  blas_no_conj,
-			  (void *) alpha_use, 1,
-			  (void *) beta_zero_fake, 1,
+			  alpha_use, 1,
+			  beta_zero_fake, 1,
 			  x_vec_2,
 			  a_vec_2, seed,
-			  y_elem, r_true_l_elem, r_true_t_elem);
+			  y_elem, head_r_true_elem, tail_r_true_elem);
 
-	r_true_l_elem[1] = r_true_t_elem[1] = 0.0;
+	head_r_true_elem[1] = tail_r_true_elem[1] = 0.0;
 	for (j = 0; j < 2 * n_i; j++) {
 	  a_vec[2 * j] = a_vec_2[j];
 	  a_vec[2 * j + 1] = 0.0;
@@ -15149,17 +15016,17 @@ void BLAS_cge_sum_mv_c_s_testgen(int norm, enum blas_order_type order,
 			  m_i, n_i, b, ldb, (a_vec + inca_veci * n_i), i);
 
 	/*commits an element to the truth */
-	r_true_l[ri] = r_true_l_elem[0];
-	r_true_l[ri + 1] = r_true_l_elem[1];
-	r_true_t[ri] = r_true_t_elem[0];
-	r_true_t[ri + 1] = r_true_t_elem[1];
+	head_r_true[ri] = head_r_true_elem[0];
+	head_r_true[ri + 1] = head_r_true_elem[1];
+	tail_r_true[ri] = tail_r_true_elem[0];
+	tail_r_true[ri + 1] = tail_r_true_elem[1];
       }
       /* copy to x_vec - will be copied to x_i later */
       for (j = 0; j < n_i; j++) {
 	x_vec[j] = x_vec_2[j];
       }
-      free(x_vec_2);
-      free(a_vec_2);
+      blas_free(x_vec_2);
+      blas_free(a_vec_2);
     } else {
       /*not case 3 */
 
@@ -15169,17 +15036,17 @@ void BLAS_cge_sum_mv_c_s_testgen(int norm, enum blas_order_type order,
 	BLAS_cdot_s_c_testgen(2 * n_i, 0, 2 * n_i, norm,
 			      blas_no_conj, &alpha_use, 1,
 			      &beta_zero_fake, 1, x_vec, a_vec, seed,
-			      y_elem, r_true_l_elem, r_true_t_elem);
+			      y_elem, head_r_true_elem, tail_r_true_elem);
 
 	cge_sum_mv_commit(order, m_i, n_i, a, lda, a_vec, i);
 	cge_sum_mv_commit(order,
 			  m_i, n_i, b, ldb, (a_vec + inca_veci * n_i), i);
 
 	/*commits an element to the truth */
-	r_true_l[ri] = r_true_l_elem[0];
-	r_true_l[ri + 1] = r_true_l_elem[1];
-	r_true_t[ri] = r_true_t_elem[0];
-	r_true_t[ri + 1] = r_true_t_elem[1];
+	head_r_true[ri] = head_r_true_elem[0];
+	head_r_true[ri + 1] = head_r_true_elem[1];
+	tail_r_true[ri] = tail_r_true_elem[0];
+	tail_r_true[ri + 1] = tail_r_true_elem[1];
       }
 
     }
@@ -15273,12 +15140,12 @@ void BLAS_cge_sum_mv_c_s_testgen(int norm, enum blas_order_type order,
 			    &beta_zero_fake, 1,
 			    xx_vec,
 			    a_vec,
-			    seed, y_elem, r_true_l_elem, r_true_t_elem);
+			    seed, y_elem, head_r_true_elem, tail_r_true_elem);
 
-	  r_true_l[ri] = r_true_l_elem[0];
-	  r_true_l[ri + 1] = r_true_l_elem[1];
-	  r_true_t[ri] = r_true_t_elem[0];
-	  r_true_t[ri + 1] = r_true_t_elem[1];
+	  head_r_true[ri] = head_r_true_elem[0];
+	  head_r_true[ri + 1] = head_r_true_elem[1];
+	  tail_r_true[ri] = tail_r_true_elem[0];
+	  tail_r_true[ri + 1] = tail_r_true_elem[1];
 	}
 
 	/*set a_use = 0 */
@@ -15321,11 +15188,11 @@ void BLAS_cge_sum_mv_c_s_testgen(int norm, enum blas_order_type order,
 	alpha_use_ptr_i[0] = alpha_use[0];
 	alpha_use_ptr_i[1] = alpha_use[1];
 	ssymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 
 
-	free(xx_vec);
+	blas_free(xx_vec);
 
 	return;
 
@@ -15343,12 +15210,12 @@ void BLAS_cge_sum_mv_c_s_testgen(int norm, enum blas_order_type order,
 			    &beta_zero_fake, 1,
 			    xx_vec,
 			    a_vec,
-			    seed, y_elem, r_true_l_elem, r_true_t_elem);
+			    seed, y_elem, head_r_true_elem, tail_r_true_elem);
 
-	  r_true_l[ri] = r_true_l_elem[0];
-	  r_true_l[ri + 1] = r_true_l_elem[1];
-	  r_true_t[ri] = r_true_t_elem[0];
-	  r_true_t[ri + 1] = r_true_t_elem[1];
+	  head_r_true[ri] = head_r_true_elem[0];
+	  head_r_true[ri + 1] = head_r_true_elem[1];
+	  tail_r_true[ri] = tail_r_true_elem[0];
+	  tail_r_true[ri + 1] = tail_r_true_elem[1];
 	}
 
 	/*set b_use = 0 */
@@ -15391,11 +15258,11 @@ void BLAS_cge_sum_mv_c_s_testgen(int norm, enum blas_order_type order,
 	alpha_use_ptr_i[0] = alpha_use[0];
 	alpha_use_ptr_i[1] = alpha_use[1];
 	ssymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 
 
-	free(xx_vec);
+	blas_free(xx_vec);
 
 	return;
 
@@ -15415,17 +15282,18 @@ void BLAS_cge_sum_mv_c_s_testgen(int norm, enum blas_order_type order,
 			  &alpha_use, 1,
 			  &beta_zero_fake, 1,
 			  xx_vec,
-			  a_vec, seed, y_elem, r_true_l_elem, r_true_t_elem);
+			  a_vec,
+			  seed, y_elem, head_r_true_elem, tail_r_true_elem);
 
-	r_true_l[ri] = r_true_l_elem[0];
-	r_true_l[ri + 1] = r_true_l_elem[1];
-	r_true_t[ri] = r_true_t_elem[0];
-	r_true_t[ri + 1] = r_true_t_elem[1];
+	head_r_true[ri] = head_r_true_elem[0];
+	head_r_true[ri + 1] = head_r_true_elem[1];
+	tail_r_true[ri] = tail_r_true_elem[0];
+	tail_r_true[ri + 1] = tail_r_true_elem[1];
       }
     }
 
 
-    free(xx_vec);
+    blas_free(xx_vec);
 
   }
 
@@ -15976,8 +15844,8 @@ void BLAS_cge_sum_mv_c_s_testgen(int norm, enum blas_order_type order,
   /*copy x_vec into x : it is possible that the generator
      changed x_vec, even though none were free */
   ssymv_copy_vector(n_i, x, incx, x_vec, 1);
-  free(a_vec);
-  free(x_vec);
+  blas_free(a_vec);
+  blas_free(x_vec);
 }
 void BLAS_cge_sum_mv_s_c_testgen(int norm, enum blas_order_type order,
 				 int m, int n, int randomize,
@@ -15985,8 +15853,8 @@ void BLAS_cge_sum_mv_s_c_testgen(int norm, enum blas_order_type order,
 				 int beta_flag, float *a, int lda, float *b,
 				 int ldb, void *x, int incx,
 				 void *alpha_use_ptr, float *a_use,
-				 float *b_use, int *seed, double *r_true_l,
-				 double *r_true_t)
+				 float *b_use, int *seed, double *head_r_true,
+				 double *tail_r_true)
 
 /*
  * Purpose
@@ -16062,10 +15930,10 @@ void BLAS_cge_sum_mv_s_c_testgen(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * double  (output) *r_true_l
+ * double  (output) *head_r_true
  *         the leading part of the truth in double-double.
  *
- * double  (output) *r_true_t
+ * double  (output) *tail_r_true
  *         the trailing part of the truth in double-double
  *
  *
@@ -16125,15 +15993,13 @@ void BLAS_cge_sum_mv_s_c_testgen(int norm, enum blas_order_type order,
   float beta_zero_fake[2];
   float a_elem;
   float x_elem[2];
-  double r_true_t_elem[2];
-  double r_true_l_elem[2];
+  double head_r_true_elem[2], tail_r_true_elem[2];
   float multiplier;
   float divider;
   float alpha_use[2];
 
   float *a_vec;
   float *x_vec;
-
 
   float *alpha_use_ptr_i = (float *) alpha_use_ptr;
   float *alpha_i = (float *) alpha;
@@ -16153,8 +16019,6 @@ void BLAS_cge_sum_mv_s_c_testgen(int norm, enum blas_order_type order,
   inca_veci = 1;
 
 
-
-
   a_vec = (float *) blas_malloc(2 * n_i * sizeof(float));
   if (2 * n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -16163,7 +16027,6 @@ void BLAS_cge_sum_mv_s_c_testgen(int norm, enum blas_order_type order,
     a_vec[i] = 0.0;
   }
 
-
   incri = 1;
   incri *= 2;
 
@@ -16171,7 +16034,6 @@ void BLAS_cge_sum_mv_s_c_testgen(int norm, enum blas_order_type order,
   incx_veci = 1;
   incx_veci *= 2;
   incxi *= 2;
-
 
   if (incxi < 0) {
     x_starti = (-n + 1) * incxi;
@@ -16297,15 +16159,15 @@ void BLAS_cge_sum_mv_s_c_testgen(int norm, enum blas_order_type order,
 	  BLAS_cdot_c_s_testgen(n_i, 0, n_i, norm,
 				blas_no_conj, &alpha_use, 1,
 				&beta_zero_fake, 1, x_vec, a_vec, seed,
-				y_elem, r_true_l_elem, r_true_t_elem);
+				y_elem, head_r_true_elem, tail_r_true_elem);
 
 	  sge_sum_mv_commit(order, m_i, n_i, a, lda, a_vec, i);
 
 	  /*commits an element to the truth */
-	  r_true_l[ri] = r_true_l_elem[0];
-	  r_true_l[ri + 1] = r_true_l_elem[1];
-	  r_true_t[ri] = r_true_t_elem[0];
-	  r_true_t[ri + 1] = r_true_t_elem[1];
+	  head_r_true[ri] = head_r_true_elem[0];
+	  head_r_true[ri + 1] = head_r_true_elem[1];
+	  tail_r_true[ri] = tail_r_true_elem[0];
+	  tail_r_true[ri + 1] = tail_r_true_elem[1];
 	}
 
 	/*now fill a, x, and return */
@@ -16367,8 +16229,8 @@ void BLAS_cge_sum_mv_s_c_testgen(int norm, enum blas_order_type order,
 	alpha_i[0] = alpha_use[0];
 	alpha_i[1] = alpha_use[1];
 	csymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 	return;
       } else {
 
@@ -16379,15 +16241,15 @@ void BLAS_cge_sum_mv_s_c_testgen(int norm, enum blas_order_type order,
 	  BLAS_cdot_c_s_testgen(n_i, 0, n_i, norm,
 				blas_no_conj, &alpha_use, 1,
 				&beta_zero_fake, 1, x_vec, a_vec, seed,
-				y_elem, r_true_l_elem, r_true_t_elem);
+				y_elem, head_r_true_elem, tail_r_true_elem);
 
 	  sge_sum_mv_commit(order, m_i, n_i, b, ldb, a_vec, i);
 
 	  /*commits an element to the truth */
-	  r_true_l[ri] = r_true_l_elem[0];
-	  r_true_l[ri + 1] = r_true_l_elem[1];
-	  r_true_t[ri] = r_true_t_elem[0];
-	  r_true_t[ri + 1] = r_true_t_elem[1];
+	  head_r_true[ri] = head_r_true_elem[0];
+	  head_r_true[ri + 1] = head_r_true_elem[1];
+	  tail_r_true[ri] = tail_r_true_elem[0];
+	  tail_r_true[ri + 1] = tail_r_true_elem[1];
 	}
 
 	/*now fill b, x, and return */
@@ -16449,8 +16311,8 @@ void BLAS_cge_sum_mv_s_c_testgen(int norm, enum blas_order_type order,
 	beta_i[0] = alpha_use[0];
 	beta_i[1] = alpha_use[1];
 	csymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 	return;
       }
     }
@@ -16461,9 +16323,9 @@ void BLAS_cge_sum_mv_s_c_testgen(int norm, enum blas_order_type order,
 				  alpha_i, alpha_flag, beta_i, beta_flag,
 				  a, lda, b, ldb, x, incx,
 				  alpha_use_ptr_i, a_use, b_use,
-				  seed, r_true_l, r_true_t);
-      free(a_vec);
-      free(x_vec);
+				  seed, head_r_true, tail_r_true);
+      blas_free(a_vec);
+      blas_free(x_vec);
       return;
     }
 
@@ -16474,17 +16336,17 @@ void BLAS_cge_sum_mv_s_c_testgen(int norm, enum blas_order_type order,
       BLAS_cdot_c_s_testgen(2 * n_i, 0, 2 * n_i, norm,
 			    blas_no_conj, &alpha_use, 1,
 			    &beta_zero_fake, 1, x_vec, a_vec, seed,
-			    y_elem, r_true_l_elem, r_true_t_elem);
+			    y_elem, head_r_true_elem, tail_r_true_elem);
 
       sge_sum_mv_commit(order, m_i, n_i, a, lda, a_vec, i);
       sge_sum_mv_commit(order,
 			m_i, n_i, b, ldb, (a_vec + inca_veci * n_i), i);
 
       /*commits an element to the truth */
-      r_true_l[ri] = r_true_l_elem[0];
-      r_true_l[ri + 1] = r_true_l_elem[1];
-      r_true_t[ri] = r_true_t_elem[0];
-      r_true_t[ri + 1] = r_true_t_elem[1];
+      head_r_true[ri] = head_r_true_elem[0];
+      head_r_true[ri + 1] = head_r_true_elem[1];
+      tail_r_true[ri] = tail_r_true_elem[0];
+      tail_r_true[ri + 1] = tail_r_true_elem[1];
     }
 
 
@@ -16575,12 +16437,12 @@ void BLAS_cge_sum_mv_s_c_testgen(int norm, enum blas_order_type order,
 			    &beta_zero_fake, 1,
 			    x_vec,
 			    aa_vec,
-			    seed, y_elem, r_true_l_elem, r_true_t_elem);
+			    seed, y_elem, head_r_true_elem, tail_r_true_elem);
 
-	  r_true_l[ri] = r_true_l_elem[0];
-	  r_true_l[ri + 1] = r_true_l_elem[1];
-	  r_true_t[ri] = r_true_t_elem[0];
-	  r_true_t[ri + 1] = r_true_t_elem[1];
+	  head_r_true[ri] = head_r_true_elem[0];
+	  head_r_true[ri + 1] = head_r_true_elem[1];
+	  tail_r_true[ri] = tail_r_true_elem[0];
+	  tail_r_true[ri + 1] = tail_r_true_elem[1];
 	}
 
 	/*set a_use = 0 */
@@ -16620,10 +16482,10 @@ void BLAS_cge_sum_mv_s_c_testgen(int norm, enum blas_order_type order,
 	alpha_use_ptr_i[0] = alpha_use[0];
 	alpha_use_ptr_i[1] = alpha_use[1];
 	csymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 
-	free(aa_vec);
+	blas_free(aa_vec);
 
 
 	return;
@@ -16649,12 +16511,12 @@ void BLAS_cge_sum_mv_s_c_testgen(int norm, enum blas_order_type order,
 			    &beta_zero_fake, 1,
 			    x_vec,
 			    aa_vec,
-			    seed, y_elem, r_true_l_elem, r_true_t_elem);
+			    seed, y_elem, head_r_true_elem, tail_r_true_elem);
 
-	  r_true_l[ri] = r_true_l_elem[0];
-	  r_true_l[ri + 1] = r_true_l_elem[1];
-	  r_true_t[ri] = r_true_t_elem[0];
-	  r_true_t[ri + 1] = r_true_t_elem[1];
+	  head_r_true[ri] = head_r_true_elem[0];
+	  head_r_true[ri + 1] = head_r_true_elem[1];
+	  tail_r_true[ri] = tail_r_true_elem[0];
+	  tail_r_true[ri + 1] = tail_r_true_elem[1];
 	}
 
 	/*set b_use = 0 */
@@ -16694,10 +16556,10 @@ void BLAS_cge_sum_mv_s_c_testgen(int norm, enum blas_order_type order,
 	alpha_use_ptr_i[0] = alpha_use[0];
 	alpha_use_ptr_i[1] = alpha_use[1];
 	csymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 
-	free(aa_vec);
+	blas_free(aa_vec);
 
 
 	return;
@@ -16725,16 +16587,17 @@ void BLAS_cge_sum_mv_s_c_testgen(int norm, enum blas_order_type order,
 			  &alpha_use, 1,
 			  &beta_zero_fake, 1,
 			  x_vec,
-			  aa_vec, seed, y_elem, r_true_l_elem, r_true_t_elem);
+			  aa_vec,
+			  seed, y_elem, head_r_true_elem, tail_r_true_elem);
 
-	r_true_l[ri] = r_true_l_elem[0];
-	r_true_l[ri + 1] = r_true_l_elem[1];
-	r_true_t[ri] = r_true_t_elem[0];
-	r_true_t[ri + 1] = r_true_t_elem[1];
+	head_r_true[ri] = head_r_true_elem[0];
+	head_r_true[ri + 1] = head_r_true_elem[1];
+	tail_r_true[ri] = tail_r_true_elem[0];
+	tail_r_true[ri + 1] = tail_r_true_elem[1];
       }
     }
 
-    free(aa_vec);
+    blas_free(aa_vec);
 
 
   }
@@ -16902,8 +16765,8 @@ void BLAS_cge_sum_mv_s_c_testgen(int norm, enum blas_order_type order,
   /*copy x_vec into x : it is possible that the generator
      changed x_vec, even though none were free */
   csymv_copy_vector(n_i, x, incx, x_vec, 1);
-  free(a_vec);
-  free(x_vec);
+  blas_free(a_vec);
+  blas_free(x_vec);
 }
 void BLAS_cge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 				 int m, int n, int randomize,
@@ -16911,8 +16774,8 @@ void BLAS_cge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 				 int beta_flag, float *a, int lda, float *b,
 				 int ldb, float *x, int incx,
 				 void *alpha_use_ptr, float *a_use,
-				 float *b_use, int *seed, double *r_true_l,
-				 double *r_true_t)
+				 float *b_use, int *seed, double *head_r_true,
+				 double *tail_r_true)
 
 /*
  * Purpose
@@ -16988,10 +16851,10 @@ void BLAS_cge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
  * seed    (input/output) int *
  *         seed for the random number generator.
  *
- * double  (output) *r_true_l
+ * double  (output) *head_r_true
  *         the leading part of the truth in double-double.
  *
- * double  (output) *r_true_t
+ * double  (output) *tail_r_true
  *         the trailing part of the truth in double-double
  *
  *
@@ -17051,15 +16914,13 @@ void BLAS_cge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
   float beta_zero_fake[2];
   float a_elem;
   float x_elem;
-  double r_true_t_elem[2];
-  double r_true_l_elem[2];
+  double head_r_true_elem[2], tail_r_true_elem[2];
   float multiplier;
   float divider;
   float alpha_use[2];
 
   float *a_vec;
   float *x_vec;
-
 
   float *alpha_use_ptr_i = (float *) alpha_use_ptr;
   float *alpha_i = (float *) alpha;
@@ -17079,8 +16940,6 @@ void BLAS_cge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
   inca_veci = 1;
 
 
-
-
   a_vec = (float *) blas_malloc(2 * n_i * sizeof(float));
   if (2 * n_i > 0 && a_vec == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
@@ -17089,13 +16948,11 @@ void BLAS_cge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
     a_vec[i] = 0.0;
   }
 
-
   incri = 1;
   incri *= 2;
 
   incxi = incx;
   incx_veci = 1;
-
 
 
 
@@ -17220,15 +17077,15 @@ void BLAS_cge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 	  BLAS_cdot_s_s_testgen(n_i, 0, n_i, norm,
 				blas_no_conj, &alpha_use, 1,
 				&beta_zero_fake, 1, x_vec, a_vec, seed,
-				y_elem, r_true_l_elem, r_true_t_elem);
+				y_elem, head_r_true_elem, tail_r_true_elem);
 
 	  sge_sum_mv_commit(order, m_i, n_i, a, lda, a_vec, i);
 
 	  /*commits an element to the truth */
-	  r_true_l[ri] = r_true_l_elem[0];
-	  r_true_l[ri + 1] = r_true_l_elem[1];
-	  r_true_t[ri] = r_true_t_elem[0];
-	  r_true_t[ri + 1] = r_true_t_elem[1];
+	  head_r_true[ri] = head_r_true_elem[0];
+	  head_r_true[ri + 1] = head_r_true_elem[1];
+	  tail_r_true[ri] = tail_r_true_elem[0];
+	  tail_r_true[ri + 1] = tail_r_true_elem[1];
 	}
 
 	/*now fill a, x, and return */
@@ -17290,8 +17147,8 @@ void BLAS_cge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 	alpha_i[0] = alpha_use[0];
 	alpha_i[1] = alpha_use[1];
 	ssymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 	return;
       } else {
 
@@ -17302,15 +17159,15 @@ void BLAS_cge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 	  BLAS_cdot_s_s_testgen(n_i, 0, n_i, norm,
 				blas_no_conj, &alpha_use, 1,
 				&beta_zero_fake, 1, x_vec, a_vec, seed,
-				y_elem, r_true_l_elem, r_true_t_elem);
+				y_elem, head_r_true_elem, tail_r_true_elem);
 
 	  sge_sum_mv_commit(order, m_i, n_i, b, ldb, a_vec, i);
 
 	  /*commits an element to the truth */
-	  r_true_l[ri] = r_true_l_elem[0];
-	  r_true_l[ri + 1] = r_true_l_elem[1];
-	  r_true_t[ri] = r_true_t_elem[0];
-	  r_true_t[ri + 1] = r_true_t_elem[1];
+	  head_r_true[ri] = head_r_true_elem[0];
+	  head_r_true[ri + 1] = head_r_true_elem[1];
+	  tail_r_true[ri] = tail_r_true_elem[0];
+	  tail_r_true[ri + 1] = tail_r_true_elem[1];
 	}
 
 	/*now fill b, x, and return */
@@ -17372,8 +17229,8 @@ void BLAS_cge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 	beta_i[0] = alpha_use[0];
 	beta_i[1] = alpha_use[1];
 	ssymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 	return;
       }
     }
@@ -17384,9 +17241,9 @@ void BLAS_cge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 				  alpha_i, alpha_flag, beta_i, beta_flag,
 				  a, lda, b, ldb, x, incx,
 				  alpha_use_ptr_i, a_use, b_use,
-				  seed, r_true_l, r_true_t);
-      free(a_vec);
-      free(x_vec);
+				  seed, head_r_true, tail_r_true);
+      blas_free(a_vec);
+      blas_free(x_vec);
       return;
     }
 
@@ -17397,17 +17254,17 @@ void BLAS_cge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
       BLAS_cdot_s_s_testgen(2 * n_i, 0, 2 * n_i, norm,
 			    blas_no_conj, &alpha_use, 1,
 			    &beta_zero_fake, 1, x_vec, a_vec, seed,
-			    y_elem, r_true_l_elem, r_true_t_elem);
+			    y_elem, head_r_true_elem, tail_r_true_elem);
 
       sge_sum_mv_commit(order, m_i, n_i, a, lda, a_vec, i);
       sge_sum_mv_commit(order,
 			m_i, n_i, b, ldb, (a_vec + inca_veci * n_i), i);
 
       /*commits an element to the truth */
-      r_true_l[ri] = r_true_l_elem[0];
-      r_true_l[ri + 1] = r_true_l_elem[1];
-      r_true_t[ri] = r_true_t_elem[0];
-      r_true_t[ri + 1] = r_true_t_elem[1];
+      head_r_true[ri] = head_r_true_elem[0];
+      head_r_true[ri + 1] = head_r_true_elem[1];
+      tail_r_true[ri] = tail_r_true_elem[0];
+      tail_r_true[ri + 1] = tail_r_true_elem[1];
     }
 
 
@@ -17506,12 +17363,12 @@ void BLAS_cge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 			    &beta_zero_fake, 1,
 			    xx_vec,
 			    aa_vec,
-			    seed, y_elem, r_true_l_elem, r_true_t_elem);
+			    seed, y_elem, head_r_true_elem, tail_r_true_elem);
 
-	  r_true_l[ri] = r_true_l_elem[0];
-	  r_true_l[ri + 1] = r_true_l_elem[1];
-	  r_true_t[ri] = r_true_t_elem[0];
-	  r_true_t[ri + 1] = r_true_t_elem[1];
+	  head_r_true[ri] = head_r_true_elem[0];
+	  head_r_true[ri + 1] = head_r_true_elem[1];
+	  tail_r_true[ri] = tail_r_true_elem[0];
+	  tail_r_true[ri + 1] = tail_r_true_elem[1];
 	}
 
 	/*set a_use = 0 */
@@ -17551,13 +17408,13 @@ void BLAS_cge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 	alpha_use_ptr_i[0] = alpha_use[0];
 	alpha_use_ptr_i[1] = alpha_use[1];
 	ssymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 
-	free(aa_vec);
+	blas_free(aa_vec);
 
 
-	free(xx_vec);
+	blas_free(xx_vec);
 
 	return;
 
@@ -17582,12 +17439,12 @@ void BLAS_cge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 			    &beta_zero_fake, 1,
 			    xx_vec,
 			    aa_vec,
-			    seed, y_elem, r_true_l_elem, r_true_t_elem);
+			    seed, y_elem, head_r_true_elem, tail_r_true_elem);
 
-	  r_true_l[ri] = r_true_l_elem[0];
-	  r_true_l[ri + 1] = r_true_l_elem[1];
-	  r_true_t[ri] = r_true_t_elem[0];
-	  r_true_t[ri + 1] = r_true_t_elem[1];
+	  head_r_true[ri] = head_r_true_elem[0];
+	  head_r_true[ri + 1] = head_r_true_elem[1];
+	  tail_r_true[ri] = tail_r_true_elem[0];
+	  tail_r_true[ri + 1] = tail_r_true_elem[1];
 	}
 
 	/*set b_use = 0 */
@@ -17627,13 +17484,13 @@ void BLAS_cge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 	alpha_use_ptr_i[0] = alpha_use[0];
 	alpha_use_ptr_i[1] = alpha_use[1];
 	ssymv_copy_vector(n_i, x, incx, x_vec, 1);
-	free(a_vec);
-	free(x_vec);
+	blas_free(a_vec);
+	blas_free(x_vec);
 
-	free(aa_vec);
+	blas_free(aa_vec);
 
 
-	free(xx_vec);
+	blas_free(xx_vec);
 
 	return;
 
@@ -17660,19 +17517,20 @@ void BLAS_cge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 			  &alpha_use, 1,
 			  &beta_zero_fake, 1,
 			  xx_vec,
-			  aa_vec, seed, y_elem, r_true_l_elem, r_true_t_elem);
+			  aa_vec,
+			  seed, y_elem, head_r_true_elem, tail_r_true_elem);
 
-	r_true_l[ri] = r_true_l_elem[0];
-	r_true_l[ri + 1] = r_true_l_elem[1];
-	r_true_t[ri] = r_true_t_elem[0];
-	r_true_t[ri + 1] = r_true_t_elem[1];
+	head_r_true[ri] = head_r_true_elem[0];
+	head_r_true[ri + 1] = head_r_true_elem[1];
+	tail_r_true[ri] = tail_r_true_elem[0];
+	tail_r_true[ri + 1] = tail_r_true_elem[1];
       }
     }
 
-    free(aa_vec);
+    blas_free(aa_vec);
 
 
-    free(xx_vec);
+    blas_free(xx_vec);
 
   }
 
@@ -17839,6 +17697,6 @@ void BLAS_cge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
   /*copy x_vec into x : it is possible that the generator
      changed x_vec, even though none were free */
   ssymv_copy_vector(n_i, x, incx, x_vec, 1);
-  free(a_vec);
-  free(x_vec);
+  blas_free(a_vec);
+  blas_free(x_vec);
 }

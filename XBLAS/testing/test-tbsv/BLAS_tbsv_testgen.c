@@ -12,15 +12,15 @@ extern double xrand(int *);
 
 
 
-
 void BLAS_stbsv_testgen(int norm, enum blas_order_type order,
 			enum blas_uplo_type uplo,
 			enum blas_trans_type trans,
 			enum blas_diag_type diag,
 			int n, int k, int randomize,
 			float *alpha, int alpha_flag, float *T, int ldt,
-			float *x, int *seed, double *r_true_l,
-			double *r_true_t, int row, enum blas_prec_type prec)
+			float *x, int *seed, double *head_r_true,
+			double *tail_r_true, int row,
+			enum blas_prec_type prec)
 
 /*
  * Purpose
@@ -66,10 +66,10 @@ void BLAS_stbsv_testgen(int norm, enum blas_order_type order,
  *
  * seed         (input/output) int
  *
- * r_true_l     (output) double*
+ * head_r_true     (output) double*
  *              The leading part of the truth in double-double.
  *
- * r_true_t     (output) double*
+ * tail_r_true     (output) double*
  *              The trailing part of the truth in double-double.
  *
  * row          (input) int
@@ -96,11 +96,9 @@ void BLAS_stbsv_testgen(int norm, enum blas_order_type order,
   }
 
   /* always allocate, not always needed */
-  if (1 || prec != blas_prec_extra) {
-    xtemp2 = (float *) blas_malloc(n * 2 * sizeof(float));
-    if (n * 2 > 0 && xtemp2 == NULL) {
-      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-    }
+  xtemp2 = (float *) blas_malloc(n * 2 * sizeof(float));
+  if (n * 2 > 0 && xtemp2 == NULL) {
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   minus_one = -1.0;
@@ -147,8 +145,8 @@ void BLAS_stbsv_testgen(int norm, enum blas_order_type order,
 
 	  multemp = x[i] * *alpha;
 	  divtemp = multemp / Tii;
-	  r_true_l[i] = divtemp;
-	  r_true_t[i] = 0.0;
+	  head_r_true[i] = divtemp;
+	  tail_r_true[i] = 0.0;
 	  xtemp2[i] = divtemp;
 	  break;
 	}
@@ -160,8 +158,8 @@ void BLAS_stbsv_testgen(int norm, enum blas_order_type order,
 
 	  multemp = (double) x[i] * *alpha;
 	  divtemp = (double) multemp / Tii;
-	  r_true_l[i] = divtemp;
-	  r_true_t[i] = 0.0;
+	  head_r_true[i] = divtemp;
+	  tail_r_true[i] = 0.0;
 	  break;
 	}
       case blas_prec_extra:
@@ -209,8 +207,8 @@ void BLAS_stbsv_testgen(int norm, enum blas_order_type order,
 	      tail_divtemp = t2 - (head_divtemp - t1);
 	    }
 	  }
-	  r_true_l[i] = head_divtemp;
-	  r_true_t[i] = tail_divtemp;
+	  head_r_true[i] = head_divtemp;
+	  tail_r_true[i] = tail_divtemp;
 	  break;
 	}
       }				/* case */
@@ -251,16 +249,17 @@ void BLAS_stbsv_testgen(int norm, enum blas_order_type order,
       BLAS_sdot_testgen(length, 0, length, norm,
 			blas_no_conj, &minus_one, 1, alpha, 1,
 			&xtemp2[start], &temp[start], seed, &x[row],
-			&r_true_l[row], &r_true_t[row]);
+			&head_r_true[row], &tail_r_true[row]);
       break;
     case blas_prec_indigenous:
     case blas_prec_double:
     case blas_prec_extra:
       BLAS_sdot_x_testgen(length, 0, length, norm,
 			  blas_no_conj, &minus_one, 1, alpha, 1,
-			  &r_true_l[start], &r_true_t[start],
+			  &head_r_true[start], &tail_r_true[start],
 			  &temp[start],
-			  seed, &x[row], &r_true_l[row], &r_true_t[row]);
+			  seed, &x[row], &head_r_true[row],
+			  &tail_r_true[row]);
       break;
     }
     stbsv_commit(order, uplo, trans, n, k, T, ldt, temp, row);
@@ -275,8 +274,8 @@ void BLAS_stbsv_testgen(int norm, enum blas_order_type order,
 	float multemp;
 
 	multemp = x[row] * *alpha;
-	r_true_l[row] = multemp;
-	r_true_t[row] = 0.0;
+	head_r_true[row] = multemp;
+	tail_r_true[row] = 0.0;
 	break;
       }
     case blas_prec_indigenous:
@@ -285,8 +284,8 @@ void BLAS_stbsv_testgen(int norm, enum blas_order_type order,
 	double multemp;
 
 	multemp = (double) x[row] * *alpha;
-	r_true_l[row] = multemp;
-	r_true_t[row] = 0.0;
+	head_r_true[row] = multemp;
+	tail_r_true[row] = 0.0;
 	break;
       }
     case blas_prec_extra:
@@ -295,17 +294,15 @@ void BLAS_stbsv_testgen(int norm, enum blas_order_type order,
 
 	head_multemp = (double) x[row] * *alpha;
 	tail_multemp = 0.0;
-	r_true_l[row] = head_multemp;
-	r_true_t[row] = tail_multemp;
+	head_r_true[row] = head_multemp;
+	tail_r_true[row] = tail_multemp;
 	break;
       }
     }
   }
 
   blas_free(temp);
-
-  if (1 || prec != blas_prec_extra)
-    blas_free(xtemp2);
+  blas_free(xtemp2);
 }				/* end of BLAS_stbsv_testgen */
 
 void BLAS_dtbsv_testgen(int norm, enum blas_order_type order,
@@ -314,8 +311,9 @@ void BLAS_dtbsv_testgen(int norm, enum blas_order_type order,
 			enum blas_diag_type diag,
 			int n, int k, int randomize,
 			double *alpha, int alpha_flag, double *T, int ldt,
-			double *x, int *seed, double *r_true_l,
-			double *r_true_t, int row, enum blas_prec_type prec)
+			double *x, int *seed, double *head_r_true,
+			double *tail_r_true, int row,
+			enum blas_prec_type prec)
 
 /*
  * Purpose
@@ -361,10 +359,10 @@ void BLAS_dtbsv_testgen(int norm, enum blas_order_type order,
  *
  * seed         (input/output) int
  *
- * r_true_l     (output) double*
+ * head_r_true     (output) double*
  *              The leading part of the truth in double-double.
  *
- * r_true_t     (output) double*
+ * tail_r_true     (output) double*
  *              The trailing part of the truth in double-double.
  *
  * row          (input) int
@@ -391,11 +389,9 @@ void BLAS_dtbsv_testgen(int norm, enum blas_order_type order,
   }
 
   /* always allocate, not always needed */
-  if (1 || prec != blas_prec_extra) {
-    xtemp2 = (double *) blas_malloc(n * 2 * sizeof(double));
-    if (n * 2 > 0 && xtemp2 == NULL) {
-      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-    }
+  xtemp2 = (double *) blas_malloc(n * 2 * sizeof(double));
+  if (n * 2 > 0 && xtemp2 == NULL) {
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   minus_one = -1.0;
@@ -442,8 +438,8 @@ void BLAS_dtbsv_testgen(int norm, enum blas_order_type order,
 
 	  multemp = x[i] * *alpha;
 	  divtemp = multemp / Tii;
-	  r_true_l[i] = divtemp;
-	  r_true_t[i] = 0.0;
+	  head_r_true[i] = divtemp;
+	  tail_r_true[i] = 0.0;
 	  xtemp2[i] = divtemp;
 	  break;
 	}
@@ -455,8 +451,8 @@ void BLAS_dtbsv_testgen(int norm, enum blas_order_type order,
 
 	  multemp = x[i] * *alpha;
 	  divtemp = multemp / Tii;
-	  r_true_l[i] = divtemp;
-	  r_true_t[i] = 0.0;
+	  head_r_true[i] = divtemp;
+	  tail_r_true[i] = 0.0;
 	  xtemp2[i] = divtemp;
 	  break;
 	}
@@ -516,8 +512,8 @@ void BLAS_dtbsv_testgen(int norm, enum blas_order_type order,
 	    head_divtemp = t1 + t2;
 	    tail_divtemp = t2 - (head_divtemp - t1);
 	  }
-	  r_true_l[i] = head_divtemp;
-	  r_true_t[i] = tail_divtemp;
+	  head_r_true[i] = head_divtemp;
+	  tail_r_true[i] = tail_divtemp;
 	  break;
 	}
       }				/* case */
@@ -560,14 +556,15 @@ void BLAS_dtbsv_testgen(int norm, enum blas_order_type order,
       BLAS_ddot_testgen(length, 0, length, norm,
 			blas_no_conj, &minus_one, 1, alpha, 1,
 			&xtemp2[start], &temp[start],
-			seed, &x[row], &r_true_l[row], &r_true_t[row]);
+			seed, &x[row], &head_r_true[row], &tail_r_true[row]);
       break;
     case blas_prec_extra:
       BLAS_ddot_x_testgen(length, 0, length, norm,
 			  blas_no_conj, &minus_one, 1, alpha, 1,
-			  &r_true_l[start], &r_true_t[start],
+			  &head_r_true[start], &tail_r_true[start],
 			  &temp[start],
-			  seed, &x[row], &r_true_l[row], &r_true_t[row]);
+			  seed, &x[row], &head_r_true[row],
+			  &tail_r_true[row]);
       break;
 
     }
@@ -583,8 +580,8 @@ void BLAS_dtbsv_testgen(int norm, enum blas_order_type order,
 	double multemp;
 
 	multemp = x[row] * *alpha;
-	r_true_l[row] = multemp;
-	r_true_t[row] = 0.0;
+	head_r_true[row] = multemp;
+	tail_r_true[row] = 0.0;
 	break;
       }
     case blas_prec_indigenous:
@@ -593,8 +590,8 @@ void BLAS_dtbsv_testgen(int norm, enum blas_order_type order,
 	double multemp;
 
 	multemp = x[row] * *alpha;
-	r_true_l[row] = multemp;
-	r_true_t[row] = 0.0;
+	head_r_true[row] = multemp;
+	tail_r_true[row] = 0.0;
 	break;
       }
     case blas_prec_extra:
@@ -618,17 +615,15 @@ void BLAS_dtbsv_testgen(int norm, enum blas_order_type order,
 	  tail_multemp =
 	    (((a1 * b1 - head_multemp) + a1 * b2) + a2 * b1) + a2 * b2;
 	}
-	r_true_l[row] = head_multemp;
-	r_true_t[row] = tail_multemp;
+	head_r_true[row] = head_multemp;
+	tail_r_true[row] = tail_multemp;
 	break;
       }
     }
   }
 
   blas_free(temp);
-
-  if (1 || prec != blas_prec_extra)
-    blas_free(xtemp2);
+  blas_free(xtemp2);
 }				/* end of BLAS_dtbsv_testgen */
 
 void BLAS_dtbsv_s_testgen(int norm, enum blas_order_type order,
@@ -637,8 +632,9 @@ void BLAS_dtbsv_s_testgen(int norm, enum blas_order_type order,
 			  enum blas_diag_type diag,
 			  int n, int k, int randomize,
 			  double *alpha, int alpha_flag, float *T, int ldt,
-			  double *x, int *seed, double *r_true_l,
-			  double *r_true_t, int row, enum blas_prec_type prec)
+			  double *x, int *seed, double *head_r_true,
+			  double *tail_r_true, int row,
+			  enum blas_prec_type prec)
 
 /*
  * Purpose
@@ -684,10 +680,10 @@ void BLAS_dtbsv_s_testgen(int norm, enum blas_order_type order,
  *
  * seed         (input/output) int
  *
- * r_true_l     (output) double*
+ * head_r_true     (output) double*
  *              The leading part of the truth in double-double.
  *
- * r_true_t     (output) double*
+ * tail_r_true     (output) double*
  *              The trailing part of the truth in double-double.
  *
  * row          (input) int
@@ -714,11 +710,9 @@ void BLAS_dtbsv_s_testgen(int norm, enum blas_order_type order,
   }
 
   /* always allocate, not always needed */
-  if (1 || prec != blas_prec_extra) {
-    xtemp2 = (double *) blas_malloc(n * 2 * sizeof(double));
-    if (n * 2 > 0 && xtemp2 == NULL) {
-      BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-    }
+  xtemp2 = (double *) blas_malloc(n * 2 * sizeof(double));
+  if (n * 2 > 0 && xtemp2 == NULL) {
+    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
   minus_one = -1.0;
@@ -765,8 +759,8 @@ void BLAS_dtbsv_s_testgen(int norm, enum blas_order_type order,
 
 	  multemp = x[i] * *alpha;
 	  divtemp = multemp / Tii;
-	  r_true_l[i] = divtemp;
-	  r_true_t[i] = 0.0;
+	  head_r_true[i] = divtemp;
+	  tail_r_true[i] = 0.0;
 	  xtemp2[i] = divtemp;
 	  break;
 	}
@@ -778,8 +772,8 @@ void BLAS_dtbsv_s_testgen(int norm, enum blas_order_type order,
 
 	  multemp = x[i] * *alpha;
 	  divtemp = multemp / Tii;
-	  r_true_l[i] = divtemp;
-	  r_true_t[i] = 0.0;
+	  head_r_true[i] = divtemp;
+	  tail_r_true[i] = 0.0;
 	  xtemp2[i] = divtemp;
 	  break;
 	}
@@ -843,8 +837,8 @@ void BLAS_dtbsv_s_testgen(int norm, enum blas_order_type order,
 	      tail_divtemp = t2 - (head_divtemp - t1);
 	    }
 	  }
-	  r_true_l[i] = head_divtemp;
-	  r_true_t[i] = tail_divtemp;
+	  head_r_true[i] = head_divtemp;
+	  tail_r_true[i] = tail_divtemp;
 	  break;
 	}
       }				/* case */
@@ -885,16 +879,17 @@ void BLAS_dtbsv_s_testgen(int norm, enum blas_order_type order,
     case blas_prec_indigenous:
     case blas_prec_double:	/*BLAS_ddot_s_x_testgen(length, 0, length, norm, 
 				   blas_no_conj, &minus_one, 1, alpha, 1, 
-				   &r_true_l[start], &r_true_t[start], 
+				   &head_r_true[start], &tail_r_true[start], 
 				   &temp[start], 
-				   seed, &x[row], &r_true_l[row], &r_true_t[row]);
+				   seed, &x[row], &head_r_true[row], &tail_r_true[row]);
 				   break; */
     case blas_prec_extra:
       BLAS_ddot_s_x_testgen(length, 0, length, norm,
 			    blas_no_conj, &minus_one, 1, alpha, 1,
-			    &r_true_l[start], &r_true_t[start],
+			    &head_r_true[start], &tail_r_true[start],
 			    &temp[start],
-			    seed, &x[row], &r_true_l[row], &r_true_t[row]);
+			    seed, &x[row], &head_r_true[row],
+			    &tail_r_true[row]);
       break;
     }
     stbsv_commit(order, uplo, trans, n, k, T, ldt, temp, row);
@@ -909,8 +904,8 @@ void BLAS_dtbsv_s_testgen(int norm, enum blas_order_type order,
 	double multemp;
 
 	multemp = x[row] * *alpha;
-	r_true_l[row] = multemp;
-	r_true_t[row] = 0.0;
+	head_r_true[row] = multemp;
+	tail_r_true[row] = 0.0;
 	break;
       }
     case blas_prec_indigenous:
@@ -919,8 +914,8 @@ void BLAS_dtbsv_s_testgen(int norm, enum blas_order_type order,
 	double multemp;
 
 	multemp = x[row] * *alpha;
-	r_true_l[row] = multemp;
-	r_true_t[row] = 0.0;
+	head_r_true[row] = multemp;
+	tail_r_true[row] = 0.0;
 	break;
       }
     case blas_prec_extra:
@@ -944,17 +939,15 @@ void BLAS_dtbsv_s_testgen(int norm, enum blas_order_type order,
 	  tail_multemp =
 	    (((a1 * b1 - head_multemp) + a1 * b2) + a2 * b1) + a2 * b2;
 	}
-	r_true_l[row] = head_multemp;
-	r_true_t[row] = tail_multemp;
+	head_r_true[row] = head_multemp;
+	tail_r_true[row] = tail_multemp;
 	break;
       }
     }
   }
 
   blas_free(temp);
-
-  if (1 || prec != blas_prec_extra)
-    blas_free(xtemp2);
+  blas_free(xtemp2);
 }				/* end of BLAS_dtbsv_s_testgen */
 
 void BLAS_ctbsv_testgen(int norm, enum blas_order_type order,
@@ -963,8 +956,9 @@ void BLAS_ctbsv_testgen(int norm, enum blas_order_type order,
 			enum blas_diag_type diag,
 			int n, int k, int randomize,
 			void *alpha, int alpha_flag, void *T, int ldt,
-			void *x, int *seed, double *r_true_l,
-			double *r_true_t, int row, enum blas_prec_type prec)
+			void *x, int *seed, double *head_r_true,
+			double *tail_r_true, int row,
+			enum blas_prec_type prec)
 
 /*
  * Purpose
@@ -1010,10 +1004,10 @@ void BLAS_ctbsv_testgen(int norm, enum blas_order_type order,
  *
  * seed         (input/output) int
  *
- * r_true_l     (output) double*
+ * head_r_true     (output) double*
  *              The leading part of the truth in double-double.
  *
- * r_true_t     (output) double*
+ * tail_r_true     (output) double*
  *              The trailing part of the truth in double-double.
  *
  * row          (input) int
@@ -1032,7 +1026,7 @@ void BLAS_ctbsv_testgen(int norm, enum blas_order_type order,
   float *x_r;
   float *T_temp_r;
   float *T_temp_c;
-  double *r_true_l_r, *r_true_t_r;
+  double *head_r_true_r, *tail_r_true_r;
   int i, inc = 2, length, j;
 
   T_r = (float *) blas_malloc(8 * n * ldt * sizeof(float));
@@ -1043,12 +1037,9 @@ void BLAS_ctbsv_testgen(int norm, enum blas_order_type order,
   if (n > 0 && x_r == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  r_true_l_r = (double *) blas_malloc(n * sizeof(double));
-  if (n > 0 && r_true_l_r == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  r_true_t_r = (double *) blas_malloc(n * sizeof(double));
-  if (n > 0 && r_true_t_r == NULL) {
+  head_r_true_r = (double *) blas_malloc(n * sizeof(double));
+  tail_r_true_r = (double *) blas_malloc(n * sizeof(double));
+  if (n > 0 && (head_r_true_r == NULL || tail_r_true_r == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   T_temp_c = (float *) blas_malloc(n * sizeof(float) * 2);
@@ -1073,8 +1064,8 @@ void BLAS_ctbsv_testgen(int norm, enum blas_order_type order,
 
   BLAS_stbsv_testgen(norm, order, uplo, trans, diag, n, k, randomize,
 		     &alpha_r,
-		     alpha_flag, T_r, ldt, x_r, seed, r_true_l_r, r_true_t_r,
-		     row, prec);
+		     alpha_flag, T_r, ldt, x_r, seed, head_r_true_r,
+		     tail_r_true_r, row, prec);
 
   /* multiply alpha_r by 1+i */
   alpha_i[0] = alpha_r;
@@ -1088,16 +1079,16 @@ void BLAS_ctbsv_testgen(int norm, enum blas_order_type order,
 
       /* multiply non major rows truth by i */
       if (i != row) {
-	r_true_l[i * inc] = 0.0;
-	r_true_l[i * inc + 1] = r_true_l_r[i];
-	r_true_t[i * inc] = 0.0;
-	r_true_t[i * inc + 1] = r_true_t_r[i];
+	head_r_true[i * inc] = 0.0;
+	head_r_true[i * inc + 1] = head_r_true_r[i];
+	tail_r_true[i * inc] = 0.0;
+	tail_r_true[i * inc + 1] = tail_r_true_r[i];
       } else {
 	/* multiply major rows truth by (-1+i) */
-	r_true_l[i * inc] = -r_true_l_r[i];
-	r_true_l[i * inc + 1] = r_true_l_r[i];
-	r_true_t[i * inc] = -r_true_t_r[i];
-	r_true_t[i * inc + 1] = r_true_t_r[i];
+	head_r_true[i * inc] = -head_r_true_r[i];
+	head_r_true[i * inc + 1] = head_r_true_r[i];
+	tail_r_true[i * inc] = -tail_r_true_r[i];
+	tail_r_true[i * inc + 1] = tail_r_true_r[i];
       }
     }
 
@@ -1123,19 +1114,19 @@ void BLAS_ctbsv_testgen(int norm, enum blas_order_type order,
 
       /* multiply non-major rows by -1+i */
       if (i != row || length == 0) {
-	r_true_l[i * inc] = -r_true_l_r[i];
-	r_true_l[i * inc + 1] = r_true_l_r[i];
-	r_true_t[i * inc] = -r_true_t_r[i];
-	r_true_t[i * inc + 1] = r_true_t_r[i];
+	head_r_true[i * inc] = -head_r_true_r[i];
+	head_r_true[i * inc + 1] = head_r_true_r[i];
+	tail_r_true[i * inc] = -tail_r_true_r[i];
+	tail_r_true[i * inc + 1] = tail_r_true_r[i];
       } else {
 	/* multiply x by 1+i (overwrite multiply by i earlier) */
 	x_i[i * inc] = x_r[i];
 	x_i[i * inc + 1] = x_r[i];
 
-	r_true_l[i * inc] = 0.0;
-	r_true_l[i * inc + 1] = 2 * r_true_l_r[i];
-	r_true_t[i * inc] = 0.0;
-	r_true_t[i * inc + 1] = 2 * r_true_t_r[i];
+	head_r_true[i * inc] = 0.0;
+	head_r_true[i * inc + 1] = 2 * head_r_true_r[i];
+	tail_r_true[i * inc] = 0.0;
+	tail_r_true[i * inc + 1] = 2 * tail_r_true_r[i];
       }
     }
 
@@ -1157,8 +1148,8 @@ void BLAS_ctbsv_testgen(int norm, enum blas_order_type order,
   blas_free(T_temp_r);
   blas_free(T_r);
   blas_free(x_r);
-  blas_free(r_true_l_r);
-  blas_free(r_true_t_r);
+  blas_free(head_r_true_r);
+  blas_free(tail_r_true_r);
 }				/* end of BLAS_ctbsv_testgen */
 
 void BLAS_ztbsv_c_testgen(int norm, enum blas_order_type order,
@@ -1167,8 +1158,9 @@ void BLAS_ztbsv_c_testgen(int norm, enum blas_order_type order,
 			  enum blas_diag_type diag,
 			  int n, int k, int randomize,
 			  void *alpha, int alpha_flag, void *T, int ldt,
-			  void *x, int *seed, double *r_true_l,
-			  double *r_true_t, int row, enum blas_prec_type prec)
+			  void *x, int *seed, double *head_r_true,
+			  double *tail_r_true, int row,
+			  enum blas_prec_type prec)
 
 /*
  * Purpose
@@ -1214,10 +1206,10 @@ void BLAS_ztbsv_c_testgen(int norm, enum blas_order_type order,
  *
  * seed         (input/output) int
  *
- * r_true_l     (output) double*
+ * head_r_true     (output) double*
  *              The leading part of the truth in double-double.
  *
- * r_true_t     (output) double*
+ * tail_r_true     (output) double*
  *              The trailing part of the truth in double-double.
  *
  * row          (input) int
@@ -1236,7 +1228,7 @@ void BLAS_ztbsv_c_testgen(int norm, enum blas_order_type order,
   double *x_r;
   float *T_temp_r;
   float *T_temp_c;
-  double *r_true_l_r, *r_true_t_r;
+  double *head_r_true_r, *tail_r_true_r;
   int i, inc = 2, length, j;
 
   T_r = (float *) blas_malloc(8 * n * ldt * sizeof(float));
@@ -1247,12 +1239,9 @@ void BLAS_ztbsv_c_testgen(int norm, enum blas_order_type order,
   if (n > 0 && x_r == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  r_true_l_r = (double *) blas_malloc(n * sizeof(double));
-  if (n > 0 && r_true_l_r == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  r_true_t_r = (double *) blas_malloc(n * sizeof(double));
-  if (n > 0 && r_true_t_r == NULL) {
+  head_r_true_r = (double *) blas_malloc(n * sizeof(double));
+  tail_r_true_r = (double *) blas_malloc(n * sizeof(double));
+  if (n > 0 && (head_r_true_r == NULL || tail_r_true_r == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   T_temp_c = (float *) blas_malloc(n * sizeof(float) * 2);
@@ -1277,8 +1266,8 @@ void BLAS_ztbsv_c_testgen(int norm, enum blas_order_type order,
 
   BLAS_dtbsv_s_testgen(norm, order, uplo, trans, diag, n, k, randomize,
 		       &alpha_r,
-		       alpha_flag, T_r, ldt, x_r, seed, r_true_l_r,
-		       r_true_t_r, row, prec);
+		       alpha_flag, T_r, ldt, x_r, seed, head_r_true_r,
+		       tail_r_true_r, row, prec);
 
   /* multiply alpha_r by 1+i */
   alpha_i[0] = alpha_r;
@@ -1292,16 +1281,16 @@ void BLAS_ztbsv_c_testgen(int norm, enum blas_order_type order,
 
       /* multiply non major rows truth by i */
       if (i != row) {
-	r_true_l[i * inc] = 0.0;
-	r_true_l[i * inc + 1] = r_true_l_r[i];
-	r_true_t[i * inc] = 0.0;
-	r_true_t[i * inc + 1] = r_true_t_r[i];
+	head_r_true[i * inc] = 0.0;
+	head_r_true[i * inc + 1] = head_r_true_r[i];
+	tail_r_true[i * inc] = 0.0;
+	tail_r_true[i * inc + 1] = tail_r_true_r[i];
       } else {
 	/* multiply major rows truth by (-1+i) */
-	r_true_l[i * inc] = -r_true_l_r[i];
-	r_true_l[i * inc + 1] = r_true_l_r[i];
-	r_true_t[i * inc] = -r_true_t_r[i];
-	r_true_t[i * inc + 1] = r_true_t_r[i];
+	head_r_true[i * inc] = -head_r_true_r[i];
+	head_r_true[i * inc + 1] = head_r_true_r[i];
+	tail_r_true[i * inc] = -tail_r_true_r[i];
+	tail_r_true[i * inc + 1] = tail_r_true_r[i];
       }
     }
 
@@ -1327,19 +1316,19 @@ void BLAS_ztbsv_c_testgen(int norm, enum blas_order_type order,
 
       /* multiply non-major rows by -1+i */
       if (i != row || length == 0) {
-	r_true_l[i * inc] = -r_true_l_r[i];
-	r_true_l[i * inc + 1] = r_true_l_r[i];
-	r_true_t[i * inc] = -r_true_t_r[i];
-	r_true_t[i * inc + 1] = r_true_t_r[i];
+	head_r_true[i * inc] = -head_r_true_r[i];
+	head_r_true[i * inc + 1] = head_r_true_r[i];
+	tail_r_true[i * inc] = -tail_r_true_r[i];
+	tail_r_true[i * inc + 1] = tail_r_true_r[i];
       } else {
 	/* multiply x by 1+i (overwrite multiply by i earlier) */
 	x_i[i * inc] = x_r[i];
 	x_i[i * inc + 1] = x_r[i];
 
-	r_true_l[i * inc] = 0.0;
-	r_true_l[i * inc + 1] = 2 * r_true_l_r[i];
-	r_true_t[i * inc] = 0.0;
-	r_true_t[i * inc + 1] = 2 * r_true_t_r[i];
+	head_r_true[i * inc] = 0.0;
+	head_r_true[i * inc + 1] = 2 * head_r_true_r[i];
+	tail_r_true[i * inc] = 0.0;
+	tail_r_true[i * inc + 1] = 2 * tail_r_true_r[i];
       }
     }
 
@@ -1361,8 +1350,8 @@ void BLAS_ztbsv_c_testgen(int norm, enum blas_order_type order,
   blas_free(T_temp_r);
   blas_free(T_r);
   blas_free(x_r);
-  blas_free(r_true_l_r);
-  blas_free(r_true_t_r);
+  blas_free(head_r_true_r);
+  blas_free(tail_r_true_r);
 }				/* end of BLAS_ztbsv_c_testgen */
 
 void BLAS_ztbsv_testgen(int norm, enum blas_order_type order,
@@ -1371,8 +1360,9 @@ void BLAS_ztbsv_testgen(int norm, enum blas_order_type order,
 			enum blas_diag_type diag,
 			int n, int k, int randomize,
 			void *alpha, int alpha_flag, void *T, int ldt,
-			void *x, int *seed, double *r_true_l,
-			double *r_true_t, int row, enum blas_prec_type prec)
+			void *x, int *seed, double *head_r_true,
+			double *tail_r_true, int row,
+			enum blas_prec_type prec)
 
 /*
  * Purpose
@@ -1418,10 +1408,10 @@ void BLAS_ztbsv_testgen(int norm, enum blas_order_type order,
  *
  * seed         (input/output) int
  *
- * r_true_l     (output) double*
+ * head_r_true     (output) double*
  *              The leading part of the truth in double-double.
  *
- * r_true_t     (output) double*
+ * tail_r_true     (output) double*
  *              The trailing part of the truth in double-double.
  *
  * row          (input) int
@@ -1440,7 +1430,7 @@ void BLAS_ztbsv_testgen(int norm, enum blas_order_type order,
   double *x_r;
   double *T_temp_r;
   double *T_temp_c;
-  double *r_true_l_r, *r_true_t_r;
+  double *head_r_true_r, *tail_r_true_r;
   int i, inc = 2, length, j;
 
   T_r = (double *) blas_malloc(8 * n * ldt * sizeof(double));
@@ -1451,12 +1441,9 @@ void BLAS_ztbsv_testgen(int norm, enum blas_order_type order,
   if (n > 0 && x_r == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  r_true_l_r = (double *) blas_malloc(n * sizeof(double));
-  if (n > 0 && r_true_l_r == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  r_true_t_r = (double *) blas_malloc(n * sizeof(double));
-  if (n > 0 && r_true_t_r == NULL) {
+  head_r_true_r = (double *) blas_malloc(n * sizeof(double));
+  tail_r_true_r = (double *) blas_malloc(n * sizeof(double));
+  if (n > 0 && (head_r_true_r == NULL || tail_r_true_r == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   T_temp_c = (double *) blas_malloc(n * sizeof(double) * 2);
@@ -1481,8 +1468,8 @@ void BLAS_ztbsv_testgen(int norm, enum blas_order_type order,
 
   BLAS_dtbsv_testgen(norm, order, uplo, trans, diag, n, k, randomize,
 		     &alpha_r,
-		     alpha_flag, T_r, ldt, x_r, seed, r_true_l_r, r_true_t_r,
-		     row, prec);
+		     alpha_flag, T_r, ldt, x_r, seed, head_r_true_r,
+		     tail_r_true_r, row, prec);
 
   /* multiply alpha_r by 1+i */
   alpha_i[0] = alpha_r;
@@ -1496,16 +1483,16 @@ void BLAS_ztbsv_testgen(int norm, enum blas_order_type order,
 
       /* multiply non major rows truth by i */
       if (i != row) {
-	r_true_l[i * inc] = 0.0;
-	r_true_l[i * inc + 1] = r_true_l_r[i];
-	r_true_t[i * inc] = 0.0;
-	r_true_t[i * inc + 1] = r_true_t_r[i];
+	head_r_true[i * inc] = 0.0;
+	head_r_true[i * inc + 1] = head_r_true_r[i];
+	tail_r_true[i * inc] = 0.0;
+	tail_r_true[i * inc + 1] = tail_r_true_r[i];
       } else {
 	/* multiply major rows truth by (-1+i) */
-	r_true_l[i * inc] = -r_true_l_r[i];
-	r_true_l[i * inc + 1] = r_true_l_r[i];
-	r_true_t[i * inc] = -r_true_t_r[i];
-	r_true_t[i * inc + 1] = r_true_t_r[i];
+	head_r_true[i * inc] = -head_r_true_r[i];
+	head_r_true[i * inc + 1] = head_r_true_r[i];
+	tail_r_true[i * inc] = -tail_r_true_r[i];
+	tail_r_true[i * inc + 1] = tail_r_true_r[i];
       }
     }
 
@@ -1531,19 +1518,19 @@ void BLAS_ztbsv_testgen(int norm, enum blas_order_type order,
 
       /* multiply non-major rows by -1+i */
       if (i != row || length == 0) {
-	r_true_l[i * inc] = -r_true_l_r[i];
-	r_true_l[i * inc + 1] = r_true_l_r[i];
-	r_true_t[i * inc] = -r_true_t_r[i];
-	r_true_t[i * inc + 1] = r_true_t_r[i];
+	head_r_true[i * inc] = -head_r_true_r[i];
+	head_r_true[i * inc + 1] = head_r_true_r[i];
+	tail_r_true[i * inc] = -tail_r_true_r[i];
+	tail_r_true[i * inc + 1] = tail_r_true_r[i];
       } else {
 	/* multiply x by 1+i (overwrite multiply by i earlier) */
 	x_i[i * inc] = x_r[i];
 	x_i[i * inc + 1] = x_r[i];
 
-	r_true_l[i * inc] = 0.0;
-	r_true_l[i * inc + 1] = 2 * r_true_l_r[i];
-	r_true_t[i * inc] = 0.0;
-	r_true_t[i * inc + 1] = 2 * r_true_t_r[i];
+	head_r_true[i * inc] = 0.0;
+	head_r_true[i * inc + 1] = 2 * head_r_true_r[i];
+	tail_r_true[i * inc] = 0.0;
+	tail_r_true[i * inc + 1] = 2 * tail_r_true_r[i];
       }
     }
 
@@ -1565,8 +1552,8 @@ void BLAS_ztbsv_testgen(int norm, enum blas_order_type order,
   blas_free(T_temp_r);
   blas_free(T_r);
   blas_free(x_r);
-  blas_free(r_true_l_r);
-  blas_free(r_true_t_r);
+  blas_free(head_r_true_r);
+  blas_free(tail_r_true_r);
 }				/* end of BLAS_ztbsv_testgen */
 
 void BLAS_ctbsv_s_testgen(int norm, enum blas_order_type order,
@@ -1575,8 +1562,9 @@ void BLAS_ctbsv_s_testgen(int norm, enum blas_order_type order,
 			  enum blas_diag_type diag,
 			  int n, int k, int randomize,
 			  void *alpha, int alpha_flag, float *T, int ldt,
-			  void *x, int *seed, double *r_true_l,
-			  double *r_true_t, int row, enum blas_prec_type prec)
+			  void *x, int *seed, double *head_r_true,
+			  double *tail_r_true, int row,
+			  enum blas_prec_type prec)
 
 /*
  * Purpose
@@ -1622,10 +1610,10 @@ void BLAS_ctbsv_s_testgen(int norm, enum blas_order_type order,
  *
  * seed         (input/output) int
  *
- * r_true_l     (output) double*
+ * head_r_true     (output) double*
  *              The leading part of the truth in double-double.
  *
- * r_true_t     (output) double*
+ * tail_r_true     (output) double*
  *              The trailing part of the truth in double-double.
  *
  * row          (input) int
@@ -1641,19 +1629,16 @@ void BLAS_ctbsv_s_testgen(int norm, enum blas_order_type order,
   float *T_i = T;
   float alpha_r;
   float *x_r;
-  double *r_true_l_r, *r_true_t_r;
+  double *head_r_true_r, *tail_r_true_r;
   int i, inc = 2;
 
   x_r = (float *) blas_malloc(n * sizeof(float));
   if (n > 0 && x_r == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  r_true_l_r = (double *) blas_malloc(n * sizeof(double));
-  if (n > 0 && r_true_l_r == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  r_true_t_r = (double *) blas_malloc(n * sizeof(double));
-  if (n > 0 && r_true_t_r == NULL) {
+  head_r_true_r = (double *) blas_malloc(n * sizeof(double));
+  tail_r_true_r = (double *) blas_malloc(n * sizeof(double));
+  if (n > 0 && (head_r_true_r == NULL || tail_r_true_r == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
@@ -1663,8 +1648,8 @@ void BLAS_ctbsv_s_testgen(int norm, enum blas_order_type order,
 
   BLAS_stbsv_testgen(norm, order, uplo, trans, diag, n, k,
 		     randomize, &alpha_r,
-		     alpha_flag, T_i, ldt, x_r, seed, r_true_l_r, r_true_t_r,
-		     row, prec);
+		     alpha_flag, T_i, ldt, x_r, seed, head_r_true_r,
+		     tail_r_true_r, row, prec);
 
   alpha_i[0] = alpha_r;
   alpha_i[1] = alpha_r;
@@ -1673,15 +1658,15 @@ void BLAS_ctbsv_s_testgen(int norm, enum blas_order_type order,
     x_i[i * inc] = 0.0;
     x_i[i * inc + 1] = x_r[i];
 
-    r_true_l[i * inc] = -r_true_l_r[i];
-    r_true_l[i * inc + 1] = r_true_l_r[i];
-    r_true_t[i * inc] = -r_true_t_r[i];
-    r_true_t[i * inc + 1] = r_true_t_r[i];
+    head_r_true[i * inc] = -head_r_true_r[i];
+    head_r_true[i * inc + 1] = head_r_true_r[i];
+    tail_r_true[i * inc] = -tail_r_true_r[i];
+    tail_r_true[i * inc + 1] = tail_r_true_r[i];
   }
 
   blas_free(x_r);
-  blas_free(r_true_l_r);
-  blas_free(r_true_t_r);
+  blas_free(head_r_true_r);
+  blas_free(tail_r_true_r);
 }				/* end of BLAS_ctbsv_s_testgen */
 
 void BLAS_ztbsv_d_testgen(int norm, enum blas_order_type order,
@@ -1690,8 +1675,9 @@ void BLAS_ztbsv_d_testgen(int norm, enum blas_order_type order,
 			  enum blas_diag_type diag,
 			  int n, int k, int randomize,
 			  void *alpha, int alpha_flag, double *T, int ldt,
-			  void *x, int *seed, double *r_true_l,
-			  double *r_true_t, int row, enum blas_prec_type prec)
+			  void *x, int *seed, double *head_r_true,
+			  double *tail_r_true, int row,
+			  enum blas_prec_type prec)
 
 /*
  * Purpose
@@ -1737,10 +1723,10 @@ void BLAS_ztbsv_d_testgen(int norm, enum blas_order_type order,
  *
  * seed         (input/output) int
  *
- * r_true_l     (output) double*
+ * head_r_true     (output) double*
  *              The leading part of the truth in double-double.
  *
- * r_true_t     (output) double*
+ * tail_r_true     (output) double*
  *              The trailing part of the truth in double-double.
  *
  * row          (input) int
@@ -1756,19 +1742,16 @@ void BLAS_ztbsv_d_testgen(int norm, enum blas_order_type order,
   double *T_i = T;
   double alpha_r;
   double *x_r;
-  double *r_true_l_r, *r_true_t_r;
+  double *head_r_true_r, *tail_r_true_r;
   int i, inc = 2;
 
   x_r = (double *) blas_malloc(n * sizeof(double));
   if (n > 0 && x_r == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  r_true_l_r = (double *) blas_malloc(n * sizeof(double));
-  if (n > 0 && r_true_l_r == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
-  r_true_t_r = (double *) blas_malloc(n * sizeof(double));
-  if (n > 0 && r_true_t_r == NULL) {
+  head_r_true_r = (double *) blas_malloc(n * sizeof(double));
+  tail_r_true_r = (double *) blas_malloc(n * sizeof(double));
+  if (n > 0 && (head_r_true_r == NULL || tail_r_true_r == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
@@ -1778,8 +1761,8 @@ void BLAS_ztbsv_d_testgen(int norm, enum blas_order_type order,
 
   BLAS_dtbsv_testgen(norm, order, uplo, trans, diag, n, k,
 		     randomize, &alpha_r,
-		     alpha_flag, T_i, ldt, x_r, seed, r_true_l_r, r_true_t_r,
-		     row, prec);
+		     alpha_flag, T_i, ldt, x_r, seed, head_r_true_r,
+		     tail_r_true_r, row, prec);
 
   alpha_i[0] = alpha_r;
   alpha_i[1] = alpha_r;
@@ -1788,13 +1771,13 @@ void BLAS_ztbsv_d_testgen(int norm, enum blas_order_type order,
     x_i[i * inc] = 0.0;
     x_i[i * inc + 1] = x_r[i];
 
-    r_true_l[i * inc] = -r_true_l_r[i];
-    r_true_l[i * inc + 1] = r_true_l_r[i];
-    r_true_t[i * inc] = -r_true_t_r[i];
-    r_true_t[i * inc + 1] = r_true_t_r[i];
+    head_r_true[i * inc] = -head_r_true_r[i];
+    head_r_true[i * inc + 1] = head_r_true_r[i];
+    tail_r_true[i * inc] = -tail_r_true_r[i];
+    tail_r_true[i * inc + 1] = tail_r_true_r[i];
   }
 
   blas_free(x_r);
-  blas_free(r_true_l_r);
-  blas_free(r_true_t_r);
+  blas_free(head_r_true_r);
+  blas_free(tail_r_true_r);
 }				/* end of BLAS_ztbsv_d_testgen */

@@ -4,7 +4,6 @@
 
 
 
-
 void test_BLAS_ssum(int n, float sum_comp, double sum_true_l,
 		    double sum_true_t, float *x, int incx,
 		    double eps_int, double un_int, double *test_ratio)
@@ -75,7 +74,7 @@ void test_BLAS_ssum(int n, float sum_comp, double sum_true_l,
     test_BLAS_sdot(n, blas_no_conj, alpha, beta, r, sum_comp,
 		   sum_true_l, sum_true_t, x, incx, y, 1,
 		   eps_int, un_int, test_ratio);
-    free(y);
+    blas_free(y);
   }
 }
 void test_BLAS_dsum(int n, double sum_comp, double sum_true_l,
@@ -148,7 +147,7 @@ void test_BLAS_dsum(int n, double sum_comp, double sum_true_l,
     test_BLAS_ddot(n, blas_no_conj, alpha, beta, r, sum_comp,
 		   sum_true_l, sum_true_t, x, incx, y, 1,
 		   eps_int, un_int, test_ratio);
-    free(y);
+    blas_free(y);
   }
 }
 void test_BLAS_csum(int n, const void *sum_comp, double *sum_true_l,
@@ -224,7 +223,7 @@ void test_BLAS_csum(int n, const void *sum_comp, double *sum_true_l,
     test_BLAS_cdot(n, blas_no_conj, alpha, beta, r, sum_comp,
 		   sum_true_l, sum_true_t, x, incx, y, 1,
 		   eps_int, un_int, test_ratio);
-    free(y);
+    blas_free(y);
   }
 }
 void test_BLAS_zsum(int n, const void *sum_comp, double *sum_true_l,
@@ -300,6 +299,6 @@ void test_BLAS_zsum(int n, const void *sum_comp, double *sum_true_l,
     test_BLAS_zdot(n, blas_no_conj, alpha, beta, r, sum_comp,
 		   sum_true_l, sum_true_t, x, incx, y, 1,
 		   eps_int, un_int, test_ratio);
-    free(y);
+    blas_free(y);
   }
 }
