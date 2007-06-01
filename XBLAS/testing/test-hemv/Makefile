@@ -6,7 +6,7 @@ TEST_DOT_PATH = ../test-dot
 TEST_HEMM_PATH = ../test-hemm
 TEST_SYMV_PATH = ../test-symv
 LIB_PATH = ../../$(OUTPUT_DIR)
-HEADER_PATH = ../../src
+HEADER_PATH = -I../../src -I..
 
 DOT_OBJS = $(DOT_PATH)/BLAS_sdot_x.o $(DOT_PATH)/BLAS_ddot_x.o
 
@@ -40,7 +40,7 @@ do_test_hemv: $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB)
 test-lib: $(TEST_OBJS)
 
 .c.o:
-	$(CC) $(CFLAGS) -I$(HEADER_PATH) -c -o $@ $<
+	$(CC) $(CFLAGS) $(HEADER_PATH) -c -o $@ $<
 
 clean:
 	rm -f *.o *~ *.BAK hemv.results do_test_hemv core

@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include "blas_extended.h"
-#include "cblas_test.h"
+#include "blas_extended_test.h"
 
 extern void BLAS_sdot2_testgen(int n, int n_fix2, int n_mix, int norm,
 			       enum blas_conj_type conj,

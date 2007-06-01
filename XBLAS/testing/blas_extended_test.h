@@ -1,5 +1,5 @@
-#ifndef __CBLAS_TEST_H_
-#define __CBLAS_TEST_H_
+#ifndef __BLAS_EXTENDED_TEST_H_
+#define __BLAS_EXTENDED_TEST_H_
 
 #define TEST_PROBABILITY_DEFAULT 0.001
 #define MAX_BAD_TESTS 100
@@ -2726,5 +2726,5 @@ extern void ztrmv_commit (enum blas_order_type order,
                           int n, void *T, int lda, const void *y, int row);
 
 #endif
-/* __CBLAS_TEST_H_ */
+/* __BLAS_EXTENDED_TEST_H_ */
 

@@ -5,7 +5,7 @@ DOT_PATH = ../../src/dot
 TEST_DOT_PATH = ../test-dot
 TEST_SYMV_PATH = ../test-symv
 LIB_PATH = ../../$(OUTPUT_DIR)
-HEADER_PATH = ../../src
+HEADER_PATH = -I../../src -I..
 
 DOT_OBJS = $(DOT_PATH)/BLAS_sdot_x.o $(DOT_PATH)/BLAS_ddot_x.o
 SYMV_OBJS = $(TEST_SYMV_PATH)/symv-support.o \
@@ -51,7 +51,7 @@ do_test_spmv: $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB)
 	-o do_test_spmv $(EXTRA_LIBS)
 
 .c.o:
-	$(CC) $(CFLAGS) -I$(HEADER_PATH) -c -o $@ $<
+	$(CC) $(CFLAGS) $(HEADER_PATH) -c -o $@ $<
 
 clean:
 	rm -f *.o *~ *.BAK spmv.results do_test_spmv core

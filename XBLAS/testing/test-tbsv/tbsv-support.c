@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include "blas_extended.h"
-#include "cblas_test.h"
+#include "blas_extended_test.h"
 
 
 void stbsv_copy(enum blas_order_type order,

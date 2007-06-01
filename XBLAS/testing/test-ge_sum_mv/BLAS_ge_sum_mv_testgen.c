@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "blas_extended.h"
 #include "blas_extended_private.h"
-#include "cblas_test.h"
+#include "blas_extended_test.h"
 #ifndef ALPHA_USE_IS_ALPHA
 #define ALPHA_USE_IS_ALPHA 1
 #define ALPHA_USE_IS_BETA 0

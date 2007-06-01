@@ -2,7 +2,7 @@ include ../../make.conf
 include ../../$(MAKEINC)
 
 LIB_PATH = ../../$(OUTPUT_DIR)
-HEADER_PATH = ../../src
+HEADER_PATH = -I../../src -I..
 DOT_PATH = ../../src/dot
 TEST_DOT_PATH = ../test-dot
 
@@ -32,7 +32,7 @@ do_test_axpby: $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB)
 	$(LINKER) $(LDFLAGS) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) -o do_test_axpby $(EXTRA_LIBS)
 
 .c.o:
-	$(CC) $(CFLAGS) -I$(HEADER_PATH) -c -o $@ $<
+	$(CC) $(CFLAGS) $(HEADER_PATH) -c -o $@ $<
 
 clean:
 	rm -f *.o *~ *.BAK axpby.results do_test_axpby core

@@ -1,5 +1,5 @@
 #include "blas_extended.h"
-#include "cblas_test.h"
+#include "blas_extended_test.h"
 
 
 extern double xrand(int *);

@@ -4,7 +4,7 @@ include ../../$(MAKEINC)
 DOT_PATH = ../../src/dot
 TEST_DOT_PATH = ../test-dot
 LIB_PATH = ../../$(OUTPUT_DIR)
-HEADER_PATH = ../../src
+HEADER_PATH = -I../../src -I..
 TEST_GBMV_PATH = ../test-gbmv
 TEST_TRSV_PATH = ../test-trsv
 TEST_SYMV_PATH = ../test-symv
@@ -56,7 +56,7 @@ do_test_tbsv: $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB)
 	-o do_test_tbsv $(EXTRA_LIBS)
 
 .c.o:
-	$(CC) $(CFLAGS) -I$(HEADER_PATH) -c -o $@ $<
+	$(CC) $(CFLAGS) $(HEADER_PATH) -c -o $@ $<
 
 clean:
 	rm -f *.o *~ *.BAK tbsv.results do_test_tbsv core

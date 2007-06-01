@@ -4,7 +4,7 @@ include ../../$(MAKEINC)
 TEST_DOT_PATH = ../test-dot
 TEST_DOT2_PATH = ../test-dot2
 LIB_PATH = ../../$(OUTPUT_DIR)
-HEADER_PATH = ../../src
+HEADER_PATH = -I../../src -I..
 
 TEST_DOT_OBJS = $(TEST_DOT_PATH)/testgen_aux.o
 TEST_DOT2_OBJS = $(TEST_DOT2_PATH)/dot2.o \
@@ -31,7 +31,7 @@ do_test_gemv2: $(LIB_PATH)/$(XBLASLIB) $(ALL_OBJS)
 	-o do_test_gemv2 $(EXTRA_LIBS)
 
 .c.o:
-	$(CC) $(CFLAGS) -I$(HEADER_PATH) -c -o $@ $<
+	$(CC) $(CFLAGS) $(HEADER_PATH) -c -o $@ $<
 
 clean:
 	rm -f *.o *~ *.BAK gemv2.results do_test_gemv2 core

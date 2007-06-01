@@ -5,7 +5,7 @@ DOT_PATH = ../../src/dot
 TEST_DOT_PATH = ../test-dot
 TEST_GEMM_PATH = ../test-gemm
 LIB_PATH = ../../$(OUTPUT_DIR)
-HEADER_PATH = ../../src
+HEADER_PATH = -I../../src -I..
 
 DOT_OBJS = $(DOT_PATH)/BLAS_sdot_x.o $(DOT_PATH)/BLAS_ddot_x.o
 
@@ -55,7 +55,7 @@ test-lib: $(TEST_OBJS)
 #	cd $(TEST_GEMM_PATH) && $(MAKE) test-lib
 
 .c.o:
-	$(CC) $(CFLAGS) -I$(HEADER_PATH) -c -o $@ $<
+	$(CC) $(CFLAGS) $(HEADER_PATH) -c -o $@ $<
 
 clean:
 	rm -f *.o *~ *.BAK symm.results do_test_symm core

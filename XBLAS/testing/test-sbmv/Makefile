@@ -6,7 +6,7 @@ TEST_DOT_PATH = ../test-dot
 TEST_GEMM_PATH = ../test-gemm
 TEST_SYMV_PATH = ../test-symv
 LIB_PATH = ../../$(OUTPUT_DIR)
-HEADER_PATH = ../../src
+HEADER_PATH = -I../../src -I..
 
 DOT_OBJS = $(DOT_PATH)/BLAS_sdot_x.o $(DOT_PATH)/BLAS_ddot_x.o
 SYMV_OBJS = $(TEST_SYMV_PATH)/symv-support.o \
@@ -54,7 +54,7 @@ do_test_sbmv: $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB)
 test-lib: $(TEST_OBJS)
 
 .c.o:
-	$(CC) $(CFLAGS) -I$(HEADER_PATH) -c -o $@ $<
+	$(CC) $(CFLAGS) $(HEADER_PATH) -c -o $@ $<
 
 clean:
 	rm -f *.o *~ *.BAK sbmv.results do_test_sbmv core

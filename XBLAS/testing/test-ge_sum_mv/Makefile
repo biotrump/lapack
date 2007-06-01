@@ -8,7 +8,7 @@ TEST_GEMM_PATH = ../test-gemm
 TEST_SYMV_PATH = ../test-symv
 TEST_GE_SUM_MV_PATH = ../test-ge_sum_mv
 LIB_PATH = ../../$(OUTPUT_DIR)
-HEADER_PATH = ../../src
+HEADER_PATH = -I../../src -I..
 
 DOT_OBJS = $(DOT_PATH)/BLAS_sdot_x.o $(DOT_PATH)/BLAS_ddot_x.o
 GEMV_OBJS = $(TEST_GEMV_PATH)/gemv-support.o \
@@ -63,7 +63,7 @@ warning:
 	@echo Please see warning in XBLAS/testing/test-ge_sum_mv/WARNING
 
 .c.o:
-	$(CC) $(CFLAGS) -I$(HEADER_PATH) -c -o $@ $<
+	$(CC) $(CFLAGS) $(HEADER_PATH) -c -o $@ $<
 
 clean:
 	rm -f *.o *~ *.BAK ge_sum_mv.results do_test_ge_sum_mv core

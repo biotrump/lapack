@@ -3,7 +3,7 @@
 #include <math.h>
 #include "blas_extended.h"
 #include "blas_extended_private.h"
-#include "cblas_test.h"
+#include "blas_extended_test.h"
 
 
 double do_test_dtrmv_s(int n, int ntests, int *seed,

@@ -2,7 +2,7 @@ include ../../make.conf
 include ../../$(MAKEINC)
 
 LIB_PATH = ../../$(OUTPUT_DIR)
-HEADER_PATH = ../../src
+HEADER_PATH = -I../../src -I..
 
 TEST_SRCS = do_test_dot2.c test_dot2.c BLAS_dot2_testgen.c \
 	    dot2.c ../test-dot/testgen_aux.c  r_truth2.c \
@@ -23,7 +23,7 @@ do_test_dot2: $(TEST_OBJS) $(COMMON_OBJS) $(LIB_PATH)/$(XBLASLIB)
 	-o do_test_dot2 $(EXTRA_LIBS)
 
 .c.o:
-	$(CC) $(CFLAGS) -I$(HEADER_PATH) -c -o $@ $<
+	$(CC) $(CFLAGS) $(HEADER_PATH) -c -o $@ $<
 
 clean:
 	rm -f *.o *~ *.BAK dot2.results do_test_dot2 core

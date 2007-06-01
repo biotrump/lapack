@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include "blas_extended.h"
-#include "cblas_test.h"
+#include "blas_extended_test.h"
 
 
 void BLAS_ssum_testgen(int n, int norm, float *x, int *seed,

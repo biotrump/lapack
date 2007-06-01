@@ -4,7 +4,7 @@ include ../../$(MAKEINC)
 DOT_PATH = ../../src/dot
 TEST_DOT_PATH = ../test-dot
 LIB_PATH = ../../$(OUTPUT_DIR)
-HEADER_PATH = ../../src
+HEADER_PATH = -I../../src -I..
 
 DOT_OBJS = $(DOT_PATH)/BLAS_sdot_x.o $(DOT_PATH)/BLAS_ddot_x.o
 
@@ -31,7 +31,7 @@ do_test_gbmv: $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB)
 	-o do_test_gbmv $(EXTRA_LIBS)
 
 .c.o:
-	$(CC) $(CFLAGS) -I$(HEADER_PATH) -c -o $@ $<
+	$(CC) $(CFLAGS) $(HEADER_PATH) -c -o $@ $<
 
 clean:
 	rm -f *.o *~ *.BAK gbmv.results do_test_gbmv core
