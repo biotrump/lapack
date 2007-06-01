@@ -125,14 +125,6 @@ void BLAS_zdot_d_d_x(enum blas_conj_type conj, int n, const void* alpha,
 
 
 
-void BLAS_ssum(int n, const float* x, int incx, 
-   float* sum);
-void BLAS_dsum(int n, const double* x, int incx, 
-   double* sum);
-void BLAS_csum(int n, const void* x, int incx, 
-   void* sum);
-void BLAS_zsum(int n, const void* x, int incx, 
-   void* sum);
 void BLAS_ssum_x(int n, const float* x, int incx, 
    float* sum, enum blas_prec_type prec);
 void BLAS_dsum_x(int n, const double* x, int incx, 

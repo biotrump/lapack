@@ -6,19 +6,11 @@ SRC_PATH = .
 HEADER_PATH = ..
 
 SUM_SRCS =\
-	$(SRC_PATH)/BLAS_ssum.c\
-	$(SRC_PATH)/BLAS_dsum.c\
-	$(SRC_PATH)/BLAS_csum.c\
-	$(SRC_PATH)/BLAS_zsum.c\
 	$(SRC_PATH)/BLAS_ssum_x.c\
 	$(SRC_PATH)/BLAS_dsum_x.c\
 	$(SRC_PATH)/BLAS_csum_x.c\
 	$(SRC_PATH)/BLAS_zsum_x.c \
 	\
-	$(SRC_PATH)/BLAS_ssum-f2c.c\
-	$(SRC_PATH)/BLAS_dsum-f2c.c\
-	$(SRC_PATH)/BLAS_csum-f2c.c\
-	$(SRC_PATH)/BLAS_zsum-f2c.c\
 	$(SRC_PATH)/BLAS_ssum_x-f2c.c\
 	$(SRC_PATH)/BLAS_dsum_x-f2c.c\
 	$(SRC_PATH)/BLAS_csum_x-f2c.c\
