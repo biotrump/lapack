@@ -1,5 +1,4 @@
 
-
 #include "f2c-bridge.h"
 #include "blas_enum.h"
 void BLAS_zdot_c_c(enum blas_conj_type conj, int n, const void *alpha,

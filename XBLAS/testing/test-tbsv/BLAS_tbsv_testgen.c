@@ -2,20 +2,9 @@
 #include "blas_extended_private.h"
 #include "blas_extended_test.h"
 
-extern double xrand(int *);
-
-
-
-
-
-
-
-
 void BLAS_stbsv_testgen(int norm, enum blas_order_type order,
-			enum blas_uplo_type uplo,
-			enum blas_trans_type trans,
-			enum blas_diag_type diag,
-			int n, int k, int randomize,
+			enum blas_uplo_type uplo, enum blas_trans_type trans,
+			enum blas_diag_type diag, int n, int k, int randomize,
 			float *alpha, int alpha_flag, float *T, int ldt,
 			float *x, int *seed, double *head_r_true,
 			double *tail_r_true, int row,
@@ -302,13 +291,11 @@ void BLAS_stbsv_testgen(int norm, enum blas_order_type order,
 
   blas_free(temp);
   blas_free(xtemp2);
-}				/* end of BLAS_stbsv_testgen */
+}
 
 void BLAS_dtbsv_testgen(int norm, enum blas_order_type order,
-			enum blas_uplo_type uplo,
-			enum blas_trans_type trans,
-			enum blas_diag_type diag,
-			int n, int k, int randomize,
+			enum blas_uplo_type uplo, enum blas_trans_type trans,
+			enum blas_diag_type diag, int n, int k, int randomize,
 			double *alpha, int alpha_flag, double *T, int ldt,
 			double *x, int *seed, double *head_r_true,
 			double *tail_r_true, int row,
@@ -550,13 +537,13 @@ void BLAS_dtbsv_testgen(int norm, enum blas_order_type order,
 
     switch (prec) {
     case blas_prec_single:
-    case blas_prec_indigenous:
-    case blas_prec_double:
       BLAS_ddot_testgen(length, 0, length, norm,
 			blas_no_conj, &minus_one, 1, alpha, 1,
-			&xtemp2[start], &temp[start],
-			seed, &x[row], &head_r_true[row], &tail_r_true[row]);
+			&xtemp2[start], &temp[start], seed, &x[row],
+			&head_r_true[row], &tail_r_true[row]);
       break;
+    case blas_prec_indigenous:
+    case blas_prec_double:
     case blas_prec_extra:
       BLAS_ddot_x_testgen(length, 0, length, norm,
 			  blas_no_conj, &minus_one, 1, alpha, 1,
@@ -565,7 +552,6 @@ void BLAS_dtbsv_testgen(int norm, enum blas_order_type order,
 			  seed, &x[row], &head_r_true[row],
 			  &tail_r_true[row]);
       break;
-
     }
     dtbsv_commit(order, uplo, trans, n, k, T, ldt, temp, row);
   } else {
@@ -623,16 +609,15 @@ void BLAS_dtbsv_testgen(int norm, enum blas_order_type order,
 
   blas_free(temp);
   blas_free(xtemp2);
-}				/* end of BLAS_dtbsv_testgen */
+}
 
 void BLAS_dtbsv_s_testgen(int norm, enum blas_order_type order,
 			  enum blas_uplo_type uplo,
 			  enum blas_trans_type trans,
-			  enum blas_diag_type diag,
-			  int n, int k, int randomize,
-			  double *alpha, int alpha_flag, float *T, int ldt,
-			  double *x, int *seed, double *head_r_true,
-			  double *tail_r_true, int row,
+			  enum blas_diag_type diag, int n, int k,
+			  int randomize, double *alpha, int alpha_flag,
+			  float *T, int ldt, double *x, int *seed,
+			  double *head_r_true, double *tail_r_true, int row,
 			  enum blas_prec_type prec)
 
 /*
@@ -947,13 +932,11 @@ void BLAS_dtbsv_s_testgen(int norm, enum blas_order_type order,
 
   blas_free(temp);
   blas_free(xtemp2);
-}				/* end of BLAS_dtbsv_s_testgen */
+}
 
 void BLAS_ctbsv_testgen(int norm, enum blas_order_type order,
-			enum blas_uplo_type uplo,
-			enum blas_trans_type trans,
-			enum blas_diag_type diag,
-			int n, int k, int randomize,
+			enum blas_uplo_type uplo, enum blas_trans_type trans,
+			enum blas_diag_type diag, int n, int k, int randomize,
 			void *alpha, int alpha_flag, void *T, int ldt,
 			void *x, int *seed, double *head_r_true,
 			double *tail_r_true, int row,
@@ -1149,15 +1132,14 @@ void BLAS_ctbsv_testgen(int norm, enum blas_order_type order,
   blas_free(x_r);
   blas_free(head_r_true_r);
   blas_free(tail_r_true_r);
-}				/* end of BLAS_ctbsv_testgen */
+}
 
 void BLAS_ztbsv_c_testgen(int norm, enum blas_order_type order,
 			  enum blas_uplo_type uplo,
 			  enum blas_trans_type trans,
-			  enum blas_diag_type diag,
-			  int n, int k, int randomize,
-			  void *alpha, int alpha_flag, void *T, int ldt,
-			  void *x, int *seed, double *head_r_true,
+			  enum blas_diag_type diag, int n, int k,
+			  int randomize, void *alpha, int alpha_flag, void *T,
+			  int ldt, void *x, int *seed, double *head_r_true,
 			  double *tail_r_true, int row,
 			  enum blas_prec_type prec)
 
@@ -1351,13 +1333,11 @@ void BLAS_ztbsv_c_testgen(int norm, enum blas_order_type order,
   blas_free(x_r);
   blas_free(head_r_true_r);
   blas_free(tail_r_true_r);
-}				/* end of BLAS_ztbsv_c_testgen */
+}
 
 void BLAS_ztbsv_testgen(int norm, enum blas_order_type order,
-			enum blas_uplo_type uplo,
-			enum blas_trans_type trans,
-			enum blas_diag_type diag,
-			int n, int k, int randomize,
+			enum blas_uplo_type uplo, enum blas_trans_type trans,
+			enum blas_diag_type diag, int n, int k, int randomize,
 			void *alpha, int alpha_flag, void *T, int ldt,
 			void *x, int *seed, double *head_r_true,
 			double *tail_r_true, int row,
@@ -1553,16 +1533,15 @@ void BLAS_ztbsv_testgen(int norm, enum blas_order_type order,
   blas_free(x_r);
   blas_free(head_r_true_r);
   blas_free(tail_r_true_r);
-}				/* end of BLAS_ztbsv_testgen */
+}
 
 void BLAS_ctbsv_s_testgen(int norm, enum blas_order_type order,
 			  enum blas_uplo_type uplo,
 			  enum blas_trans_type trans,
-			  enum blas_diag_type diag,
-			  int n, int k, int randomize,
-			  void *alpha, int alpha_flag, float *T, int ldt,
-			  void *x, int *seed, double *head_r_true,
-			  double *tail_r_true, int row,
+			  enum blas_diag_type diag, int n, int k,
+			  int randomize, void *alpha, int alpha_flag,
+			  float *T, int ldt, void *x, int *seed,
+			  double *head_r_true, double *tail_r_true, int row,
 			  enum blas_prec_type prec)
 
 /*
@@ -1666,16 +1645,15 @@ void BLAS_ctbsv_s_testgen(int norm, enum blas_order_type order,
   blas_free(x_r);
   blas_free(head_r_true_r);
   blas_free(tail_r_true_r);
-}				/* end of BLAS_ctbsv_s_testgen */
+}
 
 void BLAS_ztbsv_d_testgen(int norm, enum blas_order_type order,
 			  enum blas_uplo_type uplo,
 			  enum blas_trans_type trans,
-			  enum blas_diag_type diag,
-			  int n, int k, int randomize,
-			  void *alpha, int alpha_flag, double *T, int ldt,
-			  void *x, int *seed, double *head_r_true,
-			  double *tail_r_true, int row,
+			  enum blas_diag_type diag, int n, int k,
+			  int randomize, void *alpha, int alpha_flag,
+			  double *T, int ldt, void *x, int *seed,
+			  double *head_r_true, double *tail_r_true, int row,
 			  enum blas_prec_type prec)
 
 /*
@@ -1779,4 +1757,4 @@ void BLAS_ztbsv_d_testgen(int norm, enum blas_order_type order,
   blas_free(x_r);
   blas_free(head_r_true_r);
   blas_free(tail_r_true_r);
-}				/* end of BLAS_ztbsv_d_testgen */
+}

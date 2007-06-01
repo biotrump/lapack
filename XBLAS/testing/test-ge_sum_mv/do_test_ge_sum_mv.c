@@ -339,10 +339,11 @@ void do_test_dge_sum_mv_d_s
 				   1);
 		      for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			   i++, yi += incyi, ri += incri) {
-			dge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
-					a_vec, i);
-			dge_sum_mv_copy(order_type, m_i, n_i, B_use, ldb,
-					(a_vec + inca_veci * n_i), i);
+			dge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				     a_use, lda, a_vec, i);
+			dge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				     B_use, ldb, (a_vec + inca_veci * n_i),
+				     i);
 
 			rin = 0.0;
 			rout = y[yi];
@@ -768,10 +769,11 @@ void do_test_dge_sum_mv_s_d
 				   1);
 		      for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			   i++, yi += incyi, ri += incri) {
-			sge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
-					a_vec, i);
-			sge_sum_mv_copy(order_type, m_i, n_i, B_use, ldb,
-					(a_vec + inca_veci * n_i), i);
+			sge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				     a_use, lda, a_vec, i);
+			sge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				     B_use, ldb, (a_vec + inca_veci * n_i),
+				     i);
 
 			rin = 0.0;
 			rout = y[yi];
@@ -1197,10 +1199,11 @@ void do_test_dge_sum_mv_s_s
 				   1);
 		      for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			   i++, yi += incyi, ri += incri) {
-			sge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
-					a_vec, i);
-			sge_sum_mv_copy(order_type, m_i, n_i, B_use, ldb,
-					(a_vec + inca_veci * n_i), i);
+			sge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				     a_use, lda, a_vec, i);
+			sge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				     B_use, ldb, (a_vec + inca_veci * n_i),
+				     i);
 
 			rin = 0.0;
 			rout = y[yi];
@@ -1631,10 +1634,11 @@ void do_test_zge_sum_mv_z_c
 				   1);
 		      for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			   i++, yi += incyi, ri += incri) {
-			zge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
-					a_vec, i);
-			zge_sum_mv_copy(order_type, m_i, n_i, B_use, ldb,
-					(a_vec + inca_veci * n_i), i);
+			zge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				     a_use, lda, a_vec, i);
+			zge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				     B_use, ldb, (a_vec + inca_veci * n_i),
+				     i);
 
 			rin[0] = rin[1] = 0.0;
 			rout[0] = y[yi];
@@ -2069,10 +2073,11 @@ void do_test_zge_sum_mv_c_z
 				   1);
 		      for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			   i++, yi += incyi, ri += incri) {
-			cge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
-					a_vec, i);
-			cge_sum_mv_copy(order_type, m_i, n_i, B_use, ldb,
-					(a_vec + inca_veci * n_i), i);
+			cge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				     a_use, lda, a_vec, i);
+			cge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				     B_use, ldb, (a_vec + inca_veci * n_i),
+				     i);
 
 			rin[0] = rin[1] = 0.0;
 			rout[0] = y[yi];
@@ -2507,10 +2512,11 @@ void do_test_zge_sum_mv_c_c
 				   1);
 		      for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			   i++, yi += incyi, ri += incri) {
-			cge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
-					a_vec, i);
-			cge_sum_mv_copy(order_type, m_i, n_i, B_use, ldb,
-					(a_vec + inca_veci * n_i), i);
+			cge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				     a_use, lda, a_vec, i);
+			cge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				     B_use, ldb, (a_vec + inca_veci * n_i),
+				     i);
 
 			rin[0] = rin[1] = 0.0;
 			rout[0] = y[yi];
@@ -2945,10 +2951,11 @@ void do_test_cge_sum_mv_c_s
 				   1);
 		      for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			   i++, yi += incyi, ri += incri) {
-			cge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
-					a_vec, i);
-			cge_sum_mv_copy(order_type, m_i, n_i, B_use, ldb,
-					(a_vec + inca_veci * n_i), i);
+			cge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				     a_use, lda, a_vec, i);
+			cge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				     B_use, ldb, (a_vec + inca_veci * n_i),
+				     i);
 
 			rin[0] = rin[1] = 0.0;
 			rout[0] = y[yi];
@@ -3381,10 +3388,11 @@ void do_test_cge_sum_mv_s_c
 				   1);
 		      for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			   i++, yi += incyi, ri += incri) {
-			sge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
-					a_vec, i);
-			sge_sum_mv_copy(order_type, m_i, n_i, B_use, ldb,
-					(a_vec + inca_veci * n_i), i);
+			sge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				     a_use, lda, a_vec, i);
+			sge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				     B_use, ldb, (a_vec + inca_veci * n_i),
+				     i);
 
 			rin[0] = rin[1] = 0.0;
 			rout[0] = y[yi];
@@ -3817,10 +3825,11 @@ void do_test_cge_sum_mv_s_s
 				   1);
 		      for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			   i++, yi += incyi, ri += incri) {
-			sge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
-					a_vec, i);
-			sge_sum_mv_copy(order_type, m_i, n_i, B_use, ldb,
-					(a_vec + inca_veci * n_i), i);
+			sge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				     a_use, lda, a_vec, i);
+			sge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				     B_use, ldb, (a_vec + inca_veci * n_i),
+				     i);
 
 			rin[0] = rin[1] = 0.0;
 			rout[0] = y[yi];
@@ -4255,10 +4264,11 @@ void do_test_zge_sum_mv_z_d
 				   1);
 		      for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			   i++, yi += incyi, ri += incri) {
-			zge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
-					a_vec, i);
-			zge_sum_mv_copy(order_type, m_i, n_i, B_use, ldb,
-					(a_vec + inca_veci * n_i), i);
+			zge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				     a_use, lda, a_vec, i);
+			zge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				     B_use, ldb, (a_vec + inca_veci * n_i),
+				     i);
 
 			rin[0] = rin[1] = 0.0;
 			rout[0] = y[yi];
@@ -4691,10 +4701,11 @@ void do_test_zge_sum_mv_d_z
 				   1);
 		      for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			   i++, yi += incyi, ri += incri) {
-			dge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
-					a_vec, i);
-			dge_sum_mv_copy(order_type, m_i, n_i, B_use, ldb,
-					(a_vec + inca_veci * n_i), i);
+			dge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				     a_use, lda, a_vec, i);
+			dge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				     B_use, ldb, (a_vec + inca_veci * n_i),
+				     i);
 
 			rin[0] = rin[1] = 0.0;
 			rout[0] = y[yi];
@@ -5127,10 +5138,11 @@ void do_test_zge_sum_mv_d_d
 				   1);
 		      for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			   i++, yi += incyi, ri += incri) {
-			dge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
-					a_vec, i);
-			dge_sum_mv_copy(order_type, m_i, n_i, B_use, ldb,
-					(a_vec + inca_veci * n_i), i);
+			dge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				     a_use, lda, a_vec, i);
+			dge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				     B_use, ldb, (a_vec + inca_veci * n_i),
+				     i);
 
 			rin[0] = rin[1] = 0.0;
 			rout[0] = y[yi];
@@ -5579,10 +5591,11 @@ void do_test_sge_sum_mv_x
 				     (x_vec + (n_i * incx_veci)), 1);
 			for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			     i++, yi += incyi, ri += incri) {
-			  sge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
-					  a_vec, i);
-			  sge_sum_mv_copy(order_type, m_i, n_i, B_use, ldb,
-					  (a_vec + inca_veci * n_i), i);
+			  sge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				       a_use, lda, a_vec, i);
+			  sge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				       B_use, ldb, (a_vec + inca_veci * n_i),
+				       i);
 
 			  rin = 0.0;
 			  rout = y[yi];
@@ -6030,10 +6043,11 @@ void do_test_dge_sum_mv_x
 				     (x_vec + (n_i * incx_veci)), 1);
 			for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			     i++, yi += incyi, ri += incri) {
-			  dge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
-					  a_vec, i);
-			  dge_sum_mv_copy(order_type, m_i, n_i, B_use, ldb,
-					  (a_vec + inca_veci * n_i), i);
+			  dge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				       a_use, lda, a_vec, i);
+			  dge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				       B_use, ldb, (a_vec + inca_veci * n_i),
+				       i);
 
 			  rin = 0.0;
 			  rout = y[yi];
@@ -6486,10 +6500,11 @@ void do_test_cge_sum_mv_x
 				     (x_vec + (n_i * incx_veci)), 1);
 			for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			     i++, yi += incyi, ri += incri) {
-			  cge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
-					  a_vec, i);
-			  cge_sum_mv_copy(order_type, m_i, n_i, B_use, ldb,
-					  (a_vec + inca_veci * n_i), i);
+			  cge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				       a_use, lda, a_vec, i);
+			  cge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				       B_use, ldb, (a_vec + inca_veci * n_i),
+				       i);
 
 			  rin[0] = rin[1] = 0.0;
 			  rout[0] = y[yi];
@@ -6946,10 +6961,11 @@ void do_test_zge_sum_mv_x
 				     (x_vec + (n_i * incx_veci)), 1);
 			for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			     i++, yi += incyi, ri += incri) {
-			  zge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
-					  a_vec, i);
-			  zge_sum_mv_copy(order_type, m_i, n_i, B_use, ldb,
-					  (a_vec + inca_veci * n_i), i);
+			  zge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				       a_use, lda, a_vec, i);
+			  zge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				       B_use, ldb, (a_vec + inca_veci * n_i),
+				       i);
 
 			  rin[0] = rin[1] = 0.0;
 			  rout[0] = y[yi];
@@ -7402,10 +7418,11 @@ void do_test_dge_sum_mv_d_s_x
 				     (x_vec + (n_i * incx_veci)), 1);
 			for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			     i++, yi += incyi, ri += incri) {
-			  dge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
-					  a_vec, i);
-			  dge_sum_mv_copy(order_type, m_i, n_i, B_use, ldb,
-					  (a_vec + inca_veci * n_i), i);
+			  dge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				       a_use, lda, a_vec, i);
+			  dge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				       B_use, ldb, (a_vec + inca_veci * n_i),
+				       i);
 
 			  rin = 0.0;
 			  rout = y[yi];
@@ -7855,10 +7872,11 @@ void do_test_dge_sum_mv_s_d_x
 				     (x_vec + (n_i * incx_veci)), 1);
 			for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			     i++, yi += incyi, ri += incri) {
-			  sge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
-					  a_vec, i);
-			  sge_sum_mv_copy(order_type, m_i, n_i, B_use, ldb,
-					  (a_vec + inca_veci * n_i), i);
+			  sge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				       a_use, lda, a_vec, i);
+			  sge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				       B_use, ldb, (a_vec + inca_veci * n_i),
+				       i);
 
 			  rin = 0.0;
 			  rout = y[yi];
@@ -8308,10 +8326,11 @@ void do_test_dge_sum_mv_s_s_x
 				     (x_vec + (n_i * incx_veci)), 1);
 			for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			     i++, yi += incyi, ri += incri) {
-			  sge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
-					  a_vec, i);
-			  sge_sum_mv_copy(order_type, m_i, n_i, B_use, ldb,
-					  (a_vec + inca_veci * n_i), i);
+			  sge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				       a_use, lda, a_vec, i);
+			  sge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				       B_use, ldb, (a_vec + inca_veci * n_i),
+				       i);
 
 			  rin = 0.0;
 			  rout = y[yi];
@@ -8766,10 +8785,11 @@ void do_test_zge_sum_mv_z_c_x
 				     (x_vec + (n_i * incx_veci)), 1);
 			for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			     i++, yi += incyi, ri += incri) {
-			  zge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
-					  a_vec, i);
-			  zge_sum_mv_copy(order_type, m_i, n_i, B_use, ldb,
-					  (a_vec + inca_veci * n_i), i);
+			  zge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				       a_use, lda, a_vec, i);
+			  zge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				       B_use, ldb, (a_vec + inca_veci * n_i),
+				       i);
 
 			  rin[0] = rin[1] = 0.0;
 			  rout[0] = y[yi];
@@ -9228,10 +9248,11 @@ void do_test_zge_sum_mv_c_z_x
 				     (x_vec + (n_i * incx_veci)), 1);
 			for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			     i++, yi += incyi, ri += incri) {
-			  cge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
-					  a_vec, i);
-			  cge_sum_mv_copy(order_type, m_i, n_i, B_use, ldb,
-					  (a_vec + inca_veci * n_i), i);
+			  cge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				       a_use, lda, a_vec, i);
+			  cge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				       B_use, ldb, (a_vec + inca_veci * n_i),
+				       i);
 
 			  rin[0] = rin[1] = 0.0;
 			  rout[0] = y[yi];
@@ -9690,10 +9711,11 @@ void do_test_zge_sum_mv_c_c_x
 				     (x_vec + (n_i * incx_veci)), 1);
 			for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			     i++, yi += incyi, ri += incri) {
-			  cge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
-					  a_vec, i);
-			  cge_sum_mv_copy(order_type, m_i, n_i, B_use, ldb,
-					  (a_vec + inca_veci * n_i), i);
+			  cge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				       a_use, lda, a_vec, i);
+			  cge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				       B_use, ldb, (a_vec + inca_veci * n_i),
+				       i);
 
 			  rin[0] = rin[1] = 0.0;
 			  rout[0] = y[yi];
@@ -10152,10 +10174,11 @@ void do_test_cge_sum_mv_c_s_x
 				     (x_vec + (n_i * incx_veci)), 1);
 			for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			     i++, yi += incyi, ri += incri) {
-			  cge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
-					  a_vec, i);
-			  cge_sum_mv_copy(order_type, m_i, n_i, B_use, ldb,
-					  (a_vec + inca_veci * n_i), i);
+			  cge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				       a_use, lda, a_vec, i);
+			  cge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				       B_use, ldb, (a_vec + inca_veci * n_i),
+				       i);
 
 			  rin[0] = rin[1] = 0.0;
 			  rout[0] = y[yi];
@@ -10612,10 +10635,11 @@ void do_test_cge_sum_mv_s_c_x
 				     (x_vec + (n_i * incx_veci)), 1);
 			for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			     i++, yi += incyi, ri += incri) {
-			  sge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
-					  a_vec, i);
-			  sge_sum_mv_copy(order_type, m_i, n_i, B_use, ldb,
-					  (a_vec + inca_veci * n_i), i);
+			  sge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				       a_use, lda, a_vec, i);
+			  sge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				       B_use, ldb, (a_vec + inca_veci * n_i),
+				       i);
 
 			  rin[0] = rin[1] = 0.0;
 			  rout[0] = y[yi];
@@ -11072,10 +11096,11 @@ void do_test_cge_sum_mv_s_s_x
 				     (x_vec + (n_i * incx_veci)), 1);
 			for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			     i++, yi += incyi, ri += incri) {
-			  sge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
-					  a_vec, i);
-			  sge_sum_mv_copy(order_type, m_i, n_i, B_use, ldb,
-					  (a_vec + inca_veci * n_i), i);
+			  sge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				       a_use, lda, a_vec, i);
+			  sge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				       B_use, ldb, (a_vec + inca_veci * n_i),
+				       i);
 
 			  rin[0] = rin[1] = 0.0;
 			  rout[0] = y[yi];
@@ -11534,10 +11559,11 @@ void do_test_zge_sum_mv_z_d_x
 				     (x_vec + (n_i * incx_veci)), 1);
 			for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			     i++, yi += incyi, ri += incri) {
-			  zge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
-					  a_vec, i);
-			  zge_sum_mv_copy(order_type, m_i, n_i, B_use, ldb,
-					  (a_vec + inca_veci * n_i), i);
+			  zge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				       a_use, lda, a_vec, i);
+			  zge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				       B_use, ldb, (a_vec + inca_veci * n_i),
+				       i);
 
 			  rin[0] = rin[1] = 0.0;
 			  rout[0] = y[yi];
@@ -11994,10 +12020,11 @@ void do_test_zge_sum_mv_d_z_x
 				     (x_vec + (n_i * incx_veci)), 1);
 			for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			     i++, yi += incyi, ri += incri) {
-			  dge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
-					  a_vec, i);
-			  dge_sum_mv_copy(order_type, m_i, n_i, B_use, ldb,
-					  (a_vec + inca_veci * n_i), i);
+			  dge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				       a_use, lda, a_vec, i);
+			  dge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				       B_use, ldb, (a_vec + inca_veci * n_i),
+				       i);
 
 			  rin[0] = rin[1] = 0.0;
 			  rout[0] = y[yi];
@@ -12454,10 +12481,11 @@ void do_test_zge_sum_mv_d_d_x
 				     (x_vec + (n_i * incx_veci)), 1);
 			for (i = 0, yi = y_starti, ri = 0; i < m_i;
 			     i++, yi += incyi, ri += incri) {
-			  dge_sum_mv_copy(order_type, m_i, n_i, a_use, lda,
-					  a_vec, i);
-			  dge_sum_mv_copy(order_type, m_i, n_i, B_use, ldb,
-					  (a_vec + inca_veci * n_i), i);
+			  dge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				       a_use, lda, a_vec, i);
+			  dge_copy_row(order_type, blas_no_trans, m_i, n_i,
+				       B_use, ldb, (a_vec + inca_veci * n_i),
+				       i);
 
 			  rin[0] = rin[1] = 0.0;
 			  rout[0] = y[yi];

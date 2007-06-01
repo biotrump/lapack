@@ -505,17 +505,17 @@ gbmv-test-lib: dot-test-lib
 symv-test-lib: dot-test-lib gemm-test-lib
 spmv-test-lib: dot-test-lib symv-test-lib
 sbmv-test-lib: dot-test-lib symv-test-lib
-hemv-test-lib: dot-test-lib hemm-test-lib
-hbmv-test-lib: dot-test-lib symv-test-lib hemm-test-lib sbmv-test-lib
-hpmv-test-lib: dot-test-lib hemm-test-lib hemv-test-lib
+hemv-test-lib: dot-test-lib symv-test-lib
+hbmv-test-lib: dot-test-lib symv-test-lib hemv-test-lib sbmv-test-lib
+hpmv-test-lib: dot-test-lib symv-test-lib hemv-test-lib
 trmv-test-lib: dot-test-lib
 tpmv-test-lib: dot-test-lib
-trsv-test-lib: dot-test-lib
-tbsv-test-lib: dot-test-lib gbmv-test-lib
-gemm-test-lib: dot-test-lib
-symm-test-lib: dot-test-lib gemm-test-lib
-hemm-test-lib: dot-test-lib gemm-test-lib symm-test-lib
-gemv2-test-lib: dot2-test-lib
+trsv-test-lib: dot-test-lib trmv-test-lib
+tbsv-test-lib: dot-test-lib gbmv-test-lib trsv-test-lib
+gemm-test-lib: dot-test-lib gemv-test-lib
+symm-test-lib: dot-test-lib gemv-test-lib symv-test-lib
+hemm-test-lib: dot-test-lib gemv-test-lib hemv-test-lib symv-test-lib symm-test-lib
+gemv2-test-lib: dot2-test-lib gemv-test-lib
 dot2-test-lib: dot-test-lib
 
 

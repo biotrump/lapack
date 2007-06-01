@@ -1,26 +1,9 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "blas_extended.h"
 #include "blas_extended_private.h"
 #include "blas_extended_test.h"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 void BLAS_sskew_testgen_hbmv(int norm, enum blas_order_type order,
 			     enum blas_uplo_type uplo,
@@ -854,8 +837,7 @@ void BLAS_dskew_testgen_hbmv_s_s(int norm, enum blas_order_type order,
 }
 
 void BLAS_chbmv_testgen(int norm, enum blas_order_type order,
-			enum blas_uplo_type uplo,
-			int n, int randomize,
+			enum blas_uplo_type uplo, int n, int randomize,
 			void *alpha, int alpha_flag, void *beta,
 			int beta_flag, void *a, int k, int lda, void *x,
 			int incx, void *y, int incy, int *seed,
@@ -1320,7 +1302,6 @@ void BLAS_chbmv_testgen(int norm, enum blas_order_type order,
       }
 
 
-
       blas_free(a1);
       blas_free(a2);
       blas_free(y1);
@@ -1410,8 +1391,7 @@ void BLAS_chbmv_testgen(int norm, enum blas_order_type order,
   }
 }				/* end BLAS_chbmv_testgen */
 void BLAS_zhbmv_testgen(int norm, enum blas_order_type order,
-			enum blas_uplo_type uplo,
-			int n, int randomize,
+			enum blas_uplo_type uplo, int n, int randomize,
 			void *alpha, int alpha_flag, void *beta,
 			int beta_flag, void *a, int k, int lda, void *x,
 			int incx, void *y, int incy, int *seed,
@@ -1876,7 +1856,6 @@ void BLAS_zhbmv_testgen(int norm, enum blas_order_type order,
       }
 
 
-
       blas_free(a1);
       blas_free(a2);
       blas_free(y1);
@@ -1966,8 +1945,7 @@ void BLAS_zhbmv_testgen(int norm, enum blas_order_type order,
   }
 }				/* end BLAS_zhbmv_testgen */
 void BLAS_zhbmv_c_z_testgen(int norm, enum blas_order_type order,
-			    enum blas_uplo_type uplo,
-			    int n, int randomize,
+			    enum blas_uplo_type uplo, int n, int randomize,
 			    void *alpha, int alpha_flag, void *beta,
 			    int beta_flag, void *a, int k, int lda, void *x,
 			    int incx, void *y, int incy, int *seed,
@@ -2432,7 +2410,6 @@ void BLAS_zhbmv_c_z_testgen(int norm, enum blas_order_type order,
       }
 
 
-
       blas_free(a1);
       blas_free(a2);
       blas_free(y1);
@@ -2522,8 +2499,7 @@ void BLAS_zhbmv_c_z_testgen(int norm, enum blas_order_type order,
   }
 }				/* end BLAS_zhbmv_c_z_testgen */
 void BLAS_zhbmv_z_c_testgen(int norm, enum blas_order_type order,
-			    enum blas_uplo_type uplo,
-			    int n, int randomize,
+			    enum blas_uplo_type uplo, int n, int randomize,
 			    void *alpha, int alpha_flag, void *beta,
 			    int beta_flag, void *a, int k, int lda, void *x,
 			    int incx, void *y, int incy, int *seed,
@@ -2988,7 +2964,6 @@ void BLAS_zhbmv_z_c_testgen(int norm, enum blas_order_type order,
       }
 
 
-
       blas_free(a1);
       blas_free(a2);
       blas_free(y1);
@@ -3078,8 +3053,7 @@ void BLAS_zhbmv_z_c_testgen(int norm, enum blas_order_type order,
   }
 }				/* end BLAS_zhbmv_z_c_testgen */
 void BLAS_zhbmv_c_c_testgen(int norm, enum blas_order_type order,
-			    enum blas_uplo_type uplo,
-			    int n, int randomize,
+			    enum blas_uplo_type uplo, int n, int randomize,
 			    void *alpha, int alpha_flag, void *beta,
 			    int beta_flag, void *a, int k, int lda, void *x,
 			    int incx, void *y, int incy, int *seed,
@@ -3544,7 +3518,6 @@ void BLAS_zhbmv_c_c_testgen(int norm, enum blas_order_type order,
       }
 
 
-
       blas_free(a1);
       blas_free(a2);
       blas_free(y1);
@@ -3634,8 +3607,7 @@ void BLAS_zhbmv_c_c_testgen(int norm, enum blas_order_type order,
   }
 }				/* end BLAS_zhbmv_c_c_testgen */
 void BLAS_zhbmv_z_d_testgen(int norm, enum blas_order_type order,
-			    enum blas_uplo_type uplo,
-			    int n, int randomize,
+			    enum blas_uplo_type uplo, int n, int randomize,
 			    void *alpha, int alpha_flag, void *beta,
 			    int beta_flag, void *a, int k, int lda, double *x,
 			    int incx, void *y, int incy, int *seed,
@@ -4139,8 +4111,7 @@ void BLAS_zhbmv_z_d_testgen(int norm, enum blas_order_type order,
   }
 }				/* end BLAS_zhbmv_z_d_testgen */
 void BLAS_chbmv_c_s_testgen(int norm, enum blas_order_type order,
-			    enum blas_uplo_type uplo,
-			    int n, int randomize,
+			    enum blas_uplo_type uplo, int n, int randomize,
 			    void *alpha, int alpha_flag, void *beta,
 			    int beta_flag, void *a, int k, int lda, float *x,
 			    int incx, void *y, int incy, int *seed,

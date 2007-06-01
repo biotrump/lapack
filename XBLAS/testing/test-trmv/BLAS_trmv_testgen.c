@@ -2,15 +2,6 @@
 #include "blas_extended_test.h"
 
 
-extern double xrand(int *);
-
-
-
-
-
-
-
-
 void BLAS_strmv_testgen(int norm, enum blas_order_type order,
 			enum blas_uplo_type uplo, enum blas_trans_type trans,
 			enum blas_diag_type diag, int n, float *alpha,
@@ -645,8 +636,8 @@ void BLAS_dtrmv_s_testgen(int norm, enum blas_order_type order,
 void BLAS_ctrmv_testgen(int norm, enum blas_order_type order,
 			enum blas_uplo_type uplo, enum blas_trans_type trans,
 			enum blas_diag_type diag, int n, void *alpha,
-			int alpha_flag, void *T, int ldt, void *x,
-			int *seed, double *head_r_true, double *tail_r_true)
+			int alpha_flag, void *T, int ldt, void *x, int *seed,
+			double *head_r_true, double *tail_r_true)
 
 /*
  * Purpose
@@ -1104,8 +1095,8 @@ void BLAS_ztrmv_c_testgen(int norm, enum blas_order_type order,
 void BLAS_ztrmv_testgen(int norm, enum blas_order_type order,
 			enum blas_uplo_type uplo, enum blas_trans_type trans,
 			enum blas_diag_type diag, int n, void *alpha,
-			int alpha_flag, void *T, int ldt, void *x,
-			int *seed, double *head_r_true, double *tail_r_true)
+			int alpha_flag, void *T, int ldt, void *x, int *seed,
+			double *head_r_true, double *tail_r_true)
 
 /*
  * Purpose

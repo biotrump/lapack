@@ -18,7 +18,9 @@
   _control87(*_old_cw, 0xFFFFFFFF);
 #else  /* _WIN32 */
 
+#if HAVE_FPU_CONTROL_H
 #include <fpu_control.h>
+#endif
 
 #ifndef _FPU_GETCW
 #define _FPU_GETCW(x) asm volatile ("fnstcw %0":"=m" (x));

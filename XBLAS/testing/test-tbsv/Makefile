@@ -1,19 +1,15 @@
 include ../../make.conf
 include ../../$(MAKEINC)
 
-DOT_PATH = ../../src/dot
 TEST_DOT_PATH = ../test-dot
 LIB_PATH = ../../$(OUTPUT_DIR)
 HEADER_PATH = -I../../src -I..
 TEST_GBMV_PATH = ../test-gbmv
 TEST_TRSV_PATH = ../test-trsv
-TEST_SYMV_PATH = ../test-symv
 
-DOT_OBJS = $(DOT_PATH)/BLAS_sdot_x.o $(DOT_PATH)/BLAS_ddot_x.o
 TEST_GBMV_OBJS = $(TEST_GBMV_PATH)/gbmv-support.o
 TEST_TRSV_OBJS = $(TEST_TRSV_PATH)/BLAS_dot_testgen_trsv.o \
 	$(TEST_TRSV_PATH)/testgen_BLAS_sdot_x.o
-TEST_SYMV_OBJS = $(TEST_SYMV_PATH)/symv-support.o
 
 TEST_DOT_OBJS = $(TEST_DOT_PATH)/testgen_BLAS_sdot.o \
 		$(TEST_DOT_PATH)/testgen_BLAS_ddot.o \
@@ -30,8 +26,8 @@ TEST_SRCS = do_test_tbsv.c BLAS_tbsv_testgen.c tbsv-support.c
 TEST_OBJS = $(TEST_SRCS:.c=.o) 
 COMMON_OBJS = ../common/dummy_main.o
 
-ALL_OBJS = $(TEST_OBJS) $(TEST_DOT_OBJS) $(DOT_OBJS) \
-	$(TEST_GBMV_OBJS) $(TEST_TRSV_OBJS) $(TEST_SYMV_OBJS) $(COMMON_OBJS)
+ALL_OBJS = $(TEST_OBJS) $(TEST_DOT_OBJS) \
+	$(TEST_GBMV_OBJS) $(TEST_TRSV_OBJS) $(COMMON_OBJS)
 
 test: do_test_tbsv
 	@echo Testing TBSV - default quick test

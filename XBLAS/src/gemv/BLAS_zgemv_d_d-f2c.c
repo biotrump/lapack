@@ -1,5 +1,4 @@
 
-
 #include "f2c-bridge.h"
 #include "blas_enum.h"
 void BLAS_zgemv_d_d(enum blas_order_type order, enum blas_trans_type trans,

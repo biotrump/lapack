@@ -2,8 +2,6 @@
 #include "blas_extended.h"
 #include "blas_extended_test.h"
 
-
-
 void test_BLAS_ssum(int n, float sum_comp, double sum_true_l,
 		    double sum_true_t, float *x, int incx,
 		    double eps_int, double un_int, double *test_ratio)

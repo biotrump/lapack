@@ -3,20 +3,6 @@
 #include "blas_extended_test.h"
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 void sspmv_copy_row(enum blas_order_type order, enum blas_uplo_type uplo,
 		    int n, const float *a, float *a_vec, int row)
 /*
@@ -88,6 +74,7 @@ void sspmv_copy_row(enum blas_order_type order, enum blas_uplo_type uplo,
   }
 }
 
+
 void dspmv_copy_row(enum blas_order_type order, enum blas_uplo_type uplo,
 		    int n, const double *a, double *a_vec, int row)
 /*
@@ -158,6 +145,7 @@ void dspmv_copy_row(enum blas_order_type order, enum blas_uplo_type uplo,
     }
   }
 }
+
 
 void cspmv_copy_row(enum blas_order_type order, enum blas_uplo_type uplo,
 		    int n, const void *a, void *a_vec, int row)
@@ -237,6 +225,7 @@ void cspmv_copy_row(enum blas_order_type order, enum blas_uplo_type uplo,
     }
   }
 }
+
 
 void zspmv_copy_row(enum blas_order_type order, enum blas_uplo_type uplo,
 		    int n, const void *a, void *a_vec, int row)
@@ -318,8 +307,8 @@ void zspmv_copy_row(enum blas_order_type order, enum blas_uplo_type uplo,
 }
 
 
-void sspmv_commit_row(enum blas_order_type order,
-		      enum blas_uplo_type uplo,
+
+void sspmv_commit_row(enum blas_order_type order, enum blas_uplo_type uplo,
 		      int n, float *a, const float *a_vec, int row)
 /*
  * Purpose
@@ -376,8 +365,8 @@ void sspmv_commit_row(enum blas_order_type order,
   }
 }
 
-void dspmv_commit_row(enum blas_order_type order,
-		      enum blas_uplo_type uplo,
+
+void dspmv_commit_row(enum blas_order_type order, enum blas_uplo_type uplo,
 		      int n, double *a, const double *a_vec, int row)
 /*
  * Purpose
@@ -434,8 +423,8 @@ void dspmv_commit_row(enum blas_order_type order,
   }
 }
 
-void cspmv_commit_row(enum blas_order_type order,
-		      enum blas_uplo_type uplo,
+
+void cspmv_commit_row(enum blas_order_type order, enum blas_uplo_type uplo,
 		      int n, void *a, const void *a_vec, int row)
 /*
  * Purpose
@@ -496,8 +485,8 @@ void cspmv_commit_row(enum blas_order_type order,
   }
 }
 
-void zspmv_commit_row(enum blas_order_type order,
-		      enum blas_uplo_type uplo,
+
+void zspmv_commit_row(enum blas_order_type order, enum blas_uplo_type uplo,
 		      int n, void *a, const void *a_vec, int row)
 /*
  * Purpose

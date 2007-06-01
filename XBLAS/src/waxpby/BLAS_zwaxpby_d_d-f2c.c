@@ -1,5 +1,4 @@
 
-
 #include "f2c-bridge.h"
 #include "blas_enum.h"
 void BLAS_zwaxpby_d_d(int n, const void *alpha, const double *x, int incx,

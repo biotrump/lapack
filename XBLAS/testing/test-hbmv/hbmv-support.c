@@ -1,34 +1,9 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "blas_extended.h"
 #include "blas_extended_private.h"
 #include "blas_extended_test.h"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 void sskew_commit_row_hbmv(enum blas_order_type order,
 			   enum blas_uplo_type uplo, int n, float *a, int k,
@@ -180,6 +155,7 @@ void dskew_commit_row_hbmv(enum blas_order_type order,
     a_i[ai] = a_elem;
   }
 }
+
 void chbmv_commit_row(enum blas_order_type order, enum blas_uplo_type uplo,
 		      int n, void *a, int k, int lda, void *a_vec, int row)
 
@@ -505,6 +481,7 @@ void dskew_copy_row_hbmv(enum blas_order_type order, enum blas_uplo_type uplo,
 
 
 }
+
 void chbmv_copy_row(enum blas_order_type order, enum blas_uplo_type uplo,
 		    int n, void *a, int k, int lda, void *a_vec, int row)
 
@@ -591,8 +568,6 @@ void chbmv_copy_row(enum blas_order_type order, enum blas_uplo_type uplo,
     a_vec_i[vi] = 0.0;
     a_vec_i[vi + 1] = 0.0;
   }
-
-
 }
 void zhbmv_copy_row(enum blas_order_type order, enum blas_uplo_type uplo,
 		    int n, void *a, int k, int lda, void *a_vec, int row)
@@ -680,8 +655,6 @@ void zhbmv_copy_row(enum blas_order_type order, enum blas_uplo_type uplo,
     a_vec_i[vi] = 0.0;
     a_vec_i[vi + 1] = 0.0;
   }
-
-
 }
 
 void cprint_hbmv_matrix(void *a, int n, int k, int lda,

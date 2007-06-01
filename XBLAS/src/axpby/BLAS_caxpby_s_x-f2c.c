@@ -1,5 +1,4 @@
 
-
 #include "f2c-bridge.h"
 #include "blas_enum.h"
 void BLAS_caxpby_s_x(int n, const void *alpha, const float *x, int incx,

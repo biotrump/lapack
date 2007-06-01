@@ -343,8 +343,8 @@ double do_test_dtrsv_s(int n,
 			  if (j == row) {
 			    int minus_one = -1.0;
 			    /* copy row j of T to temp */
-			    strsv_copy(order_type, uplo_type, trans_type, n,
-				       T, lda, temp, j);
+			    str_copy_row(order_type, uplo_type, trans_type, n,
+					 T, lda, temp, j);
 
 			    test_BLAS_ddot_d_s(n, blas_no_conj,
 					       minus_one, alpha,
@@ -471,8 +471,8 @@ double do_test_dtrsv_s(int n,
 			    printf("      T=");
 			    for (j = 0; j < n; j++) {
 			      /* copy row j of T to temp */
-			      strsv_copy(order_type, uplo_type, trans_type, n,
-					 T, lda, temp, j);
+			      str_copy_row(order_type, uplo_type, trans_type,
+					   n, T, lda, temp, j);
 
 			      if (j > 0)
 				printf("        ");
@@ -911,8 +911,8 @@ double do_test_ztrsv_c(int n,
 			  if (j == row) {
 			    double minus_one[2] = { -1.0, 0.0 };
 			    /* copy row j of T to temp */
-			    ctrsv_copy(order_type, uplo_type, trans_type, n,
-				       T, lda, temp, j);
+			    ctr_copy_row(order_type, uplo_type, trans_type, n,
+					 T, lda, temp, j);
 
 			    test_BLAS_zdot_z_c(n, blas_no_conj,
 					       minus_one, alpha,
@@ -1066,8 +1066,8 @@ double do_test_ztrsv_c(int n,
 			    printf("      T=");
 			    for (j = 0; j < n; j++) {
 			      /* copy row j of T to temp */
-			      ctrsv_copy(order_type, uplo_type, trans_type, n,
-					 T, lda, temp, j);
+			      ctr_copy_row(order_type, uplo_type, trans_type,
+					   n, T, lda, temp, j);
 
 			      if (j > 0)
 				printf("        ");
@@ -1511,8 +1511,8 @@ double do_test_ctrsv_s(int n,
 			  if (j == row) {
 			    float minus_one[2] = { -1.0, 0.0 };
 			    /* copy row j of T to temp */
-			    strsv_copy(order_type, uplo_type, trans_type, n,
-				       T, lda, temp, j);
+			    str_copy_row(order_type, uplo_type, trans_type, n,
+					 T, lda, temp, j);
 
 			    test_BLAS_cdot_c_s(n, blas_no_conj,
 					       minus_one, alpha,
@@ -1665,8 +1665,8 @@ double do_test_ctrsv_s(int n,
 			    printf("      T=");
 			    for (j = 0; j < n; j++) {
 			      /* copy row j of T to temp */
-			      strsv_copy(order_type, uplo_type, trans_type, n,
-					 T, lda, temp, j);
+			      str_copy_row(order_type, uplo_type, trans_type,
+					   n, T, lda, temp, j);
 
 			      if (j > 0)
 				printf("        ");
@@ -2109,8 +2109,8 @@ double do_test_ztrsv_d(int n,
 			  if (j == row) {
 			    double minus_one[2] = { -1.0, 0.0 };
 			    /* copy row j of T to temp */
-			    dtrsv_copy(order_type, uplo_type, trans_type, n,
-				       T, lda, temp, j);
+			    dtr_copy_row(order_type, uplo_type, trans_type, n,
+					 T, lda, temp, j);
 
 			    test_BLAS_zdot_z_d(n, blas_no_conj,
 					       minus_one, alpha,
@@ -2263,8 +2263,8 @@ double do_test_ztrsv_d(int n,
 			    printf("      T=");
 			    for (j = 0; j < n; j++) {
 			      /* copy row j of T to temp */
-			      dtrsv_copy(order_type, uplo_type, trans_type, n,
-					 T, lda, temp, j);
+			      dtr_copy_row(order_type, uplo_type, trans_type,
+					   n, T, lda, temp, j);
 
 			      if (j > 0)
 				printf("        ");
@@ -2724,8 +2724,8 @@ double do_test_strsv_x(int n,
 			    if (j == row) {
 			      int minus_one = -1.0;
 			      /* copy row j of T to temp */
-			      strsv_copy(order_type, uplo_type, trans_type, n,
-					 T, lda, temp, j);
+			      str_copy_row(order_type, uplo_type, trans_type,
+					   n, T, lda, temp, j);
 
 			      test_BLAS_sdot(n, blas_no_conj,
 					     minus_one, alpha,
@@ -2853,8 +2853,8 @@ double do_test_strsv_x(int n,
 			      printf("      T=");
 			      for (j = 0; j < n; j++) {
 				/* copy row j of T to temp */
-				strsv_copy(order_type, uplo_type, trans_type,
-					   n, T, lda, temp, j);
+				str_copy_row(order_type, uplo_type,
+					     trans_type, n, T, lda, temp, j);
 
 				if (j > 0)
 				  printf("        ");
@@ -3310,8 +3310,8 @@ double do_test_dtrsv_x(int n,
 			    if (j == row) {
 			      int minus_one = -1.0;
 			      /* copy row j of T to temp */
-			      dtrsv_copy(order_type, uplo_type, trans_type, n,
-					 T, lda, temp, j);
+			      dtr_copy_row(order_type, uplo_type, trans_type,
+					   n, T, lda, temp, j);
 
 			      test_BLAS_ddot(n, blas_no_conj,
 					     minus_one, alpha,
@@ -3439,8 +3439,8 @@ double do_test_dtrsv_x(int n,
 			      printf("      T=");
 			      for (j = 0; j < n; j++) {
 				/* copy row j of T to temp */
-				dtrsv_copy(order_type, uplo_type, trans_type,
-					   n, T, lda, temp, j);
+				dtr_copy_row(order_type, uplo_type,
+					     trans_type, n, T, lda, temp, j);
 
 				if (j > 0)
 				  printf("        ");
@@ -3897,8 +3897,8 @@ double do_test_dtrsv_s_x(int n,
 			    if (j == row) {
 			      int minus_one = -1.0;
 			      /* copy row j of T to temp */
-			      strsv_copy(order_type, uplo_type, trans_type, n,
-					 T, lda, temp, j);
+			      str_copy_row(order_type, uplo_type, trans_type,
+					   n, T, lda, temp, j);
 
 			      test_BLAS_ddot_d_s(n, blas_no_conj,
 						 minus_one, alpha,
@@ -4026,8 +4026,8 @@ double do_test_dtrsv_s_x(int n,
 			      printf("      T=");
 			      for (j = 0; j < n; j++) {
 				/* copy row j of T to temp */
-				strsv_copy(order_type, uplo_type, trans_type,
-					   n, T, lda, temp, j);
+				str_copy_row(order_type, uplo_type,
+					     trans_type, n, T, lda, temp, j);
 
 				if (j > 0)
 				  printf("        ");
@@ -4486,8 +4486,8 @@ double do_test_ctrsv_x(int n,
 			    if (j == row) {
 			      float minus_one[2] = { -1.0, 0.0 };
 			      /* copy row j of T to temp */
-			      ctrsv_copy(order_type, uplo_type, trans_type, n,
-					 T, lda, temp, j);
+			      ctr_copy_row(order_type, uplo_type, trans_type,
+					   n, T, lda, temp, j);
 
 			      test_BLAS_cdot(n, blas_no_conj,
 					     minus_one, alpha,
@@ -4642,8 +4642,8 @@ double do_test_ctrsv_x(int n,
 			      printf("      T=");
 			      for (j = 0; j < n; j++) {
 				/* copy row j of T to temp */
-				ctrsv_copy(order_type, uplo_type, trans_type,
-					   n, T, lda, temp, j);
+				ctr_copy_row(order_type, uplo_type,
+					     trans_type, n, T, lda, temp, j);
 
 				if (j > 0)
 				  printf("        ");
@@ -5107,8 +5107,8 @@ double do_test_ztrsv_x(int n,
 			    if (j == row) {
 			      double minus_one[2] = { -1.0, 0.0 };
 			      /* copy row j of T to temp */
-			      ztrsv_copy(order_type, uplo_type, trans_type, n,
-					 T, lda, temp, j);
+			      ztr_copy_row(order_type, uplo_type, trans_type,
+					   n, T, lda, temp, j);
 
 			      test_BLAS_zdot(n, blas_no_conj,
 					     minus_one, alpha,
@@ -5263,8 +5263,8 @@ double do_test_ztrsv_x(int n,
 			      printf("      T=");
 			      for (j = 0; j < n; j++) {
 				/* copy row j of T to temp */
-				ztrsv_copy(order_type, uplo_type, trans_type,
-					   n, T, lda, temp, j);
+				ztr_copy_row(order_type, uplo_type,
+					     trans_type, n, T, lda, temp, j);
 
 				if (j > 0)
 				  printf("        ");
@@ -5731,8 +5731,8 @@ double do_test_ztrsv_c_x(int n,
 			    if (j == row) {
 			      double minus_one[2] = { -1.0, 0.0 };
 			      /* copy row j of T to temp */
-			      ctrsv_copy(order_type, uplo_type, trans_type, n,
-					 T, lda, temp, j);
+			      ctr_copy_row(order_type, uplo_type, trans_type,
+					   n, T, lda, temp, j);
 
 			      test_BLAS_zdot_z_c(n, blas_no_conj,
 						 minus_one, alpha,
@@ -5887,8 +5887,8 @@ double do_test_ztrsv_c_x(int n,
 			      printf("      T=");
 			      for (j = 0; j < n; j++) {
 				/* copy row j of T to temp */
-				ctrsv_copy(order_type, uplo_type, trans_type,
-					   n, T, lda, temp, j);
+				ctr_copy_row(order_type, uplo_type,
+					     trans_type, n, T, lda, temp, j);
 
 				if (j > 0)
 				  printf("        ");
@@ -6355,8 +6355,8 @@ double do_test_ctrsv_s_x(int n,
 			    if (j == row) {
 			      float minus_one[2] = { -1.0, 0.0 };
 			      /* copy row j of T to temp */
-			      strsv_copy(order_type, uplo_type, trans_type, n,
-					 T, lda, temp, j);
+			      str_copy_row(order_type, uplo_type, trans_type,
+					   n, T, lda, temp, j);
 
 			      test_BLAS_cdot_c_s(n, blas_no_conj,
 						 minus_one, alpha,
@@ -6510,8 +6510,8 @@ double do_test_ctrsv_s_x(int n,
 			      printf("      T=");
 			      for (j = 0; j < n; j++) {
 				/* copy row j of T to temp */
-				strsv_copy(order_type, uplo_type, trans_type,
-					   n, T, lda, temp, j);
+				str_copy_row(order_type, uplo_type,
+					     trans_type, n, T, lda, temp, j);
 
 				if (j > 0)
 				  printf("        ");
@@ -6976,8 +6976,8 @@ double do_test_ztrsv_d_x(int n,
 			    if (j == row) {
 			      double minus_one[2] = { -1.0, 0.0 };
 			      /* copy row j of T to temp */
-			      dtrsv_copy(order_type, uplo_type, trans_type, n,
-					 T, lda, temp, j);
+			      dtr_copy_row(order_type, uplo_type, trans_type,
+					   n, T, lda, temp, j);
 
 			      test_BLAS_zdot_z_d(n, blas_no_conj,
 						 minus_one, alpha,
@@ -7131,8 +7131,8 @@ double do_test_ztrsv_d_x(int n,
 			      printf("      T=");
 			      for (j = 0; j < n; j++) {
 				/* copy row j of T to temp */
-				dtrsv_copy(order_type, uplo_type, trans_type,
-					   n, T, lda, temp, j);
+				dtr_copy_row(order_type, uplo_type,
+					     trans_type, n, T, lda, temp, j);
 
 				if (j > 0)
 				  printf("        ");

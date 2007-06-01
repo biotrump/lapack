@@ -2,11 +2,9 @@
 #include "blas_extended.h"
 #include "blas_extended_test.h"
 
-
-void stbsv_copy(enum blas_order_type order,
-		enum blas_uplo_type uplo,
-		enum blas_trans_type trans,
-		int n, int k, const float *T, int ldt, float *y, int row)
+void stbsv_copy(enum blas_order_type order, enum blas_uplo_type uplo,
+		enum blas_trans_type trans, int n, int k, const float *T,
+		int ldt, float *y, int row)
 /*
  * Purpose
  * =======
@@ -78,10 +76,9 @@ void stbsv_copy(enum blas_order_type order,
 
 }
 
-void stbsv_commit(enum blas_order_type order,
-		  enum blas_uplo_type uplo,
-		  enum blas_trans_type trans,
-		  int n, int k, float *T, int ldt, float *y, int row)
+void stbsv_commit(enum blas_order_type order, enum blas_uplo_type uplo,
+		  enum blas_trans_type trans, int n, int k, float *T, int ldt,
+		  float *y, int row)
 /*
  * Purpose
  * =======
@@ -157,10 +154,9 @@ void stbsv_commit(enum blas_order_type order,
 
 }
 
-void dtbsv_copy(enum blas_order_type order,
-		enum blas_uplo_type uplo,
-		enum blas_trans_type trans,
-		int n, int k, const double *T, int ldt, double *y, int row)
+void dtbsv_copy(enum blas_order_type order, enum blas_uplo_type uplo,
+		enum blas_trans_type trans, int n, int k, const double *T,
+		int ldt, double *y, int row)
 /*
  * Purpose
  * =======
@@ -232,10 +228,9 @@ void dtbsv_copy(enum blas_order_type order,
 
 }
 
-void dtbsv_commit(enum blas_order_type order,
-		  enum blas_uplo_type uplo,
-		  enum blas_trans_type trans,
-		  int n, int k, double *T, int ldt, double *y, int row)
+void dtbsv_commit(enum blas_order_type order, enum blas_uplo_type uplo,
+		  enum blas_trans_type trans, int n, int k, double *T,
+		  int ldt, double *y, int row)
 /*
  * Purpose
  * =======
@@ -311,10 +306,9 @@ void dtbsv_commit(enum blas_order_type order,
 
 }
 
-void ctbsv_copy(enum blas_order_type order,
-		enum blas_uplo_type uplo,
-		enum blas_trans_type trans,
-		int n, int k, const void *T, int ldt, void *y, int row)
+void ctbsv_copy(enum blas_order_type order, enum blas_uplo_type uplo,
+		enum blas_trans_type trans, int n, int k, const void *T,
+		int ldt, void *y, int row)
 /*
  * Purpose
  * =======
@@ -358,8 +352,6 @@ void ctbsv_copy(enum blas_order_type order,
   int conj = 0;
   int kl, ku;
   float *y_i = (float *) y;
-  /* float *T_i = (float*) T; */
-
 
   if (uplo == blas_upper) {
     ku = k;
@@ -403,10 +395,9 @@ void ctbsv_copy(enum blas_order_type order,
 
 }
 
-void ctbsv_commit(enum blas_order_type order,
-		  enum blas_uplo_type uplo,
-		  enum blas_trans_type trans,
-		  int n, int k, void *T, int ldt, void *y, int row)
+void ctbsv_commit(enum blas_order_type order, enum blas_uplo_type uplo,
+		  enum blas_trans_type trans, int n, int k, void *T, int ldt,
+		  void *y, int row)
 /*
  * Purpose
  * =======
@@ -450,8 +441,6 @@ void ctbsv_commit(enum blas_order_type order,
   int conj = 0;
   int kl, ku;
   float *y_i = (float *) y;
-  /* float *T_i = (float*) T; */
-
 
   if (uplo == blas_upper) {
     ku = k;
@@ -515,10 +504,9 @@ void ctbsv_commit(enum blas_order_type order,
 
 }
 
-void ztbsv_copy(enum blas_order_type order,
-		enum blas_uplo_type uplo,
-		enum blas_trans_type trans,
-		int n, int k, const void *T, int ldt, void *y, int row)
+void ztbsv_copy(enum blas_order_type order, enum blas_uplo_type uplo,
+		enum blas_trans_type trans, int n, int k, const void *T,
+		int ldt, void *y, int row)
 /*
  * Purpose
  * =======
@@ -562,8 +550,6 @@ void ztbsv_copy(enum blas_order_type order,
   int conj = 0;
   int kl, ku;
   double *y_i = (double *) y;
-  /* double *T_i = (double*) T; */
-
 
   if (uplo == blas_upper) {
     ku = k;
@@ -607,10 +593,9 @@ void ztbsv_copy(enum blas_order_type order,
 
 }
 
-void ztbsv_commit(enum blas_order_type order,
-		  enum blas_uplo_type uplo,
-		  enum blas_trans_type trans,
-		  int n, int k, void *T, int ldt, void *y, int row)
+void ztbsv_commit(enum blas_order_type order, enum blas_uplo_type uplo,
+		  enum blas_trans_type trans, int n, int k, void *T, int ldt,
+		  void *y, int row)
 /*
  * Purpose
  * =======
@@ -654,8 +639,6 @@ void ztbsv_commit(enum blas_order_type order,
   int conj = 0;
   int kl, ku;
   double *y_i = (double *) y;
-  /* double *T_i = (double*) T; */
-
 
   if (uplo == blas_upper) {
     ku = k;
@@ -720,10 +703,9 @@ void ztbsv_commit(enum blas_order_type order,
 }
 
 
-void sprint_tbsv_matrix(float *T,
-			int n, int k, int ldt,
-			enum blas_order_type order,
-			enum blas_uplo_type uplo, enum blas_trans_type trans)
+void sprint_tbsv_matrix(float *T, int n, int k, int ldt,
+			enum blas_order_type order, enum blas_uplo_type uplo,
+			enum blas_trans_type trans)
 /*
  * Purpose
  * =======
@@ -771,10 +753,9 @@ void sprint_tbsv_matrix(float *T,
   blas_free(T_row);
 }
 
-void dprint_tbsv_matrix(double *T,
-			int n, int k, int ldt,
-			enum blas_order_type order,
-			enum blas_uplo_type uplo, enum blas_trans_type trans)
+void dprint_tbsv_matrix(double *T, int n, int k, int ldt,
+			enum blas_order_type order, enum blas_uplo_type uplo,
+			enum blas_trans_type trans)
 /*
  * Purpose
  * =======
@@ -822,10 +803,9 @@ void dprint_tbsv_matrix(double *T,
   blas_free(T_row);
 }
 
-void cprint_tbsv_matrix(void *T,
-			int n, int k, int ldt,
-			enum blas_order_type order,
-			enum blas_uplo_type uplo, enum blas_trans_type trans)
+void cprint_tbsv_matrix(void *T, int n, int k, int ldt,
+			enum blas_order_type order, enum blas_uplo_type uplo,
+			enum blas_trans_type trans)
 /*
  * Purpose
  * =======
@@ -873,10 +853,9 @@ void cprint_tbsv_matrix(void *T,
   blas_free(T_row);
 }
 
-void zprint_tbsv_matrix(void *T,
-			int n, int k, int ldt,
-			enum blas_order_type order,
-			enum blas_uplo_type uplo, enum blas_trans_type trans)
+void zprint_tbsv_matrix(void *T, int n, int k, int ldt,
+			enum blas_order_type order, enum blas_uplo_type uplo,
+			enum blas_trans_type trans)
 /*
  * Purpose
  * =======

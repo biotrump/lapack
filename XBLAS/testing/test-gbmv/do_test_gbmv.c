@@ -6,14 +6,8 @@
 #include "blas_extended_test.h"
 
 
-
-double do_test_dgbmv_d_s(int m, int n,
-			 int ntests,
-			 int *seed,
-			 double thresh,
-			 int debug,
-			 float test_prob,
-			 double *min_ratio,
+double do_test_dgbmv_d_s(int m, int n, int ntests, int *seed, double thresh,
+			 int debug, float test_prob, double *min_ratio,
 			 int *num_bad_ratio, int *num_tests)
 
 /*
@@ -217,8 +211,6 @@ double do_test_dgbmv_d_s(int m, int n,
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
-
-
   AB =
     (double *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(double));
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && AB == NULL) {
@@ -346,7 +338,6 @@ double do_test_dgbmv_d_s(int m, int n,
 					       alpha_flag, AB, lda, x_gen,
 					       &beta, beta_flag, y_gen, seed,
 					       head_r_true, tail_r_true);
-
 		      count++;
 
 		      /* varying incx */
@@ -358,17 +349,7 @@ double do_test_dgbmv_d_s(int m, int n,
 			incx = incx_val;
 
 
-			/* set x starting index */
-			ix = 0;
-			if (incx < 0)
-			  ix = -(n_i - 1) * incx;
-
-			/* copy x_gen to x */
-			for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-			  x[ix] = x_gen[j];
-
-			  ix += incx;
-			}
+			scopy_vector(x_gen, n_i, 1, x, incx_val);
 
 			/* varying incy */
 			for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -379,17 +360,7 @@ double do_test_dgbmv_d_s(int m, int n,
 			  incy = incy_val;
 
 
-			  /* set y starting index */
-			  iy = 0;
-			  if (incy < 0)
-			    iy = -(m_i - 1) * incy;
-
-			  /* copy y_gen to y */
-			  for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			    y[iy] = y_gen[j];
-
-			    iy += incy;
-			  }
+			  dcopy_vector(y_gen, m_i, 1, y, incy_val);
 
 			  /* call BLAS_dgbmv_d_s */
 			  FPU_FIX_STOP;
@@ -443,7 +414,6 @@ double do_test_dgbmv_d_s(int m, int n,
 				(p_count <= max_print) &&
 				(ratio > 0.5 * ratio_max)) {
 			      old_count = count;
-
 			      printf
 				("FAIL> %s: m = %d, n = %d, ntests = %d, threshold = %4.2f,\n",
 				 fname, m, n, ntests, thresh);
@@ -517,8 +487,6 @@ double do_test_dgbmv_d_s(int m, int n,
 			      }
 
 			      for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
-
-
 				if (j < n_i) {
 				  printf("      ");
 				  printf("%16.8e", x[ix]);
@@ -533,7 +501,6 @@ double do_test_dgbmv_d_s(int m, int n,
 				  printf("%24.16e", y[iy]);
 				  printf("\n");
 				}
-
 				ix += incx;
 				iy += incy;
 			      }
@@ -592,8 +559,8 @@ double do_test_dgbmv_d_s(int m, int n,
   }				/* debug */
 
   if ((debug == 2) || ((debug == 1) && bad_ratios > 0)) {
-    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n",
-	   fname, m, n, ntests, thresh);
+    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n", fname,
+	   m, n, ntests, thresh);
     printf
       ("      bad/total = %d/%d=%3.2f, min_ratio = %.4e, max_ratio = %.4e\n\n",
        bad_ratios, tot_tests, ((double) bad_ratios) / ((double) tot_tests),
@@ -617,15 +584,9 @@ end:
   *num_bad_ratio = bad_ratios;
   *num_tests = tot_tests;
   return ratio_max;
-}				/* end of do_test_dgbmv_d_s */
-
-double do_test_dgbmv_s_d(int m, int n,
-			 int ntests,
-			 int *seed,
-			 double thresh,
-			 int debug,
-			 float test_prob,
-			 double *min_ratio,
+}
+double do_test_dgbmv_s_d(int m, int n, int ntests, int *seed, double thresh,
+			 int debug, float test_prob, double *min_ratio,
 			 int *num_bad_ratio, int *num_tests)
 
 /*
@@ -829,8 +790,6 @@ double do_test_dgbmv_s_d(int m, int n,
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
-
-
   AB =
     (float *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(float));
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && AB == NULL) {
@@ -958,7 +917,6 @@ double do_test_dgbmv_s_d(int m, int n,
 					       alpha_flag, AB, lda, x_gen,
 					       &beta, beta_flag, y_gen, seed,
 					       head_r_true, tail_r_true);
-
 		      count++;
 
 		      /* varying incx */
@@ -970,17 +928,7 @@ double do_test_dgbmv_s_d(int m, int n,
 			incx = incx_val;
 
 
-			/* set x starting index */
-			ix = 0;
-			if (incx < 0)
-			  ix = -(n_i - 1) * incx;
-
-			/* copy x_gen to x */
-			for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-			  x[ix] = x_gen[j];
-
-			  ix += incx;
-			}
+			dcopy_vector(x_gen, n_i, 1, x, incx_val);
 
 			/* varying incy */
 			for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -991,17 +939,7 @@ double do_test_dgbmv_s_d(int m, int n,
 			  incy = incy_val;
 
 
-			  /* set y starting index */
-			  iy = 0;
-			  if (incy < 0)
-			    iy = -(m_i - 1) * incy;
-
-			  /* copy y_gen to y */
-			  for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			    y[iy] = y_gen[j];
-
-			    iy += incy;
-			  }
+			  dcopy_vector(y_gen, m_i, 1, y, incy_val);
 
 			  /* call BLAS_dgbmv_s_d */
 			  FPU_FIX_STOP;
@@ -1055,7 +993,6 @@ double do_test_dgbmv_s_d(int m, int n,
 				(p_count <= max_print) &&
 				(ratio > 0.5 * ratio_max)) {
 			      old_count = count;
-
 			      printf
 				("FAIL> %s: m = %d, n = %d, ntests = %d, threshold = %4.2f,\n",
 				 fname, m, n, ntests, thresh);
@@ -1129,8 +1066,6 @@ double do_test_dgbmv_s_d(int m, int n,
 			      }
 
 			      for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
-
-
 				if (j < n_i) {
 				  printf("      ");
 				  printf("%24.16e", x[ix]);
@@ -1145,7 +1080,6 @@ double do_test_dgbmv_s_d(int m, int n,
 				  printf("%24.16e", y[iy]);
 				  printf("\n");
 				}
-
 				ix += incx;
 				iy += incy;
 			      }
@@ -1204,8 +1138,8 @@ double do_test_dgbmv_s_d(int m, int n,
   }				/* debug */
 
   if ((debug == 2) || ((debug == 1) && bad_ratios > 0)) {
-    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n",
-	   fname, m, n, ntests, thresh);
+    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n", fname,
+	   m, n, ntests, thresh);
     printf
       ("      bad/total = %d/%d=%3.2f, min_ratio = %.4e, max_ratio = %.4e\n\n",
        bad_ratios, tot_tests, ((double) bad_ratios) / ((double) tot_tests),
@@ -1229,15 +1163,9 @@ end:
   *num_bad_ratio = bad_ratios;
   *num_tests = tot_tests;
   return ratio_max;
-}				/* end of do_test_dgbmv_s_d */
-
-double do_test_dgbmv_s_s(int m, int n,
-			 int ntests,
-			 int *seed,
-			 double thresh,
-			 int debug,
-			 float test_prob,
-			 double *min_ratio,
+}
+double do_test_dgbmv_s_s(int m, int n, int ntests, int *seed, double thresh,
+			 int debug, float test_prob, double *min_ratio,
 			 int *num_bad_ratio, int *num_tests)
 
 /*
@@ -1441,8 +1369,6 @@ double do_test_dgbmv_s_s(int m, int n,
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
-
-
   AB =
     (float *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(float));
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && AB == NULL) {
@@ -1570,7 +1496,6 @@ double do_test_dgbmv_s_s(int m, int n,
 					       alpha_flag, AB, lda, x_gen,
 					       &beta, beta_flag, y_gen, seed,
 					       head_r_true, tail_r_true);
-
 		      count++;
 
 		      /* varying incx */
@@ -1582,17 +1507,7 @@ double do_test_dgbmv_s_s(int m, int n,
 			incx = incx_val;
 
 
-			/* set x starting index */
-			ix = 0;
-			if (incx < 0)
-			  ix = -(n_i - 1) * incx;
-
-			/* copy x_gen to x */
-			for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-			  x[ix] = x_gen[j];
-
-			  ix += incx;
-			}
+			scopy_vector(x_gen, n_i, 1, x, incx_val);
 
 			/* varying incy */
 			for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -1603,17 +1518,7 @@ double do_test_dgbmv_s_s(int m, int n,
 			  incy = incy_val;
 
 
-			  /* set y starting index */
-			  iy = 0;
-			  if (incy < 0)
-			    iy = -(m_i - 1) * incy;
-
-			  /* copy y_gen to y */
-			  for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			    y[iy] = y_gen[j];
-
-			    iy += incy;
-			  }
+			  dcopy_vector(y_gen, m_i, 1, y, incy_val);
 
 			  /* call BLAS_dgbmv_s_s */
 			  FPU_FIX_STOP;
@@ -1667,7 +1572,6 @@ double do_test_dgbmv_s_s(int m, int n,
 				(p_count <= max_print) &&
 				(ratio > 0.5 * ratio_max)) {
 			      old_count = count;
-
 			      printf
 				("FAIL> %s: m = %d, n = %d, ntests = %d, threshold = %4.2f,\n",
 				 fname, m, n, ntests, thresh);
@@ -1741,8 +1645,6 @@ double do_test_dgbmv_s_s(int m, int n,
 			      }
 
 			      for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
-
-
 				if (j < n_i) {
 				  printf("      ");
 				  printf("%16.8e", x[ix]);
@@ -1757,7 +1659,6 @@ double do_test_dgbmv_s_s(int m, int n,
 				  printf("%24.16e", y[iy]);
 				  printf("\n");
 				}
-
 				ix += incx;
 				iy += incy;
 			      }
@@ -1816,8 +1717,8 @@ double do_test_dgbmv_s_s(int m, int n,
   }				/* debug */
 
   if ((debug == 2) || ((debug == 1) && bad_ratios > 0)) {
-    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n",
-	   fname, m, n, ntests, thresh);
+    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n", fname,
+	   m, n, ntests, thresh);
     printf
       ("      bad/total = %d/%d=%3.2f, min_ratio = %.4e, max_ratio = %.4e\n\n",
        bad_ratios, tot_tests, ((double) bad_ratios) / ((double) tot_tests),
@@ -1841,15 +1742,9 @@ end:
   *num_bad_ratio = bad_ratios;
   *num_tests = tot_tests;
   return ratio_max;
-}				/* end of do_test_dgbmv_s_s */
-
-double do_test_zgbmv_z_c(int m, int n,
-			 int ntests,
-			 int *seed,
-			 double thresh,
-			 int debug,
-			 float test_prob,
-			 double *min_ratio,
+}
+double do_test_zgbmv_z_c(int m, int n, int ntests, int *seed, double thresh,
+			 int debug, float test_prob, double *min_ratio,
 			 int *num_bad_ratio, int *num_tests)
 
 /*
@@ -2054,8 +1949,6 @@ double do_test_zgbmv_z_c(int m, int n,
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
-
-
   AB =
     (double *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(double) *
 			   2);
@@ -2186,7 +2079,6 @@ double do_test_zgbmv_z_c(int m, int n,
 					       alpha_flag, AB, lda, x_gen,
 					       &beta, beta_flag, y_gen, seed,
 					       head_r_true, tail_r_true);
-
 		      count++;
 
 		      /* varying incx */
@@ -2198,18 +2090,7 @@ double do_test_zgbmv_z_c(int m, int n,
 			incx = incx_val;
 			incx *= 2;
 
-			/* set x starting index */
-			ix = 0;
-			if (incx < 0)
-			  ix = -(n_i - 1) * incx;
-
-			/* copy x_gen to x */
-			for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-			  x[ix] = x_gen[j];
-			  x[ix + 1] = x_gen[j + 1];
-
-			  ix += incx;
-			}
+			ccopy_vector(x_gen, n_i, 1, x, incx_val);
 
 			/* varying incy */
 			for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -2220,18 +2101,7 @@ double do_test_zgbmv_z_c(int m, int n,
 			  incy = incy_val;
 			  incy *= 2;
 
-			  /* set y starting index */
-			  iy = 0;
-			  if (incy < 0)
-			    iy = -(m_i - 1) * incy;
-
-			  /* copy y_gen to y */
-			  for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			    y[iy] = y_gen[j];
-			    y[iy + 1] = y_gen[j + 1];
-
-			    iy += incy;
-			  }
+			  zcopy_vector(y_gen, m_i, 1, y, incy_val);
 
 			  /* call BLAS_zgbmv_z_c */
 			  FPU_FIX_STOP;
@@ -2285,7 +2155,6 @@ double do_test_zgbmv_z_c(int m, int n,
 				(p_count <= max_print) &&
 				(ratio > 0.5 * ratio_max)) {
 			      old_count = count;
-
 			      printf
 				("FAIL> %s: m = %d, n = %d, ntests = %d, threshold = %4.2f,\n",
 				 fname, m, n, ntests, thresh);
@@ -2359,8 +2228,6 @@ double do_test_zgbmv_z_c(int m, int n,
 			      }
 
 			      for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
-
-
 				if (j < n_i) {
 				  printf("      ");
 				  printf("(%16.8e, %16.8e)", x[ix],
@@ -2379,7 +2246,6 @@ double do_test_zgbmv_z_c(int m, int n,
 					 y[iy + 1]);
 				  printf("\n");
 				}
-
 				ix += incx;
 				iy += incy;
 			      }
@@ -2442,8 +2308,8 @@ double do_test_zgbmv_z_c(int m, int n,
   }				/* debug */
 
   if ((debug == 2) || ((debug == 1) && bad_ratios > 0)) {
-    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n",
-	   fname, m, n, ntests, thresh);
+    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n", fname,
+	   m, n, ntests, thresh);
     printf
       ("      bad/total = %d/%d=%3.2f, min_ratio = %.4e, max_ratio = %.4e\n\n",
        bad_ratios, tot_tests, ((double) bad_ratios) / ((double) tot_tests),
@@ -2467,15 +2333,9 @@ end:
   *num_bad_ratio = bad_ratios;
   *num_tests = tot_tests;
   return ratio_max;
-}				/* end of do_test_zgbmv_z_c */
-
-double do_test_zgbmv_c_z(int m, int n,
-			 int ntests,
-			 int *seed,
-			 double thresh,
-			 int debug,
-			 float test_prob,
-			 double *min_ratio,
+}
+double do_test_zgbmv_c_z(int m, int n, int ntests, int *seed, double thresh,
+			 int debug, float test_prob, double *min_ratio,
 			 int *num_bad_ratio, int *num_tests)
 
 /*
@@ -2680,8 +2540,6 @@ double do_test_zgbmv_c_z(int m, int n,
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
-
-
   AB =
     (float *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(float) *
 			  2);
@@ -2812,7 +2670,6 @@ double do_test_zgbmv_c_z(int m, int n,
 					       alpha_flag, AB, lda, x_gen,
 					       &beta, beta_flag, y_gen, seed,
 					       head_r_true, tail_r_true);
-
 		      count++;
 
 		      /* varying incx */
@@ -2824,18 +2681,7 @@ double do_test_zgbmv_c_z(int m, int n,
 			incx = incx_val;
 			incx *= 2;
 
-			/* set x starting index */
-			ix = 0;
-			if (incx < 0)
-			  ix = -(n_i - 1) * incx;
-
-			/* copy x_gen to x */
-			for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-			  x[ix] = x_gen[j];
-			  x[ix + 1] = x_gen[j + 1];
-
-			  ix += incx;
-			}
+			zcopy_vector(x_gen, n_i, 1, x, incx_val);
 
 			/* varying incy */
 			for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -2846,18 +2692,7 @@ double do_test_zgbmv_c_z(int m, int n,
 			  incy = incy_val;
 			  incy *= 2;
 
-			  /* set y starting index */
-			  iy = 0;
-			  if (incy < 0)
-			    iy = -(m_i - 1) * incy;
-
-			  /* copy y_gen to y */
-			  for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			    y[iy] = y_gen[j];
-			    y[iy + 1] = y_gen[j + 1];
-
-			    iy += incy;
-			  }
+			  zcopy_vector(y_gen, m_i, 1, y, incy_val);
 
 			  /* call BLAS_zgbmv_c_z */
 			  FPU_FIX_STOP;
@@ -2911,7 +2746,6 @@ double do_test_zgbmv_c_z(int m, int n,
 				(p_count <= max_print) &&
 				(ratio > 0.5 * ratio_max)) {
 			      old_count = count;
-
 			      printf
 				("FAIL> %s: m = %d, n = %d, ntests = %d, threshold = %4.2f,\n",
 				 fname, m, n, ntests, thresh);
@@ -2985,8 +2819,6 @@ double do_test_zgbmv_c_z(int m, int n,
 			      }
 
 			      for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
-
-
 				if (j < n_i) {
 				  printf("      ");
 				  printf("(%24.16e, %24.16e)", x[ix],
@@ -3005,7 +2837,6 @@ double do_test_zgbmv_c_z(int m, int n,
 					 y[iy + 1]);
 				  printf("\n");
 				}
-
 				ix += incx;
 				iy += incy;
 			      }
@@ -3068,8 +2899,8 @@ double do_test_zgbmv_c_z(int m, int n,
   }				/* debug */
 
   if ((debug == 2) || ((debug == 1) && bad_ratios > 0)) {
-    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n",
-	   fname, m, n, ntests, thresh);
+    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n", fname,
+	   m, n, ntests, thresh);
     printf
       ("      bad/total = %d/%d=%3.2f, min_ratio = %.4e, max_ratio = %.4e\n\n",
        bad_ratios, tot_tests, ((double) bad_ratios) / ((double) tot_tests),
@@ -3093,15 +2924,9 @@ end:
   *num_bad_ratio = bad_ratios;
   *num_tests = tot_tests;
   return ratio_max;
-}				/* end of do_test_zgbmv_c_z */
-
-double do_test_zgbmv_c_c(int m, int n,
-			 int ntests,
-			 int *seed,
-			 double thresh,
-			 int debug,
-			 float test_prob,
-			 double *min_ratio,
+}
+double do_test_zgbmv_c_c(int m, int n, int ntests, int *seed, double thresh,
+			 int debug, float test_prob, double *min_ratio,
 			 int *num_bad_ratio, int *num_tests)
 
 /*
@@ -3306,8 +3131,6 @@ double do_test_zgbmv_c_c(int m, int n,
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
-
-
   AB =
     (float *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(float) *
 			  2);
@@ -3438,7 +3261,6 @@ double do_test_zgbmv_c_c(int m, int n,
 					       alpha_flag, AB, lda, x_gen,
 					       &beta, beta_flag, y_gen, seed,
 					       head_r_true, tail_r_true);
-
 		      count++;
 
 		      /* varying incx */
@@ -3450,18 +3272,7 @@ double do_test_zgbmv_c_c(int m, int n,
 			incx = incx_val;
 			incx *= 2;
 
-			/* set x starting index */
-			ix = 0;
-			if (incx < 0)
-			  ix = -(n_i - 1) * incx;
-
-			/* copy x_gen to x */
-			for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-			  x[ix] = x_gen[j];
-			  x[ix + 1] = x_gen[j + 1];
-
-			  ix += incx;
-			}
+			ccopy_vector(x_gen, n_i, 1, x, incx_val);
 
 			/* varying incy */
 			for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -3472,18 +3283,7 @@ double do_test_zgbmv_c_c(int m, int n,
 			  incy = incy_val;
 			  incy *= 2;
 
-			  /* set y starting index */
-			  iy = 0;
-			  if (incy < 0)
-			    iy = -(m_i - 1) * incy;
-
-			  /* copy y_gen to y */
-			  for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			    y[iy] = y_gen[j];
-			    y[iy + 1] = y_gen[j + 1];
-
-			    iy += incy;
-			  }
+			  zcopy_vector(y_gen, m_i, 1, y, incy_val);
 
 			  /* call BLAS_zgbmv_c_c */
 			  FPU_FIX_STOP;
@@ -3537,7 +3337,6 @@ double do_test_zgbmv_c_c(int m, int n,
 				(p_count <= max_print) &&
 				(ratio > 0.5 * ratio_max)) {
 			      old_count = count;
-
 			      printf
 				("FAIL> %s: m = %d, n = %d, ntests = %d, threshold = %4.2f,\n",
 				 fname, m, n, ntests, thresh);
@@ -3611,8 +3410,6 @@ double do_test_zgbmv_c_c(int m, int n,
 			      }
 
 			      for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
-
-
 				if (j < n_i) {
 				  printf("      ");
 				  printf("(%16.8e, %16.8e)", x[ix],
@@ -3631,7 +3428,6 @@ double do_test_zgbmv_c_c(int m, int n,
 					 y[iy + 1]);
 				  printf("\n");
 				}
-
 				ix += incx;
 				iy += incy;
 			      }
@@ -3694,8 +3490,8 @@ double do_test_zgbmv_c_c(int m, int n,
   }				/* debug */
 
   if ((debug == 2) || ((debug == 1) && bad_ratios > 0)) {
-    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n",
-	   fname, m, n, ntests, thresh);
+    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n", fname,
+	   m, n, ntests, thresh);
     printf
       ("      bad/total = %d/%d=%3.2f, min_ratio = %.4e, max_ratio = %.4e\n\n",
        bad_ratios, tot_tests, ((double) bad_ratios) / ((double) tot_tests),
@@ -3719,15 +3515,9 @@ end:
   *num_bad_ratio = bad_ratios;
   *num_tests = tot_tests;
   return ratio_max;
-}				/* end of do_test_zgbmv_c_c */
-
-double do_test_cgbmv_c_s(int m, int n,
-			 int ntests,
-			 int *seed,
-			 double thresh,
-			 int debug,
-			 float test_prob,
-			 double *min_ratio,
+}
+double do_test_cgbmv_c_s(int m, int n, int ntests, int *seed, double thresh,
+			 int debug, float test_prob, double *min_ratio,
 			 int *num_bad_ratio, int *num_tests)
 
 /*
@@ -3932,8 +3722,6 @@ double do_test_cgbmv_c_s(int m, int n,
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
-
-
   AB =
     (float *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(float) *
 			  2);
@@ -4064,7 +3852,6 @@ double do_test_cgbmv_c_s(int m, int n,
 					       alpha_flag, AB, lda, x_gen,
 					       &beta, beta_flag, y_gen, seed,
 					       head_r_true, tail_r_true);
-
 		      count++;
 
 		      /* varying incx */
@@ -4076,17 +3863,7 @@ double do_test_cgbmv_c_s(int m, int n,
 			incx = incx_val;
 
 
-			/* set x starting index */
-			ix = 0;
-			if (incx < 0)
-			  ix = -(n_i - 1) * incx;
-
-			/* copy x_gen to x */
-			for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-			  x[ix] = x_gen[j];
-
-			  ix += incx;
-			}
+			scopy_vector(x_gen, n_i, 1, x, incx_val);
 
 			/* varying incy */
 			for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -4097,18 +3874,7 @@ double do_test_cgbmv_c_s(int m, int n,
 			  incy = incy_val;
 			  incy *= 2;
 
-			  /* set y starting index */
-			  iy = 0;
-			  if (incy < 0)
-			    iy = -(m_i - 1) * incy;
-
-			  /* copy y_gen to y */
-			  for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			    y[iy] = y_gen[j];
-			    y[iy + 1] = y_gen[j + 1];
-
-			    iy += incy;
-			  }
+			  ccopy_vector(y_gen, m_i, 1, y, incy_val);
 
 			  /* call BLAS_cgbmv_c_s */
 			  FPU_FIX_STOP;
@@ -4162,7 +3928,6 @@ double do_test_cgbmv_c_s(int m, int n,
 				(p_count <= max_print) &&
 				(ratio > 0.5 * ratio_max)) {
 			      old_count = count;
-
 			      printf
 				("FAIL> %s: m = %d, n = %d, ntests = %d, threshold = %4.2f,\n",
 				 fname, m, n, ntests, thresh);
@@ -4236,8 +4001,6 @@ double do_test_cgbmv_c_s(int m, int n,
 			      }
 
 			      for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
-
-
 				if (j < n_i) {
 				  printf("      ");
 				  printf("%16.8e", x[ix]);
@@ -4255,7 +4018,6 @@ double do_test_cgbmv_c_s(int m, int n,
 					 y[iy + 1]);
 				  printf("\n");
 				}
-
 				ix += incx;
 				iy += incy;
 			      }
@@ -4317,8 +4079,8 @@ double do_test_cgbmv_c_s(int m, int n,
   }				/* debug */
 
   if ((debug == 2) || ((debug == 1) && bad_ratios > 0)) {
-    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n",
-	   fname, m, n, ntests, thresh);
+    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n", fname,
+	   m, n, ntests, thresh);
     printf
       ("      bad/total = %d/%d=%3.2f, min_ratio = %.4e, max_ratio = %.4e\n\n",
        bad_ratios, tot_tests, ((double) bad_ratios) / ((double) tot_tests),
@@ -4342,15 +4104,9 @@ end:
   *num_bad_ratio = bad_ratios;
   *num_tests = tot_tests;
   return ratio_max;
-}				/* end of do_test_cgbmv_c_s */
-
-double do_test_cgbmv_s_c(int m, int n,
-			 int ntests,
-			 int *seed,
-			 double thresh,
-			 int debug,
-			 float test_prob,
-			 double *min_ratio,
+}
+double do_test_cgbmv_s_c(int m, int n, int ntests, int *seed, double thresh,
+			 int debug, float test_prob, double *min_ratio,
 			 int *num_bad_ratio, int *num_tests)
 
 /*
@@ -4555,8 +4311,6 @@ double do_test_cgbmv_s_c(int m, int n,
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
-
-
   AB =
     (float *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(float));
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && AB == NULL) {
@@ -4686,7 +4440,6 @@ double do_test_cgbmv_s_c(int m, int n,
 					       alpha_flag, AB, lda, x_gen,
 					       &beta, beta_flag, y_gen, seed,
 					       head_r_true, tail_r_true);
-
 		      count++;
 
 		      /* varying incx */
@@ -4698,18 +4451,7 @@ double do_test_cgbmv_s_c(int m, int n,
 			incx = incx_val;
 			incx *= 2;
 
-			/* set x starting index */
-			ix = 0;
-			if (incx < 0)
-			  ix = -(n_i - 1) * incx;
-
-			/* copy x_gen to x */
-			for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-			  x[ix] = x_gen[j];
-			  x[ix + 1] = x_gen[j + 1];
-
-			  ix += incx;
-			}
+			ccopy_vector(x_gen, n_i, 1, x, incx_val);
 
 			/* varying incy */
 			for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -4720,18 +4462,7 @@ double do_test_cgbmv_s_c(int m, int n,
 			  incy = incy_val;
 			  incy *= 2;
 
-			  /* set y starting index */
-			  iy = 0;
-			  if (incy < 0)
-			    iy = -(m_i - 1) * incy;
-
-			  /* copy y_gen to y */
-			  for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			    y[iy] = y_gen[j];
-			    y[iy + 1] = y_gen[j + 1];
-
-			    iy += incy;
-			  }
+			  ccopy_vector(y_gen, m_i, 1, y, incy_val);
 
 			  /* call BLAS_cgbmv_s_c */
 			  FPU_FIX_STOP;
@@ -4785,7 +4516,6 @@ double do_test_cgbmv_s_c(int m, int n,
 				(p_count <= max_print) &&
 				(ratio > 0.5 * ratio_max)) {
 			      old_count = count;
-
 			      printf
 				("FAIL> %s: m = %d, n = %d, ntests = %d, threshold = %4.2f,\n",
 				 fname, m, n, ntests, thresh);
@@ -4859,8 +4589,6 @@ double do_test_cgbmv_s_c(int m, int n,
 			      }
 
 			      for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
-
-
 				if (j < n_i) {
 				  printf("      ");
 				  printf("(%16.8e, %16.8e)", x[ix],
@@ -4879,7 +4607,6 @@ double do_test_cgbmv_s_c(int m, int n,
 					 y[iy + 1]);
 				  printf("\n");
 				}
-
 				ix += incx;
 				iy += incy;
 			      }
@@ -4941,8 +4668,8 @@ double do_test_cgbmv_s_c(int m, int n,
   }				/* debug */
 
   if ((debug == 2) || ((debug == 1) && bad_ratios > 0)) {
-    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n",
-	   fname, m, n, ntests, thresh);
+    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n", fname,
+	   m, n, ntests, thresh);
     printf
       ("      bad/total = %d/%d=%3.2f, min_ratio = %.4e, max_ratio = %.4e\n\n",
        bad_ratios, tot_tests, ((double) bad_ratios) / ((double) tot_tests),
@@ -4966,15 +4693,9 @@ end:
   *num_bad_ratio = bad_ratios;
   *num_tests = tot_tests;
   return ratio_max;
-}				/* end of do_test_cgbmv_s_c */
-
-double do_test_cgbmv_s_s(int m, int n,
-			 int ntests,
-			 int *seed,
-			 double thresh,
-			 int debug,
-			 float test_prob,
-			 double *min_ratio,
+}
+double do_test_cgbmv_s_s(int m, int n, int ntests, int *seed, double thresh,
+			 int debug, float test_prob, double *min_ratio,
 			 int *num_bad_ratio, int *num_tests)
 
 /*
@@ -5179,8 +4900,6 @@ double do_test_cgbmv_s_s(int m, int n,
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
-
-
   AB =
     (float *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(float));
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && AB == NULL) {
@@ -5310,7 +5029,6 @@ double do_test_cgbmv_s_s(int m, int n,
 					       alpha_flag, AB, lda, x_gen,
 					       &beta, beta_flag, y_gen, seed,
 					       head_r_true, tail_r_true);
-
 		      count++;
 
 		      /* varying incx */
@@ -5322,17 +5040,7 @@ double do_test_cgbmv_s_s(int m, int n,
 			incx = incx_val;
 
 
-			/* set x starting index */
-			ix = 0;
-			if (incx < 0)
-			  ix = -(n_i - 1) * incx;
-
-			/* copy x_gen to x */
-			for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-			  x[ix] = x_gen[j];
-
-			  ix += incx;
-			}
+			scopy_vector(x_gen, n_i, 1, x, incx_val);
 
 			/* varying incy */
 			for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -5343,18 +5051,7 @@ double do_test_cgbmv_s_s(int m, int n,
 			  incy = incy_val;
 			  incy *= 2;
 
-			  /* set y starting index */
-			  iy = 0;
-			  if (incy < 0)
-			    iy = -(m_i - 1) * incy;
-
-			  /* copy y_gen to y */
-			  for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			    y[iy] = y_gen[j];
-			    y[iy + 1] = y_gen[j + 1];
-
-			    iy += incy;
-			  }
+			  ccopy_vector(y_gen, m_i, 1, y, incy_val);
 
 			  /* call BLAS_cgbmv_s_s */
 			  FPU_FIX_STOP;
@@ -5408,7 +5105,6 @@ double do_test_cgbmv_s_s(int m, int n,
 				(p_count <= max_print) &&
 				(ratio > 0.5 * ratio_max)) {
 			      old_count = count;
-
 			      printf
 				("FAIL> %s: m = %d, n = %d, ntests = %d, threshold = %4.2f,\n",
 				 fname, m, n, ntests, thresh);
@@ -5482,8 +5178,6 @@ double do_test_cgbmv_s_s(int m, int n,
 			      }
 
 			      for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
-
-
 				if (j < n_i) {
 				  printf("      ");
 				  printf("%16.8e", x[ix]);
@@ -5501,7 +5195,6 @@ double do_test_cgbmv_s_s(int m, int n,
 					 y[iy + 1]);
 				  printf("\n");
 				}
-
 				ix += incx;
 				iy += incy;
 			      }
@@ -5563,8 +5256,8 @@ double do_test_cgbmv_s_s(int m, int n,
   }				/* debug */
 
   if ((debug == 2) || ((debug == 1) && bad_ratios > 0)) {
-    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n",
-	   fname, m, n, ntests, thresh);
+    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n", fname,
+	   m, n, ntests, thresh);
     printf
       ("      bad/total = %d/%d=%3.2f, min_ratio = %.4e, max_ratio = %.4e\n\n",
        bad_ratios, tot_tests, ((double) bad_ratios) / ((double) tot_tests),
@@ -5588,15 +5281,9 @@ end:
   *num_bad_ratio = bad_ratios;
   *num_tests = tot_tests;
   return ratio_max;
-}				/* end of do_test_cgbmv_s_s */
-
-double do_test_zgbmv_z_d(int m, int n,
-			 int ntests,
-			 int *seed,
-			 double thresh,
-			 int debug,
-			 float test_prob,
-			 double *min_ratio,
+}
+double do_test_zgbmv_z_d(int m, int n, int ntests, int *seed, double thresh,
+			 int debug, float test_prob, double *min_ratio,
 			 int *num_bad_ratio, int *num_tests)
 
 /*
@@ -5801,8 +5488,6 @@ double do_test_zgbmv_z_d(int m, int n,
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
-
-
   AB =
     (double *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(double) *
 			   2);
@@ -5933,7 +5618,6 @@ double do_test_zgbmv_z_d(int m, int n,
 					       alpha_flag, AB, lda, x_gen,
 					       &beta, beta_flag, y_gen, seed,
 					       head_r_true, tail_r_true);
-
 		      count++;
 
 		      /* varying incx */
@@ -5945,17 +5629,7 @@ double do_test_zgbmv_z_d(int m, int n,
 			incx = incx_val;
 
 
-			/* set x starting index */
-			ix = 0;
-			if (incx < 0)
-			  ix = -(n_i - 1) * incx;
-
-			/* copy x_gen to x */
-			for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-			  x[ix] = x_gen[j];
-
-			  ix += incx;
-			}
+			dcopy_vector(x_gen, n_i, 1, x, incx_val);
 
 			/* varying incy */
 			for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -5966,18 +5640,7 @@ double do_test_zgbmv_z_d(int m, int n,
 			  incy = incy_val;
 			  incy *= 2;
 
-			  /* set y starting index */
-			  iy = 0;
-			  if (incy < 0)
-			    iy = -(m_i - 1) * incy;
-
-			  /* copy y_gen to y */
-			  for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			    y[iy] = y_gen[j];
-			    y[iy + 1] = y_gen[j + 1];
-
-			    iy += incy;
-			  }
+			  zcopy_vector(y_gen, m_i, 1, y, incy_val);
 
 			  /* call BLAS_zgbmv_z_d */
 			  FPU_FIX_STOP;
@@ -6031,7 +5694,6 @@ double do_test_zgbmv_z_d(int m, int n,
 				(p_count <= max_print) &&
 				(ratio > 0.5 * ratio_max)) {
 			      old_count = count;
-
 			      printf
 				("FAIL> %s: m = %d, n = %d, ntests = %d, threshold = %4.2f,\n",
 				 fname, m, n, ntests, thresh);
@@ -6105,8 +5767,6 @@ double do_test_zgbmv_z_d(int m, int n,
 			      }
 
 			      for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
-
-
 				if (j < n_i) {
 				  printf("      ");
 				  printf("%24.16e", x[ix]);
@@ -6124,7 +5784,6 @@ double do_test_zgbmv_z_d(int m, int n,
 					 y[iy + 1]);
 				  printf("\n");
 				}
-
 				ix += incx;
 				iy += incy;
 			      }
@@ -6187,8 +5846,8 @@ double do_test_zgbmv_z_d(int m, int n,
   }				/* debug */
 
   if ((debug == 2) || ((debug == 1) && bad_ratios > 0)) {
-    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n",
-	   fname, m, n, ntests, thresh);
+    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n", fname,
+	   m, n, ntests, thresh);
     printf
       ("      bad/total = %d/%d=%3.2f, min_ratio = %.4e, max_ratio = %.4e\n\n",
        bad_ratios, tot_tests, ((double) bad_ratios) / ((double) tot_tests),
@@ -6212,15 +5871,9 @@ end:
   *num_bad_ratio = bad_ratios;
   *num_tests = tot_tests;
   return ratio_max;
-}				/* end of do_test_zgbmv_z_d */
-
-double do_test_zgbmv_d_z(int m, int n,
-			 int ntests,
-			 int *seed,
-			 double thresh,
-			 int debug,
-			 float test_prob,
-			 double *min_ratio,
+}
+double do_test_zgbmv_d_z(int m, int n, int ntests, int *seed, double thresh,
+			 int debug, float test_prob, double *min_ratio,
 			 int *num_bad_ratio, int *num_tests)
 
 /*
@@ -6425,8 +6078,6 @@ double do_test_zgbmv_d_z(int m, int n,
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
-
-
   AB =
     (double *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(double));
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && AB == NULL) {
@@ -6556,7 +6207,6 @@ double do_test_zgbmv_d_z(int m, int n,
 					       alpha_flag, AB, lda, x_gen,
 					       &beta, beta_flag, y_gen, seed,
 					       head_r_true, tail_r_true);
-
 		      count++;
 
 		      /* varying incx */
@@ -6568,18 +6218,7 @@ double do_test_zgbmv_d_z(int m, int n,
 			incx = incx_val;
 			incx *= 2;
 
-			/* set x starting index */
-			ix = 0;
-			if (incx < 0)
-			  ix = -(n_i - 1) * incx;
-
-			/* copy x_gen to x */
-			for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-			  x[ix] = x_gen[j];
-			  x[ix + 1] = x_gen[j + 1];
-
-			  ix += incx;
-			}
+			zcopy_vector(x_gen, n_i, 1, x, incx_val);
 
 			/* varying incy */
 			for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -6590,18 +6229,7 @@ double do_test_zgbmv_d_z(int m, int n,
 			  incy = incy_val;
 			  incy *= 2;
 
-			  /* set y starting index */
-			  iy = 0;
-			  if (incy < 0)
-			    iy = -(m_i - 1) * incy;
-
-			  /* copy y_gen to y */
-			  for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			    y[iy] = y_gen[j];
-			    y[iy + 1] = y_gen[j + 1];
-
-			    iy += incy;
-			  }
+			  zcopy_vector(y_gen, m_i, 1, y, incy_val);
 
 			  /* call BLAS_zgbmv_d_z */
 			  FPU_FIX_STOP;
@@ -6655,7 +6283,6 @@ double do_test_zgbmv_d_z(int m, int n,
 				(p_count <= max_print) &&
 				(ratio > 0.5 * ratio_max)) {
 			      old_count = count;
-
 			      printf
 				("FAIL> %s: m = %d, n = %d, ntests = %d, threshold = %4.2f,\n",
 				 fname, m, n, ntests, thresh);
@@ -6729,8 +6356,6 @@ double do_test_zgbmv_d_z(int m, int n,
 			      }
 
 			      for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
-
-
 				if (j < n_i) {
 				  printf("      ");
 				  printf("(%24.16e, %24.16e)", x[ix],
@@ -6749,7 +6374,6 @@ double do_test_zgbmv_d_z(int m, int n,
 					 y[iy + 1]);
 				  printf("\n");
 				}
-
 				ix += incx;
 				iy += incy;
 			      }
@@ -6812,8 +6436,8 @@ double do_test_zgbmv_d_z(int m, int n,
   }				/* debug */
 
   if ((debug == 2) || ((debug == 1) && bad_ratios > 0)) {
-    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n",
-	   fname, m, n, ntests, thresh);
+    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n", fname,
+	   m, n, ntests, thresh);
     printf
       ("      bad/total = %d/%d=%3.2f, min_ratio = %.4e, max_ratio = %.4e\n\n",
        bad_ratios, tot_tests, ((double) bad_ratios) / ((double) tot_tests),
@@ -6837,15 +6461,9 @@ end:
   *num_bad_ratio = bad_ratios;
   *num_tests = tot_tests;
   return ratio_max;
-}				/* end of do_test_zgbmv_d_z */
-
-double do_test_zgbmv_d_d(int m, int n,
-			 int ntests,
-			 int *seed,
-			 double thresh,
-			 int debug,
-			 float test_prob,
-			 double *min_ratio,
+}
+double do_test_zgbmv_d_d(int m, int n, int ntests, int *seed, double thresh,
+			 int debug, float test_prob, double *min_ratio,
 			 int *num_bad_ratio, int *num_tests)
 
 /*
@@ -7050,8 +6668,6 @@ double do_test_zgbmv_d_d(int m, int n,
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
-
-
   AB =
     (double *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(double));
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && AB == NULL) {
@@ -7181,7 +6797,6 @@ double do_test_zgbmv_d_d(int m, int n,
 					       alpha_flag, AB, lda, x_gen,
 					       &beta, beta_flag, y_gen, seed,
 					       head_r_true, tail_r_true);
-
 		      count++;
 
 		      /* varying incx */
@@ -7193,17 +6808,7 @@ double do_test_zgbmv_d_d(int m, int n,
 			incx = incx_val;
 
 
-			/* set x starting index */
-			ix = 0;
-			if (incx < 0)
-			  ix = -(n_i - 1) * incx;
-
-			/* copy x_gen to x */
-			for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-			  x[ix] = x_gen[j];
-
-			  ix += incx;
-			}
+			dcopy_vector(x_gen, n_i, 1, x, incx_val);
 
 			/* varying incy */
 			for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -7214,18 +6819,7 @@ double do_test_zgbmv_d_d(int m, int n,
 			  incy = incy_val;
 			  incy *= 2;
 
-			  /* set y starting index */
-			  iy = 0;
-			  if (incy < 0)
-			    iy = -(m_i - 1) * incy;
-
-			  /* copy y_gen to y */
-			  for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			    y[iy] = y_gen[j];
-			    y[iy + 1] = y_gen[j + 1];
-
-			    iy += incy;
-			  }
+			  zcopy_vector(y_gen, m_i, 1, y, incy_val);
 
 			  /* call BLAS_zgbmv_d_d */
 			  FPU_FIX_STOP;
@@ -7279,7 +6873,6 @@ double do_test_zgbmv_d_d(int m, int n,
 				(p_count <= max_print) &&
 				(ratio > 0.5 * ratio_max)) {
 			      old_count = count;
-
 			      printf
 				("FAIL> %s: m = %d, n = %d, ntests = %d, threshold = %4.2f,\n",
 				 fname, m, n, ntests, thresh);
@@ -7353,8 +6946,6 @@ double do_test_zgbmv_d_d(int m, int n,
 			      }
 
 			      for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
-
-
 				if (j < n_i) {
 				  printf("      ");
 				  printf("%24.16e", x[ix]);
@@ -7372,7 +6963,6 @@ double do_test_zgbmv_d_d(int m, int n,
 					 y[iy + 1]);
 				  printf("\n");
 				}
-
 				ix += incx;
 				iy += incy;
 			      }
@@ -7435,8 +7025,8 @@ double do_test_zgbmv_d_d(int m, int n,
   }				/* debug */
 
   if ((debug == 2) || ((debug == 1) && bad_ratios > 0)) {
-    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n",
-	   fname, m, n, ntests, thresh);
+    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n", fname,
+	   m, n, ntests, thresh);
     printf
       ("      bad/total = %d/%d=%3.2f, min_ratio = %.4e, max_ratio = %.4e\n\n",
        bad_ratios, tot_tests, ((double) bad_ratios) / ((double) tot_tests),
@@ -7460,15 +7050,10 @@ end:
   *num_bad_ratio = bad_ratios;
   *num_tests = tot_tests;
   return ratio_max;
-}				/* end of do_test_zgbmv_d_d */
-
-double do_test_sgbmv_x(int m, int n,
-		       int ntests,
-		       int *seed,
-		       double thresh,
-		       int debug,
-		       float test_prob,
-		       double *min_ratio, int *num_bad_ratio, int *num_tests)
+}
+double do_test_sgbmv_x(int m, int n, int ntests, int *seed, double thresh,
+		       int debug, float test_prob, double *min_ratio,
+		       int *num_bad_ratio, int *num_tests)
 
 /*
  * Purpose  
@@ -7671,8 +7256,6 @@ double do_test_sgbmv_x(int m, int n,
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
-
-
   AB =
     (float *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(float));
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && AB == NULL) {
@@ -7814,12 +7397,11 @@ double do_test_sgbmv_x(int m, int n,
 
 			/* in the trivial cases, no need to run testgen */
 			if (m > 0 && n > 0)
-			  BLAS_sgbmv_testgen(norm, order_type, trans_type,
-					     m, n, kl, ku, &alpha, alpha_flag,
+			  BLAS_sgbmv_testgen(norm, order_type, trans_type, m,
+					     n, kl, ku, &alpha, alpha_flag,
 					     AB, lda, x_gen, &beta, beta_flag,
 					     y_gen, seed, head_r_true,
 					     tail_r_true);
-
 			count++;
 
 			/* varying incx */
@@ -7831,17 +7413,7 @@ double do_test_sgbmv_x(int m, int n,
 			  incx = incx_val;
 
 
-			  /* set x starting index */
-			  ix = 0;
-			  if (incx < 0)
-			    ix = -(n_i - 1) * incx;
-
-			  /* copy x_gen to x */
-			  for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-			    x[ix] = x_gen[j];
-
-			    ix += incx;
-			  }
+			  scopy_vector(x_gen, n_i, 1, x, incx_val);
 
 			  /* varying incy */
 			  for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -7852,17 +7424,7 @@ double do_test_sgbmv_x(int m, int n,
 			    incy = incy_val;
 
 
-			    /* set y starting index */
-			    iy = 0;
-			    if (incy < 0)
-			      iy = -(m_i - 1) * incy;
-
-			    /* copy y_gen to y */
-			    for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			      y[iy] = y_gen[j];
-
-			      iy += incy;
-			    }
+			    scopy_vector(y_gen, m_i, 1, y, incy_val);
 
 			    /* call BLAS_sgbmv_x */
 			    FPU_FIX_STOP;
@@ -7916,7 +7478,6 @@ double do_test_sgbmv_x(int m, int n,
 				  (p_count <= max_print) &&
 				  (ratio > 0.5 * ratio_max)) {
 				old_count = count;
-
 				printf
 				  ("FAIL> %s: m = %d, n = %d, ntests = %d, threshold = %4.2f,\n",
 				   fname, m, n, ntests, thresh);
@@ -7991,8 +7552,6 @@ double do_test_sgbmv_x(int m, int n,
 
 				for (j = 0, k = 0; j < n_i || k < m_i;
 				     j++, k++) {
-
-
 				  if (j < n_i) {
 				    printf("      ");
 				    printf("%16.8e", x[ix]);
@@ -8007,7 +7566,6 @@ double do_test_sgbmv_x(int m, int n,
 				    printf("%16.8e", y[iy]);
 				    printf("\n");
 				  }
-
 				  ix += incx;
 				  iy += incy;
 				}
@@ -8066,8 +7624,8 @@ double do_test_sgbmv_x(int m, int n,
   }				/* debug */
 
   if ((debug == 2) || ((debug == 1) && bad_ratios > 0)) {
-    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n",
-	   fname, m, n, ntests, thresh);
+    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n", fname,
+	   m, n, ntests, thresh);
     printf
       ("      bad/total = %d/%d=%3.2f, min_ratio = %.4e, max_ratio = %.4e\n\n",
        bad_ratios, tot_tests, ((double) bad_ratios) / ((double) tot_tests),
@@ -8091,15 +7649,10 @@ end:
   *num_bad_ratio = bad_ratios;
   *num_tests = tot_tests;
   return ratio_max;
-}				/* end of do_test_sgbmv_x */
-
-double do_test_dgbmv_x(int m, int n,
-		       int ntests,
-		       int *seed,
-		       double thresh,
-		       int debug,
-		       float test_prob,
-		       double *min_ratio, int *num_bad_ratio, int *num_tests)
+}
+double do_test_dgbmv_x(int m, int n, int ntests, int *seed, double thresh,
+		       int debug, float test_prob, double *min_ratio,
+		       int *num_bad_ratio, int *num_tests)
 
 /*
  * Purpose  
@@ -8302,8 +7855,6 @@ double do_test_dgbmv_x(int m, int n,
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
-
-
   AB =
     (double *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(double));
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && AB == NULL) {
@@ -8445,12 +7996,11 @@ double do_test_dgbmv_x(int m, int n,
 
 			/* in the trivial cases, no need to run testgen */
 			if (m > 0 && n > 0)
-			  BLAS_dgbmv_testgen(norm, order_type, trans_type,
-					     m, n, kl, ku, &alpha, alpha_flag,
+			  BLAS_dgbmv_testgen(norm, order_type, trans_type, m,
+					     n, kl, ku, &alpha, alpha_flag,
 					     AB, lda, x_gen, &beta, beta_flag,
 					     y_gen, seed, head_r_true,
 					     tail_r_true);
-
 			count++;
 
 			/* varying incx */
@@ -8462,17 +8012,7 @@ double do_test_dgbmv_x(int m, int n,
 			  incx = incx_val;
 
 
-			  /* set x starting index */
-			  ix = 0;
-			  if (incx < 0)
-			    ix = -(n_i - 1) * incx;
-
-			  /* copy x_gen to x */
-			  for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-			    x[ix] = x_gen[j];
-
-			    ix += incx;
-			  }
+			  dcopy_vector(x_gen, n_i, 1, x, incx_val);
 
 			  /* varying incy */
 			  for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -8483,17 +8023,7 @@ double do_test_dgbmv_x(int m, int n,
 			    incy = incy_val;
 
 
-			    /* set y starting index */
-			    iy = 0;
-			    if (incy < 0)
-			      iy = -(m_i - 1) * incy;
-
-			    /* copy y_gen to y */
-			    for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			      y[iy] = y_gen[j];
-
-			      iy += incy;
-			    }
+			    dcopy_vector(y_gen, m_i, 1, y, incy_val);
 
 			    /* call BLAS_dgbmv_x */
 			    FPU_FIX_STOP;
@@ -8547,7 +8077,6 @@ double do_test_dgbmv_x(int m, int n,
 				  (p_count <= max_print) &&
 				  (ratio > 0.5 * ratio_max)) {
 				old_count = count;
-
 				printf
 				  ("FAIL> %s: m = %d, n = %d, ntests = %d, threshold = %4.2f,\n",
 				   fname, m, n, ntests, thresh);
@@ -8622,8 +8151,6 @@ double do_test_dgbmv_x(int m, int n,
 
 				for (j = 0, k = 0; j < n_i || k < m_i;
 				     j++, k++) {
-
-
 				  if (j < n_i) {
 				    printf("      ");
 				    printf("%24.16e", x[ix]);
@@ -8638,7 +8165,6 @@ double do_test_dgbmv_x(int m, int n,
 				    printf("%24.16e", y[iy]);
 				    printf("\n");
 				  }
-
 				  ix += incx;
 				  iy += incy;
 				}
@@ -8697,8 +8223,8 @@ double do_test_dgbmv_x(int m, int n,
   }				/* debug */
 
   if ((debug == 2) || ((debug == 1) && bad_ratios > 0)) {
-    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n",
-	   fname, m, n, ntests, thresh);
+    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n", fname,
+	   m, n, ntests, thresh);
     printf
       ("      bad/total = %d/%d=%3.2f, min_ratio = %.4e, max_ratio = %.4e\n\n",
        bad_ratios, tot_tests, ((double) bad_ratios) / ((double) tot_tests),
@@ -8722,15 +8248,10 @@ end:
   *num_bad_ratio = bad_ratios;
   *num_tests = tot_tests;
   return ratio_max;
-}				/* end of do_test_dgbmv_x */
-
-double do_test_cgbmv_x(int m, int n,
-		       int ntests,
-		       int *seed,
-		       double thresh,
-		       int debug,
-		       float test_prob,
-		       double *min_ratio, int *num_bad_ratio, int *num_tests)
+}
+double do_test_cgbmv_x(int m, int n, int ntests, int *seed, double thresh,
+		       int debug, float test_prob, double *min_ratio,
+		       int *num_bad_ratio, int *num_tests)
 
 /*
  * Purpose  
@@ -8934,8 +8455,6 @@ double do_test_cgbmv_x(int m, int n,
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
-
-
   AB =
     (float *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(float) *
 			  2);
@@ -9080,12 +8599,11 @@ double do_test_cgbmv_x(int m, int n,
 
 			/* in the trivial cases, no need to run testgen */
 			if (m > 0 && n > 0)
-			  BLAS_cgbmv_testgen(norm, order_type, trans_type,
-					     m, n, kl, ku, &alpha, alpha_flag,
+			  BLAS_cgbmv_testgen(norm, order_type, trans_type, m,
+					     n, kl, ku, &alpha, alpha_flag,
 					     AB, lda, x_gen, &beta, beta_flag,
 					     y_gen, seed, head_r_true,
 					     tail_r_true);
-
 			count++;
 
 			/* varying incx */
@@ -9097,18 +8615,7 @@ double do_test_cgbmv_x(int m, int n,
 			  incx = incx_val;
 			  incx *= 2;
 
-			  /* set x starting index */
-			  ix = 0;
-			  if (incx < 0)
-			    ix = -(n_i - 1) * incx;
-
-			  /* copy x_gen to x */
-			  for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-			    x[ix] = x_gen[j];
-			    x[ix + 1] = x_gen[j + 1];
-
-			    ix += incx;
-			  }
+			  ccopy_vector(x_gen, n_i, 1, x, incx_val);
 
 			  /* varying incy */
 			  for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -9119,18 +8626,7 @@ double do_test_cgbmv_x(int m, int n,
 			    incy = incy_val;
 			    incy *= 2;
 
-			    /* set y starting index */
-			    iy = 0;
-			    if (incy < 0)
-			      iy = -(m_i - 1) * incy;
-
-			    /* copy y_gen to y */
-			    for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			      y[iy] = y_gen[j];
-			      y[iy + 1] = y_gen[j + 1];
-
-			      iy += incy;
-			    }
+			    ccopy_vector(y_gen, m_i, 1, y, incy_val);
 
 			    /* call BLAS_cgbmv_x */
 			    FPU_FIX_STOP;
@@ -9184,7 +8680,6 @@ double do_test_cgbmv_x(int m, int n,
 				  (p_count <= max_print) &&
 				  (ratio > 0.5 * ratio_max)) {
 				old_count = count;
-
 				printf
 				  ("FAIL> %s: m = %d, n = %d, ntests = %d, threshold = %4.2f,\n",
 				   fname, m, n, ntests, thresh);
@@ -9259,8 +8754,6 @@ double do_test_cgbmv_x(int m, int n,
 
 				for (j = 0, k = 0; j < n_i || k < m_i;
 				     j++, k++) {
-
-
 				  if (j < n_i) {
 				    printf("      ");
 				    printf("(%16.8e, %16.8e)", x[ix],
@@ -9279,7 +8772,6 @@ double do_test_cgbmv_x(int m, int n,
 					   y[iy + 1]);
 				    printf("\n");
 				  }
-
 				  ix += incx;
 				  iy += incy;
 				}
@@ -9342,8 +8834,8 @@ double do_test_cgbmv_x(int m, int n,
   }				/* debug */
 
   if ((debug == 2) || ((debug == 1) && bad_ratios > 0)) {
-    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n",
-	   fname, m, n, ntests, thresh);
+    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n", fname,
+	   m, n, ntests, thresh);
     printf
       ("      bad/total = %d/%d=%3.2f, min_ratio = %.4e, max_ratio = %.4e\n\n",
        bad_ratios, tot_tests, ((double) bad_ratios) / ((double) tot_tests),
@@ -9367,15 +8859,10 @@ end:
   *num_bad_ratio = bad_ratios;
   *num_tests = tot_tests;
   return ratio_max;
-}				/* end of do_test_cgbmv_x */
-
-double do_test_zgbmv_x(int m, int n,
-		       int ntests,
-		       int *seed,
-		       double thresh,
-		       int debug,
-		       float test_prob,
-		       double *min_ratio, int *num_bad_ratio, int *num_tests)
+}
+double do_test_zgbmv_x(int m, int n, int ntests, int *seed, double thresh,
+		       int debug, float test_prob, double *min_ratio,
+		       int *num_bad_ratio, int *num_tests)
 
 /*
  * Purpose  
@@ -9579,8 +9066,6 @@ double do_test_zgbmv_x(int m, int n,
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
-
-
   AB =
     (double *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(double) *
 			   2);
@@ -9725,12 +9210,11 @@ double do_test_zgbmv_x(int m, int n,
 
 			/* in the trivial cases, no need to run testgen */
 			if (m > 0 && n > 0)
-			  BLAS_zgbmv_testgen(norm, order_type, trans_type,
-					     m, n, kl, ku, &alpha, alpha_flag,
+			  BLAS_zgbmv_testgen(norm, order_type, trans_type, m,
+					     n, kl, ku, &alpha, alpha_flag,
 					     AB, lda, x_gen, &beta, beta_flag,
 					     y_gen, seed, head_r_true,
 					     tail_r_true);
-
 			count++;
 
 			/* varying incx */
@@ -9742,18 +9226,7 @@ double do_test_zgbmv_x(int m, int n,
 			  incx = incx_val;
 			  incx *= 2;
 
-			  /* set x starting index */
-			  ix = 0;
-			  if (incx < 0)
-			    ix = -(n_i - 1) * incx;
-
-			  /* copy x_gen to x */
-			  for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-			    x[ix] = x_gen[j];
-			    x[ix + 1] = x_gen[j + 1];
-
-			    ix += incx;
-			  }
+			  zcopy_vector(x_gen, n_i, 1, x, incx_val);
 
 			  /* varying incy */
 			  for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -9764,18 +9237,7 @@ double do_test_zgbmv_x(int m, int n,
 			    incy = incy_val;
 			    incy *= 2;
 
-			    /* set y starting index */
-			    iy = 0;
-			    if (incy < 0)
-			      iy = -(m_i - 1) * incy;
-
-			    /* copy y_gen to y */
-			    for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			      y[iy] = y_gen[j];
-			      y[iy + 1] = y_gen[j + 1];
-
-			      iy += incy;
-			    }
+			    zcopy_vector(y_gen, m_i, 1, y, incy_val);
 
 			    /* call BLAS_zgbmv_x */
 			    FPU_FIX_STOP;
@@ -9829,7 +9291,6 @@ double do_test_zgbmv_x(int m, int n,
 				  (p_count <= max_print) &&
 				  (ratio > 0.5 * ratio_max)) {
 				old_count = count;
-
 				printf
 				  ("FAIL> %s: m = %d, n = %d, ntests = %d, threshold = %4.2f,\n",
 				   fname, m, n, ntests, thresh);
@@ -9904,8 +9365,6 @@ double do_test_zgbmv_x(int m, int n,
 
 				for (j = 0, k = 0; j < n_i || k < m_i;
 				     j++, k++) {
-
-
 				  if (j < n_i) {
 				    printf("      ");
 				    printf("(%24.16e, %24.16e)", x[ix],
@@ -9924,7 +9383,6 @@ double do_test_zgbmv_x(int m, int n,
 					   y[iy + 1]);
 				    printf("\n");
 				  }
-
 				  ix += incx;
 				  iy += incy;
 				}
@@ -9988,8 +9446,8 @@ double do_test_zgbmv_x(int m, int n,
   }				/* debug */
 
   if ((debug == 2) || ((debug == 1) && bad_ratios > 0)) {
-    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n",
-	   fname, m, n, ntests, thresh);
+    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n", fname,
+	   m, n, ntests, thresh);
     printf
       ("      bad/total = %d/%d=%3.2f, min_ratio = %.4e, max_ratio = %.4e\n\n",
        bad_ratios, tot_tests, ((double) bad_ratios) / ((double) tot_tests),
@@ -10013,15 +9471,9 @@ end:
   *num_bad_ratio = bad_ratios;
   *num_tests = tot_tests;
   return ratio_max;
-}				/* end of do_test_zgbmv_x */
-
-double do_test_dgbmv_d_s_x(int m, int n,
-			   int ntests,
-			   int *seed,
-			   double thresh,
-			   int debug,
-			   float test_prob,
-			   double *min_ratio,
+}
+double do_test_dgbmv_d_s_x(int m, int n, int ntests, int *seed, double thresh,
+			   int debug, float test_prob, double *min_ratio,
 			   int *num_bad_ratio, int *num_tests)
 
 /*
@@ -10225,8 +9677,6 @@ double do_test_dgbmv_d_s_x(int m, int n,
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
-
-
   AB =
     (double *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(double));
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && AB == NULL) {
@@ -10374,7 +9824,6 @@ double do_test_dgbmv_d_s_x(int m, int n,
 						 &beta, beta_flag, y_gen,
 						 seed, head_r_true,
 						 tail_r_true);
-
 			count++;
 
 			/* varying incx */
@@ -10386,17 +9835,7 @@ double do_test_dgbmv_d_s_x(int m, int n,
 			  incx = incx_val;
 
 
-			  /* set x starting index */
-			  ix = 0;
-			  if (incx < 0)
-			    ix = -(n_i - 1) * incx;
-
-			  /* copy x_gen to x */
-			  for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-			    x[ix] = x_gen[j];
-
-			    ix += incx;
-			  }
+			  scopy_vector(x_gen, n_i, 1, x, incx_val);
 
 			  /* varying incy */
 			  for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -10407,17 +9846,7 @@ double do_test_dgbmv_d_s_x(int m, int n,
 			    incy = incy_val;
 
 
-			    /* set y starting index */
-			    iy = 0;
-			    if (incy < 0)
-			      iy = -(m_i - 1) * incy;
-
-			    /* copy y_gen to y */
-			    for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			      y[iy] = y_gen[j];
-
-			      iy += incy;
-			    }
+			    dcopy_vector(y_gen, m_i, 1, y, incy_val);
 
 			    /* call BLAS_dgbmv_d_s_x */
 			    FPU_FIX_STOP;
@@ -10471,7 +9900,6 @@ double do_test_dgbmv_d_s_x(int m, int n,
 				  (p_count <= max_print) &&
 				  (ratio > 0.5 * ratio_max)) {
 				old_count = count;
-
 				printf
 				  ("FAIL> %s: m = %d, n = %d, ntests = %d, threshold = %4.2f,\n",
 				   fname, m, n, ntests, thresh);
@@ -10546,8 +9974,6 @@ double do_test_dgbmv_d_s_x(int m, int n,
 
 				for (j = 0, k = 0; j < n_i || k < m_i;
 				     j++, k++) {
-
-
 				  if (j < n_i) {
 				    printf("      ");
 				    printf("%16.8e", x[ix]);
@@ -10562,7 +9988,6 @@ double do_test_dgbmv_d_s_x(int m, int n,
 				    printf("%24.16e", y[iy]);
 				    printf("\n");
 				  }
-
 				  ix += incx;
 				  iy += incy;
 				}
@@ -10621,8 +10046,8 @@ double do_test_dgbmv_d_s_x(int m, int n,
   }				/* debug */
 
   if ((debug == 2) || ((debug == 1) && bad_ratios > 0)) {
-    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n",
-	   fname, m, n, ntests, thresh);
+    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n", fname,
+	   m, n, ntests, thresh);
     printf
       ("      bad/total = %d/%d=%3.2f, min_ratio = %.4e, max_ratio = %.4e\n\n",
        bad_ratios, tot_tests, ((double) bad_ratios) / ((double) tot_tests),
@@ -10646,15 +10071,9 @@ end:
   *num_bad_ratio = bad_ratios;
   *num_tests = tot_tests;
   return ratio_max;
-}				/* end of do_test_dgbmv_d_s_x */
-
-double do_test_dgbmv_s_d_x(int m, int n,
-			   int ntests,
-			   int *seed,
-			   double thresh,
-			   int debug,
-			   float test_prob,
-			   double *min_ratio,
+}
+double do_test_dgbmv_s_d_x(int m, int n, int ntests, int *seed, double thresh,
+			   int debug, float test_prob, double *min_ratio,
 			   int *num_bad_ratio, int *num_tests)
 
 /*
@@ -10858,8 +10277,6 @@ double do_test_dgbmv_s_d_x(int m, int n,
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
-
-
   AB =
     (float *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(float));
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && AB == NULL) {
@@ -11007,7 +10424,6 @@ double do_test_dgbmv_s_d_x(int m, int n,
 						 &beta, beta_flag, y_gen,
 						 seed, head_r_true,
 						 tail_r_true);
-
 			count++;
 
 			/* varying incx */
@@ -11019,17 +10435,7 @@ double do_test_dgbmv_s_d_x(int m, int n,
 			  incx = incx_val;
 
 
-			  /* set x starting index */
-			  ix = 0;
-			  if (incx < 0)
-			    ix = -(n_i - 1) * incx;
-
-			  /* copy x_gen to x */
-			  for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-			    x[ix] = x_gen[j];
-
-			    ix += incx;
-			  }
+			  dcopy_vector(x_gen, n_i, 1, x, incx_val);
 
 			  /* varying incy */
 			  for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -11040,17 +10446,7 @@ double do_test_dgbmv_s_d_x(int m, int n,
 			    incy = incy_val;
 
 
-			    /* set y starting index */
-			    iy = 0;
-			    if (incy < 0)
-			      iy = -(m_i - 1) * incy;
-
-			    /* copy y_gen to y */
-			    for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			      y[iy] = y_gen[j];
-
-			      iy += incy;
-			    }
+			    dcopy_vector(y_gen, m_i, 1, y, incy_val);
 
 			    /* call BLAS_dgbmv_s_d_x */
 			    FPU_FIX_STOP;
@@ -11104,7 +10500,6 @@ double do_test_dgbmv_s_d_x(int m, int n,
 				  (p_count <= max_print) &&
 				  (ratio > 0.5 * ratio_max)) {
 				old_count = count;
-
 				printf
 				  ("FAIL> %s: m = %d, n = %d, ntests = %d, threshold = %4.2f,\n",
 				   fname, m, n, ntests, thresh);
@@ -11179,8 +10574,6 @@ double do_test_dgbmv_s_d_x(int m, int n,
 
 				for (j = 0, k = 0; j < n_i || k < m_i;
 				     j++, k++) {
-
-
 				  if (j < n_i) {
 				    printf("      ");
 				    printf("%24.16e", x[ix]);
@@ -11195,7 +10588,6 @@ double do_test_dgbmv_s_d_x(int m, int n,
 				    printf("%24.16e", y[iy]);
 				    printf("\n");
 				  }
-
 				  ix += incx;
 				  iy += incy;
 				}
@@ -11254,8 +10646,8 @@ double do_test_dgbmv_s_d_x(int m, int n,
   }				/* debug */
 
   if ((debug == 2) || ((debug == 1) && bad_ratios > 0)) {
-    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n",
-	   fname, m, n, ntests, thresh);
+    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n", fname,
+	   m, n, ntests, thresh);
     printf
       ("      bad/total = %d/%d=%3.2f, min_ratio = %.4e, max_ratio = %.4e\n\n",
        bad_ratios, tot_tests, ((double) bad_ratios) / ((double) tot_tests),
@@ -11279,15 +10671,9 @@ end:
   *num_bad_ratio = bad_ratios;
   *num_tests = tot_tests;
   return ratio_max;
-}				/* end of do_test_dgbmv_s_d_x */
-
-double do_test_dgbmv_s_s_x(int m, int n,
-			   int ntests,
-			   int *seed,
-			   double thresh,
-			   int debug,
-			   float test_prob,
-			   double *min_ratio,
+}
+double do_test_dgbmv_s_s_x(int m, int n, int ntests, int *seed, double thresh,
+			   int debug, float test_prob, double *min_ratio,
 			   int *num_bad_ratio, int *num_tests)
 
 /*
@@ -11491,8 +10877,6 @@ double do_test_dgbmv_s_s_x(int m, int n,
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
-
-
   AB =
     (float *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(float));
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && AB == NULL) {
@@ -11640,7 +11024,6 @@ double do_test_dgbmv_s_s_x(int m, int n,
 						 &beta, beta_flag, y_gen,
 						 seed, head_r_true,
 						 tail_r_true);
-
 			count++;
 
 			/* varying incx */
@@ -11652,17 +11035,7 @@ double do_test_dgbmv_s_s_x(int m, int n,
 			  incx = incx_val;
 
 
-			  /* set x starting index */
-			  ix = 0;
-			  if (incx < 0)
-			    ix = -(n_i - 1) * incx;
-
-			  /* copy x_gen to x */
-			  for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-			    x[ix] = x_gen[j];
-
-			    ix += incx;
-			  }
+			  scopy_vector(x_gen, n_i, 1, x, incx_val);
 
 			  /* varying incy */
 			  for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -11673,17 +11046,7 @@ double do_test_dgbmv_s_s_x(int m, int n,
 			    incy = incy_val;
 
 
-			    /* set y starting index */
-			    iy = 0;
-			    if (incy < 0)
-			      iy = -(m_i - 1) * incy;
-
-			    /* copy y_gen to y */
-			    for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			      y[iy] = y_gen[j];
-
-			      iy += incy;
-			    }
+			    dcopy_vector(y_gen, m_i, 1, y, incy_val);
 
 			    /* call BLAS_dgbmv_s_s_x */
 			    FPU_FIX_STOP;
@@ -11737,7 +11100,6 @@ double do_test_dgbmv_s_s_x(int m, int n,
 				  (p_count <= max_print) &&
 				  (ratio > 0.5 * ratio_max)) {
 				old_count = count;
-
 				printf
 				  ("FAIL> %s: m = %d, n = %d, ntests = %d, threshold = %4.2f,\n",
 				   fname, m, n, ntests, thresh);
@@ -11812,8 +11174,6 @@ double do_test_dgbmv_s_s_x(int m, int n,
 
 				for (j = 0, k = 0; j < n_i || k < m_i;
 				     j++, k++) {
-
-
 				  if (j < n_i) {
 				    printf("      ");
 				    printf("%16.8e", x[ix]);
@@ -11828,7 +11188,6 @@ double do_test_dgbmv_s_s_x(int m, int n,
 				    printf("%24.16e", y[iy]);
 				    printf("\n");
 				  }
-
 				  ix += incx;
 				  iy += incy;
 				}
@@ -11887,8 +11246,8 @@ double do_test_dgbmv_s_s_x(int m, int n,
   }				/* debug */
 
   if ((debug == 2) || ((debug == 1) && bad_ratios > 0)) {
-    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n",
-	   fname, m, n, ntests, thresh);
+    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n", fname,
+	   m, n, ntests, thresh);
     printf
       ("      bad/total = %d/%d=%3.2f, min_ratio = %.4e, max_ratio = %.4e\n\n",
        bad_ratios, tot_tests, ((double) bad_ratios) / ((double) tot_tests),
@@ -11912,15 +11271,9 @@ end:
   *num_bad_ratio = bad_ratios;
   *num_tests = tot_tests;
   return ratio_max;
-}				/* end of do_test_dgbmv_s_s_x */
-
-double do_test_zgbmv_z_c_x(int m, int n,
-			   int ntests,
-			   int *seed,
-			   double thresh,
-			   int debug,
-			   float test_prob,
-			   double *min_ratio,
+}
+double do_test_zgbmv_z_c_x(int m, int n, int ntests, int *seed, double thresh,
+			   int debug, float test_prob, double *min_ratio,
 			   int *num_bad_ratio, int *num_tests)
 
 /*
@@ -12125,8 +11478,6 @@ double do_test_zgbmv_z_c_x(int m, int n,
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
-
-
   AB =
     (double *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(double) *
 			   2);
@@ -12277,7 +11628,6 @@ double do_test_zgbmv_z_c_x(int m, int n,
 						 &beta, beta_flag, y_gen,
 						 seed, head_r_true,
 						 tail_r_true);
-
 			count++;
 
 			/* varying incx */
@@ -12289,18 +11639,7 @@ double do_test_zgbmv_z_c_x(int m, int n,
 			  incx = incx_val;
 			  incx *= 2;
 
-			  /* set x starting index */
-			  ix = 0;
-			  if (incx < 0)
-			    ix = -(n_i - 1) * incx;
-
-			  /* copy x_gen to x */
-			  for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-			    x[ix] = x_gen[j];
-			    x[ix + 1] = x_gen[j + 1];
-
-			    ix += incx;
-			  }
+			  ccopy_vector(x_gen, n_i, 1, x, incx_val);
 
 			  /* varying incy */
 			  for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -12311,18 +11650,7 @@ double do_test_zgbmv_z_c_x(int m, int n,
 			    incy = incy_val;
 			    incy *= 2;
 
-			    /* set y starting index */
-			    iy = 0;
-			    if (incy < 0)
-			      iy = -(m_i - 1) * incy;
-
-			    /* copy y_gen to y */
-			    for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			      y[iy] = y_gen[j];
-			      y[iy + 1] = y_gen[j + 1];
-
-			      iy += incy;
-			    }
+			    zcopy_vector(y_gen, m_i, 1, y, incy_val);
 
 			    /* call BLAS_zgbmv_z_c_x */
 			    FPU_FIX_STOP;
@@ -12376,7 +11704,6 @@ double do_test_zgbmv_z_c_x(int m, int n,
 				  (p_count <= max_print) &&
 				  (ratio > 0.5 * ratio_max)) {
 				old_count = count;
-
 				printf
 				  ("FAIL> %s: m = %d, n = %d, ntests = %d, threshold = %4.2f,\n",
 				   fname, m, n, ntests, thresh);
@@ -12451,8 +11778,6 @@ double do_test_zgbmv_z_c_x(int m, int n,
 
 				for (j = 0, k = 0; j < n_i || k < m_i;
 				     j++, k++) {
-
-
 				  if (j < n_i) {
 				    printf("      ");
 				    printf("(%16.8e, %16.8e)", x[ix],
@@ -12471,7 +11796,6 @@ double do_test_zgbmv_z_c_x(int m, int n,
 					   y[iy + 1]);
 				    printf("\n");
 				  }
-
 				  ix += incx;
 				  iy += incy;
 				}
@@ -12535,8 +11859,8 @@ double do_test_zgbmv_z_c_x(int m, int n,
   }				/* debug */
 
   if ((debug == 2) || ((debug == 1) && bad_ratios > 0)) {
-    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n",
-	   fname, m, n, ntests, thresh);
+    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n", fname,
+	   m, n, ntests, thresh);
     printf
       ("      bad/total = %d/%d=%3.2f, min_ratio = %.4e, max_ratio = %.4e\n\n",
        bad_ratios, tot_tests, ((double) bad_ratios) / ((double) tot_tests),
@@ -12560,15 +11884,9 @@ end:
   *num_bad_ratio = bad_ratios;
   *num_tests = tot_tests;
   return ratio_max;
-}				/* end of do_test_zgbmv_z_c_x */
-
-double do_test_zgbmv_c_z_x(int m, int n,
-			   int ntests,
-			   int *seed,
-			   double thresh,
-			   int debug,
-			   float test_prob,
-			   double *min_ratio,
+}
+double do_test_zgbmv_c_z_x(int m, int n, int ntests, int *seed, double thresh,
+			   int debug, float test_prob, double *min_ratio,
 			   int *num_bad_ratio, int *num_tests)
 
 /*
@@ -12773,8 +12091,6 @@ double do_test_zgbmv_c_z_x(int m, int n,
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
-
-
   AB =
     (float *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(float) *
 			  2);
@@ -12925,7 +12241,6 @@ double do_test_zgbmv_c_z_x(int m, int n,
 						 &beta, beta_flag, y_gen,
 						 seed, head_r_true,
 						 tail_r_true);
-
 			count++;
 
 			/* varying incx */
@@ -12937,18 +12252,7 @@ double do_test_zgbmv_c_z_x(int m, int n,
 			  incx = incx_val;
 			  incx *= 2;
 
-			  /* set x starting index */
-			  ix = 0;
-			  if (incx < 0)
-			    ix = -(n_i - 1) * incx;
-
-			  /* copy x_gen to x */
-			  for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-			    x[ix] = x_gen[j];
-			    x[ix + 1] = x_gen[j + 1];
-
-			    ix += incx;
-			  }
+			  zcopy_vector(x_gen, n_i, 1, x, incx_val);
 
 			  /* varying incy */
 			  for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -12959,18 +12263,7 @@ double do_test_zgbmv_c_z_x(int m, int n,
 			    incy = incy_val;
 			    incy *= 2;
 
-			    /* set y starting index */
-			    iy = 0;
-			    if (incy < 0)
-			      iy = -(m_i - 1) * incy;
-
-			    /* copy y_gen to y */
-			    for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			      y[iy] = y_gen[j];
-			      y[iy + 1] = y_gen[j + 1];
-
-			      iy += incy;
-			    }
+			    zcopy_vector(y_gen, m_i, 1, y, incy_val);
 
 			    /* call BLAS_zgbmv_c_z_x */
 			    FPU_FIX_STOP;
@@ -13024,7 +12317,6 @@ double do_test_zgbmv_c_z_x(int m, int n,
 				  (p_count <= max_print) &&
 				  (ratio > 0.5 * ratio_max)) {
 				old_count = count;
-
 				printf
 				  ("FAIL> %s: m = %d, n = %d, ntests = %d, threshold = %4.2f,\n",
 				   fname, m, n, ntests, thresh);
@@ -13099,8 +12391,6 @@ double do_test_zgbmv_c_z_x(int m, int n,
 
 				for (j = 0, k = 0; j < n_i || k < m_i;
 				     j++, k++) {
-
-
 				  if (j < n_i) {
 				    printf("      ");
 				    printf("(%24.16e, %24.16e)", x[ix],
@@ -13119,7 +12409,6 @@ double do_test_zgbmv_c_z_x(int m, int n,
 					   y[iy + 1]);
 				    printf("\n");
 				  }
-
 				  ix += incx;
 				  iy += incy;
 				}
@@ -13183,8 +12472,8 @@ double do_test_zgbmv_c_z_x(int m, int n,
   }				/* debug */
 
   if ((debug == 2) || ((debug == 1) && bad_ratios > 0)) {
-    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n",
-	   fname, m, n, ntests, thresh);
+    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n", fname,
+	   m, n, ntests, thresh);
     printf
       ("      bad/total = %d/%d=%3.2f, min_ratio = %.4e, max_ratio = %.4e\n\n",
        bad_ratios, tot_tests, ((double) bad_ratios) / ((double) tot_tests),
@@ -13208,15 +12497,9 @@ end:
   *num_bad_ratio = bad_ratios;
   *num_tests = tot_tests;
   return ratio_max;
-}				/* end of do_test_zgbmv_c_z_x */
-
-double do_test_zgbmv_c_c_x(int m, int n,
-			   int ntests,
-			   int *seed,
-			   double thresh,
-			   int debug,
-			   float test_prob,
-			   double *min_ratio,
+}
+double do_test_zgbmv_c_c_x(int m, int n, int ntests, int *seed, double thresh,
+			   int debug, float test_prob, double *min_ratio,
 			   int *num_bad_ratio, int *num_tests)
 
 /*
@@ -13421,8 +12704,6 @@ double do_test_zgbmv_c_c_x(int m, int n,
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
-
-
   AB =
     (float *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(float) *
 			  2);
@@ -13573,7 +12854,6 @@ double do_test_zgbmv_c_c_x(int m, int n,
 						 &beta, beta_flag, y_gen,
 						 seed, head_r_true,
 						 tail_r_true);
-
 			count++;
 
 			/* varying incx */
@@ -13585,18 +12865,7 @@ double do_test_zgbmv_c_c_x(int m, int n,
 			  incx = incx_val;
 			  incx *= 2;
 
-			  /* set x starting index */
-			  ix = 0;
-			  if (incx < 0)
-			    ix = -(n_i - 1) * incx;
-
-			  /* copy x_gen to x */
-			  for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-			    x[ix] = x_gen[j];
-			    x[ix + 1] = x_gen[j + 1];
-
-			    ix += incx;
-			  }
+			  ccopy_vector(x_gen, n_i, 1, x, incx_val);
 
 			  /* varying incy */
 			  for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -13607,18 +12876,7 @@ double do_test_zgbmv_c_c_x(int m, int n,
 			    incy = incy_val;
 			    incy *= 2;
 
-			    /* set y starting index */
-			    iy = 0;
-			    if (incy < 0)
-			      iy = -(m_i - 1) * incy;
-
-			    /* copy y_gen to y */
-			    for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			      y[iy] = y_gen[j];
-			      y[iy + 1] = y_gen[j + 1];
-
-			      iy += incy;
-			    }
+			    zcopy_vector(y_gen, m_i, 1, y, incy_val);
 
 			    /* call BLAS_zgbmv_c_c_x */
 			    FPU_FIX_STOP;
@@ -13672,7 +12930,6 @@ double do_test_zgbmv_c_c_x(int m, int n,
 				  (p_count <= max_print) &&
 				  (ratio > 0.5 * ratio_max)) {
 				old_count = count;
-
 				printf
 				  ("FAIL> %s: m = %d, n = %d, ntests = %d, threshold = %4.2f,\n",
 				   fname, m, n, ntests, thresh);
@@ -13747,8 +13004,6 @@ double do_test_zgbmv_c_c_x(int m, int n,
 
 				for (j = 0, k = 0; j < n_i || k < m_i;
 				     j++, k++) {
-
-
 				  if (j < n_i) {
 				    printf("      ");
 				    printf("(%16.8e, %16.8e)", x[ix],
@@ -13767,7 +13022,6 @@ double do_test_zgbmv_c_c_x(int m, int n,
 					   y[iy + 1]);
 				    printf("\n");
 				  }
-
 				  ix += incx;
 				  iy += incy;
 				}
@@ -13831,8 +13085,8 @@ double do_test_zgbmv_c_c_x(int m, int n,
   }				/* debug */
 
   if ((debug == 2) || ((debug == 1) && bad_ratios > 0)) {
-    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n",
-	   fname, m, n, ntests, thresh);
+    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n", fname,
+	   m, n, ntests, thresh);
     printf
       ("      bad/total = %d/%d=%3.2f, min_ratio = %.4e, max_ratio = %.4e\n\n",
        bad_ratios, tot_tests, ((double) bad_ratios) / ((double) tot_tests),
@@ -13856,15 +13110,9 @@ end:
   *num_bad_ratio = bad_ratios;
   *num_tests = tot_tests;
   return ratio_max;
-}				/* end of do_test_zgbmv_c_c_x */
-
-double do_test_cgbmv_c_s_x(int m, int n,
-			   int ntests,
-			   int *seed,
-			   double thresh,
-			   int debug,
-			   float test_prob,
-			   double *min_ratio,
+}
+double do_test_cgbmv_c_s_x(int m, int n, int ntests, int *seed, double thresh,
+			   int debug, float test_prob, double *min_ratio,
 			   int *num_bad_ratio, int *num_tests)
 
 /*
@@ -14069,8 +13317,6 @@ double do_test_cgbmv_c_s_x(int m, int n,
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
-
-
   AB =
     (float *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(float) *
 			  2);
@@ -14221,7 +13467,6 @@ double do_test_cgbmv_c_s_x(int m, int n,
 						 &beta, beta_flag, y_gen,
 						 seed, head_r_true,
 						 tail_r_true);
-
 			count++;
 
 			/* varying incx */
@@ -14233,17 +13478,7 @@ double do_test_cgbmv_c_s_x(int m, int n,
 			  incx = incx_val;
 
 
-			  /* set x starting index */
-			  ix = 0;
-			  if (incx < 0)
-			    ix = -(n_i - 1) * incx;
-
-			  /* copy x_gen to x */
-			  for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-			    x[ix] = x_gen[j];
-
-			    ix += incx;
-			  }
+			  scopy_vector(x_gen, n_i, 1, x, incx_val);
 
 			  /* varying incy */
 			  for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -14254,18 +13489,7 @@ double do_test_cgbmv_c_s_x(int m, int n,
 			    incy = incy_val;
 			    incy *= 2;
 
-			    /* set y starting index */
-			    iy = 0;
-			    if (incy < 0)
-			      iy = -(m_i - 1) * incy;
-
-			    /* copy y_gen to y */
-			    for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			      y[iy] = y_gen[j];
-			      y[iy + 1] = y_gen[j + 1];
-
-			      iy += incy;
-			    }
+			    ccopy_vector(y_gen, m_i, 1, y, incy_val);
 
 			    /* call BLAS_cgbmv_c_s_x */
 			    FPU_FIX_STOP;
@@ -14319,7 +13543,6 @@ double do_test_cgbmv_c_s_x(int m, int n,
 				  (p_count <= max_print) &&
 				  (ratio > 0.5 * ratio_max)) {
 				old_count = count;
-
 				printf
 				  ("FAIL> %s: m = %d, n = %d, ntests = %d, threshold = %4.2f,\n",
 				   fname, m, n, ntests, thresh);
@@ -14394,8 +13617,6 @@ double do_test_cgbmv_c_s_x(int m, int n,
 
 				for (j = 0, k = 0; j < n_i || k < m_i;
 				     j++, k++) {
-
-
 				  if (j < n_i) {
 				    printf("      ");
 				    printf("%16.8e", x[ix]);
@@ -14413,7 +13634,6 @@ double do_test_cgbmv_c_s_x(int m, int n,
 					   y[iy + 1]);
 				    printf("\n");
 				  }
-
 				  ix += incx;
 				  iy += incy;
 				}
@@ -14476,8 +13696,8 @@ double do_test_cgbmv_c_s_x(int m, int n,
   }				/* debug */
 
   if ((debug == 2) || ((debug == 1) && bad_ratios > 0)) {
-    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n",
-	   fname, m, n, ntests, thresh);
+    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n", fname,
+	   m, n, ntests, thresh);
     printf
       ("      bad/total = %d/%d=%3.2f, min_ratio = %.4e, max_ratio = %.4e\n\n",
        bad_ratios, tot_tests, ((double) bad_ratios) / ((double) tot_tests),
@@ -14501,15 +13721,9 @@ end:
   *num_bad_ratio = bad_ratios;
   *num_tests = tot_tests;
   return ratio_max;
-}				/* end of do_test_cgbmv_c_s_x */
-
-double do_test_cgbmv_s_c_x(int m, int n,
-			   int ntests,
-			   int *seed,
-			   double thresh,
-			   int debug,
-			   float test_prob,
-			   double *min_ratio,
+}
+double do_test_cgbmv_s_c_x(int m, int n, int ntests, int *seed, double thresh,
+			   int debug, float test_prob, double *min_ratio,
 			   int *num_bad_ratio, int *num_tests)
 
 /*
@@ -14714,8 +13928,6 @@ double do_test_cgbmv_s_c_x(int m, int n,
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
-
-
   AB =
     (float *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(float));
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && AB == NULL) {
@@ -14865,7 +14077,6 @@ double do_test_cgbmv_s_c_x(int m, int n,
 						 &beta, beta_flag, y_gen,
 						 seed, head_r_true,
 						 tail_r_true);
-
 			count++;
 
 			/* varying incx */
@@ -14877,18 +14088,7 @@ double do_test_cgbmv_s_c_x(int m, int n,
 			  incx = incx_val;
 			  incx *= 2;
 
-			  /* set x starting index */
-			  ix = 0;
-			  if (incx < 0)
-			    ix = -(n_i - 1) * incx;
-
-			  /* copy x_gen to x */
-			  for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-			    x[ix] = x_gen[j];
-			    x[ix + 1] = x_gen[j + 1];
-
-			    ix += incx;
-			  }
+			  ccopy_vector(x_gen, n_i, 1, x, incx_val);
 
 			  /* varying incy */
 			  for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -14899,18 +14099,7 @@ double do_test_cgbmv_s_c_x(int m, int n,
 			    incy = incy_val;
 			    incy *= 2;
 
-			    /* set y starting index */
-			    iy = 0;
-			    if (incy < 0)
-			      iy = -(m_i - 1) * incy;
-
-			    /* copy y_gen to y */
-			    for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			      y[iy] = y_gen[j];
-			      y[iy + 1] = y_gen[j + 1];
-
-			      iy += incy;
-			    }
+			    ccopy_vector(y_gen, m_i, 1, y, incy_val);
 
 			    /* call BLAS_cgbmv_s_c_x */
 			    FPU_FIX_STOP;
@@ -14964,7 +14153,6 @@ double do_test_cgbmv_s_c_x(int m, int n,
 				  (p_count <= max_print) &&
 				  (ratio > 0.5 * ratio_max)) {
 				old_count = count;
-
 				printf
 				  ("FAIL> %s: m = %d, n = %d, ntests = %d, threshold = %4.2f,\n",
 				   fname, m, n, ntests, thresh);
@@ -15039,8 +14227,6 @@ double do_test_cgbmv_s_c_x(int m, int n,
 
 				for (j = 0, k = 0; j < n_i || k < m_i;
 				     j++, k++) {
-
-
 				  if (j < n_i) {
 				    printf("      ");
 				    printf("(%16.8e, %16.8e)", x[ix],
@@ -15059,7 +14245,6 @@ double do_test_cgbmv_s_c_x(int m, int n,
 					   y[iy + 1]);
 				    printf("\n");
 				  }
-
 				  ix += incx;
 				  iy += incy;
 				}
@@ -15122,8 +14307,8 @@ double do_test_cgbmv_s_c_x(int m, int n,
   }				/* debug */
 
   if ((debug == 2) || ((debug == 1) && bad_ratios > 0)) {
-    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n",
-	   fname, m, n, ntests, thresh);
+    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n", fname,
+	   m, n, ntests, thresh);
     printf
       ("      bad/total = %d/%d=%3.2f, min_ratio = %.4e, max_ratio = %.4e\n\n",
        bad_ratios, tot_tests, ((double) bad_ratios) / ((double) tot_tests),
@@ -15147,15 +14332,9 @@ end:
   *num_bad_ratio = bad_ratios;
   *num_tests = tot_tests;
   return ratio_max;
-}				/* end of do_test_cgbmv_s_c_x */
-
-double do_test_cgbmv_s_s_x(int m, int n,
-			   int ntests,
-			   int *seed,
-			   double thresh,
-			   int debug,
-			   float test_prob,
-			   double *min_ratio,
+}
+double do_test_cgbmv_s_s_x(int m, int n, int ntests, int *seed, double thresh,
+			   int debug, float test_prob, double *min_ratio,
 			   int *num_bad_ratio, int *num_tests)
 
 /*
@@ -15360,8 +14539,6 @@ double do_test_cgbmv_s_s_x(int m, int n,
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
-
-
   AB =
     (float *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(float));
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && AB == NULL) {
@@ -15511,7 +14688,6 @@ double do_test_cgbmv_s_s_x(int m, int n,
 						 &beta, beta_flag, y_gen,
 						 seed, head_r_true,
 						 tail_r_true);
-
 			count++;
 
 			/* varying incx */
@@ -15523,17 +14699,7 @@ double do_test_cgbmv_s_s_x(int m, int n,
 			  incx = incx_val;
 
 
-			  /* set x starting index */
-			  ix = 0;
-			  if (incx < 0)
-			    ix = -(n_i - 1) * incx;
-
-			  /* copy x_gen to x */
-			  for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-			    x[ix] = x_gen[j];
-
-			    ix += incx;
-			  }
+			  scopy_vector(x_gen, n_i, 1, x, incx_val);
 
 			  /* varying incy */
 			  for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -15544,18 +14710,7 @@ double do_test_cgbmv_s_s_x(int m, int n,
 			    incy = incy_val;
 			    incy *= 2;
 
-			    /* set y starting index */
-			    iy = 0;
-			    if (incy < 0)
-			      iy = -(m_i - 1) * incy;
-
-			    /* copy y_gen to y */
-			    for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			      y[iy] = y_gen[j];
-			      y[iy + 1] = y_gen[j + 1];
-
-			      iy += incy;
-			    }
+			    ccopy_vector(y_gen, m_i, 1, y, incy_val);
 
 			    /* call BLAS_cgbmv_s_s_x */
 			    FPU_FIX_STOP;
@@ -15609,7 +14764,6 @@ double do_test_cgbmv_s_s_x(int m, int n,
 				  (p_count <= max_print) &&
 				  (ratio > 0.5 * ratio_max)) {
 				old_count = count;
-
 				printf
 				  ("FAIL> %s: m = %d, n = %d, ntests = %d, threshold = %4.2f,\n",
 				   fname, m, n, ntests, thresh);
@@ -15684,8 +14838,6 @@ double do_test_cgbmv_s_s_x(int m, int n,
 
 				for (j = 0, k = 0; j < n_i || k < m_i;
 				     j++, k++) {
-
-
 				  if (j < n_i) {
 				    printf("      ");
 				    printf("%16.8e", x[ix]);
@@ -15703,7 +14855,6 @@ double do_test_cgbmv_s_s_x(int m, int n,
 					   y[iy + 1]);
 				    printf("\n");
 				  }
-
 				  ix += incx;
 				  iy += incy;
 				}
@@ -15766,8 +14917,8 @@ double do_test_cgbmv_s_s_x(int m, int n,
   }				/* debug */
 
   if ((debug == 2) || ((debug == 1) && bad_ratios > 0)) {
-    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n",
-	   fname, m, n, ntests, thresh);
+    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n", fname,
+	   m, n, ntests, thresh);
     printf
       ("      bad/total = %d/%d=%3.2f, min_ratio = %.4e, max_ratio = %.4e\n\n",
        bad_ratios, tot_tests, ((double) bad_ratios) / ((double) tot_tests),
@@ -15791,15 +14942,9 @@ end:
   *num_bad_ratio = bad_ratios;
   *num_tests = tot_tests;
   return ratio_max;
-}				/* end of do_test_cgbmv_s_s_x */
-
-double do_test_zgbmv_z_d_x(int m, int n,
-			   int ntests,
-			   int *seed,
-			   double thresh,
-			   int debug,
-			   float test_prob,
-			   double *min_ratio,
+}
+double do_test_zgbmv_z_d_x(int m, int n, int ntests, int *seed, double thresh,
+			   int debug, float test_prob, double *min_ratio,
 			   int *num_bad_ratio, int *num_tests)
 
 /*
@@ -16004,8 +15149,6 @@ double do_test_zgbmv_z_d_x(int m, int n,
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
-
-
   AB =
     (double *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(double) *
 			   2);
@@ -16156,7 +15299,6 @@ double do_test_zgbmv_z_d_x(int m, int n,
 						 &beta, beta_flag, y_gen,
 						 seed, head_r_true,
 						 tail_r_true);
-
 			count++;
 
 			/* varying incx */
@@ -16168,17 +15310,7 @@ double do_test_zgbmv_z_d_x(int m, int n,
 			  incx = incx_val;
 
 
-			  /* set x starting index */
-			  ix = 0;
-			  if (incx < 0)
-			    ix = -(n_i - 1) * incx;
-
-			  /* copy x_gen to x */
-			  for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-			    x[ix] = x_gen[j];
-
-			    ix += incx;
-			  }
+			  dcopy_vector(x_gen, n_i, 1, x, incx_val);
 
 			  /* varying incy */
 			  for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -16189,18 +15321,7 @@ double do_test_zgbmv_z_d_x(int m, int n,
 			    incy = incy_val;
 			    incy *= 2;
 
-			    /* set y starting index */
-			    iy = 0;
-			    if (incy < 0)
-			      iy = -(m_i - 1) * incy;
-
-			    /* copy y_gen to y */
-			    for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			      y[iy] = y_gen[j];
-			      y[iy + 1] = y_gen[j + 1];
-
-			      iy += incy;
-			    }
+			    zcopy_vector(y_gen, m_i, 1, y, incy_val);
 
 			    /* call BLAS_zgbmv_z_d_x */
 			    FPU_FIX_STOP;
@@ -16254,7 +15375,6 @@ double do_test_zgbmv_z_d_x(int m, int n,
 				  (p_count <= max_print) &&
 				  (ratio > 0.5 * ratio_max)) {
 				old_count = count;
-
 				printf
 				  ("FAIL> %s: m = %d, n = %d, ntests = %d, threshold = %4.2f,\n",
 				   fname, m, n, ntests, thresh);
@@ -16329,8 +15449,6 @@ double do_test_zgbmv_z_d_x(int m, int n,
 
 				for (j = 0, k = 0; j < n_i || k < m_i;
 				     j++, k++) {
-
-
 				  if (j < n_i) {
 				    printf("      ");
 				    printf("%24.16e", x[ix]);
@@ -16348,7 +15466,6 @@ double do_test_zgbmv_z_d_x(int m, int n,
 					   y[iy + 1]);
 				    printf("\n");
 				  }
-
 				  ix += incx;
 				  iy += incy;
 				}
@@ -16412,8 +15529,8 @@ double do_test_zgbmv_z_d_x(int m, int n,
   }				/* debug */
 
   if ((debug == 2) || ((debug == 1) && bad_ratios > 0)) {
-    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n",
-	   fname, m, n, ntests, thresh);
+    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n", fname,
+	   m, n, ntests, thresh);
     printf
       ("      bad/total = %d/%d=%3.2f, min_ratio = %.4e, max_ratio = %.4e\n\n",
        bad_ratios, tot_tests, ((double) bad_ratios) / ((double) tot_tests),
@@ -16437,15 +15554,9 @@ end:
   *num_bad_ratio = bad_ratios;
   *num_tests = tot_tests;
   return ratio_max;
-}				/* end of do_test_zgbmv_z_d_x */
-
-double do_test_zgbmv_d_z_x(int m, int n,
-			   int ntests,
-			   int *seed,
-			   double thresh,
-			   int debug,
-			   float test_prob,
-			   double *min_ratio,
+}
+double do_test_zgbmv_d_z_x(int m, int n, int ntests, int *seed, double thresh,
+			   int debug, float test_prob, double *min_ratio,
 			   int *num_bad_ratio, int *num_tests)
 
 /*
@@ -16650,8 +15761,6 @@ double do_test_zgbmv_d_z_x(int m, int n,
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
-
-
   AB =
     (double *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(double));
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && AB == NULL) {
@@ -16801,7 +15910,6 @@ double do_test_zgbmv_d_z_x(int m, int n,
 						 &beta, beta_flag, y_gen,
 						 seed, head_r_true,
 						 tail_r_true);
-
 			count++;
 
 			/* varying incx */
@@ -16813,18 +15921,7 @@ double do_test_zgbmv_d_z_x(int m, int n,
 			  incx = incx_val;
 			  incx *= 2;
 
-			  /* set x starting index */
-			  ix = 0;
-			  if (incx < 0)
-			    ix = -(n_i - 1) * incx;
-
-			  /* copy x_gen to x */
-			  for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-			    x[ix] = x_gen[j];
-			    x[ix + 1] = x_gen[j + 1];
-
-			    ix += incx;
-			  }
+			  zcopy_vector(x_gen, n_i, 1, x, incx_val);
 
 			  /* varying incy */
 			  for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -16835,18 +15932,7 @@ double do_test_zgbmv_d_z_x(int m, int n,
 			    incy = incy_val;
 			    incy *= 2;
 
-			    /* set y starting index */
-			    iy = 0;
-			    if (incy < 0)
-			      iy = -(m_i - 1) * incy;
-
-			    /* copy y_gen to y */
-			    for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			      y[iy] = y_gen[j];
-			      y[iy + 1] = y_gen[j + 1];
-
-			      iy += incy;
-			    }
+			    zcopy_vector(y_gen, m_i, 1, y, incy_val);
 
 			    /* call BLAS_zgbmv_d_z_x */
 			    FPU_FIX_STOP;
@@ -16900,7 +15986,6 @@ double do_test_zgbmv_d_z_x(int m, int n,
 				  (p_count <= max_print) &&
 				  (ratio > 0.5 * ratio_max)) {
 				old_count = count;
-
 				printf
 				  ("FAIL> %s: m = %d, n = %d, ntests = %d, threshold = %4.2f,\n",
 				   fname, m, n, ntests, thresh);
@@ -16975,8 +16060,6 @@ double do_test_zgbmv_d_z_x(int m, int n,
 
 				for (j = 0, k = 0; j < n_i || k < m_i;
 				     j++, k++) {
-
-
 				  if (j < n_i) {
 				    printf("      ");
 				    printf("(%24.16e, %24.16e)", x[ix],
@@ -16995,7 +16078,6 @@ double do_test_zgbmv_d_z_x(int m, int n,
 					   y[iy + 1]);
 				    printf("\n");
 				  }
-
 				  ix += incx;
 				  iy += incy;
 				}
@@ -17059,8 +16141,8 @@ double do_test_zgbmv_d_z_x(int m, int n,
   }				/* debug */
 
   if ((debug == 2) || ((debug == 1) && bad_ratios > 0)) {
-    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n",
-	   fname, m, n, ntests, thresh);
+    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n", fname,
+	   m, n, ntests, thresh);
     printf
       ("      bad/total = %d/%d=%3.2f, min_ratio = %.4e, max_ratio = %.4e\n\n",
        bad_ratios, tot_tests, ((double) bad_ratios) / ((double) tot_tests),
@@ -17084,15 +16166,9 @@ end:
   *num_bad_ratio = bad_ratios;
   *num_tests = tot_tests;
   return ratio_max;
-}				/* end of do_test_zgbmv_d_z_x */
-
-double do_test_zgbmv_d_d_x(int m, int n,
-			   int ntests,
-			   int *seed,
-			   double thresh,
-			   int debug,
-			   float test_prob,
-			   double *min_ratio,
+}
+double do_test_zgbmv_d_d_x(int m, int n, int ntests, int *seed, double thresh,
+			   int debug, float test_prob, double *min_ratio,
 			   int *num_bad_ratio, int *num_tests)
 
 /*
@@ -17297,8 +16373,6 @@ double do_test_zgbmv_d_d_x(int m, int n,
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
-
-
   AB =
     (double *) blas_malloc((m - 1 + n - 1 + 1) * max_mn * 2 * sizeof(double));
   if ((m - 1 + n - 1 + 1) * max_mn * 2 > 0 && AB == NULL) {
@@ -17448,7 +16522,6 @@ double do_test_zgbmv_d_d_x(int m, int n,
 						 &beta, beta_flag, y_gen,
 						 seed, head_r_true,
 						 tail_r_true);
-
 			count++;
 
 			/* varying incx */
@@ -17460,17 +16533,7 @@ double do_test_zgbmv_d_d_x(int m, int n,
 			  incx = incx_val;
 
 
-			  /* set x starting index */
-			  ix = 0;
-			  if (incx < 0)
-			    ix = -(n_i - 1) * incx;
-
-			  /* copy x_gen to x */
-			  for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-			    x[ix] = x_gen[j];
-
-			    ix += incx;
-			  }
+			  dcopy_vector(x_gen, n_i, 1, x, incx_val);
 
 			  /* varying incy */
 			  for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -17481,18 +16544,7 @@ double do_test_zgbmv_d_d_x(int m, int n,
 			    incy = incy_val;
 			    incy *= 2;
 
-			    /* set y starting index */
-			    iy = 0;
-			    if (incy < 0)
-			      iy = -(m_i - 1) * incy;
-
-			    /* copy y_gen to y */
-			    for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			      y[iy] = y_gen[j];
-			      y[iy + 1] = y_gen[j + 1];
-
-			      iy += incy;
-			    }
+			    zcopy_vector(y_gen, m_i, 1, y, incy_val);
 
 			    /* call BLAS_zgbmv_d_d_x */
 			    FPU_FIX_STOP;
@@ -17546,7 +16598,6 @@ double do_test_zgbmv_d_d_x(int m, int n,
 				  (p_count <= max_print) &&
 				  (ratio > 0.5 * ratio_max)) {
 				old_count = count;
-
 				printf
 				  ("FAIL> %s: m = %d, n = %d, ntests = %d, threshold = %4.2f,\n",
 				   fname, m, n, ntests, thresh);
@@ -17621,8 +16672,6 @@ double do_test_zgbmv_d_d_x(int m, int n,
 
 				for (j = 0, k = 0; j < n_i || k < m_i;
 				     j++, k++) {
-
-
 				  if (j < n_i) {
 				    printf("      ");
 				    printf("%24.16e", x[ix]);
@@ -17640,7 +16689,6 @@ double do_test_zgbmv_d_d_x(int m, int n,
 					   y[iy + 1]);
 				    printf("\n");
 				  }
-
 				  ix += incx;
 				  iy += incy;
 				}
@@ -17704,8 +16752,8 @@ double do_test_zgbmv_d_d_x(int m, int n,
   }				/* debug */
 
   if ((debug == 2) || ((debug == 1) && bad_ratios > 0)) {
-    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n",
-	   fname, m, n, ntests, thresh);
+    printf("      %s:  m = %d, n = %d, ntests = %d, thresh = %4.2f\n", fname,
+	   m, n, ntests, thresh);
     printf
       ("      bad/total = %d/%d=%3.2f, min_ratio = %.4e, max_ratio = %.4e\n\n",
        bad_ratios, tot_tests, ((double) bad_ratios) / ((double) tot_tests),
@@ -17729,7 +16777,7 @@ end:
   *num_bad_ratio = bad_ratios;
   *num_tests = tot_tests;
   return ratio_max;
-}				/* end of do_test_zgbmv_d_d_x */
+}
 
 #define NUMPAIRS 12
 
@@ -17796,9 +16844,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_dgbmv_d_s(m, n, 1, &seed, thresh, debug,
-					test_prob, &total_min_ratio,
-					&num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_dgbmv_d_s(m, n, 1, &seed, thresh, debug, test_prob,
+			&total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -17820,8 +16868,8 @@ int main(int argc, char **argv)
   if (min_ratio == 1e308)
     min_ratio = 0.0;
 
-  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
-	 fname, total_bad_ratios, total_tests, max_ratio);
+  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n", fname,
+	 total_bad_ratios, total_tests, max_ratio);
   min_ratio = 1e308;
   max_ratio = 0.0;
   total_bad_ratios = 0;
@@ -17831,9 +16879,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_dgbmv_s_d(m, n, 1, &seed, thresh, debug,
-					test_prob, &total_min_ratio,
-					&num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_dgbmv_s_d(m, n, 1, &seed, thresh, debug, test_prob,
+			&total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -17855,8 +16903,8 @@ int main(int argc, char **argv)
   if (min_ratio == 1e308)
     min_ratio = 0.0;
 
-  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
-	 fname, total_bad_ratios, total_tests, max_ratio);
+  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n", fname,
+	 total_bad_ratios, total_tests, max_ratio);
   min_ratio = 1e308;
   max_ratio = 0.0;
   total_bad_ratios = 0;
@@ -17866,9 +16914,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_dgbmv_s_s(m, n, 1, &seed, thresh, debug,
-					test_prob, &total_min_ratio,
-					&num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_dgbmv_s_s(m, n, 1, &seed, thresh, debug, test_prob,
+			&total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -17890,8 +16938,8 @@ int main(int argc, char **argv)
   if (min_ratio == 1e308)
     min_ratio = 0.0;
 
-  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
-	 fname, total_bad_ratios, total_tests, max_ratio);
+  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n", fname,
+	 total_bad_ratios, total_tests, max_ratio);
   min_ratio = 1e308;
   max_ratio = 0.0;
   total_bad_ratios = 0;
@@ -17901,9 +16949,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_zgbmv_z_c(m, n, 1, &seed, thresh, debug,
-					test_prob, &total_min_ratio,
-					&num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_zgbmv_z_c(m, n, 1, &seed, thresh, debug, test_prob,
+			&total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -17925,8 +16973,8 @@ int main(int argc, char **argv)
   if (min_ratio == 1e308)
     min_ratio = 0.0;
 
-  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
-	 fname, total_bad_ratios, total_tests, max_ratio);
+  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n", fname,
+	 total_bad_ratios, total_tests, max_ratio);
   min_ratio = 1e308;
   max_ratio = 0.0;
   total_bad_ratios = 0;
@@ -17936,9 +16984,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_zgbmv_c_z(m, n, 1, &seed, thresh, debug,
-					test_prob, &total_min_ratio,
-					&num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_zgbmv_c_z(m, n, 1, &seed, thresh, debug, test_prob,
+			&total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -17960,8 +17008,8 @@ int main(int argc, char **argv)
   if (min_ratio == 1e308)
     min_ratio = 0.0;
 
-  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
-	 fname, total_bad_ratios, total_tests, max_ratio);
+  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n", fname,
+	 total_bad_ratios, total_tests, max_ratio);
   min_ratio = 1e308;
   max_ratio = 0.0;
   total_bad_ratios = 0;
@@ -17971,9 +17019,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_zgbmv_c_c(m, n, 1, &seed, thresh, debug,
-					test_prob, &total_min_ratio,
-					&num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_zgbmv_c_c(m, n, 1, &seed, thresh, debug, test_prob,
+			&total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -17995,8 +17043,8 @@ int main(int argc, char **argv)
   if (min_ratio == 1e308)
     min_ratio = 0.0;
 
-  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
-	 fname, total_bad_ratios, total_tests, max_ratio);
+  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n", fname,
+	 total_bad_ratios, total_tests, max_ratio);
   min_ratio = 1e308;
   max_ratio = 0.0;
   total_bad_ratios = 0;
@@ -18006,9 +17054,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_cgbmv_c_s(m, n, 1, &seed, thresh, debug,
-					test_prob, &total_min_ratio,
-					&num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_cgbmv_c_s(m, n, 1, &seed, thresh, debug, test_prob,
+			&total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -18030,8 +17078,8 @@ int main(int argc, char **argv)
   if (min_ratio == 1e308)
     min_ratio = 0.0;
 
-  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
-	 fname, total_bad_ratios, total_tests, max_ratio);
+  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n", fname,
+	 total_bad_ratios, total_tests, max_ratio);
   min_ratio = 1e308;
   max_ratio = 0.0;
   total_bad_ratios = 0;
@@ -18041,9 +17089,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_cgbmv_s_c(m, n, 1, &seed, thresh, debug,
-					test_prob, &total_min_ratio,
-					&num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_cgbmv_s_c(m, n, 1, &seed, thresh, debug, test_prob,
+			&total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -18065,8 +17113,8 @@ int main(int argc, char **argv)
   if (min_ratio == 1e308)
     min_ratio = 0.0;
 
-  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
-	 fname, total_bad_ratios, total_tests, max_ratio);
+  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n", fname,
+	 total_bad_ratios, total_tests, max_ratio);
   min_ratio = 1e308;
   max_ratio = 0.0;
   total_bad_ratios = 0;
@@ -18076,9 +17124,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_cgbmv_s_s(m, n, 1, &seed, thresh, debug,
-					test_prob, &total_min_ratio,
-					&num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_cgbmv_s_s(m, n, 1, &seed, thresh, debug, test_prob,
+			&total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -18100,8 +17148,8 @@ int main(int argc, char **argv)
   if (min_ratio == 1e308)
     min_ratio = 0.0;
 
-  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
-	 fname, total_bad_ratios, total_tests, max_ratio);
+  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n", fname,
+	 total_bad_ratios, total_tests, max_ratio);
   min_ratio = 1e308;
   max_ratio = 0.0;
   total_bad_ratios = 0;
@@ -18111,9 +17159,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_zgbmv_z_d(m, n, 1, &seed, thresh, debug,
-					test_prob, &total_min_ratio,
-					&num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_zgbmv_z_d(m, n, 1, &seed, thresh, debug, test_prob,
+			&total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -18135,8 +17183,8 @@ int main(int argc, char **argv)
   if (min_ratio == 1e308)
     min_ratio = 0.0;
 
-  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
-	 fname, total_bad_ratios, total_tests, max_ratio);
+  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n", fname,
+	 total_bad_ratios, total_tests, max_ratio);
   min_ratio = 1e308;
   max_ratio = 0.0;
   total_bad_ratios = 0;
@@ -18146,9 +17194,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_zgbmv_d_z(m, n, 1, &seed, thresh, debug,
-					test_prob, &total_min_ratio,
-					&num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_zgbmv_d_z(m, n, 1, &seed, thresh, debug, test_prob,
+			&total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -18170,8 +17218,8 @@ int main(int argc, char **argv)
   if (min_ratio == 1e308)
     min_ratio = 0.0;
 
-  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
-	 fname, total_bad_ratios, total_tests, max_ratio);
+  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n", fname,
+	 total_bad_ratios, total_tests, max_ratio);
   min_ratio = 1e308;
   max_ratio = 0.0;
   total_bad_ratios = 0;
@@ -18181,9 +17229,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_zgbmv_d_d(m, n, 1, &seed, thresh, debug,
-					test_prob, &total_min_ratio,
-					&num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_zgbmv_d_d(m, n, 1, &seed, thresh, debug, test_prob,
+			&total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -18205,8 +17253,8 @@ int main(int argc, char **argv)
   if (min_ratio == 1e308)
     min_ratio = 0.0;
 
-  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
-	 fname, total_bad_ratios, total_tests, max_ratio);
+  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n", fname,
+	 total_bad_ratios, total_tests, max_ratio);
   min_ratio = 1e308;
   max_ratio = 0.0;
   total_bad_ratios = 0;
@@ -18216,9 +17264,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_sgbmv_x(m, n, 1, &seed, thresh, debug,
-				      test_prob, &total_min_ratio,
-				      &num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_sgbmv_x(m, n, 1, &seed, thresh, debug, test_prob,
+		      &total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -18240,8 +17288,8 @@ int main(int argc, char **argv)
   if (min_ratio == 1e308)
     min_ratio = 0.0;
 
-  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
-	 fname, total_bad_ratios, total_tests, max_ratio);
+  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n", fname,
+	 total_bad_ratios, total_tests, max_ratio);
   min_ratio = 1e308;
   max_ratio = 0.0;
   total_bad_ratios = 0;
@@ -18251,9 +17299,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_dgbmv_x(m, n, 1, &seed, thresh, debug,
-				      test_prob, &total_min_ratio,
-				      &num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_dgbmv_x(m, n, 1, &seed, thresh, debug, test_prob,
+		      &total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -18275,8 +17323,8 @@ int main(int argc, char **argv)
   if (min_ratio == 1e308)
     min_ratio = 0.0;
 
-  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
-	 fname, total_bad_ratios, total_tests, max_ratio);
+  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n", fname,
+	 total_bad_ratios, total_tests, max_ratio);
   min_ratio = 1e308;
   max_ratio = 0.0;
   total_bad_ratios = 0;
@@ -18286,9 +17334,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_cgbmv_x(m, n, 1, &seed, thresh, debug,
-				      test_prob, &total_min_ratio,
-				      &num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_cgbmv_x(m, n, 1, &seed, thresh, debug, test_prob,
+		      &total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -18310,8 +17358,8 @@ int main(int argc, char **argv)
   if (min_ratio == 1e308)
     min_ratio = 0.0;
 
-  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
-	 fname, total_bad_ratios, total_tests, max_ratio);
+  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n", fname,
+	 total_bad_ratios, total_tests, max_ratio);
   min_ratio = 1e308;
   max_ratio = 0.0;
   total_bad_ratios = 0;
@@ -18321,9 +17369,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_zgbmv_x(m, n, 1, &seed, thresh, debug,
-				      test_prob, &total_min_ratio,
-				      &num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_zgbmv_x(m, n, 1, &seed, thresh, debug, test_prob,
+		      &total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -18345,8 +17393,8 @@ int main(int argc, char **argv)
   if (min_ratio == 1e308)
     min_ratio = 0.0;
 
-  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
-	 fname, total_bad_ratios, total_tests, max_ratio);
+  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n", fname,
+	 total_bad_ratios, total_tests, max_ratio);
   min_ratio = 1e308;
   max_ratio = 0.0;
   total_bad_ratios = 0;
@@ -18356,9 +17404,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_dgbmv_d_s_x(m, n, 1, &seed, thresh, debug,
-					  test_prob, &total_min_ratio,
-					  &num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_dgbmv_d_s_x(m, n, 1, &seed, thresh, debug, test_prob,
+			  &total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -18380,8 +17428,8 @@ int main(int argc, char **argv)
   if (min_ratio == 1e308)
     min_ratio = 0.0;
 
-  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
-	 fname, total_bad_ratios, total_tests, max_ratio);
+  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n", fname,
+	 total_bad_ratios, total_tests, max_ratio);
   min_ratio = 1e308;
   max_ratio = 0.0;
   total_bad_ratios = 0;
@@ -18391,9 +17439,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_dgbmv_s_d_x(m, n, 1, &seed, thresh, debug,
-					  test_prob, &total_min_ratio,
-					  &num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_dgbmv_s_d_x(m, n, 1, &seed, thresh, debug, test_prob,
+			  &total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -18415,8 +17463,8 @@ int main(int argc, char **argv)
   if (min_ratio == 1e308)
     min_ratio = 0.0;
 
-  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
-	 fname, total_bad_ratios, total_tests, max_ratio);
+  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n", fname,
+	 total_bad_ratios, total_tests, max_ratio);
   min_ratio = 1e308;
   max_ratio = 0.0;
   total_bad_ratios = 0;
@@ -18426,9 +17474,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_dgbmv_s_s_x(m, n, 1, &seed, thresh, debug,
-					  test_prob, &total_min_ratio,
-					  &num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_dgbmv_s_s_x(m, n, 1, &seed, thresh, debug, test_prob,
+			  &total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -18450,8 +17498,8 @@ int main(int argc, char **argv)
   if (min_ratio == 1e308)
     min_ratio = 0.0;
 
-  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
-	 fname, total_bad_ratios, total_tests, max_ratio);
+  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n", fname,
+	 total_bad_ratios, total_tests, max_ratio);
   min_ratio = 1e308;
   max_ratio = 0.0;
   total_bad_ratios = 0;
@@ -18461,9 +17509,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_zgbmv_z_c_x(m, n, 1, &seed, thresh, debug,
-					  test_prob, &total_min_ratio,
-					  &num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_zgbmv_z_c_x(m, n, 1, &seed, thresh, debug, test_prob,
+			  &total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -18485,8 +17533,8 @@ int main(int argc, char **argv)
   if (min_ratio == 1e308)
     min_ratio = 0.0;
 
-  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
-	 fname, total_bad_ratios, total_tests, max_ratio);
+  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n", fname,
+	 total_bad_ratios, total_tests, max_ratio);
   min_ratio = 1e308;
   max_ratio = 0.0;
   total_bad_ratios = 0;
@@ -18496,9 +17544,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_zgbmv_c_z_x(m, n, 1, &seed, thresh, debug,
-					  test_prob, &total_min_ratio,
-					  &num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_zgbmv_c_z_x(m, n, 1, &seed, thresh, debug, test_prob,
+			  &total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -18520,8 +17568,8 @@ int main(int argc, char **argv)
   if (min_ratio == 1e308)
     min_ratio = 0.0;
 
-  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
-	 fname, total_bad_ratios, total_tests, max_ratio);
+  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n", fname,
+	 total_bad_ratios, total_tests, max_ratio);
   min_ratio = 1e308;
   max_ratio = 0.0;
   total_bad_ratios = 0;
@@ -18531,9 +17579,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_zgbmv_c_c_x(m, n, 1, &seed, thresh, debug,
-					  test_prob, &total_min_ratio,
-					  &num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_zgbmv_c_c_x(m, n, 1, &seed, thresh, debug, test_prob,
+			  &total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -18555,8 +17603,8 @@ int main(int argc, char **argv)
   if (min_ratio == 1e308)
     min_ratio = 0.0;
 
-  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
-	 fname, total_bad_ratios, total_tests, max_ratio);
+  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n", fname,
+	 total_bad_ratios, total_tests, max_ratio);
   min_ratio = 1e308;
   max_ratio = 0.0;
   total_bad_ratios = 0;
@@ -18566,9 +17614,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_cgbmv_c_s_x(m, n, 1, &seed, thresh, debug,
-					  test_prob, &total_min_ratio,
-					  &num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_cgbmv_c_s_x(m, n, 1, &seed, thresh, debug, test_prob,
+			  &total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -18590,8 +17638,8 @@ int main(int argc, char **argv)
   if (min_ratio == 1e308)
     min_ratio = 0.0;
 
-  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
-	 fname, total_bad_ratios, total_tests, max_ratio);
+  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n", fname,
+	 total_bad_ratios, total_tests, max_ratio);
   min_ratio = 1e308;
   max_ratio = 0.0;
   total_bad_ratios = 0;
@@ -18601,9 +17649,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_cgbmv_s_c_x(m, n, 1, &seed, thresh, debug,
-					  test_prob, &total_min_ratio,
-					  &num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_cgbmv_s_c_x(m, n, 1, &seed, thresh, debug, test_prob,
+			  &total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -18625,8 +17673,8 @@ int main(int argc, char **argv)
   if (min_ratio == 1e308)
     min_ratio = 0.0;
 
-  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
-	 fname, total_bad_ratios, total_tests, max_ratio);
+  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n", fname,
+	 total_bad_ratios, total_tests, max_ratio);
   min_ratio = 1e308;
   max_ratio = 0.0;
   total_bad_ratios = 0;
@@ -18636,9 +17684,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_cgbmv_s_s_x(m, n, 1, &seed, thresh, debug,
-					  test_prob, &total_min_ratio,
-					  &num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_cgbmv_s_s_x(m, n, 1, &seed, thresh, debug, test_prob,
+			  &total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -18660,8 +17708,8 @@ int main(int argc, char **argv)
   if (min_ratio == 1e308)
     min_ratio = 0.0;
 
-  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
-	 fname, total_bad_ratios, total_tests, max_ratio);
+  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n", fname,
+	 total_bad_ratios, total_tests, max_ratio);
   min_ratio = 1e308;
   max_ratio = 0.0;
   total_bad_ratios = 0;
@@ -18671,9 +17719,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_zgbmv_z_d_x(m, n, 1, &seed, thresh, debug,
-					  test_prob, &total_min_ratio,
-					  &num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_zgbmv_z_d_x(m, n, 1, &seed, thresh, debug, test_prob,
+			  &total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -18695,8 +17743,8 @@ int main(int argc, char **argv)
   if (min_ratio == 1e308)
     min_ratio = 0.0;
 
-  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
-	 fname, total_bad_ratios, total_tests, max_ratio);
+  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n", fname,
+	 total_bad_ratios, total_tests, max_ratio);
   min_ratio = 1e308;
   max_ratio = 0.0;
   total_bad_ratios = 0;
@@ -18706,9 +17754,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_zgbmv_d_z_x(m, n, 1, &seed, thresh, debug,
-					  test_prob, &total_min_ratio,
-					  &num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_zgbmv_d_z_x(m, n, 1, &seed, thresh, debug, test_prob,
+			  &total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -18730,8 +17778,8 @@ int main(int argc, char **argv)
   if (min_ratio == 1e308)
     min_ratio = 0.0;
 
-  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
-	 fname, total_bad_ratios, total_tests, max_ratio);
+  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n", fname,
+	 total_bad_ratios, total_tests, max_ratio);
   min_ratio = 1e308;
   max_ratio = 0.0;
   total_bad_ratios = 0;
@@ -18741,9 +17789,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_zgbmv_d_d_x(m, n, 1, &seed, thresh, debug,
-					  test_prob, &total_min_ratio,
-					  &num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_zgbmv_d_d_x(m, n, 1, &seed, thresh, debug, test_prob,
+			  &total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -18765,8 +17813,8 @@ int main(int argc, char **argv)
   if (min_ratio == 1e308)
     min_ratio = 0.0;
 
-  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
-	 fname, total_bad_ratios, total_tests, max_ratio);
+  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n", fname,
+	 total_bad_ratios, total_tests, max_ratio);
 
 
   printf("\n");

@@ -1,16 +1,9 @@
 #include "blas_extended.h"
-
-
-
-
-
-
-
-
+#include "blas_extended_test.h"
 
 void stpmv_copy_row(enum blas_order_type order, enum blas_uplo_type uplo,
-		    enum blas_trans_type trans,
-		    int n, const float *a, float *a_vec, int row)
+		    enum blas_trans_type trans, int n, const float *a,
+		    float *a_vec, int row)
 /*
  * Purpose
  * =======
@@ -112,8 +105,8 @@ void stpmv_copy_row(enum blas_order_type order, enum blas_uplo_type uplo,
 }
 
 void dtpmv_copy_row(enum blas_order_type order, enum blas_uplo_type uplo,
-		    enum blas_trans_type trans,
-		    int n, const double *a, double *a_vec, int row)
+		    enum blas_trans_type trans, int n, const double *a,
+		    double *a_vec, int row)
 /*
  * Purpose
  * =======
@@ -215,8 +208,8 @@ void dtpmv_copy_row(enum blas_order_type order, enum blas_uplo_type uplo,
 }
 
 void ctpmv_copy_row(enum blas_order_type order, enum blas_uplo_type uplo,
-		    enum blas_trans_type trans,
-		    int n, const void *a, void *a_vec, int row)
+		    enum blas_trans_type trans, int n, const void *a,
+		    void *a_vec, int row)
 /*
  * Purpose
  * =======
@@ -327,8 +320,8 @@ void ctpmv_copy_row(enum blas_order_type order, enum blas_uplo_type uplo,
 }
 
 void ztpmv_copy_row(enum blas_order_type order, enum blas_uplo_type uplo,
-		    enum blas_trans_type trans,
-		    int n, const void *a, void *a_vec, int row)
+		    enum blas_trans_type trans, int n, const void *a,
+		    void *a_vec, int row)
 /*
  * Purpose
  * =======
@@ -439,9 +432,9 @@ void ztpmv_copy_row(enum blas_order_type order, enum blas_uplo_type uplo,
 }
 
 
-void stpmv_commit_row(enum blas_order_type order,
-		      enum blas_uplo_type uplo, enum blas_trans_type trans,
-		      int n, float *a, const float *a_vec, int row)
+void stpmv_commit_row(enum blas_order_type order, enum blas_uplo_type uplo,
+		      enum blas_trans_type trans, int n, float *a,
+		      const float *a_vec, int row)
 /*
  * Purpose
  * =======
@@ -537,14 +530,11 @@ void stpmv_commit_row(enum blas_order_type order,
 
     }
   }
-
-
-
 }
 
-void dtpmv_commit_row(enum blas_order_type order,
-		      enum blas_uplo_type uplo, enum blas_trans_type trans,
-		      int n, double *a, const double *a_vec, int row)
+void dtpmv_commit_row(enum blas_order_type order, enum blas_uplo_type uplo,
+		      enum blas_trans_type trans, int n, double *a,
+		      const double *a_vec, int row)
 /*
  * Purpose
  * =======
@@ -640,14 +630,11 @@ void dtpmv_commit_row(enum blas_order_type order,
 
     }
   }
-
-
-
 }
 
-void ctpmv_commit_row(enum blas_order_type order,
-		      enum blas_uplo_type uplo, enum blas_trans_type trans,
-		      int n, void *a, const void *a_vec, int row)
+void ctpmv_commit_row(enum blas_order_type order, enum blas_uplo_type uplo,
+		      enum blas_trans_type trans, int n, void *a,
+		      const void *a_vec, int row)
 /*
  * Purpose
  * =======
@@ -751,14 +738,11 @@ void ctpmv_commit_row(enum blas_order_type order,
 
     }
   }
-
-
-
 }
 
-void ztpmv_commit_row(enum blas_order_type order,
-		      enum blas_uplo_type uplo, enum blas_trans_type trans,
-		      int n, void *a, const void *a_vec, int row)
+void ztpmv_commit_row(enum blas_order_type order, enum blas_uplo_type uplo,
+		      enum blas_trans_type trans, int n, void *a,
+		      const void *a_vec, int row)
 /*
  * Purpose
  * =======
@@ -862,7 +846,4 @@ void ztpmv_commit_row(enum blas_order_type order,
 
     }
   }
-
-
-
 }

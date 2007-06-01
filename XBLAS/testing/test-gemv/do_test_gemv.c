@@ -5,14 +5,8 @@
 #include "blas_extended_private.h"
 #include "blas_extended_test.h"
 
-
-double do_test_dgemv_d_s(int m, int n,
-			 int ntests,
-			 int *seed,
-			 double thresh,
-			 int debug,
-			 float test_prob,
-			 double *min_ratio,
+double do_test_dgemv_d_s(int m, int n, int ntests, int *seed, double thresh,
+			 int debug, float test_prob, double *min_ratio,
 			 int *num_bad_ratio, int *num_tests)
 
 /*
@@ -97,10 +91,10 @@ double do_test_dgemv_d_s(int m, int n,
      variables */
   int i;			/* iterate through the repeating tests */
   int j, k;			/* multipurpose counters or variables */
-  int ix, iy;			/* use to index x and y respectively */
+  int iy;			/* use to index y */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
+  int incy_gen;			/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
   int p_count;			/* counter for the number of debug lines printed */
@@ -176,17 +170,16 @@ double do_test_dgemv_d_s(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = 1;
-
+  incy_gen = 1;
 
 
   /* get space for calculation */
-  x = (float *) blas_malloc(max_mn * 2 * incx_gen * sizeof(float));
-  if (max_mn * 2 * incx_gen > 0 && x == NULL) {
+  x = (float *) blas_malloc(max_mn * 2 * sizeof(float));
+  if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double));
-  if (max_mn * 2 * incy_gen > 0 && y == NULL) {
+  y = (double *) blas_malloc(max_mn * 2 * sizeof(double));
+  if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float));
@@ -323,10 +316,10 @@ double do_test_dgemv_d_s(int m, int n,
 
 		  /* in the trivial cases, no need to run testgen */
 		  if (m > 0 && n > 0)
-		    BLAS_dgemv_d_s_testgen(norm, order_type, trans_type,
-					   m, n, &alpha, alpha_flag, A, lda,
-					   x_gen, &beta, beta_flag, y_gen,
-					   seed, head_r_true, tail_r_true);
+		    BLAS_dgemv_d_s_testgen(norm, order_type, trans_type, m, n,
+					   &alpha, alpha_flag, A, lda, x_gen,
+					   &beta, beta_flag, y_gen, seed,
+					   head_r_true, tail_r_true);
 
 		  count++;
 
@@ -339,17 +332,7 @@ double do_test_dgemv_d_s(int m, int n,
 		    incx = incx_val;
 
 
-		    /* set x starting index */
-		    ix = 0;
-		    if (incx < 0)
-		      ix = -(n_i - 1) * incx;
-
-		    /* copy x_gen to x */
-		    for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-		      x[ix] = x_gen[j];
-
-		      ix += incx;
-		    }
+		    scopy_vector(x_gen, n_i, 1, x, incx_val);
 
 		    /* varying incy */
 		    for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -360,19 +343,8 @@ double do_test_dgemv_d_s(int m, int n,
 		      incy = incy_val;
 
 
-		      /* set y starting index */
-		      iy = 0;
-		      if (incy < 0)
-			iy = -(m_i - 1) * incy;
+		      dcopy_vector(y_gen, m_i, 1, y, incy_val);
 
-		      /* copy y_gen to y */
-		      for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			y[iy] = y_gen[j];
-
-			iy += incy;
-		      }
-
-		      /* call BLAS_dgemv_d_s */
 		      FPU_FIX_STOP;
 		      BLAS_dgemv_d_s(order_type, trans_type, m, n, alpha, A,
 				     lda, x, incx_val, beta, y, incy_val);
@@ -390,13 +362,11 @@ double do_test_dgemv_d_s(int m, int n,
 			  dge_copy_row(order_type, trans_type, m_i, n_i, A,
 				       lda, temp, j);
 
-			  test_BLAS_ddot_d_s(n_i, blas_no_conj,
-					     alpha, beta, y_gen[k],
-					     y[iy],
-					     head_r_true[k],
-					     tail_r_true[k],
-					     temp, 1, x, incx_val, eps_int,
-					     un_int, &ratios[j]);
+			  test_BLAS_ddot_d_s(n_i, blas_no_conj, alpha, beta,
+					     y_gen[k], y[iy], head_r_true[k],
+					     tail_r_true[k], temp, 1, x,
+					     incx_val, eps_int, un_int,
+					     &ratios[j]);
 
 			  /* take the max ratio */
 			  if (j == 0) {
@@ -476,42 +446,10 @@ double do_test_dgemv_d_s(int m, int n,
 			  printf("lda=%d, incx=%d, incy=%d:\n", lda, incx,
 				 incy);
 
-			  ix = 0;
-			  iy = 0;
-			  if (incx < 0)
-			    ix = -(n_i - 1) * incx;
-			  if (incy < 0)
-			    iy = -(m_i - 1) * incy;
-
-			  printf("      A=");
-			  for (j = 0; j < m_i; j++) {
-			    /* copy row j of A to temp */
-			    dge_copy_row(order_type, trans_type, m_i, n_i, A,
-					 lda, temp, j);
-
-			    if (j > 0)
-			      printf("        ");
-			    dprint_vector(temp, n_i, 1, NULL);
-			  }
-
-			  for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
-			    if (j < n_i) {
-			      printf("      ");
-			      printf("%16.8e", x[ix]);
-			      printf("\n");
-			    }
-			    if (k < m_i) {
-			      printf("      ");
-			      printf("%24.16e", y_gen[k * incy_gen]);
-			      printf("\n");
-			      printf("      ");
-			      printf("y_final[%d] = ", iy);
-			      printf("%24.16e", y[iy]);
-			      printf("\n");
-			    }
-			    ix += incx;
-			    iy += incy;
-			  }
+			  dge_print_matrix(A, m_i, n_i, lda, order_type, "A");
+			  sprint_vector(x, n_i, incx_val, "x");
+			  dprint_vector(y_gen, m_i, 1, "y");
+			  dprint_vector(y, m_i, incy_val, "y_final");
 
 			  printf("      ");
 			  printf("alpha = ");
@@ -592,14 +530,8 @@ end:
   *num_tests = tot_tests;
   return ratio_max;
 }				/* end of do_test_dgemv_d_s */
-
-double do_test_dgemv_s_d(int m, int n,
-			 int ntests,
-			 int *seed,
-			 double thresh,
-			 int debug,
-			 float test_prob,
-			 double *min_ratio,
+double do_test_dgemv_s_d(int m, int n, int ntests, int *seed, double thresh,
+			 int debug, float test_prob, double *min_ratio,
 			 int *num_bad_ratio, int *num_tests)
 
 /*
@@ -684,10 +616,10 @@ double do_test_dgemv_s_d(int m, int n,
      variables */
   int i;			/* iterate through the repeating tests */
   int j, k;			/* multipurpose counters or variables */
-  int ix, iy;			/* use to index x and y respectively */
+  int iy;			/* use to index y */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
+  int incy_gen;			/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
   int p_count;			/* counter for the number of debug lines printed */
@@ -763,17 +695,16 @@ double do_test_dgemv_s_d(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = 1;
-
+  incy_gen = 1;
 
 
   /* get space for calculation */
-  x = (double *) blas_malloc(max_mn * 2 * incx_gen * sizeof(double));
-  if (max_mn * 2 * incx_gen > 0 && x == NULL) {
+  x = (double *) blas_malloc(max_mn * 2 * sizeof(double));
+  if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double));
-  if (max_mn * 2 * incy_gen > 0 && y == NULL) {
+  y = (double *) blas_malloc(max_mn * 2 * sizeof(double));
+  if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   x_gen = (double *) blas_malloc(max_mn * sizeof(double));
@@ -909,10 +840,10 @@ double do_test_dgemv_s_d(int m, int n,
 
 		  /* in the trivial cases, no need to run testgen */
 		  if (m > 0 && n > 0)
-		    BLAS_dgemv_s_d_testgen(norm, order_type, trans_type,
-					   m, n, &alpha, alpha_flag, A, lda,
-					   x_gen, &beta, beta_flag, y_gen,
-					   seed, head_r_true, tail_r_true);
+		    BLAS_dgemv_s_d_testgen(norm, order_type, trans_type, m, n,
+					   &alpha, alpha_flag, A, lda, x_gen,
+					   &beta, beta_flag, y_gen, seed,
+					   head_r_true, tail_r_true);
 
 		  count++;
 
@@ -925,17 +856,7 @@ double do_test_dgemv_s_d(int m, int n,
 		    incx = incx_val;
 
 
-		    /* set x starting index */
-		    ix = 0;
-		    if (incx < 0)
-		      ix = -(n_i - 1) * incx;
-
-		    /* copy x_gen to x */
-		    for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-		      x[ix] = x_gen[j];
-
-		      ix += incx;
-		    }
+		    dcopy_vector(x_gen, n_i, 1, x, incx_val);
 
 		    /* varying incy */
 		    for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -946,19 +867,8 @@ double do_test_dgemv_s_d(int m, int n,
 		      incy = incy_val;
 
 
-		      /* set y starting index */
-		      iy = 0;
-		      if (incy < 0)
-			iy = -(m_i - 1) * incy;
+		      dcopy_vector(y_gen, m_i, 1, y, incy_val);
 
-		      /* copy y_gen to y */
-		      for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			y[iy] = y_gen[j];
-
-			iy += incy;
-		      }
-
-		      /* call BLAS_dgemv_s_d */
 		      FPU_FIX_STOP;
 		      BLAS_dgemv_s_d(order_type, trans_type, m, n, alpha, A,
 				     lda, x, incx_val, beta, y, incy_val);
@@ -976,13 +886,11 @@ double do_test_dgemv_s_d(int m, int n,
 			  sge_copy_row(order_type, trans_type, m_i, n_i, A,
 				       lda, temp, j);
 
-			  test_BLAS_ddot_s_d(n_i, blas_no_conj,
-					     alpha, beta, y_gen[k],
-					     y[iy],
-					     head_r_true[k],
-					     tail_r_true[k],
-					     temp, 1, x, incx_val, eps_int,
-					     un_int, &ratios[j]);
+			  test_BLAS_ddot_s_d(n_i, blas_no_conj, alpha, beta,
+					     y_gen[k], y[iy], head_r_true[k],
+					     tail_r_true[k], temp, 1, x,
+					     incx_val, eps_int, un_int,
+					     &ratios[j]);
 
 			  /* take the max ratio */
 			  if (j == 0) {
@@ -1062,42 +970,10 @@ double do_test_dgemv_s_d(int m, int n,
 			  printf("lda=%d, incx=%d, incy=%d:\n", lda, incx,
 				 incy);
 
-			  ix = 0;
-			  iy = 0;
-			  if (incx < 0)
-			    ix = -(n_i - 1) * incx;
-			  if (incy < 0)
-			    iy = -(m_i - 1) * incy;
-
-			  printf("      A=");
-			  for (j = 0; j < m_i; j++) {
-			    /* copy row j of A to temp */
-			    sge_copy_row(order_type, trans_type, m_i, n_i, A,
-					 lda, temp, j);
-
-			    if (j > 0)
-			      printf("        ");
-			    sprint_vector(temp, n_i, 1, NULL);
-			  }
-
-			  for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
-			    if (j < n_i) {
-			      printf("      ");
-			      printf("%24.16e", x[ix]);
-			      printf("\n");
-			    }
-			    if (k < m_i) {
-			      printf("      ");
-			      printf("%24.16e", y_gen[k * incy_gen]);
-			      printf("\n");
-			      printf("      ");
-			      printf("y_final[%d] = ", iy);
-			      printf("%24.16e", y[iy]);
-			      printf("\n");
-			    }
-			    ix += incx;
-			    iy += incy;
-			  }
+			  sge_print_matrix(A, m_i, n_i, lda, order_type, "A");
+			  dprint_vector(x, n_i, incx_val, "x");
+			  dprint_vector(y_gen, m_i, 1, "y");
+			  dprint_vector(y, m_i, incy_val, "y_final");
 
 			  printf("      ");
 			  printf("alpha = ");
@@ -1178,14 +1054,8 @@ end:
   *num_tests = tot_tests;
   return ratio_max;
 }				/* end of do_test_dgemv_s_d */
-
-double do_test_dgemv_s_s(int m, int n,
-			 int ntests,
-			 int *seed,
-			 double thresh,
-			 int debug,
-			 float test_prob,
-			 double *min_ratio,
+double do_test_dgemv_s_s(int m, int n, int ntests, int *seed, double thresh,
+			 int debug, float test_prob, double *min_ratio,
 			 int *num_bad_ratio, int *num_tests)
 
 /*
@@ -1270,10 +1140,10 @@ double do_test_dgemv_s_s(int m, int n,
      variables */
   int i;			/* iterate through the repeating tests */
   int j, k;			/* multipurpose counters or variables */
-  int ix, iy;			/* use to index x and y respectively */
+  int iy;			/* use to index y */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
+  int incy_gen;			/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
   int p_count;			/* counter for the number of debug lines printed */
@@ -1349,17 +1219,16 @@ double do_test_dgemv_s_s(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = 1;
-
+  incy_gen = 1;
 
 
   /* get space for calculation */
-  x = (float *) blas_malloc(max_mn * 2 * incx_gen * sizeof(float));
-  if (max_mn * 2 * incx_gen > 0 && x == NULL) {
+  x = (float *) blas_malloc(max_mn * 2 * sizeof(float));
+  if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double));
-  if (max_mn * 2 * incy_gen > 0 && y == NULL) {
+  y = (double *) blas_malloc(max_mn * 2 * sizeof(double));
+  if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float));
@@ -1495,10 +1364,10 @@ double do_test_dgemv_s_s(int m, int n,
 
 		  /* in the trivial cases, no need to run testgen */
 		  if (m > 0 && n > 0)
-		    BLAS_dgemv_s_s_testgen(norm, order_type, trans_type,
-					   m, n, &alpha, alpha_flag, A, lda,
-					   x_gen, &beta, beta_flag, y_gen,
-					   seed, head_r_true, tail_r_true);
+		    BLAS_dgemv_s_s_testgen(norm, order_type, trans_type, m, n,
+					   &alpha, alpha_flag, A, lda, x_gen,
+					   &beta, beta_flag, y_gen, seed,
+					   head_r_true, tail_r_true);
 
 		  count++;
 
@@ -1511,17 +1380,7 @@ double do_test_dgemv_s_s(int m, int n,
 		    incx = incx_val;
 
 
-		    /* set x starting index */
-		    ix = 0;
-		    if (incx < 0)
-		      ix = -(n_i - 1) * incx;
-
-		    /* copy x_gen to x */
-		    for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-		      x[ix] = x_gen[j];
-
-		      ix += incx;
-		    }
+		    scopy_vector(x_gen, n_i, 1, x, incx_val);
 
 		    /* varying incy */
 		    for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -1532,19 +1391,8 @@ double do_test_dgemv_s_s(int m, int n,
 		      incy = incy_val;
 
 
-		      /* set y starting index */
-		      iy = 0;
-		      if (incy < 0)
-			iy = -(m_i - 1) * incy;
+		      dcopy_vector(y_gen, m_i, 1, y, incy_val);
 
-		      /* copy y_gen to y */
-		      for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			y[iy] = y_gen[j];
-
-			iy += incy;
-		      }
-
-		      /* call BLAS_dgemv_s_s */
 		      FPU_FIX_STOP;
 		      BLAS_dgemv_s_s(order_type, trans_type, m, n, alpha, A,
 				     lda, x, incx_val, beta, y, incy_val);
@@ -1562,13 +1410,11 @@ double do_test_dgemv_s_s(int m, int n,
 			  sge_copy_row(order_type, trans_type, m_i, n_i, A,
 				       lda, temp, j);
 
-			  test_BLAS_ddot_s_s(n_i, blas_no_conj,
-					     alpha, beta, y_gen[k],
-					     y[iy],
-					     head_r_true[k],
-					     tail_r_true[k],
-					     temp, 1, x, incx_val, eps_int,
-					     un_int, &ratios[j]);
+			  test_BLAS_ddot_s_s(n_i, blas_no_conj, alpha, beta,
+					     y_gen[k], y[iy], head_r_true[k],
+					     tail_r_true[k], temp, 1, x,
+					     incx_val, eps_int, un_int,
+					     &ratios[j]);
 
 			  /* take the max ratio */
 			  if (j == 0) {
@@ -1648,42 +1494,10 @@ double do_test_dgemv_s_s(int m, int n,
 			  printf("lda=%d, incx=%d, incy=%d:\n", lda, incx,
 				 incy);
 
-			  ix = 0;
-			  iy = 0;
-			  if (incx < 0)
-			    ix = -(n_i - 1) * incx;
-			  if (incy < 0)
-			    iy = -(m_i - 1) * incy;
-
-			  printf("      A=");
-			  for (j = 0; j < m_i; j++) {
-			    /* copy row j of A to temp */
-			    sge_copy_row(order_type, trans_type, m_i, n_i, A,
-					 lda, temp, j);
-
-			    if (j > 0)
-			      printf("        ");
-			    sprint_vector(temp, n_i, 1, NULL);
-			  }
-
-			  for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
-			    if (j < n_i) {
-			      printf("      ");
-			      printf("%16.8e", x[ix]);
-			      printf("\n");
-			    }
-			    if (k < m_i) {
-			      printf("      ");
-			      printf("%24.16e", y_gen[k * incy_gen]);
-			      printf("\n");
-			      printf("      ");
-			      printf("y_final[%d] = ", iy);
-			      printf("%24.16e", y[iy]);
-			      printf("\n");
-			    }
-			    ix += incx;
-			    iy += incy;
-			  }
+			  sge_print_matrix(A, m_i, n_i, lda, order_type, "A");
+			  sprint_vector(x, n_i, incx_val, "x");
+			  dprint_vector(y_gen, m_i, 1, "y");
+			  dprint_vector(y, m_i, incy_val, "y_final");
 
 			  printf("      ");
 			  printf("alpha = ");
@@ -1764,14 +1578,8 @@ end:
   *num_tests = tot_tests;
   return ratio_max;
 }				/* end of do_test_dgemv_s_s */
-
-double do_test_zgemv_z_c(int m, int n,
-			 int ntests,
-			 int *seed,
-			 double thresh,
-			 int debug,
-			 float test_prob,
-			 double *min_ratio,
+double do_test_zgemv_z_c(int m, int n, int ntests, int *seed, double thresh,
+			 int debug, float test_prob, double *min_ratio,
 			 int *num_bad_ratio, int *num_tests)
 
 /*
@@ -1856,10 +1664,10 @@ double do_test_zgemv_z_c(int m, int n,
      variables */
   int i;			/* iterate through the repeating tests */
   int j, k;			/* multipurpose counters or variables */
-  int ix, iy;			/* use to index x and y respectively */
+  int iy;			/* use to index y */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
+  int incy_gen;			/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
   int p_count;			/* counter for the number of debug lines printed */
@@ -1936,17 +1744,16 @@ double do_test_zgemv_z_c(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = 1;
-  incx_gen *= 2;
+  incy_gen = 1;
   incy_gen *= 2;
 
   /* get space for calculation */
-  x = (float *) blas_malloc(max_mn * 2 * incx_gen * sizeof(float) * 2);
-  if (max_mn * 2 * incx_gen > 0 && x == NULL) {
+  x = (float *) blas_malloc(max_mn * 2 * sizeof(float) * 2);
+  if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double) * 2);
-  if (max_mn * 2 * incy_gen > 0 && y == NULL) {
+  y = (double *) blas_malloc(max_mn * 2 * sizeof(double) * 2);
+  if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float) * 2);
@@ -2086,10 +1893,10 @@ double do_test_zgemv_z_c(int m, int n,
 
 		  /* in the trivial cases, no need to run testgen */
 		  if (m > 0 && n > 0)
-		    BLAS_zgemv_z_c_testgen(norm, order_type, trans_type,
-					   m, n, &alpha, alpha_flag, A, lda,
-					   x_gen, &beta, beta_flag, y_gen,
-					   seed, head_r_true, tail_r_true);
+		    BLAS_zgemv_z_c_testgen(norm, order_type, trans_type, m, n,
+					   &alpha, alpha_flag, A, lda, x_gen,
+					   &beta, beta_flag, y_gen, seed,
+					   head_r_true, tail_r_true);
 
 		  count++;
 
@@ -2102,18 +1909,7 @@ double do_test_zgemv_z_c(int m, int n,
 		    incx = incx_val;
 		    incx *= 2;
 
-		    /* set x starting index */
-		    ix = 0;
-		    if (incx < 0)
-		      ix = -(n_i - 1) * incx;
-
-		    /* copy x_gen to x */
-		    for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-		      x[ix] = x_gen[j];
-		      x[ix + 1] = x_gen[j + 1];
-
-		      ix += incx;
-		    }
+		    ccopy_vector(x_gen, n_i, 1, x, incx_val);
 
 		    /* varying incy */
 		    for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -2124,20 +1920,8 @@ double do_test_zgemv_z_c(int m, int n,
 		      incy = incy_val;
 		      incy *= 2;
 
-		      /* set y starting index */
-		      iy = 0;
-		      if (incy < 0)
-			iy = -(m_i - 1) * incy;
+		      zcopy_vector(y_gen, m_i, 1, y, incy_val);
 
-		      /* copy y_gen to y */
-		      for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			y[iy] = y_gen[j];
-			y[iy + 1] = y_gen[j + 1];
-
-			iy += incy;
-		      }
-
-		      /* call BLAS_zgemv_z_c */
 		      FPU_FIX_STOP;
 		      BLAS_zgemv_z_c(order_type, trans_type, m, n, alpha, A,
 				     lda, x, incx_val, beta, y, incy_val);
@@ -2155,11 +1939,9 @@ double do_test_zgemv_z_c(int m, int n,
 			  zge_copy_row(order_type, trans_type, m_i, n_i, A,
 				       lda, temp, j);
 
-			  test_BLAS_zdot_z_c(n_i, blas_no_conj,
-					     alpha, beta, &y_gen[k],
-					     &y[iy],
-					     &head_r_true[k],
-					     &tail_r_true[k],
+			  test_BLAS_zdot_z_c(n_i, blas_no_conj, alpha, beta,
+					     &y_gen[k], &y[iy],
+					     &head_r_true[k], &tail_r_true[k],
 					     temp, 1, x, incx_val, eps_int,
 					     un_int, &ratios[j]);
 
@@ -2241,44 +2023,10 @@ double do_test_zgemv_z_c(int m, int n,
 			  printf("lda=%d, incx=%d, incy=%d:\n", lda, incx,
 				 incy);
 
-			  ix = 0;
-			  iy = 0;
-			  if (incx < 0)
-			    ix = -(n_i - 1) * incx;
-			  if (incy < 0)
-			    iy = -(m_i - 1) * incy;
-
-			  printf("      A=");
-			  for (j = 0; j < m_i; j++) {
-			    /* copy row j of A to temp */
-			    zge_copy_row(order_type, trans_type, m_i, n_i, A,
-					 lda, temp, j);
-
-			    if (j > 0)
-			      printf("        ");
-			    zprint_vector(temp, n_i, 1, NULL);
-			  }
-
-			  for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
-			    if (j < n_i) {
-			      printf("      ");
-			      printf("(%16.8e, %16.8e)", x[ix], x[ix + 1]);
-			      printf("\n");
-			    }
-			    if (k < m_i) {
-			      printf("      ");
-			      printf("(%24.16e, %24.16e)",
-				     y_gen[k * incy_gen],
-				     y_gen[k * incy_gen + 1]);
-			      printf("\n");
-			      printf("      ");
-			      printf("y_final[%d] = ", iy);
-			      printf("(%24.16e, %24.16e)", y[iy], y[iy + 1]);
-			      printf("\n");
-			    }
-			    ix += incx;
-			    iy += incy;
-			  }
+			  zge_print_matrix(A, m_i, n_i, lda, order_type, "A");
+			  cprint_vector(x, n_i, incx_val, "x");
+			  zprint_vector(y_gen, m_i, 1, "y");
+			  zprint_vector(y, m_i, incy_val, "y_final");
 
 			  printf("      ");
 			  printf("alpha = ");
@@ -2360,14 +2108,8 @@ end:
   *num_tests = tot_tests;
   return ratio_max;
 }				/* end of do_test_zgemv_z_c */
-
-double do_test_zgemv_c_z(int m, int n,
-			 int ntests,
-			 int *seed,
-			 double thresh,
-			 int debug,
-			 float test_prob,
-			 double *min_ratio,
+double do_test_zgemv_c_z(int m, int n, int ntests, int *seed, double thresh,
+			 int debug, float test_prob, double *min_ratio,
 			 int *num_bad_ratio, int *num_tests)
 
 /*
@@ -2452,10 +2194,10 @@ double do_test_zgemv_c_z(int m, int n,
      variables */
   int i;			/* iterate through the repeating tests */
   int j, k;			/* multipurpose counters or variables */
-  int ix, iy;			/* use to index x and y respectively */
+  int iy;			/* use to index y */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
+  int incy_gen;			/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
   int p_count;			/* counter for the number of debug lines printed */
@@ -2532,17 +2274,16 @@ double do_test_zgemv_c_z(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = 1;
-  incx_gen *= 2;
+  incy_gen = 1;
   incy_gen *= 2;
 
   /* get space for calculation */
-  x = (double *) blas_malloc(max_mn * 2 * incx_gen * sizeof(double) * 2);
-  if (max_mn * 2 * incx_gen > 0 && x == NULL) {
+  x = (double *) blas_malloc(max_mn * 2 * sizeof(double) * 2);
+  if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double) * 2);
-  if (max_mn * 2 * incy_gen > 0 && y == NULL) {
+  y = (double *) blas_malloc(max_mn * 2 * sizeof(double) * 2);
+  if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   x_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
@@ -2682,10 +2423,10 @@ double do_test_zgemv_c_z(int m, int n,
 
 		  /* in the trivial cases, no need to run testgen */
 		  if (m > 0 && n > 0)
-		    BLAS_zgemv_c_z_testgen(norm, order_type, trans_type,
-					   m, n, &alpha, alpha_flag, A, lda,
-					   x_gen, &beta, beta_flag, y_gen,
-					   seed, head_r_true, tail_r_true);
+		    BLAS_zgemv_c_z_testgen(norm, order_type, trans_type, m, n,
+					   &alpha, alpha_flag, A, lda, x_gen,
+					   &beta, beta_flag, y_gen, seed,
+					   head_r_true, tail_r_true);
 
 		  count++;
 
@@ -2698,18 +2439,7 @@ double do_test_zgemv_c_z(int m, int n,
 		    incx = incx_val;
 		    incx *= 2;
 
-		    /* set x starting index */
-		    ix = 0;
-		    if (incx < 0)
-		      ix = -(n_i - 1) * incx;
-
-		    /* copy x_gen to x */
-		    for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-		      x[ix] = x_gen[j];
-		      x[ix + 1] = x_gen[j + 1];
-
-		      ix += incx;
-		    }
+		    zcopy_vector(x_gen, n_i, 1, x, incx_val);
 
 		    /* varying incy */
 		    for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -2720,20 +2450,8 @@ double do_test_zgemv_c_z(int m, int n,
 		      incy = incy_val;
 		      incy *= 2;
 
-		      /* set y starting index */
-		      iy = 0;
-		      if (incy < 0)
-			iy = -(m_i - 1) * incy;
+		      zcopy_vector(y_gen, m_i, 1, y, incy_val);
 
-		      /* copy y_gen to y */
-		      for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			y[iy] = y_gen[j];
-			y[iy + 1] = y_gen[j + 1];
-
-			iy += incy;
-		      }
-
-		      /* call BLAS_zgemv_c_z */
 		      FPU_FIX_STOP;
 		      BLAS_zgemv_c_z(order_type, trans_type, m, n, alpha, A,
 				     lda, x, incx_val, beta, y, incy_val);
@@ -2751,11 +2469,9 @@ double do_test_zgemv_c_z(int m, int n,
 			  cge_copy_row(order_type, trans_type, m_i, n_i, A,
 				       lda, temp, j);
 
-			  test_BLAS_zdot_c_z(n_i, blas_no_conj,
-					     alpha, beta, &y_gen[k],
-					     &y[iy],
-					     &head_r_true[k],
-					     &tail_r_true[k],
+			  test_BLAS_zdot_c_z(n_i, blas_no_conj, alpha, beta,
+					     &y_gen[k], &y[iy],
+					     &head_r_true[k], &tail_r_true[k],
 					     temp, 1, x, incx_val, eps_int,
 					     un_int, &ratios[j]);
 
@@ -2837,44 +2553,10 @@ double do_test_zgemv_c_z(int m, int n,
 			  printf("lda=%d, incx=%d, incy=%d:\n", lda, incx,
 				 incy);
 
-			  ix = 0;
-			  iy = 0;
-			  if (incx < 0)
-			    ix = -(n_i - 1) * incx;
-			  if (incy < 0)
-			    iy = -(m_i - 1) * incy;
-
-			  printf("      A=");
-			  for (j = 0; j < m_i; j++) {
-			    /* copy row j of A to temp */
-			    cge_copy_row(order_type, trans_type, m_i, n_i, A,
-					 lda, temp, j);
-
-			    if (j > 0)
-			      printf("        ");
-			    cprint_vector(temp, n_i, 1, NULL);
-			  }
-
-			  for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
-			    if (j < n_i) {
-			      printf("      ");
-			      printf("(%24.16e, %24.16e)", x[ix], x[ix + 1]);
-			      printf("\n");
-			    }
-			    if (k < m_i) {
-			      printf("      ");
-			      printf("(%24.16e, %24.16e)",
-				     y_gen[k * incy_gen],
-				     y_gen[k * incy_gen + 1]);
-			      printf("\n");
-			      printf("      ");
-			      printf("y_final[%d] = ", iy);
-			      printf("(%24.16e, %24.16e)", y[iy], y[iy + 1]);
-			      printf("\n");
-			    }
-			    ix += incx;
-			    iy += incy;
-			  }
+			  cge_print_matrix(A, m_i, n_i, lda, order_type, "A");
+			  zprint_vector(x, n_i, incx_val, "x");
+			  zprint_vector(y_gen, m_i, 1, "y");
+			  zprint_vector(y, m_i, incy_val, "y_final");
 
 			  printf("      ");
 			  printf("alpha = ");
@@ -2956,14 +2638,8 @@ end:
   *num_tests = tot_tests;
   return ratio_max;
 }				/* end of do_test_zgemv_c_z */
-
-double do_test_zgemv_c_c(int m, int n,
-			 int ntests,
-			 int *seed,
-			 double thresh,
-			 int debug,
-			 float test_prob,
-			 double *min_ratio,
+double do_test_zgemv_c_c(int m, int n, int ntests, int *seed, double thresh,
+			 int debug, float test_prob, double *min_ratio,
 			 int *num_bad_ratio, int *num_tests)
 
 /*
@@ -3048,10 +2724,10 @@ double do_test_zgemv_c_c(int m, int n,
      variables */
   int i;			/* iterate through the repeating tests */
   int j, k;			/* multipurpose counters or variables */
-  int ix, iy;			/* use to index x and y respectively */
+  int iy;			/* use to index y */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
+  int incy_gen;			/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
   int p_count;			/* counter for the number of debug lines printed */
@@ -3128,17 +2804,16 @@ double do_test_zgemv_c_c(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = 1;
-  incx_gen *= 2;
+  incy_gen = 1;
   incy_gen *= 2;
 
   /* get space for calculation */
-  x = (float *) blas_malloc(max_mn * 2 * incx_gen * sizeof(float) * 2);
-  if (max_mn * 2 * incx_gen > 0 && x == NULL) {
+  x = (float *) blas_malloc(max_mn * 2 * sizeof(float) * 2);
+  if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double) * 2);
-  if (max_mn * 2 * incy_gen > 0 && y == NULL) {
+  y = (double *) blas_malloc(max_mn * 2 * sizeof(double) * 2);
+  if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float) * 2);
@@ -3278,10 +2953,10 @@ double do_test_zgemv_c_c(int m, int n,
 
 		  /* in the trivial cases, no need to run testgen */
 		  if (m > 0 && n > 0)
-		    BLAS_zgemv_c_c_testgen(norm, order_type, trans_type,
-					   m, n, &alpha, alpha_flag, A, lda,
-					   x_gen, &beta, beta_flag, y_gen,
-					   seed, head_r_true, tail_r_true);
+		    BLAS_zgemv_c_c_testgen(norm, order_type, trans_type, m, n,
+					   &alpha, alpha_flag, A, lda, x_gen,
+					   &beta, beta_flag, y_gen, seed,
+					   head_r_true, tail_r_true);
 
 		  count++;
 
@@ -3294,18 +2969,7 @@ double do_test_zgemv_c_c(int m, int n,
 		    incx = incx_val;
 		    incx *= 2;
 
-		    /* set x starting index */
-		    ix = 0;
-		    if (incx < 0)
-		      ix = -(n_i - 1) * incx;
-
-		    /* copy x_gen to x */
-		    for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-		      x[ix] = x_gen[j];
-		      x[ix + 1] = x_gen[j + 1];
-
-		      ix += incx;
-		    }
+		    ccopy_vector(x_gen, n_i, 1, x, incx_val);
 
 		    /* varying incy */
 		    for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -3316,20 +2980,8 @@ double do_test_zgemv_c_c(int m, int n,
 		      incy = incy_val;
 		      incy *= 2;
 
-		      /* set y starting index */
-		      iy = 0;
-		      if (incy < 0)
-			iy = -(m_i - 1) * incy;
+		      zcopy_vector(y_gen, m_i, 1, y, incy_val);
 
-		      /* copy y_gen to y */
-		      for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			y[iy] = y_gen[j];
-			y[iy + 1] = y_gen[j + 1];
-
-			iy += incy;
-		      }
-
-		      /* call BLAS_zgemv_c_c */
 		      FPU_FIX_STOP;
 		      BLAS_zgemv_c_c(order_type, trans_type, m, n, alpha, A,
 				     lda, x, incx_val, beta, y, incy_val);
@@ -3347,11 +2999,9 @@ double do_test_zgemv_c_c(int m, int n,
 			  cge_copy_row(order_type, trans_type, m_i, n_i, A,
 				       lda, temp, j);
 
-			  test_BLAS_zdot_c_c(n_i, blas_no_conj,
-					     alpha, beta, &y_gen[k],
-					     &y[iy],
-					     &head_r_true[k],
-					     &tail_r_true[k],
+			  test_BLAS_zdot_c_c(n_i, blas_no_conj, alpha, beta,
+					     &y_gen[k], &y[iy],
+					     &head_r_true[k], &tail_r_true[k],
 					     temp, 1, x, incx_val, eps_int,
 					     un_int, &ratios[j]);
 
@@ -3433,44 +3083,10 @@ double do_test_zgemv_c_c(int m, int n,
 			  printf("lda=%d, incx=%d, incy=%d:\n", lda, incx,
 				 incy);
 
-			  ix = 0;
-			  iy = 0;
-			  if (incx < 0)
-			    ix = -(n_i - 1) * incx;
-			  if (incy < 0)
-			    iy = -(m_i - 1) * incy;
-
-			  printf("      A=");
-			  for (j = 0; j < m_i; j++) {
-			    /* copy row j of A to temp */
-			    cge_copy_row(order_type, trans_type, m_i, n_i, A,
-					 lda, temp, j);
-
-			    if (j > 0)
-			      printf("        ");
-			    cprint_vector(temp, n_i, 1, NULL);
-			  }
-
-			  for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
-			    if (j < n_i) {
-			      printf("      ");
-			      printf("(%16.8e, %16.8e)", x[ix], x[ix + 1]);
-			      printf("\n");
-			    }
-			    if (k < m_i) {
-			      printf("      ");
-			      printf("(%24.16e, %24.16e)",
-				     y_gen[k * incy_gen],
-				     y_gen[k * incy_gen + 1]);
-			      printf("\n");
-			      printf("      ");
-			      printf("y_final[%d] = ", iy);
-			      printf("(%24.16e, %24.16e)", y[iy], y[iy + 1]);
-			      printf("\n");
-			    }
-			    ix += incx;
-			    iy += incy;
-			  }
+			  cge_print_matrix(A, m_i, n_i, lda, order_type, "A");
+			  cprint_vector(x, n_i, incx_val, "x");
+			  zprint_vector(y_gen, m_i, 1, "y");
+			  zprint_vector(y, m_i, incy_val, "y_final");
 
 			  printf("      ");
 			  printf("alpha = ");
@@ -3552,14 +3168,8 @@ end:
   *num_tests = tot_tests;
   return ratio_max;
 }				/* end of do_test_zgemv_c_c */
-
-double do_test_cgemv_c_s(int m, int n,
-			 int ntests,
-			 int *seed,
-			 double thresh,
-			 int debug,
-			 float test_prob,
-			 double *min_ratio,
+double do_test_cgemv_c_s(int m, int n, int ntests, int *seed, double thresh,
+			 int debug, float test_prob, double *min_ratio,
 			 int *num_bad_ratio, int *num_tests)
 
 /*
@@ -3644,10 +3254,10 @@ double do_test_cgemv_c_s(int m, int n,
      variables */
   int i;			/* iterate through the repeating tests */
   int j, k;			/* multipurpose counters or variables */
-  int ix, iy;			/* use to index x and y respectively */
+  int iy;			/* use to index y */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
+  int incy_gen;			/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
   int p_count;			/* counter for the number of debug lines printed */
@@ -3724,17 +3334,16 @@ double do_test_cgemv_c_s(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = 1;
-
+  incy_gen = 1;
   incy_gen *= 2;
 
   /* get space for calculation */
-  x = (float *) blas_malloc(max_mn * 2 * incx_gen * sizeof(float));
-  if (max_mn * 2 * incx_gen > 0 && x == NULL) {
+  x = (float *) blas_malloc(max_mn * 2 * sizeof(float));
+  if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  y = (float *) blas_malloc(max_mn * 2 * incy_gen * sizeof(float) * 2);
-  if (max_mn * 2 * incy_gen > 0 && y == NULL) {
+  y = (float *) blas_malloc(max_mn * 2 * sizeof(float) * 2);
+  if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float));
@@ -3874,10 +3483,10 @@ double do_test_cgemv_c_s(int m, int n,
 
 		  /* in the trivial cases, no need to run testgen */
 		  if (m > 0 && n > 0)
-		    BLAS_cgemv_c_s_testgen(norm, order_type, trans_type,
-					   m, n, &alpha, alpha_flag, A, lda,
-					   x_gen, &beta, beta_flag, y_gen,
-					   seed, head_r_true, tail_r_true);
+		    BLAS_cgemv_c_s_testgen(norm, order_type, trans_type, m, n,
+					   &alpha, alpha_flag, A, lda, x_gen,
+					   &beta, beta_flag, y_gen, seed,
+					   head_r_true, tail_r_true);
 
 		  count++;
 
@@ -3890,17 +3499,7 @@ double do_test_cgemv_c_s(int m, int n,
 		    incx = incx_val;
 
 
-		    /* set x starting index */
-		    ix = 0;
-		    if (incx < 0)
-		      ix = -(n_i - 1) * incx;
-
-		    /* copy x_gen to x */
-		    for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-		      x[ix] = x_gen[j];
-
-		      ix += incx;
-		    }
+		    scopy_vector(x_gen, n_i, 1, x, incx_val);
 
 		    /* varying incy */
 		    for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -3911,20 +3510,8 @@ double do_test_cgemv_c_s(int m, int n,
 		      incy = incy_val;
 		      incy *= 2;
 
-		      /* set y starting index */
-		      iy = 0;
-		      if (incy < 0)
-			iy = -(m_i - 1) * incy;
+		      ccopy_vector(y_gen, m_i, 1, y, incy_val);
 
-		      /* copy y_gen to y */
-		      for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			y[iy] = y_gen[j];
-			y[iy + 1] = y_gen[j + 1];
-
-			iy += incy;
-		      }
-
-		      /* call BLAS_cgemv_c_s */
 		      FPU_FIX_STOP;
 		      BLAS_cgemv_c_s(order_type, trans_type, m, n, alpha, A,
 				     lda, x, incx_val, beta, y, incy_val);
@@ -3942,11 +3529,9 @@ double do_test_cgemv_c_s(int m, int n,
 			  cge_copy_row(order_type, trans_type, m_i, n_i, A,
 				       lda, temp, j);
 
-			  test_BLAS_cdot_c_s(n_i, blas_no_conj,
-					     alpha, beta, &y_gen[k],
-					     &y[iy],
-					     &head_r_true[k],
-					     &tail_r_true[k],
+			  test_BLAS_cdot_c_s(n_i, blas_no_conj, alpha, beta,
+					     &y_gen[k], &y[iy],
+					     &head_r_true[k], &tail_r_true[k],
 					     temp, 1, x, incx_val, eps_int,
 					     un_int, &ratios[j]);
 
@@ -4028,43 +3613,10 @@ double do_test_cgemv_c_s(int m, int n,
 			  printf("lda=%d, incx=%d, incy=%d:\n", lda, incx,
 				 incy);
 
-			  ix = 0;
-			  iy = 0;
-			  if (incx < 0)
-			    ix = -(n_i - 1) * incx;
-			  if (incy < 0)
-			    iy = -(m_i - 1) * incy;
-
-			  printf("      A=");
-			  for (j = 0; j < m_i; j++) {
-			    /* copy row j of A to temp */
-			    cge_copy_row(order_type, trans_type, m_i, n_i, A,
-					 lda, temp, j);
-
-			    if (j > 0)
-			      printf("        ");
-			    cprint_vector(temp, n_i, 1, NULL);
-			  }
-
-			  for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
-			    if (j < n_i) {
-			      printf("      ");
-			      printf("%16.8e", x[ix]);
-			      printf("\n");
-			    }
-			    if (k < m_i) {
-			      printf("      ");
-			      printf("(%16.8e, %16.8e)", y_gen[k * incy_gen],
-				     y_gen[k * incy_gen + 1]);
-			      printf("\n");
-			      printf("      ");
-			      printf("y_final[%d] = ", iy);
-			      printf("(%16.8e, %16.8e)", y[iy], y[iy + 1]);
-			      printf("\n");
-			    }
-			    ix += incx;
-			    iy += incy;
-			  }
+			  cge_print_matrix(A, m_i, n_i, lda, order_type, "A");
+			  sprint_vector(x, n_i, incx_val, "x");
+			  cprint_vector(y_gen, m_i, 1, "y");
+			  cprint_vector(y, m_i, incy_val, "y_final");
 
 			  printf("      ");
 			  printf("alpha = ");
@@ -4146,14 +3698,8 @@ end:
   *num_tests = tot_tests;
   return ratio_max;
 }				/* end of do_test_cgemv_c_s */
-
-double do_test_cgemv_s_c(int m, int n,
-			 int ntests,
-			 int *seed,
-			 double thresh,
-			 int debug,
-			 float test_prob,
-			 double *min_ratio,
+double do_test_cgemv_s_c(int m, int n, int ntests, int *seed, double thresh,
+			 int debug, float test_prob, double *min_ratio,
 			 int *num_bad_ratio, int *num_tests)
 
 /*
@@ -4238,10 +3784,10 @@ double do_test_cgemv_s_c(int m, int n,
      variables */
   int i;			/* iterate through the repeating tests */
   int j, k;			/* multipurpose counters or variables */
-  int ix, iy;			/* use to index x and y respectively */
+  int iy;			/* use to index y */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
+  int incy_gen;			/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
   int p_count;			/* counter for the number of debug lines printed */
@@ -4318,17 +3864,16 @@ double do_test_cgemv_s_c(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = 1;
-  incx_gen *= 2;
+  incy_gen = 1;
   incy_gen *= 2;
 
   /* get space for calculation */
-  x = (float *) blas_malloc(max_mn * 2 * incx_gen * sizeof(float) * 2);
-  if (max_mn * 2 * incx_gen > 0 && x == NULL) {
+  x = (float *) blas_malloc(max_mn * 2 * sizeof(float) * 2);
+  if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  y = (float *) blas_malloc(max_mn * 2 * incy_gen * sizeof(float) * 2);
-  if (max_mn * 2 * incy_gen > 0 && y == NULL) {
+  y = (float *) blas_malloc(max_mn * 2 * sizeof(float) * 2);
+  if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float) * 2);
@@ -4466,10 +4011,10 @@ double do_test_cgemv_s_c(int m, int n,
 
 		  /* in the trivial cases, no need to run testgen */
 		  if (m > 0 && n > 0)
-		    BLAS_cgemv_s_c_testgen(norm, order_type, trans_type,
-					   m, n, &alpha, alpha_flag, A, lda,
-					   x_gen, &beta, beta_flag, y_gen,
-					   seed, head_r_true, tail_r_true);
+		    BLAS_cgemv_s_c_testgen(norm, order_type, trans_type, m, n,
+					   &alpha, alpha_flag, A, lda, x_gen,
+					   &beta, beta_flag, y_gen, seed,
+					   head_r_true, tail_r_true);
 
 		  count++;
 
@@ -4482,18 +4027,7 @@ double do_test_cgemv_s_c(int m, int n,
 		    incx = incx_val;
 		    incx *= 2;
 
-		    /* set x starting index */
-		    ix = 0;
-		    if (incx < 0)
-		      ix = -(n_i - 1) * incx;
-
-		    /* copy x_gen to x */
-		    for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-		      x[ix] = x_gen[j];
-		      x[ix + 1] = x_gen[j + 1];
-
-		      ix += incx;
-		    }
+		    ccopy_vector(x_gen, n_i, 1, x, incx_val);
 
 		    /* varying incy */
 		    for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -4504,20 +4038,8 @@ double do_test_cgemv_s_c(int m, int n,
 		      incy = incy_val;
 		      incy *= 2;
 
-		      /* set y starting index */
-		      iy = 0;
-		      if (incy < 0)
-			iy = -(m_i - 1) * incy;
+		      ccopy_vector(y_gen, m_i, 1, y, incy_val);
 
-		      /* copy y_gen to y */
-		      for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			y[iy] = y_gen[j];
-			y[iy + 1] = y_gen[j + 1];
-
-			iy += incy;
-		      }
-
-		      /* call BLAS_cgemv_s_c */
 		      FPU_FIX_STOP;
 		      BLAS_cgemv_s_c(order_type, trans_type, m, n, alpha, A,
 				     lda, x, incx_val, beta, y, incy_val);
@@ -4535,11 +4057,9 @@ double do_test_cgemv_s_c(int m, int n,
 			  sge_copy_row(order_type, trans_type, m_i, n_i, A,
 				       lda, temp, j);
 
-			  test_BLAS_cdot_s_c(n_i, blas_no_conj,
-					     alpha, beta, &y_gen[k],
-					     &y[iy],
-					     &head_r_true[k],
-					     &tail_r_true[k],
+			  test_BLAS_cdot_s_c(n_i, blas_no_conj, alpha, beta,
+					     &y_gen[k], &y[iy],
+					     &head_r_true[k], &tail_r_true[k],
 					     temp, 1, x, incx_val, eps_int,
 					     un_int, &ratios[j]);
 
@@ -4621,43 +4141,10 @@ double do_test_cgemv_s_c(int m, int n,
 			  printf("lda=%d, incx=%d, incy=%d:\n", lda, incx,
 				 incy);
 
-			  ix = 0;
-			  iy = 0;
-			  if (incx < 0)
-			    ix = -(n_i - 1) * incx;
-			  if (incy < 0)
-			    iy = -(m_i - 1) * incy;
-
-			  printf("      A=");
-			  for (j = 0; j < m_i; j++) {
-			    /* copy row j of A to temp */
-			    sge_copy_row(order_type, trans_type, m_i, n_i, A,
-					 lda, temp, j);
-
-			    if (j > 0)
-			      printf("        ");
-			    sprint_vector(temp, n_i, 1, NULL);
-			  }
-
-			  for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
-			    if (j < n_i) {
-			      printf("      ");
-			      printf("(%16.8e, %16.8e)", x[ix], x[ix + 1]);
-			      printf("\n");
-			    }
-			    if (k < m_i) {
-			      printf("      ");
-			      printf("(%16.8e, %16.8e)", y_gen[k * incy_gen],
-				     y_gen[k * incy_gen + 1]);
-			      printf("\n");
-			      printf("      ");
-			      printf("y_final[%d] = ", iy);
-			      printf("(%16.8e, %16.8e)", y[iy], y[iy + 1]);
-			      printf("\n");
-			    }
-			    ix += incx;
-			    iy += incy;
-			  }
+			  sge_print_matrix(A, m_i, n_i, lda, order_type, "A");
+			  cprint_vector(x, n_i, incx_val, "x");
+			  cprint_vector(y_gen, m_i, 1, "y");
+			  cprint_vector(y, m_i, incy_val, "y_final");
 
 			  printf("      ");
 			  printf("alpha = ");
@@ -4739,14 +4226,8 @@ end:
   *num_tests = tot_tests;
   return ratio_max;
 }				/* end of do_test_cgemv_s_c */
-
-double do_test_cgemv_s_s(int m, int n,
-			 int ntests,
-			 int *seed,
-			 double thresh,
-			 int debug,
-			 float test_prob,
-			 double *min_ratio,
+double do_test_cgemv_s_s(int m, int n, int ntests, int *seed, double thresh,
+			 int debug, float test_prob, double *min_ratio,
 			 int *num_bad_ratio, int *num_tests)
 
 /*
@@ -4831,10 +4312,10 @@ double do_test_cgemv_s_s(int m, int n,
      variables */
   int i;			/* iterate through the repeating tests */
   int j, k;			/* multipurpose counters or variables */
-  int ix, iy;			/* use to index x and y respectively */
+  int iy;			/* use to index y */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
+  int incy_gen;			/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
   int p_count;			/* counter for the number of debug lines printed */
@@ -4911,17 +4392,16 @@ double do_test_cgemv_s_s(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = 1;
-
+  incy_gen = 1;
   incy_gen *= 2;
 
   /* get space for calculation */
-  x = (float *) blas_malloc(max_mn * 2 * incx_gen * sizeof(float));
-  if (max_mn * 2 * incx_gen > 0 && x == NULL) {
+  x = (float *) blas_malloc(max_mn * 2 * sizeof(float));
+  if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  y = (float *) blas_malloc(max_mn * 2 * incy_gen * sizeof(float) * 2);
-  if (max_mn * 2 * incy_gen > 0 && y == NULL) {
+  y = (float *) blas_malloc(max_mn * 2 * sizeof(float) * 2);
+  if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float));
@@ -5059,10 +4539,10 @@ double do_test_cgemv_s_s(int m, int n,
 
 		  /* in the trivial cases, no need to run testgen */
 		  if (m > 0 && n > 0)
-		    BLAS_cgemv_s_s_testgen(norm, order_type, trans_type,
-					   m, n, &alpha, alpha_flag, A, lda,
-					   x_gen, &beta, beta_flag, y_gen,
-					   seed, head_r_true, tail_r_true);
+		    BLAS_cgemv_s_s_testgen(norm, order_type, trans_type, m, n,
+					   &alpha, alpha_flag, A, lda, x_gen,
+					   &beta, beta_flag, y_gen, seed,
+					   head_r_true, tail_r_true);
 
 		  count++;
 
@@ -5075,17 +4555,7 @@ double do_test_cgemv_s_s(int m, int n,
 		    incx = incx_val;
 
 
-		    /* set x starting index */
-		    ix = 0;
-		    if (incx < 0)
-		      ix = -(n_i - 1) * incx;
-
-		    /* copy x_gen to x */
-		    for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-		      x[ix] = x_gen[j];
-
-		      ix += incx;
-		    }
+		    scopy_vector(x_gen, n_i, 1, x, incx_val);
 
 		    /* varying incy */
 		    for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -5096,20 +4566,8 @@ double do_test_cgemv_s_s(int m, int n,
 		      incy = incy_val;
 		      incy *= 2;
 
-		      /* set y starting index */
-		      iy = 0;
-		      if (incy < 0)
-			iy = -(m_i - 1) * incy;
+		      ccopy_vector(y_gen, m_i, 1, y, incy_val);
 
-		      /* copy y_gen to y */
-		      for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			y[iy] = y_gen[j];
-			y[iy + 1] = y_gen[j + 1];
-
-			iy += incy;
-		      }
-
-		      /* call BLAS_cgemv_s_s */
 		      FPU_FIX_STOP;
 		      BLAS_cgemv_s_s(order_type, trans_type, m, n, alpha, A,
 				     lda, x, incx_val, beta, y, incy_val);
@@ -5127,11 +4585,9 @@ double do_test_cgemv_s_s(int m, int n,
 			  sge_copy_row(order_type, trans_type, m_i, n_i, A,
 				       lda, temp, j);
 
-			  test_BLAS_cdot_s_s(n_i, blas_no_conj,
-					     alpha, beta, &y_gen[k],
-					     &y[iy],
-					     &head_r_true[k],
-					     &tail_r_true[k],
+			  test_BLAS_cdot_s_s(n_i, blas_no_conj, alpha, beta,
+					     &y_gen[k], &y[iy],
+					     &head_r_true[k], &tail_r_true[k],
 					     temp, 1, x, incx_val, eps_int,
 					     un_int, &ratios[j]);
 
@@ -5213,43 +4669,10 @@ double do_test_cgemv_s_s(int m, int n,
 			  printf("lda=%d, incx=%d, incy=%d:\n", lda, incx,
 				 incy);
 
-			  ix = 0;
-			  iy = 0;
-			  if (incx < 0)
-			    ix = -(n_i - 1) * incx;
-			  if (incy < 0)
-			    iy = -(m_i - 1) * incy;
-
-			  printf("      A=");
-			  for (j = 0; j < m_i; j++) {
-			    /* copy row j of A to temp */
-			    sge_copy_row(order_type, trans_type, m_i, n_i, A,
-					 lda, temp, j);
-
-			    if (j > 0)
-			      printf("        ");
-			    sprint_vector(temp, n_i, 1, NULL);
-			  }
-
-			  for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
-			    if (j < n_i) {
-			      printf("      ");
-			      printf("%16.8e", x[ix]);
-			      printf("\n");
-			    }
-			    if (k < m_i) {
-			      printf("      ");
-			      printf("(%16.8e, %16.8e)", y_gen[k * incy_gen],
-				     y_gen[k * incy_gen + 1]);
-			      printf("\n");
-			      printf("      ");
-			      printf("y_final[%d] = ", iy);
-			      printf("(%16.8e, %16.8e)", y[iy], y[iy + 1]);
-			      printf("\n");
-			    }
-			    ix += incx;
-			    iy += incy;
-			  }
+			  sge_print_matrix(A, m_i, n_i, lda, order_type, "A");
+			  sprint_vector(x, n_i, incx_val, "x");
+			  cprint_vector(y_gen, m_i, 1, "y");
+			  cprint_vector(y, m_i, incy_val, "y_final");
 
 			  printf("      ");
 			  printf("alpha = ");
@@ -5331,14 +4754,8 @@ end:
   *num_tests = tot_tests;
   return ratio_max;
 }				/* end of do_test_cgemv_s_s */
-
-double do_test_zgemv_z_d(int m, int n,
-			 int ntests,
-			 int *seed,
-			 double thresh,
-			 int debug,
-			 float test_prob,
-			 double *min_ratio,
+double do_test_zgemv_z_d(int m, int n, int ntests, int *seed, double thresh,
+			 int debug, float test_prob, double *min_ratio,
 			 int *num_bad_ratio, int *num_tests)
 
 /*
@@ -5423,10 +4840,10 @@ double do_test_zgemv_z_d(int m, int n,
      variables */
   int i;			/* iterate through the repeating tests */
   int j, k;			/* multipurpose counters or variables */
-  int ix, iy;			/* use to index x and y respectively */
+  int iy;			/* use to index y */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
+  int incy_gen;			/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
   int p_count;			/* counter for the number of debug lines printed */
@@ -5503,17 +4920,16 @@ double do_test_zgemv_z_d(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = 1;
-
+  incy_gen = 1;
   incy_gen *= 2;
 
   /* get space for calculation */
-  x = (double *) blas_malloc(max_mn * 2 * incx_gen * sizeof(double));
-  if (max_mn * 2 * incx_gen > 0 && x == NULL) {
+  x = (double *) blas_malloc(max_mn * 2 * sizeof(double));
+  if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double) * 2);
-  if (max_mn * 2 * incy_gen > 0 && y == NULL) {
+  y = (double *) blas_malloc(max_mn * 2 * sizeof(double) * 2);
+  if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   x_gen = (double *) blas_malloc(max_mn * sizeof(double));
@@ -5653,10 +5069,10 @@ double do_test_zgemv_z_d(int m, int n,
 
 		  /* in the trivial cases, no need to run testgen */
 		  if (m > 0 && n > 0)
-		    BLAS_zgemv_z_d_testgen(norm, order_type, trans_type,
-					   m, n, &alpha, alpha_flag, A, lda,
-					   x_gen, &beta, beta_flag, y_gen,
-					   seed, head_r_true, tail_r_true);
+		    BLAS_zgemv_z_d_testgen(norm, order_type, trans_type, m, n,
+					   &alpha, alpha_flag, A, lda, x_gen,
+					   &beta, beta_flag, y_gen, seed,
+					   head_r_true, tail_r_true);
 
 		  count++;
 
@@ -5669,17 +5085,7 @@ double do_test_zgemv_z_d(int m, int n,
 		    incx = incx_val;
 
 
-		    /* set x starting index */
-		    ix = 0;
-		    if (incx < 0)
-		      ix = -(n_i - 1) * incx;
-
-		    /* copy x_gen to x */
-		    for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-		      x[ix] = x_gen[j];
-
-		      ix += incx;
-		    }
+		    dcopy_vector(x_gen, n_i, 1, x, incx_val);
 
 		    /* varying incy */
 		    for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -5690,20 +5096,8 @@ double do_test_zgemv_z_d(int m, int n,
 		      incy = incy_val;
 		      incy *= 2;
 
-		      /* set y starting index */
-		      iy = 0;
-		      if (incy < 0)
-			iy = -(m_i - 1) * incy;
+		      zcopy_vector(y_gen, m_i, 1, y, incy_val);
 
-		      /* copy y_gen to y */
-		      for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			y[iy] = y_gen[j];
-			y[iy + 1] = y_gen[j + 1];
-
-			iy += incy;
-		      }
-
-		      /* call BLAS_zgemv_z_d */
 		      FPU_FIX_STOP;
 		      BLAS_zgemv_z_d(order_type, trans_type, m, n, alpha, A,
 				     lda, x, incx_val, beta, y, incy_val);
@@ -5721,11 +5115,9 @@ double do_test_zgemv_z_d(int m, int n,
 			  zge_copy_row(order_type, trans_type, m_i, n_i, A,
 				       lda, temp, j);
 
-			  test_BLAS_zdot_z_d(n_i, blas_no_conj,
-					     alpha, beta, &y_gen[k],
-					     &y[iy],
-					     &head_r_true[k],
-					     &tail_r_true[k],
+			  test_BLAS_zdot_z_d(n_i, blas_no_conj, alpha, beta,
+					     &y_gen[k], &y[iy],
+					     &head_r_true[k], &tail_r_true[k],
 					     temp, 1, x, incx_val, eps_int,
 					     un_int, &ratios[j]);
 
@@ -5807,44 +5199,10 @@ double do_test_zgemv_z_d(int m, int n,
 			  printf("lda=%d, incx=%d, incy=%d:\n", lda, incx,
 				 incy);
 
-			  ix = 0;
-			  iy = 0;
-			  if (incx < 0)
-			    ix = -(n_i - 1) * incx;
-			  if (incy < 0)
-			    iy = -(m_i - 1) * incy;
-
-			  printf("      A=");
-			  for (j = 0; j < m_i; j++) {
-			    /* copy row j of A to temp */
-			    zge_copy_row(order_type, trans_type, m_i, n_i, A,
-					 lda, temp, j);
-
-			    if (j > 0)
-			      printf("        ");
-			    zprint_vector(temp, n_i, 1, NULL);
-			  }
-
-			  for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
-			    if (j < n_i) {
-			      printf("      ");
-			      printf("%24.16e", x[ix]);
-			      printf("\n");
-			    }
-			    if (k < m_i) {
-			      printf("      ");
-			      printf("(%24.16e, %24.16e)",
-				     y_gen[k * incy_gen],
-				     y_gen[k * incy_gen + 1]);
-			      printf("\n");
-			      printf("      ");
-			      printf("y_final[%d] = ", iy);
-			      printf("(%24.16e, %24.16e)", y[iy], y[iy + 1]);
-			      printf("\n");
-			    }
-			    ix += incx;
-			    iy += incy;
-			  }
+			  zge_print_matrix(A, m_i, n_i, lda, order_type, "A");
+			  dprint_vector(x, n_i, incx_val, "x");
+			  zprint_vector(y_gen, m_i, 1, "y");
+			  zprint_vector(y, m_i, incy_val, "y_final");
 
 			  printf("      ");
 			  printf("alpha = ");
@@ -5926,14 +5284,8 @@ end:
   *num_tests = tot_tests;
   return ratio_max;
 }				/* end of do_test_zgemv_z_d */
-
-double do_test_zgemv_d_z(int m, int n,
-			 int ntests,
-			 int *seed,
-			 double thresh,
-			 int debug,
-			 float test_prob,
-			 double *min_ratio,
+double do_test_zgemv_d_z(int m, int n, int ntests, int *seed, double thresh,
+			 int debug, float test_prob, double *min_ratio,
 			 int *num_bad_ratio, int *num_tests)
 
 /*
@@ -6018,10 +5370,10 @@ double do_test_zgemv_d_z(int m, int n,
      variables */
   int i;			/* iterate through the repeating tests */
   int j, k;			/* multipurpose counters or variables */
-  int ix, iy;			/* use to index x and y respectively */
+  int iy;			/* use to index y */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
+  int incy_gen;			/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
   int p_count;			/* counter for the number of debug lines printed */
@@ -6098,17 +5450,16 @@ double do_test_zgemv_d_z(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = 1;
-  incx_gen *= 2;
+  incy_gen = 1;
   incy_gen *= 2;
 
   /* get space for calculation */
-  x = (double *) blas_malloc(max_mn * 2 * incx_gen * sizeof(double) * 2);
-  if (max_mn * 2 * incx_gen > 0 && x == NULL) {
+  x = (double *) blas_malloc(max_mn * 2 * sizeof(double) * 2);
+  if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double) * 2);
-  if (max_mn * 2 * incy_gen > 0 && y == NULL) {
+  y = (double *) blas_malloc(max_mn * 2 * sizeof(double) * 2);
+  if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   x_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
@@ -6247,10 +5598,10 @@ double do_test_zgemv_d_z(int m, int n,
 
 		  /* in the trivial cases, no need to run testgen */
 		  if (m > 0 && n > 0)
-		    BLAS_zgemv_d_z_testgen(norm, order_type, trans_type,
-					   m, n, &alpha, alpha_flag, A, lda,
-					   x_gen, &beta, beta_flag, y_gen,
-					   seed, head_r_true, tail_r_true);
+		    BLAS_zgemv_d_z_testgen(norm, order_type, trans_type, m, n,
+					   &alpha, alpha_flag, A, lda, x_gen,
+					   &beta, beta_flag, y_gen, seed,
+					   head_r_true, tail_r_true);
 
 		  count++;
 
@@ -6263,18 +5614,7 @@ double do_test_zgemv_d_z(int m, int n,
 		    incx = incx_val;
 		    incx *= 2;
 
-		    /* set x starting index */
-		    ix = 0;
-		    if (incx < 0)
-		      ix = -(n_i - 1) * incx;
-
-		    /* copy x_gen to x */
-		    for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-		      x[ix] = x_gen[j];
-		      x[ix + 1] = x_gen[j + 1];
-
-		      ix += incx;
-		    }
+		    zcopy_vector(x_gen, n_i, 1, x, incx_val);
 
 		    /* varying incy */
 		    for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -6285,20 +5625,8 @@ double do_test_zgemv_d_z(int m, int n,
 		      incy = incy_val;
 		      incy *= 2;
 
-		      /* set y starting index */
-		      iy = 0;
-		      if (incy < 0)
-			iy = -(m_i - 1) * incy;
+		      zcopy_vector(y_gen, m_i, 1, y, incy_val);
 
-		      /* copy y_gen to y */
-		      for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			y[iy] = y_gen[j];
-			y[iy + 1] = y_gen[j + 1];
-
-			iy += incy;
-		      }
-
-		      /* call BLAS_zgemv_d_z */
 		      FPU_FIX_STOP;
 		      BLAS_zgemv_d_z(order_type, trans_type, m, n, alpha, A,
 				     lda, x, incx_val, beta, y, incy_val);
@@ -6316,11 +5644,9 @@ double do_test_zgemv_d_z(int m, int n,
 			  dge_copy_row(order_type, trans_type, m_i, n_i, A,
 				       lda, temp, j);
 
-			  test_BLAS_zdot_d_z(n_i, blas_no_conj,
-					     alpha, beta, &y_gen[k],
-					     &y[iy],
-					     &head_r_true[k],
-					     &tail_r_true[k],
+			  test_BLAS_zdot_d_z(n_i, blas_no_conj, alpha, beta,
+					     &y_gen[k], &y[iy],
+					     &head_r_true[k], &tail_r_true[k],
 					     temp, 1, x, incx_val, eps_int,
 					     un_int, &ratios[j]);
 
@@ -6402,44 +5728,10 @@ double do_test_zgemv_d_z(int m, int n,
 			  printf("lda=%d, incx=%d, incy=%d:\n", lda, incx,
 				 incy);
 
-			  ix = 0;
-			  iy = 0;
-			  if (incx < 0)
-			    ix = -(n_i - 1) * incx;
-			  if (incy < 0)
-			    iy = -(m_i - 1) * incy;
-
-			  printf("      A=");
-			  for (j = 0; j < m_i; j++) {
-			    /* copy row j of A to temp */
-			    dge_copy_row(order_type, trans_type, m_i, n_i, A,
-					 lda, temp, j);
-
-			    if (j > 0)
-			      printf("        ");
-			    dprint_vector(temp, n_i, 1, NULL);
-			  }
-
-			  for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
-			    if (j < n_i) {
-			      printf("      ");
-			      printf("(%24.16e, %24.16e)", x[ix], x[ix + 1]);
-			      printf("\n");
-			    }
-			    if (k < m_i) {
-			      printf("      ");
-			      printf("(%24.16e, %24.16e)",
-				     y_gen[k * incy_gen],
-				     y_gen[k * incy_gen + 1]);
-			      printf("\n");
-			      printf("      ");
-			      printf("y_final[%d] = ", iy);
-			      printf("(%24.16e, %24.16e)", y[iy], y[iy + 1]);
-			      printf("\n");
-			    }
-			    ix += incx;
-			    iy += incy;
-			  }
+			  dge_print_matrix(A, m_i, n_i, lda, order_type, "A");
+			  zprint_vector(x, n_i, incx_val, "x");
+			  zprint_vector(y_gen, m_i, 1, "y");
+			  zprint_vector(y, m_i, incy_val, "y_final");
 
 			  printf("      ");
 			  printf("alpha = ");
@@ -6521,14 +5813,8 @@ end:
   *num_tests = tot_tests;
   return ratio_max;
 }				/* end of do_test_zgemv_d_z */
-
-double do_test_zgemv_d_d(int m, int n,
-			 int ntests,
-			 int *seed,
-			 double thresh,
-			 int debug,
-			 float test_prob,
-			 double *min_ratio,
+double do_test_zgemv_d_d(int m, int n, int ntests, int *seed, double thresh,
+			 int debug, float test_prob, double *min_ratio,
 			 int *num_bad_ratio, int *num_tests)
 
 /*
@@ -6613,10 +5899,10 @@ double do_test_zgemv_d_d(int m, int n,
      variables */
   int i;			/* iterate through the repeating tests */
   int j, k;			/* multipurpose counters or variables */
-  int ix, iy;			/* use to index x and y respectively */
+  int iy;			/* use to index y */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
+  int incy_gen;			/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
   int p_count;			/* counter for the number of debug lines printed */
@@ -6693,17 +5979,16 @@ double do_test_zgemv_d_d(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = 1;
-
+  incy_gen = 1;
   incy_gen *= 2;
 
   /* get space for calculation */
-  x = (double *) blas_malloc(max_mn * 2 * incx_gen * sizeof(double));
-  if (max_mn * 2 * incx_gen > 0 && x == NULL) {
+  x = (double *) blas_malloc(max_mn * 2 * sizeof(double));
+  if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double) * 2);
-  if (max_mn * 2 * incy_gen > 0 && y == NULL) {
+  y = (double *) blas_malloc(max_mn * 2 * sizeof(double) * 2);
+  if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   x_gen = (double *) blas_malloc(max_mn * sizeof(double));
@@ -6842,10 +6127,10 @@ double do_test_zgemv_d_d(int m, int n,
 
 		  /* in the trivial cases, no need to run testgen */
 		  if (m > 0 && n > 0)
-		    BLAS_zgemv_d_d_testgen(norm, order_type, trans_type,
-					   m, n, &alpha, alpha_flag, A, lda,
-					   x_gen, &beta, beta_flag, y_gen,
-					   seed, head_r_true, tail_r_true);
+		    BLAS_zgemv_d_d_testgen(norm, order_type, trans_type, m, n,
+					   &alpha, alpha_flag, A, lda, x_gen,
+					   &beta, beta_flag, y_gen, seed,
+					   head_r_true, tail_r_true);
 
 		  count++;
 
@@ -6858,17 +6143,7 @@ double do_test_zgemv_d_d(int m, int n,
 		    incx = incx_val;
 
 
-		    /* set x starting index */
-		    ix = 0;
-		    if (incx < 0)
-		      ix = -(n_i - 1) * incx;
-
-		    /* copy x_gen to x */
-		    for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-		      x[ix] = x_gen[j];
-
-		      ix += incx;
-		    }
+		    dcopy_vector(x_gen, n_i, 1, x, incx_val);
 
 		    /* varying incy */
 		    for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -6879,20 +6154,8 @@ double do_test_zgemv_d_d(int m, int n,
 		      incy = incy_val;
 		      incy *= 2;
 
-		      /* set y starting index */
-		      iy = 0;
-		      if (incy < 0)
-			iy = -(m_i - 1) * incy;
+		      zcopy_vector(y_gen, m_i, 1, y, incy_val);
 
-		      /* copy y_gen to y */
-		      for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			y[iy] = y_gen[j];
-			y[iy + 1] = y_gen[j + 1];
-
-			iy += incy;
-		      }
-
-		      /* call BLAS_zgemv_d_d */
 		      FPU_FIX_STOP;
 		      BLAS_zgemv_d_d(order_type, trans_type, m, n, alpha, A,
 				     lda, x, incx_val, beta, y, incy_val);
@@ -6910,11 +6173,9 @@ double do_test_zgemv_d_d(int m, int n,
 			  dge_copy_row(order_type, trans_type, m_i, n_i, A,
 				       lda, temp, j);
 
-			  test_BLAS_zdot_d_d(n_i, blas_no_conj,
-					     alpha, beta, &y_gen[k],
-					     &y[iy],
-					     &head_r_true[k],
-					     &tail_r_true[k],
+			  test_BLAS_zdot_d_d(n_i, blas_no_conj, alpha, beta,
+					     &y_gen[k], &y[iy],
+					     &head_r_true[k], &tail_r_true[k],
 					     temp, 1, x, incx_val, eps_int,
 					     un_int, &ratios[j]);
 
@@ -6996,44 +6257,10 @@ double do_test_zgemv_d_d(int m, int n,
 			  printf("lda=%d, incx=%d, incy=%d:\n", lda, incx,
 				 incy);
 
-			  ix = 0;
-			  iy = 0;
-			  if (incx < 0)
-			    ix = -(n_i - 1) * incx;
-			  if (incy < 0)
-			    iy = -(m_i - 1) * incy;
-
-			  printf("      A=");
-			  for (j = 0; j < m_i; j++) {
-			    /* copy row j of A to temp */
-			    dge_copy_row(order_type, trans_type, m_i, n_i, A,
-					 lda, temp, j);
-
-			    if (j > 0)
-			      printf("        ");
-			    dprint_vector(temp, n_i, 1, NULL);
-			  }
-
-			  for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
-			    if (j < n_i) {
-			      printf("      ");
-			      printf("%24.16e", x[ix]);
-			      printf("\n");
-			    }
-			    if (k < m_i) {
-			      printf("      ");
-			      printf("(%24.16e, %24.16e)",
-				     y_gen[k * incy_gen],
-				     y_gen[k * incy_gen + 1]);
-			      printf("\n");
-			      printf("      ");
-			      printf("y_final[%d] = ", iy);
-			      printf("(%24.16e, %24.16e)", y[iy], y[iy + 1]);
-			      printf("\n");
-			    }
-			    ix += incx;
-			    iy += incy;
-			  }
+			  dge_print_matrix(A, m_i, n_i, lda, order_type, "A");
+			  dprint_vector(x, n_i, incx_val, "x");
+			  zprint_vector(y_gen, m_i, 1, "y");
+			  zprint_vector(y, m_i, incy_val, "y_final");
 
 			  printf("      ");
 			  printf("alpha = ");
@@ -7115,14 +6342,9 @@ end:
   *num_tests = tot_tests;
   return ratio_max;
 }				/* end of do_test_zgemv_d_d */
-
-double do_test_sgemv_x(int m, int n,
-		       int ntests,
-		       int *seed,
-		       double thresh,
-		       int debug,
-		       float test_prob,
-		       double *min_ratio, int *num_bad_ratio, int *num_tests)
+double do_test_sgemv_x(int m, int n, int ntests, int *seed, double thresh,
+		       int debug, float test_prob, double *min_ratio,
+		       int *num_bad_ratio, int *num_tests)
 
 /*
  * Purpose  
@@ -7206,10 +6428,10 @@ double do_test_sgemv_x(int m, int n,
      variables */
   int i;			/* iterate through the repeating tests */
   int j, k;			/* multipurpose counters or variables */
-  int ix, iy;			/* use to index x and y respectively */
+  int iy;			/* use to index y */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
+  int incy_gen;			/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
   int p_count;			/* counter for the number of debug lines printed */
@@ -7285,17 +6507,16 @@ double do_test_sgemv_x(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = 1;
-
+  incy_gen = 1;
 
 
   /* get space for calculation */
-  x = (float *) blas_malloc(max_mn * 2 * incx_gen * sizeof(float));
-  if (max_mn * 2 * incx_gen > 0 && x == NULL) {
+  x = (float *) blas_malloc(max_mn * 2 * sizeof(float));
+  if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  y = (float *) blas_malloc(max_mn * 2 * incy_gen * sizeof(float));
-  if (max_mn * 2 * incy_gen > 0 && y == NULL) {
+  y = (float *) blas_malloc(max_mn * 2 * sizeof(float));
+  if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float));
@@ -7450,9 +6671,9 @@ double do_test_sgemv_x(int m, int n,
 
 		    /* in the trivial cases, no need to run testgen */
 		    if (m > 0 && n > 0)
-		      BLAS_sgemv_testgen(norm, order_type, trans_type,
-					 m, n, &alpha, alpha_flag, A, lda,
-					 x_gen, &beta, beta_flag, y_gen, seed,
+		      BLAS_sgemv_testgen(norm, order_type, trans_type, m, n,
+					 &alpha, alpha_flag, A, lda, x_gen,
+					 &beta, beta_flag, y_gen, seed,
 					 head_r_true, tail_r_true);
 
 		    count++;
@@ -7466,17 +6687,7 @@ double do_test_sgemv_x(int m, int n,
 		      incx = incx_val;
 
 
-		      /* set x starting index */
-		      ix = 0;
-		      if (incx < 0)
-			ix = -(n_i - 1) * incx;
-
-		      /* copy x_gen to x */
-		      for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-			x[ix] = x_gen[j];
-
-			ix += incx;
-		      }
+		      scopy_vector(x_gen, n_i, 1, x, incx_val);
 
 		      /* varying incy */
 		      for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -7487,19 +6698,8 @@ double do_test_sgemv_x(int m, int n,
 			incy = incy_val;
 
 
-			/* set y starting index */
-			iy = 0;
-			if (incy < 0)
-			  iy = -(m_i - 1) * incy;
+			scopy_vector(y_gen, m_i, 1, y, incy_val);
 
-			/* copy y_gen to y */
-			for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			  y[iy] = y_gen[j];
-
-			  iy += incy;
-			}
-
-			/* call BLAS_sgemv_x */
 			FPU_FIX_STOP;
 			BLAS_sgemv_x(order_type, trans_type, m, n, alpha, A,
 				     lda, x, incx_val, beta, y, incy_val,
@@ -7518,13 +6718,11 @@ double do_test_sgemv_x(int m, int n,
 			    sge_copy_row(order_type, trans_type, m_i, n_i, A,
 					 lda, temp, j);
 
-			    test_BLAS_sdot(n_i, blas_no_conj,
-					   alpha, beta, y_gen[k],
-					   y[iy],
-					   head_r_true[k],
-					   tail_r_true[k],
-					   temp, 1, x, incx_val, eps_int,
-					   un_int, &ratios[j]);
+			    test_BLAS_sdot(n_i, blas_no_conj, alpha, beta,
+					   y_gen[k], y[iy], head_r_true[k],
+					   tail_r_true[k], temp, 1, x,
+					   incx_val, eps_int, un_int,
+					   &ratios[j]);
 
 			    /* take the max ratio */
 			    if (j == 0) {
@@ -7604,42 +6802,11 @@ double do_test_sgemv_x(int m, int n,
 			    printf("lda=%d, incx=%d, incy=%d:\n", lda, incx,
 				   incy);
 
-			    ix = 0;
-			    iy = 0;
-			    if (incx < 0)
-			      ix = -(n_i - 1) * incx;
-			    if (incy < 0)
-			      iy = -(m_i - 1) * incy;
-
-			    printf("      A=");
-			    for (j = 0; j < m_i; j++) {
-			      /* copy row j of A to temp */
-			      sge_copy_row(order_type, trans_type, m_i, n_i,
-					   A, lda, temp, j);
-
-			      if (j > 0)
-				printf("        ");
-			      sprint_vector(temp, n_i, 1, NULL);
-			    }
-
-			    for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
-			      if (j < n_i) {
-				printf("      ");
-				printf("%16.8e", x[ix]);
-				printf("\n");
-			      }
-			      if (k < m_i) {
-				printf("      ");
-				printf("%16.8e", y_gen[k * incy_gen]);
-				printf("\n");
-				printf("      ");
-				printf("y_final[%d] = ", iy);
-				printf("%16.8e", y[iy]);
-				printf("\n");
-			      }
-			      ix += incx;
-			      iy += incy;
-			    }
+			    sge_print_matrix(A, m_i, n_i, lda, order_type,
+					     "A");
+			    sprint_vector(x, n_i, incx_val, "x");
+			    sprint_vector(y_gen, m_i, 1, "y");
+			    sprint_vector(y, m_i, incy_val, "y_final");
 
 			    printf("      ");
 			    printf("alpha = ");
@@ -7720,14 +6887,9 @@ end:
   *num_tests = tot_tests;
   return ratio_max;
 }				/* end of do_test_sgemv_x */
-
-double do_test_dgemv_x(int m, int n,
-		       int ntests,
-		       int *seed,
-		       double thresh,
-		       int debug,
-		       float test_prob,
-		       double *min_ratio, int *num_bad_ratio, int *num_tests)
+double do_test_dgemv_x(int m, int n, int ntests, int *seed, double thresh,
+		       int debug, float test_prob, double *min_ratio,
+		       int *num_bad_ratio, int *num_tests)
 
 /*
  * Purpose  
@@ -7811,10 +6973,10 @@ double do_test_dgemv_x(int m, int n,
      variables */
   int i;			/* iterate through the repeating tests */
   int j, k;			/* multipurpose counters or variables */
-  int ix, iy;			/* use to index x and y respectively */
+  int iy;			/* use to index y */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
+  int incy_gen;			/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
   int p_count;			/* counter for the number of debug lines printed */
@@ -7890,17 +7052,16 @@ double do_test_dgemv_x(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = 1;
-
+  incy_gen = 1;
 
 
   /* get space for calculation */
-  x = (double *) blas_malloc(max_mn * 2 * incx_gen * sizeof(double));
-  if (max_mn * 2 * incx_gen > 0 && x == NULL) {
+  x = (double *) blas_malloc(max_mn * 2 * sizeof(double));
+  if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double));
-  if (max_mn * 2 * incy_gen > 0 && y == NULL) {
+  y = (double *) blas_malloc(max_mn * 2 * sizeof(double));
+  if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   x_gen = (double *) blas_malloc(max_mn * sizeof(double));
@@ -8056,9 +7217,9 @@ double do_test_dgemv_x(int m, int n,
 
 		    /* in the trivial cases, no need to run testgen */
 		    if (m > 0 && n > 0)
-		      BLAS_dgemv_testgen(norm, order_type, trans_type,
-					 m, n, &alpha, alpha_flag, A, lda,
-					 x_gen, &beta, beta_flag, y_gen, seed,
+		      BLAS_dgemv_testgen(norm, order_type, trans_type, m, n,
+					 &alpha, alpha_flag, A, lda, x_gen,
+					 &beta, beta_flag, y_gen, seed,
 					 head_r_true, tail_r_true);
 
 		    count++;
@@ -8072,17 +7233,7 @@ double do_test_dgemv_x(int m, int n,
 		      incx = incx_val;
 
 
-		      /* set x starting index */
-		      ix = 0;
-		      if (incx < 0)
-			ix = -(n_i - 1) * incx;
-
-		      /* copy x_gen to x */
-		      for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-			x[ix] = x_gen[j];
-
-			ix += incx;
-		      }
+		      dcopy_vector(x_gen, n_i, 1, x, incx_val);
 
 		      /* varying incy */
 		      for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -8093,19 +7244,8 @@ double do_test_dgemv_x(int m, int n,
 			incy = incy_val;
 
 
-			/* set y starting index */
-			iy = 0;
-			if (incy < 0)
-			  iy = -(m_i - 1) * incy;
+			dcopy_vector(y_gen, m_i, 1, y, incy_val);
 
-			/* copy y_gen to y */
-			for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			  y[iy] = y_gen[j];
-
-			  iy += incy;
-			}
-
-			/* call BLAS_dgemv_x */
 			FPU_FIX_STOP;
 			BLAS_dgemv_x(order_type, trans_type, m, n, alpha, A,
 				     lda, x, incx_val, beta, y, incy_val,
@@ -8124,13 +7264,11 @@ double do_test_dgemv_x(int m, int n,
 			    dge_copy_row(order_type, trans_type, m_i, n_i, A,
 					 lda, temp, j);
 
-			    test_BLAS_ddot(n_i, blas_no_conj,
-					   alpha, beta, y_gen[k],
-					   y[iy],
-					   head_r_true[k],
-					   tail_r_true[k],
-					   temp, 1, x, incx_val, eps_int,
-					   un_int, &ratios[j]);
+			    test_BLAS_ddot(n_i, blas_no_conj, alpha, beta,
+					   y_gen[k], y[iy], head_r_true[k],
+					   tail_r_true[k], temp, 1, x,
+					   incx_val, eps_int, un_int,
+					   &ratios[j]);
 
 			    /* take the max ratio */
 			    if (j == 0) {
@@ -8210,42 +7348,11 @@ double do_test_dgemv_x(int m, int n,
 			    printf("lda=%d, incx=%d, incy=%d:\n", lda, incx,
 				   incy);
 
-			    ix = 0;
-			    iy = 0;
-			    if (incx < 0)
-			      ix = -(n_i - 1) * incx;
-			    if (incy < 0)
-			      iy = -(m_i - 1) * incy;
-
-			    printf("      A=");
-			    for (j = 0; j < m_i; j++) {
-			      /* copy row j of A to temp */
-			      dge_copy_row(order_type, trans_type, m_i, n_i,
-					   A, lda, temp, j);
-
-			      if (j > 0)
-				printf("        ");
-			      dprint_vector(temp, n_i, 1, NULL);
-			    }
-
-			    for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
-			      if (j < n_i) {
-				printf("      ");
-				printf("%24.16e", x[ix]);
-				printf("\n");
-			      }
-			      if (k < m_i) {
-				printf("      ");
-				printf("%24.16e", y_gen[k * incy_gen]);
-				printf("\n");
-				printf("      ");
-				printf("y_final[%d] = ", iy);
-				printf("%24.16e", y[iy]);
-				printf("\n");
-			      }
-			      ix += incx;
-			      iy += incy;
-			    }
+			    dge_print_matrix(A, m_i, n_i, lda, order_type,
+					     "A");
+			    dprint_vector(x, n_i, incx_val, "x");
+			    dprint_vector(y_gen, m_i, 1, "y");
+			    dprint_vector(y, m_i, incy_val, "y_final");
 
 			    printf("      ");
 			    printf("alpha = ");
@@ -8326,14 +7433,9 @@ end:
   *num_tests = tot_tests;
   return ratio_max;
 }				/* end of do_test_dgemv_x */
-
-double do_test_cgemv_x(int m, int n,
-		       int ntests,
-		       int *seed,
-		       double thresh,
-		       int debug,
-		       float test_prob,
-		       double *min_ratio, int *num_bad_ratio, int *num_tests)
+double do_test_cgemv_x(int m, int n, int ntests, int *seed, double thresh,
+		       int debug, float test_prob, double *min_ratio,
+		       int *num_bad_ratio, int *num_tests)
 
 /*
  * Purpose  
@@ -8417,10 +7519,10 @@ double do_test_cgemv_x(int m, int n,
      variables */
   int i;			/* iterate through the repeating tests */
   int j, k;			/* multipurpose counters or variables */
-  int ix, iy;			/* use to index x and y respectively */
+  int iy;			/* use to index y */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
+  int incy_gen;			/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
   int p_count;			/* counter for the number of debug lines printed */
@@ -8497,17 +7599,16 @@ double do_test_cgemv_x(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = 1;
-  incx_gen *= 2;
+  incy_gen = 1;
   incy_gen *= 2;
 
   /* get space for calculation */
-  x = (float *) blas_malloc(max_mn * 2 * incx_gen * sizeof(float) * 2);
-  if (max_mn * 2 * incx_gen > 0 && x == NULL) {
+  x = (float *) blas_malloc(max_mn * 2 * sizeof(float) * 2);
+  if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  y = (float *) blas_malloc(max_mn * 2 * incy_gen * sizeof(float) * 2);
-  if (max_mn * 2 * incy_gen > 0 && y == NULL) {
+  y = (float *) blas_malloc(max_mn * 2 * sizeof(float) * 2);
+  if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float) * 2);
@@ -8666,9 +7767,9 @@ double do_test_cgemv_x(int m, int n,
 
 		    /* in the trivial cases, no need to run testgen */
 		    if (m > 0 && n > 0)
-		      BLAS_cgemv_testgen(norm, order_type, trans_type,
-					 m, n, &alpha, alpha_flag, A, lda,
-					 x_gen, &beta, beta_flag, y_gen, seed,
+		      BLAS_cgemv_testgen(norm, order_type, trans_type, m, n,
+					 &alpha, alpha_flag, A, lda, x_gen,
+					 &beta, beta_flag, y_gen, seed,
 					 head_r_true, tail_r_true);
 
 		    count++;
@@ -8682,18 +7783,7 @@ double do_test_cgemv_x(int m, int n,
 		      incx = incx_val;
 		      incx *= 2;
 
-		      /* set x starting index */
-		      ix = 0;
-		      if (incx < 0)
-			ix = -(n_i - 1) * incx;
-
-		      /* copy x_gen to x */
-		      for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-			x[ix] = x_gen[j];
-			x[ix + 1] = x_gen[j + 1];
-
-			ix += incx;
-		      }
+		      ccopy_vector(x_gen, n_i, 1, x, incx_val);
 
 		      /* varying incy */
 		      for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -8704,20 +7794,8 @@ double do_test_cgemv_x(int m, int n,
 			incy = incy_val;
 			incy *= 2;
 
-			/* set y starting index */
-			iy = 0;
-			if (incy < 0)
-			  iy = -(m_i - 1) * incy;
+			ccopy_vector(y_gen, m_i, 1, y, incy_val);
 
-			/* copy y_gen to y */
-			for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			  y[iy] = y_gen[j];
-			  y[iy + 1] = y_gen[j + 1];
-
-			  iy += incy;
-			}
-
-			/* call BLAS_cgemv_x */
 			FPU_FIX_STOP;
 			BLAS_cgemv_x(order_type, trans_type, m, n, alpha, A,
 				     lda, x, incx_val, beta, y, incy_val,
@@ -8736,13 +7814,11 @@ double do_test_cgemv_x(int m, int n,
 			    cge_copy_row(order_type, trans_type, m_i, n_i, A,
 					 lda, temp, j);
 
-			    test_BLAS_cdot(n_i, blas_no_conj,
-					   alpha, beta, &y_gen[k],
-					   &y[iy],
-					   &head_r_true[k],
-					   &tail_r_true[k],
-					   temp, 1, x, incx_val, eps_int,
-					   un_int, &ratios[j]);
+			    test_BLAS_cdot(n_i, blas_no_conj, alpha, beta,
+					   &y_gen[k], &y[iy], &head_r_true[k],
+					   &tail_r_true[k], temp, 1, x,
+					   incx_val, eps_int, un_int,
+					   &ratios[j]);
 
 			    /* take the max ratio */
 			    if (j == 0) {
@@ -8822,44 +7898,11 @@ double do_test_cgemv_x(int m, int n,
 			    printf("lda=%d, incx=%d, incy=%d:\n", lda, incx,
 				   incy);
 
-			    ix = 0;
-			    iy = 0;
-			    if (incx < 0)
-			      ix = -(n_i - 1) * incx;
-			    if (incy < 0)
-			      iy = -(m_i - 1) * incy;
-
-			    printf("      A=");
-			    for (j = 0; j < m_i; j++) {
-			      /* copy row j of A to temp */
-			      cge_copy_row(order_type, trans_type, m_i, n_i,
-					   A, lda, temp, j);
-
-			      if (j > 0)
-				printf("        ");
-			      cprint_vector(temp, n_i, 1, NULL);
-			    }
-
-			    for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
-			      if (j < n_i) {
-				printf("      ");
-				printf("(%16.8e, %16.8e)", x[ix], x[ix + 1]);
-				printf("\n");
-			      }
-			      if (k < m_i) {
-				printf("      ");
-				printf("(%16.8e, %16.8e)",
-				       y_gen[k * incy_gen],
-				       y_gen[k * incy_gen + 1]);
-				printf("\n");
-				printf("      ");
-				printf("y_final[%d] = ", iy);
-				printf("(%16.8e, %16.8e)", y[iy], y[iy + 1]);
-				printf("\n");
-			      }
-			      ix += incx;
-			      iy += incy;
-			    }
+			    cge_print_matrix(A, m_i, n_i, lda, order_type,
+					     "A");
+			    cprint_vector(x, n_i, incx_val, "x");
+			    cprint_vector(y_gen, m_i, 1, "y");
+			    cprint_vector(y, m_i, incy_val, "y_final");
 
 			    printf("      ");
 			    printf("alpha = ");
@@ -8942,14 +7985,9 @@ end:
   *num_tests = tot_tests;
   return ratio_max;
 }				/* end of do_test_cgemv_x */
-
-double do_test_zgemv_x(int m, int n,
-		       int ntests,
-		       int *seed,
-		       double thresh,
-		       int debug,
-		       float test_prob,
-		       double *min_ratio, int *num_bad_ratio, int *num_tests)
+double do_test_zgemv_x(int m, int n, int ntests, int *seed, double thresh,
+		       int debug, float test_prob, double *min_ratio,
+		       int *num_bad_ratio, int *num_tests)
 
 /*
  * Purpose  
@@ -9033,10 +8071,10 @@ double do_test_zgemv_x(int m, int n,
      variables */
   int i;			/* iterate through the repeating tests */
   int j, k;			/* multipurpose counters or variables */
-  int ix, iy;			/* use to index x and y respectively */
+  int iy;			/* use to index y */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
+  int incy_gen;			/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
   int p_count;			/* counter for the number of debug lines printed */
@@ -9113,17 +8151,16 @@ double do_test_zgemv_x(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = 1;
-  incx_gen *= 2;
+  incy_gen = 1;
   incy_gen *= 2;
 
   /* get space for calculation */
-  x = (double *) blas_malloc(max_mn * 2 * incx_gen * sizeof(double) * 2);
-  if (max_mn * 2 * incx_gen > 0 && x == NULL) {
+  x = (double *) blas_malloc(max_mn * 2 * sizeof(double) * 2);
+  if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double) * 2);
-  if (max_mn * 2 * incy_gen > 0 && y == NULL) {
+  y = (double *) blas_malloc(max_mn * 2 * sizeof(double) * 2);
+  if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   x_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
@@ -9282,9 +8319,9 @@ double do_test_zgemv_x(int m, int n,
 
 		    /* in the trivial cases, no need to run testgen */
 		    if (m > 0 && n > 0)
-		      BLAS_zgemv_testgen(norm, order_type, trans_type,
-					 m, n, &alpha, alpha_flag, A, lda,
-					 x_gen, &beta, beta_flag, y_gen, seed,
+		      BLAS_zgemv_testgen(norm, order_type, trans_type, m, n,
+					 &alpha, alpha_flag, A, lda, x_gen,
+					 &beta, beta_flag, y_gen, seed,
 					 head_r_true, tail_r_true);
 
 		    count++;
@@ -9298,18 +8335,7 @@ double do_test_zgemv_x(int m, int n,
 		      incx = incx_val;
 		      incx *= 2;
 
-		      /* set x starting index */
-		      ix = 0;
-		      if (incx < 0)
-			ix = -(n_i - 1) * incx;
-
-		      /* copy x_gen to x */
-		      for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-			x[ix] = x_gen[j];
-			x[ix + 1] = x_gen[j + 1];
-
-			ix += incx;
-		      }
+		      zcopy_vector(x_gen, n_i, 1, x, incx_val);
 
 		      /* varying incy */
 		      for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -9320,20 +8346,8 @@ double do_test_zgemv_x(int m, int n,
 			incy = incy_val;
 			incy *= 2;
 
-			/* set y starting index */
-			iy = 0;
-			if (incy < 0)
-			  iy = -(m_i - 1) * incy;
+			zcopy_vector(y_gen, m_i, 1, y, incy_val);
 
-			/* copy y_gen to y */
-			for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			  y[iy] = y_gen[j];
-			  y[iy + 1] = y_gen[j + 1];
-
-			  iy += incy;
-			}
-
-			/* call BLAS_zgemv_x */
 			FPU_FIX_STOP;
 			BLAS_zgemv_x(order_type, trans_type, m, n, alpha, A,
 				     lda, x, incx_val, beta, y, incy_val,
@@ -9352,13 +8366,11 @@ double do_test_zgemv_x(int m, int n,
 			    zge_copy_row(order_type, trans_type, m_i, n_i, A,
 					 lda, temp, j);
 
-			    test_BLAS_zdot(n_i, blas_no_conj,
-					   alpha, beta, &y_gen[k],
-					   &y[iy],
-					   &head_r_true[k],
-					   &tail_r_true[k],
-					   temp, 1, x, incx_val, eps_int,
-					   un_int, &ratios[j]);
+			    test_BLAS_zdot(n_i, blas_no_conj, alpha, beta,
+					   &y_gen[k], &y[iy], &head_r_true[k],
+					   &tail_r_true[k], temp, 1, x,
+					   incx_val, eps_int, un_int,
+					   &ratios[j]);
 
 			    /* take the max ratio */
 			    if (j == 0) {
@@ -9438,46 +8450,11 @@ double do_test_zgemv_x(int m, int n,
 			    printf("lda=%d, incx=%d, incy=%d:\n", lda, incx,
 				   incy);
 
-			    ix = 0;
-			    iy = 0;
-			    if (incx < 0)
-			      ix = -(n_i - 1) * incx;
-			    if (incy < 0)
-			      iy = -(m_i - 1) * incy;
-
-			    printf("      A=");
-			    for (j = 0; j < m_i; j++) {
-			      /* copy row j of A to temp */
-			      zge_copy_row(order_type, trans_type, m_i, n_i,
-					   A, lda, temp, j);
-
-			      if (j > 0)
-				printf("        ");
-			      zprint_vector(temp, n_i, 1, NULL);
-			    }
-
-			    for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
-			      if (j < n_i) {
-				printf("      ");
-				printf("(%24.16e, %24.16e)", x[ix],
-				       x[ix + 1]);
-				printf("\n");
-			      }
-			      if (k < m_i) {
-				printf("      ");
-				printf("(%24.16e, %24.16e)",
-				       y_gen[k * incy_gen],
-				       y_gen[k * incy_gen + 1]);
-				printf("\n");
-				printf("      ");
-				printf("y_final[%d] = ", iy);
-				printf("(%24.16e, %24.16e)", y[iy],
-				       y[iy + 1]);
-				printf("\n");
-			      }
-			      ix += incx;
-			      iy += incy;
-			    }
+			    zge_print_matrix(A, m_i, n_i, lda, order_type,
+					     "A");
+			    zprint_vector(x, n_i, incx_val, "x");
+			    zprint_vector(y_gen, m_i, 1, "y");
+			    zprint_vector(y, m_i, incy_val, "y_final");
 
 			    printf("      ");
 			    printf("alpha = ");
@@ -9560,14 +8537,8 @@ end:
   *num_tests = tot_tests;
   return ratio_max;
 }				/* end of do_test_zgemv_x */
-
-double do_test_dgemv_d_s_x(int m, int n,
-			   int ntests,
-			   int *seed,
-			   double thresh,
-			   int debug,
-			   float test_prob,
-			   double *min_ratio,
+double do_test_dgemv_d_s_x(int m, int n, int ntests, int *seed, double thresh,
+			   int debug, float test_prob, double *min_ratio,
 			   int *num_bad_ratio, int *num_tests)
 
 /*
@@ -9652,10 +8623,10 @@ double do_test_dgemv_d_s_x(int m, int n,
      variables */
   int i;			/* iterate through the repeating tests */
   int j, k;			/* multipurpose counters or variables */
-  int ix, iy;			/* use to index x and y respectively */
+  int iy;			/* use to index y */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
+  int incy_gen;			/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
   int p_count;			/* counter for the number of debug lines printed */
@@ -9731,17 +8702,16 @@ double do_test_dgemv_d_s_x(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = 1;
-
+  incy_gen = 1;
 
 
   /* get space for calculation */
-  x = (float *) blas_malloc(max_mn * 2 * incx_gen * sizeof(float));
-  if (max_mn * 2 * incx_gen > 0 && x == NULL) {
+  x = (float *) blas_malloc(max_mn * 2 * sizeof(float));
+  if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double));
-  if (max_mn * 2 * incy_gen > 0 && y == NULL) {
+  y = (double *) blas_malloc(max_mn * 2 * sizeof(double));
+  if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float));
@@ -9897,8 +8867,8 @@ double do_test_dgemv_d_s_x(int m, int n,
 
 		    /* in the trivial cases, no need to run testgen */
 		    if (m > 0 && n > 0)
-		      BLAS_dgemv_d_s_testgen(norm, order_type, trans_type,
-					     m, n, &alpha, alpha_flag, A, lda,
+		      BLAS_dgemv_d_s_testgen(norm, order_type, trans_type, m,
+					     n, &alpha, alpha_flag, A, lda,
 					     x_gen, &beta, beta_flag, y_gen,
 					     seed, head_r_true, tail_r_true);
 
@@ -9913,17 +8883,7 @@ double do_test_dgemv_d_s_x(int m, int n,
 		      incx = incx_val;
 
 
-		      /* set x starting index */
-		      ix = 0;
-		      if (incx < 0)
-			ix = -(n_i - 1) * incx;
-
-		      /* copy x_gen to x */
-		      for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-			x[ix] = x_gen[j];
-
-			ix += incx;
-		      }
+		      scopy_vector(x_gen, n_i, 1, x, incx_val);
 
 		      /* varying incy */
 		      for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -9934,19 +8894,8 @@ double do_test_dgemv_d_s_x(int m, int n,
 			incy = incy_val;
 
 
-			/* set y starting index */
-			iy = 0;
-			if (incy < 0)
-			  iy = -(m_i - 1) * incy;
+			dcopy_vector(y_gen, m_i, 1, y, incy_val);
 
-			/* copy y_gen to y */
-			for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			  y[iy] = y_gen[j];
-
-			  iy += incy;
-			}
-
-			/* call BLAS_dgemv_d_s_x */
 			FPU_FIX_STOP;
 			BLAS_dgemv_d_s_x(order_type, trans_type, m, n, alpha,
 					 A, lda, x, incx_val, beta, y,
@@ -9965,11 +8914,9 @@ double do_test_dgemv_d_s_x(int m, int n,
 			    dge_copy_row(order_type, trans_type, m_i, n_i, A,
 					 lda, temp, j);
 
-			    test_BLAS_ddot_d_s(n_i, blas_no_conj,
-					       alpha, beta, y_gen[k],
-					       y[iy],
-					       head_r_true[k],
-					       tail_r_true[k],
+			    test_BLAS_ddot_d_s(n_i, blas_no_conj, alpha, beta,
+					       y_gen[k], y[iy],
+					       head_r_true[k], tail_r_true[k],
 					       temp, 1, x, incx_val, eps_int,
 					       un_int, &ratios[j]);
 
@@ -10051,42 +8998,11 @@ double do_test_dgemv_d_s_x(int m, int n,
 			    printf("lda=%d, incx=%d, incy=%d:\n", lda, incx,
 				   incy);
 
-			    ix = 0;
-			    iy = 0;
-			    if (incx < 0)
-			      ix = -(n_i - 1) * incx;
-			    if (incy < 0)
-			      iy = -(m_i - 1) * incy;
-
-			    printf("      A=");
-			    for (j = 0; j < m_i; j++) {
-			      /* copy row j of A to temp */
-			      dge_copy_row(order_type, trans_type, m_i, n_i,
-					   A, lda, temp, j);
-
-			      if (j > 0)
-				printf("        ");
-			      dprint_vector(temp, n_i, 1, NULL);
-			    }
-
-			    for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
-			      if (j < n_i) {
-				printf("      ");
-				printf("%16.8e", x[ix]);
-				printf("\n");
-			      }
-			      if (k < m_i) {
-				printf("      ");
-				printf("%24.16e", y_gen[k * incy_gen]);
-				printf("\n");
-				printf("      ");
-				printf("y_final[%d] = ", iy);
-				printf("%24.16e", y[iy]);
-				printf("\n");
-			      }
-			      ix += incx;
-			      iy += incy;
-			    }
+			    dge_print_matrix(A, m_i, n_i, lda, order_type,
+					     "A");
+			    sprint_vector(x, n_i, incx_val, "x");
+			    dprint_vector(y_gen, m_i, 1, "y");
+			    dprint_vector(y, m_i, incy_val, "y_final");
 
 			    printf("      ");
 			    printf("alpha = ");
@@ -10167,14 +9083,8 @@ end:
   *num_tests = tot_tests;
   return ratio_max;
 }				/* end of do_test_dgemv_d_s_x */
-
-double do_test_dgemv_s_d_x(int m, int n,
-			   int ntests,
-			   int *seed,
-			   double thresh,
-			   int debug,
-			   float test_prob,
-			   double *min_ratio,
+double do_test_dgemv_s_d_x(int m, int n, int ntests, int *seed, double thresh,
+			   int debug, float test_prob, double *min_ratio,
 			   int *num_bad_ratio, int *num_tests)
 
 /*
@@ -10259,10 +9169,10 @@ double do_test_dgemv_s_d_x(int m, int n,
      variables */
   int i;			/* iterate through the repeating tests */
   int j, k;			/* multipurpose counters or variables */
-  int ix, iy;			/* use to index x and y respectively */
+  int iy;			/* use to index y */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
+  int incy_gen;			/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
   int p_count;			/* counter for the number of debug lines printed */
@@ -10338,17 +9248,16 @@ double do_test_dgemv_s_d_x(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = 1;
-
+  incy_gen = 1;
 
 
   /* get space for calculation */
-  x = (double *) blas_malloc(max_mn * 2 * incx_gen * sizeof(double));
-  if (max_mn * 2 * incx_gen > 0 && x == NULL) {
+  x = (double *) blas_malloc(max_mn * 2 * sizeof(double));
+  if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double));
-  if (max_mn * 2 * incy_gen > 0 && y == NULL) {
+  y = (double *) blas_malloc(max_mn * 2 * sizeof(double));
+  if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   x_gen = (double *) blas_malloc(max_mn * sizeof(double));
@@ -10503,8 +9412,8 @@ double do_test_dgemv_s_d_x(int m, int n,
 
 		    /* in the trivial cases, no need to run testgen */
 		    if (m > 0 && n > 0)
-		      BLAS_dgemv_s_d_testgen(norm, order_type, trans_type,
-					     m, n, &alpha, alpha_flag, A, lda,
+		      BLAS_dgemv_s_d_testgen(norm, order_type, trans_type, m,
+					     n, &alpha, alpha_flag, A, lda,
 					     x_gen, &beta, beta_flag, y_gen,
 					     seed, head_r_true, tail_r_true);
 
@@ -10519,17 +9428,7 @@ double do_test_dgemv_s_d_x(int m, int n,
 		      incx = incx_val;
 
 
-		      /* set x starting index */
-		      ix = 0;
-		      if (incx < 0)
-			ix = -(n_i - 1) * incx;
-
-		      /* copy x_gen to x */
-		      for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-			x[ix] = x_gen[j];
-
-			ix += incx;
-		      }
+		      dcopy_vector(x_gen, n_i, 1, x, incx_val);
 
 		      /* varying incy */
 		      for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -10540,19 +9439,8 @@ double do_test_dgemv_s_d_x(int m, int n,
 			incy = incy_val;
 
 
-			/* set y starting index */
-			iy = 0;
-			if (incy < 0)
-			  iy = -(m_i - 1) * incy;
+			dcopy_vector(y_gen, m_i, 1, y, incy_val);
 
-			/* copy y_gen to y */
-			for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			  y[iy] = y_gen[j];
-
-			  iy += incy;
-			}
-
-			/* call BLAS_dgemv_s_d_x */
 			FPU_FIX_STOP;
 			BLAS_dgemv_s_d_x(order_type, trans_type, m, n, alpha,
 					 A, lda, x, incx_val, beta, y,
@@ -10571,11 +9459,9 @@ double do_test_dgemv_s_d_x(int m, int n,
 			    sge_copy_row(order_type, trans_type, m_i, n_i, A,
 					 lda, temp, j);
 
-			    test_BLAS_ddot_s_d(n_i, blas_no_conj,
-					       alpha, beta, y_gen[k],
-					       y[iy],
-					       head_r_true[k],
-					       tail_r_true[k],
+			    test_BLAS_ddot_s_d(n_i, blas_no_conj, alpha, beta,
+					       y_gen[k], y[iy],
+					       head_r_true[k], tail_r_true[k],
 					       temp, 1, x, incx_val, eps_int,
 					       un_int, &ratios[j]);
 
@@ -10657,42 +9543,11 @@ double do_test_dgemv_s_d_x(int m, int n,
 			    printf("lda=%d, incx=%d, incy=%d:\n", lda, incx,
 				   incy);
 
-			    ix = 0;
-			    iy = 0;
-			    if (incx < 0)
-			      ix = -(n_i - 1) * incx;
-			    if (incy < 0)
-			      iy = -(m_i - 1) * incy;
-
-			    printf("      A=");
-			    for (j = 0; j < m_i; j++) {
-			      /* copy row j of A to temp */
-			      sge_copy_row(order_type, trans_type, m_i, n_i,
-					   A, lda, temp, j);
-
-			      if (j > 0)
-				printf("        ");
-			      sprint_vector(temp, n_i, 1, NULL);
-			    }
-
-			    for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
-			      if (j < n_i) {
-				printf("      ");
-				printf("%24.16e", x[ix]);
-				printf("\n");
-			      }
-			      if (k < m_i) {
-				printf("      ");
-				printf("%24.16e", y_gen[k * incy_gen]);
-				printf("\n");
-				printf("      ");
-				printf("y_final[%d] = ", iy);
-				printf("%24.16e", y[iy]);
-				printf("\n");
-			      }
-			      ix += incx;
-			      iy += incy;
-			    }
+			    sge_print_matrix(A, m_i, n_i, lda, order_type,
+					     "A");
+			    dprint_vector(x, n_i, incx_val, "x");
+			    dprint_vector(y_gen, m_i, 1, "y");
+			    dprint_vector(y, m_i, incy_val, "y_final");
 
 			    printf("      ");
 			    printf("alpha = ");
@@ -10773,14 +9628,8 @@ end:
   *num_tests = tot_tests;
   return ratio_max;
 }				/* end of do_test_dgemv_s_d_x */
-
-double do_test_dgemv_s_s_x(int m, int n,
-			   int ntests,
-			   int *seed,
-			   double thresh,
-			   int debug,
-			   float test_prob,
-			   double *min_ratio,
+double do_test_dgemv_s_s_x(int m, int n, int ntests, int *seed, double thresh,
+			   int debug, float test_prob, double *min_ratio,
 			   int *num_bad_ratio, int *num_tests)
 
 /*
@@ -10865,10 +9714,10 @@ double do_test_dgemv_s_s_x(int m, int n,
      variables */
   int i;			/* iterate through the repeating tests */
   int j, k;			/* multipurpose counters or variables */
-  int ix, iy;			/* use to index x and y respectively */
+  int iy;			/* use to index y */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
+  int incy_gen;			/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
   int p_count;			/* counter for the number of debug lines printed */
@@ -10944,17 +9793,16 @@ double do_test_dgemv_s_s_x(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = 1;
-
+  incy_gen = 1;
 
 
   /* get space for calculation */
-  x = (float *) blas_malloc(max_mn * 2 * incx_gen * sizeof(float));
-  if (max_mn * 2 * incx_gen > 0 && x == NULL) {
+  x = (float *) blas_malloc(max_mn * 2 * sizeof(float));
+  if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double));
-  if (max_mn * 2 * incy_gen > 0 && y == NULL) {
+  y = (double *) blas_malloc(max_mn * 2 * sizeof(double));
+  if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float));
@@ -11109,8 +9957,8 @@ double do_test_dgemv_s_s_x(int m, int n,
 
 		    /* in the trivial cases, no need to run testgen */
 		    if (m > 0 && n > 0)
-		      BLAS_dgemv_s_s_testgen(norm, order_type, trans_type,
-					     m, n, &alpha, alpha_flag, A, lda,
+		      BLAS_dgemv_s_s_testgen(norm, order_type, trans_type, m,
+					     n, &alpha, alpha_flag, A, lda,
 					     x_gen, &beta, beta_flag, y_gen,
 					     seed, head_r_true, tail_r_true);
 
@@ -11125,17 +9973,7 @@ double do_test_dgemv_s_s_x(int m, int n,
 		      incx = incx_val;
 
 
-		      /* set x starting index */
-		      ix = 0;
-		      if (incx < 0)
-			ix = -(n_i - 1) * incx;
-
-		      /* copy x_gen to x */
-		      for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-			x[ix] = x_gen[j];
-
-			ix += incx;
-		      }
+		      scopy_vector(x_gen, n_i, 1, x, incx_val);
 
 		      /* varying incy */
 		      for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -11146,19 +9984,8 @@ double do_test_dgemv_s_s_x(int m, int n,
 			incy = incy_val;
 
 
-			/* set y starting index */
-			iy = 0;
-			if (incy < 0)
-			  iy = -(m_i - 1) * incy;
+			dcopy_vector(y_gen, m_i, 1, y, incy_val);
 
-			/* copy y_gen to y */
-			for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			  y[iy] = y_gen[j];
-
-			  iy += incy;
-			}
-
-			/* call BLAS_dgemv_s_s_x */
 			FPU_FIX_STOP;
 			BLAS_dgemv_s_s_x(order_type, trans_type, m, n, alpha,
 					 A, lda, x, incx_val, beta, y,
@@ -11177,11 +10004,9 @@ double do_test_dgemv_s_s_x(int m, int n,
 			    sge_copy_row(order_type, trans_type, m_i, n_i, A,
 					 lda, temp, j);
 
-			    test_BLAS_ddot_s_s(n_i, blas_no_conj,
-					       alpha, beta, y_gen[k],
-					       y[iy],
-					       head_r_true[k],
-					       tail_r_true[k],
+			    test_BLAS_ddot_s_s(n_i, blas_no_conj, alpha, beta,
+					       y_gen[k], y[iy],
+					       head_r_true[k], tail_r_true[k],
 					       temp, 1, x, incx_val, eps_int,
 					       un_int, &ratios[j]);
 
@@ -11263,42 +10088,11 @@ double do_test_dgemv_s_s_x(int m, int n,
 			    printf("lda=%d, incx=%d, incy=%d:\n", lda, incx,
 				   incy);
 
-			    ix = 0;
-			    iy = 0;
-			    if (incx < 0)
-			      ix = -(n_i - 1) * incx;
-			    if (incy < 0)
-			      iy = -(m_i - 1) * incy;
-
-			    printf("      A=");
-			    for (j = 0; j < m_i; j++) {
-			      /* copy row j of A to temp */
-			      sge_copy_row(order_type, trans_type, m_i, n_i,
-					   A, lda, temp, j);
-
-			      if (j > 0)
-				printf("        ");
-			      sprint_vector(temp, n_i, 1, NULL);
-			    }
-
-			    for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
-			      if (j < n_i) {
-				printf("      ");
-				printf("%16.8e", x[ix]);
-				printf("\n");
-			      }
-			      if (k < m_i) {
-				printf("      ");
-				printf("%24.16e", y_gen[k * incy_gen]);
-				printf("\n");
-				printf("      ");
-				printf("y_final[%d] = ", iy);
-				printf("%24.16e", y[iy]);
-				printf("\n");
-			      }
-			      ix += incx;
-			      iy += incy;
-			    }
+			    sge_print_matrix(A, m_i, n_i, lda, order_type,
+					     "A");
+			    sprint_vector(x, n_i, incx_val, "x");
+			    dprint_vector(y_gen, m_i, 1, "y");
+			    dprint_vector(y, m_i, incy_val, "y_final");
 
 			    printf("      ");
 			    printf("alpha = ");
@@ -11379,14 +10173,8 @@ end:
   *num_tests = tot_tests;
   return ratio_max;
 }				/* end of do_test_dgemv_s_s_x */
-
-double do_test_zgemv_z_c_x(int m, int n,
-			   int ntests,
-			   int *seed,
-			   double thresh,
-			   int debug,
-			   float test_prob,
-			   double *min_ratio,
+double do_test_zgemv_z_c_x(int m, int n, int ntests, int *seed, double thresh,
+			   int debug, float test_prob, double *min_ratio,
 			   int *num_bad_ratio, int *num_tests)
 
 /*
@@ -11471,10 +10259,10 @@ double do_test_zgemv_z_c_x(int m, int n,
      variables */
   int i;			/* iterate through the repeating tests */
   int j, k;			/* multipurpose counters or variables */
-  int ix, iy;			/* use to index x and y respectively */
+  int iy;			/* use to index y */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
+  int incy_gen;			/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
   int p_count;			/* counter for the number of debug lines printed */
@@ -11551,17 +10339,16 @@ double do_test_zgemv_z_c_x(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = 1;
-  incx_gen *= 2;
+  incy_gen = 1;
   incy_gen *= 2;
 
   /* get space for calculation */
-  x = (float *) blas_malloc(max_mn * 2 * incx_gen * sizeof(float) * 2);
-  if (max_mn * 2 * incx_gen > 0 && x == NULL) {
+  x = (float *) blas_malloc(max_mn * 2 * sizeof(float) * 2);
+  if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double) * 2);
-  if (max_mn * 2 * incy_gen > 0 && y == NULL) {
+  y = (double *) blas_malloc(max_mn * 2 * sizeof(double) * 2);
+  if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float) * 2);
@@ -11720,8 +10507,8 @@ double do_test_zgemv_z_c_x(int m, int n,
 
 		    /* in the trivial cases, no need to run testgen */
 		    if (m > 0 && n > 0)
-		      BLAS_zgemv_z_c_testgen(norm, order_type, trans_type,
-					     m, n, &alpha, alpha_flag, A, lda,
+		      BLAS_zgemv_z_c_testgen(norm, order_type, trans_type, m,
+					     n, &alpha, alpha_flag, A, lda,
 					     x_gen, &beta, beta_flag, y_gen,
 					     seed, head_r_true, tail_r_true);
 
@@ -11736,18 +10523,7 @@ double do_test_zgemv_z_c_x(int m, int n,
 		      incx = incx_val;
 		      incx *= 2;
 
-		      /* set x starting index */
-		      ix = 0;
-		      if (incx < 0)
-			ix = -(n_i - 1) * incx;
-
-		      /* copy x_gen to x */
-		      for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-			x[ix] = x_gen[j];
-			x[ix + 1] = x_gen[j + 1];
-
-			ix += incx;
-		      }
+		      ccopy_vector(x_gen, n_i, 1, x, incx_val);
 
 		      /* varying incy */
 		      for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -11758,20 +10534,8 @@ double do_test_zgemv_z_c_x(int m, int n,
 			incy = incy_val;
 			incy *= 2;
 
-			/* set y starting index */
-			iy = 0;
-			if (incy < 0)
-			  iy = -(m_i - 1) * incy;
+			zcopy_vector(y_gen, m_i, 1, y, incy_val);
 
-			/* copy y_gen to y */
-			for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			  y[iy] = y_gen[j];
-			  y[iy + 1] = y_gen[j + 1];
-
-			  iy += incy;
-			}
-
-			/* call BLAS_zgemv_z_c_x */
 			FPU_FIX_STOP;
 			BLAS_zgemv_z_c_x(order_type, trans_type, m, n, alpha,
 					 A, lda, x, incx_val, beta, y,
@@ -11790,13 +10554,12 @@ double do_test_zgemv_z_c_x(int m, int n,
 			    zge_copy_row(order_type, trans_type, m_i, n_i, A,
 					 lda, temp, j);
 
-			    test_BLAS_zdot_z_c(n_i, blas_no_conj,
-					       alpha, beta, &y_gen[k],
-					       &y[iy],
+			    test_BLAS_zdot_z_c(n_i, blas_no_conj, alpha, beta,
+					       &y_gen[k], &y[iy],
 					       &head_r_true[k],
-					       &tail_r_true[k],
-					       temp, 1, x, incx_val, eps_int,
-					       un_int, &ratios[j]);
+					       &tail_r_true[k], temp, 1, x,
+					       incx_val, eps_int, un_int,
+					       &ratios[j]);
 
 			    /* take the max ratio */
 			    if (j == 0) {
@@ -11876,45 +10639,11 @@ double do_test_zgemv_z_c_x(int m, int n,
 			    printf("lda=%d, incx=%d, incy=%d:\n", lda, incx,
 				   incy);
 
-			    ix = 0;
-			    iy = 0;
-			    if (incx < 0)
-			      ix = -(n_i - 1) * incx;
-			    if (incy < 0)
-			      iy = -(m_i - 1) * incy;
-
-			    printf("      A=");
-			    for (j = 0; j < m_i; j++) {
-			      /* copy row j of A to temp */
-			      zge_copy_row(order_type, trans_type, m_i, n_i,
-					   A, lda, temp, j);
-
-			      if (j > 0)
-				printf("        ");
-			      zprint_vector(temp, n_i, 1, NULL);
-			    }
-
-			    for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
-			      if (j < n_i) {
-				printf("      ");
-				printf("(%16.8e, %16.8e)", x[ix], x[ix + 1]);
-				printf("\n");
-			      }
-			      if (k < m_i) {
-				printf("      ");
-				printf("(%24.16e, %24.16e)",
-				       y_gen[k * incy_gen],
-				       y_gen[k * incy_gen + 1]);
-				printf("\n");
-				printf("      ");
-				printf("y_final[%d] = ", iy);
-				printf("(%24.16e, %24.16e)", y[iy],
-				       y[iy + 1]);
-				printf("\n");
-			      }
-			      ix += incx;
-			      iy += incy;
-			    }
+			    zge_print_matrix(A, m_i, n_i, lda, order_type,
+					     "A");
+			    cprint_vector(x, n_i, incx_val, "x");
+			    zprint_vector(y_gen, m_i, 1, "y");
+			    zprint_vector(y, m_i, incy_val, "y_final");
 
 			    printf("      ");
 			    printf("alpha = ");
@@ -11997,14 +10726,8 @@ end:
   *num_tests = tot_tests;
   return ratio_max;
 }				/* end of do_test_zgemv_z_c_x */
-
-double do_test_zgemv_c_z_x(int m, int n,
-			   int ntests,
-			   int *seed,
-			   double thresh,
-			   int debug,
-			   float test_prob,
-			   double *min_ratio,
+double do_test_zgemv_c_z_x(int m, int n, int ntests, int *seed, double thresh,
+			   int debug, float test_prob, double *min_ratio,
 			   int *num_bad_ratio, int *num_tests)
 
 /*
@@ -12089,10 +10812,10 @@ double do_test_zgemv_c_z_x(int m, int n,
      variables */
   int i;			/* iterate through the repeating tests */
   int j, k;			/* multipurpose counters or variables */
-  int ix, iy;			/* use to index x and y respectively */
+  int iy;			/* use to index y */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
+  int incy_gen;			/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
   int p_count;			/* counter for the number of debug lines printed */
@@ -12169,17 +10892,16 @@ double do_test_zgemv_c_z_x(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = 1;
-  incx_gen *= 2;
+  incy_gen = 1;
   incy_gen *= 2;
 
   /* get space for calculation */
-  x = (double *) blas_malloc(max_mn * 2 * incx_gen * sizeof(double) * 2);
-  if (max_mn * 2 * incx_gen > 0 && x == NULL) {
+  x = (double *) blas_malloc(max_mn * 2 * sizeof(double) * 2);
+  if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double) * 2);
-  if (max_mn * 2 * incy_gen > 0 && y == NULL) {
+  y = (double *) blas_malloc(max_mn * 2 * sizeof(double) * 2);
+  if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   x_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
@@ -12338,8 +11060,8 @@ double do_test_zgemv_c_z_x(int m, int n,
 
 		    /* in the trivial cases, no need to run testgen */
 		    if (m > 0 && n > 0)
-		      BLAS_zgemv_c_z_testgen(norm, order_type, trans_type,
-					     m, n, &alpha, alpha_flag, A, lda,
+		      BLAS_zgemv_c_z_testgen(norm, order_type, trans_type, m,
+					     n, &alpha, alpha_flag, A, lda,
 					     x_gen, &beta, beta_flag, y_gen,
 					     seed, head_r_true, tail_r_true);
 
@@ -12354,18 +11076,7 @@ double do_test_zgemv_c_z_x(int m, int n,
 		      incx = incx_val;
 		      incx *= 2;
 
-		      /* set x starting index */
-		      ix = 0;
-		      if (incx < 0)
-			ix = -(n_i - 1) * incx;
-
-		      /* copy x_gen to x */
-		      for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-			x[ix] = x_gen[j];
-			x[ix + 1] = x_gen[j + 1];
-
-			ix += incx;
-		      }
+		      zcopy_vector(x_gen, n_i, 1, x, incx_val);
 
 		      /* varying incy */
 		      for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -12376,20 +11087,8 @@ double do_test_zgemv_c_z_x(int m, int n,
 			incy = incy_val;
 			incy *= 2;
 
-			/* set y starting index */
-			iy = 0;
-			if (incy < 0)
-			  iy = -(m_i - 1) * incy;
+			zcopy_vector(y_gen, m_i, 1, y, incy_val);
 
-			/* copy y_gen to y */
-			for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			  y[iy] = y_gen[j];
-			  y[iy + 1] = y_gen[j + 1];
-
-			  iy += incy;
-			}
-
-			/* call BLAS_zgemv_c_z_x */
 			FPU_FIX_STOP;
 			BLAS_zgemv_c_z_x(order_type, trans_type, m, n, alpha,
 					 A, lda, x, incx_val, beta, y,
@@ -12408,13 +11107,12 @@ double do_test_zgemv_c_z_x(int m, int n,
 			    cge_copy_row(order_type, trans_type, m_i, n_i, A,
 					 lda, temp, j);
 
-			    test_BLAS_zdot_c_z(n_i, blas_no_conj,
-					       alpha, beta, &y_gen[k],
-					       &y[iy],
+			    test_BLAS_zdot_c_z(n_i, blas_no_conj, alpha, beta,
+					       &y_gen[k], &y[iy],
 					       &head_r_true[k],
-					       &tail_r_true[k],
-					       temp, 1, x, incx_val, eps_int,
-					       un_int, &ratios[j]);
+					       &tail_r_true[k], temp, 1, x,
+					       incx_val, eps_int, un_int,
+					       &ratios[j]);
 
 			    /* take the max ratio */
 			    if (j == 0) {
@@ -12494,46 +11192,11 @@ double do_test_zgemv_c_z_x(int m, int n,
 			    printf("lda=%d, incx=%d, incy=%d:\n", lda, incx,
 				   incy);
 
-			    ix = 0;
-			    iy = 0;
-			    if (incx < 0)
-			      ix = -(n_i - 1) * incx;
-			    if (incy < 0)
-			      iy = -(m_i - 1) * incy;
-
-			    printf("      A=");
-			    for (j = 0; j < m_i; j++) {
-			      /* copy row j of A to temp */
-			      cge_copy_row(order_type, trans_type, m_i, n_i,
-					   A, lda, temp, j);
-
-			      if (j > 0)
-				printf("        ");
-			      cprint_vector(temp, n_i, 1, NULL);
-			    }
-
-			    for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
-			      if (j < n_i) {
-				printf("      ");
-				printf("(%24.16e, %24.16e)", x[ix],
-				       x[ix + 1]);
-				printf("\n");
-			      }
-			      if (k < m_i) {
-				printf("      ");
-				printf("(%24.16e, %24.16e)",
-				       y_gen[k * incy_gen],
-				       y_gen[k * incy_gen + 1]);
-				printf("\n");
-				printf("      ");
-				printf("y_final[%d] = ", iy);
-				printf("(%24.16e, %24.16e)", y[iy],
-				       y[iy + 1]);
-				printf("\n");
-			      }
-			      ix += incx;
-			      iy += incy;
-			    }
+			    cge_print_matrix(A, m_i, n_i, lda, order_type,
+					     "A");
+			    zprint_vector(x, n_i, incx_val, "x");
+			    zprint_vector(y_gen, m_i, 1, "y");
+			    zprint_vector(y, m_i, incy_val, "y_final");
 
 			    printf("      ");
 			    printf("alpha = ");
@@ -12616,14 +11279,8 @@ end:
   *num_tests = tot_tests;
   return ratio_max;
 }				/* end of do_test_zgemv_c_z_x */
-
-double do_test_zgemv_c_c_x(int m, int n,
-			   int ntests,
-			   int *seed,
-			   double thresh,
-			   int debug,
-			   float test_prob,
-			   double *min_ratio,
+double do_test_zgemv_c_c_x(int m, int n, int ntests, int *seed, double thresh,
+			   int debug, float test_prob, double *min_ratio,
 			   int *num_bad_ratio, int *num_tests)
 
 /*
@@ -12708,10 +11365,10 @@ double do_test_zgemv_c_c_x(int m, int n,
      variables */
   int i;			/* iterate through the repeating tests */
   int j, k;			/* multipurpose counters or variables */
-  int ix, iy;			/* use to index x and y respectively */
+  int iy;			/* use to index y */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
+  int incy_gen;			/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
   int p_count;			/* counter for the number of debug lines printed */
@@ -12788,17 +11445,16 @@ double do_test_zgemv_c_c_x(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = 1;
-  incx_gen *= 2;
+  incy_gen = 1;
   incy_gen *= 2;
 
   /* get space for calculation */
-  x = (float *) blas_malloc(max_mn * 2 * incx_gen * sizeof(float) * 2);
-  if (max_mn * 2 * incx_gen > 0 && x == NULL) {
+  x = (float *) blas_malloc(max_mn * 2 * sizeof(float) * 2);
+  if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double) * 2);
-  if (max_mn * 2 * incy_gen > 0 && y == NULL) {
+  y = (double *) blas_malloc(max_mn * 2 * sizeof(double) * 2);
+  if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float) * 2);
@@ -12957,8 +11613,8 @@ double do_test_zgemv_c_c_x(int m, int n,
 
 		    /* in the trivial cases, no need to run testgen */
 		    if (m > 0 && n > 0)
-		      BLAS_zgemv_c_c_testgen(norm, order_type, trans_type,
-					     m, n, &alpha, alpha_flag, A, lda,
+		      BLAS_zgemv_c_c_testgen(norm, order_type, trans_type, m,
+					     n, &alpha, alpha_flag, A, lda,
 					     x_gen, &beta, beta_flag, y_gen,
 					     seed, head_r_true, tail_r_true);
 
@@ -12973,18 +11629,7 @@ double do_test_zgemv_c_c_x(int m, int n,
 		      incx = incx_val;
 		      incx *= 2;
 
-		      /* set x starting index */
-		      ix = 0;
-		      if (incx < 0)
-			ix = -(n_i - 1) * incx;
-
-		      /* copy x_gen to x */
-		      for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-			x[ix] = x_gen[j];
-			x[ix + 1] = x_gen[j + 1];
-
-			ix += incx;
-		      }
+		      ccopy_vector(x_gen, n_i, 1, x, incx_val);
 
 		      /* varying incy */
 		      for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -12995,20 +11640,8 @@ double do_test_zgemv_c_c_x(int m, int n,
 			incy = incy_val;
 			incy *= 2;
 
-			/* set y starting index */
-			iy = 0;
-			if (incy < 0)
-			  iy = -(m_i - 1) * incy;
+			zcopy_vector(y_gen, m_i, 1, y, incy_val);
 
-			/* copy y_gen to y */
-			for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			  y[iy] = y_gen[j];
-			  y[iy + 1] = y_gen[j + 1];
-
-			  iy += incy;
-			}
-
-			/* call BLAS_zgemv_c_c_x */
 			FPU_FIX_STOP;
 			BLAS_zgemv_c_c_x(order_type, trans_type, m, n, alpha,
 					 A, lda, x, incx_val, beta, y,
@@ -13027,13 +11660,12 @@ double do_test_zgemv_c_c_x(int m, int n,
 			    cge_copy_row(order_type, trans_type, m_i, n_i, A,
 					 lda, temp, j);
 
-			    test_BLAS_zdot_c_c(n_i, blas_no_conj,
-					       alpha, beta, &y_gen[k],
-					       &y[iy],
+			    test_BLAS_zdot_c_c(n_i, blas_no_conj, alpha, beta,
+					       &y_gen[k], &y[iy],
 					       &head_r_true[k],
-					       &tail_r_true[k],
-					       temp, 1, x, incx_val, eps_int,
-					       un_int, &ratios[j]);
+					       &tail_r_true[k], temp, 1, x,
+					       incx_val, eps_int, un_int,
+					       &ratios[j]);
 
 			    /* take the max ratio */
 			    if (j == 0) {
@@ -13113,45 +11745,11 @@ double do_test_zgemv_c_c_x(int m, int n,
 			    printf("lda=%d, incx=%d, incy=%d:\n", lda, incx,
 				   incy);
 
-			    ix = 0;
-			    iy = 0;
-			    if (incx < 0)
-			      ix = -(n_i - 1) * incx;
-			    if (incy < 0)
-			      iy = -(m_i - 1) * incy;
-
-			    printf("      A=");
-			    for (j = 0; j < m_i; j++) {
-			      /* copy row j of A to temp */
-			      cge_copy_row(order_type, trans_type, m_i, n_i,
-					   A, lda, temp, j);
-
-			      if (j > 0)
-				printf("        ");
-			      cprint_vector(temp, n_i, 1, NULL);
-			    }
-
-			    for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
-			      if (j < n_i) {
-				printf("      ");
-				printf("(%16.8e, %16.8e)", x[ix], x[ix + 1]);
-				printf("\n");
-			      }
-			      if (k < m_i) {
-				printf("      ");
-				printf("(%24.16e, %24.16e)",
-				       y_gen[k * incy_gen],
-				       y_gen[k * incy_gen + 1]);
-				printf("\n");
-				printf("      ");
-				printf("y_final[%d] = ", iy);
-				printf("(%24.16e, %24.16e)", y[iy],
-				       y[iy + 1]);
-				printf("\n");
-			      }
-			      ix += incx;
-			      iy += incy;
-			    }
+			    cge_print_matrix(A, m_i, n_i, lda, order_type,
+					     "A");
+			    cprint_vector(x, n_i, incx_val, "x");
+			    zprint_vector(y_gen, m_i, 1, "y");
+			    zprint_vector(y, m_i, incy_val, "y_final");
 
 			    printf("      ");
 			    printf("alpha = ");
@@ -13234,14 +11832,8 @@ end:
   *num_tests = tot_tests;
   return ratio_max;
 }				/* end of do_test_zgemv_c_c_x */
-
-double do_test_cgemv_c_s_x(int m, int n,
-			   int ntests,
-			   int *seed,
-			   double thresh,
-			   int debug,
-			   float test_prob,
-			   double *min_ratio,
+double do_test_cgemv_c_s_x(int m, int n, int ntests, int *seed, double thresh,
+			   int debug, float test_prob, double *min_ratio,
 			   int *num_bad_ratio, int *num_tests)
 
 /*
@@ -13326,10 +11918,10 @@ double do_test_cgemv_c_s_x(int m, int n,
      variables */
   int i;			/* iterate through the repeating tests */
   int j, k;			/* multipurpose counters or variables */
-  int ix, iy;			/* use to index x and y respectively */
+  int iy;			/* use to index y */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
+  int incy_gen;			/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
   int p_count;			/* counter for the number of debug lines printed */
@@ -13406,17 +11998,16 @@ double do_test_cgemv_c_s_x(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = 1;
-
+  incy_gen = 1;
   incy_gen *= 2;
 
   /* get space for calculation */
-  x = (float *) blas_malloc(max_mn * 2 * incx_gen * sizeof(float));
-  if (max_mn * 2 * incx_gen > 0 && x == NULL) {
+  x = (float *) blas_malloc(max_mn * 2 * sizeof(float));
+  if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  y = (float *) blas_malloc(max_mn * 2 * incy_gen * sizeof(float) * 2);
-  if (max_mn * 2 * incy_gen > 0 && y == NULL) {
+  y = (float *) blas_malloc(max_mn * 2 * sizeof(float) * 2);
+  if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float));
@@ -13575,8 +12166,8 @@ double do_test_cgemv_c_s_x(int m, int n,
 
 		    /* in the trivial cases, no need to run testgen */
 		    if (m > 0 && n > 0)
-		      BLAS_cgemv_c_s_testgen(norm, order_type, trans_type,
-					     m, n, &alpha, alpha_flag, A, lda,
+		      BLAS_cgemv_c_s_testgen(norm, order_type, trans_type, m,
+					     n, &alpha, alpha_flag, A, lda,
 					     x_gen, &beta, beta_flag, y_gen,
 					     seed, head_r_true, tail_r_true);
 
@@ -13591,17 +12182,7 @@ double do_test_cgemv_c_s_x(int m, int n,
 		      incx = incx_val;
 
 
-		      /* set x starting index */
-		      ix = 0;
-		      if (incx < 0)
-			ix = -(n_i - 1) * incx;
-
-		      /* copy x_gen to x */
-		      for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-			x[ix] = x_gen[j];
-
-			ix += incx;
-		      }
+		      scopy_vector(x_gen, n_i, 1, x, incx_val);
 
 		      /* varying incy */
 		      for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -13612,20 +12193,8 @@ double do_test_cgemv_c_s_x(int m, int n,
 			incy = incy_val;
 			incy *= 2;
 
-			/* set y starting index */
-			iy = 0;
-			if (incy < 0)
-			  iy = -(m_i - 1) * incy;
+			ccopy_vector(y_gen, m_i, 1, y, incy_val);
 
-			/* copy y_gen to y */
-			for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			  y[iy] = y_gen[j];
-			  y[iy + 1] = y_gen[j + 1];
-
-			  iy += incy;
-			}
-
-			/* call BLAS_cgemv_c_s_x */
 			FPU_FIX_STOP;
 			BLAS_cgemv_c_s_x(order_type, trans_type, m, n, alpha,
 					 A, lda, x, incx_val, beta, y,
@@ -13644,13 +12213,12 @@ double do_test_cgemv_c_s_x(int m, int n,
 			    cge_copy_row(order_type, trans_type, m_i, n_i, A,
 					 lda, temp, j);
 
-			    test_BLAS_cdot_c_s(n_i, blas_no_conj,
-					       alpha, beta, &y_gen[k],
-					       &y[iy],
+			    test_BLAS_cdot_c_s(n_i, blas_no_conj, alpha, beta,
+					       &y_gen[k], &y[iy],
 					       &head_r_true[k],
-					       &tail_r_true[k],
-					       temp, 1, x, incx_val, eps_int,
-					       un_int, &ratios[j]);
+					       &tail_r_true[k], temp, 1, x,
+					       incx_val, eps_int, un_int,
+					       &ratios[j]);
 
 			    /* take the max ratio */
 			    if (j == 0) {
@@ -13730,44 +12298,11 @@ double do_test_cgemv_c_s_x(int m, int n,
 			    printf("lda=%d, incx=%d, incy=%d:\n", lda, incx,
 				   incy);
 
-			    ix = 0;
-			    iy = 0;
-			    if (incx < 0)
-			      ix = -(n_i - 1) * incx;
-			    if (incy < 0)
-			      iy = -(m_i - 1) * incy;
-
-			    printf("      A=");
-			    for (j = 0; j < m_i; j++) {
-			      /* copy row j of A to temp */
-			      cge_copy_row(order_type, trans_type, m_i, n_i,
-					   A, lda, temp, j);
-
-			      if (j > 0)
-				printf("        ");
-			      cprint_vector(temp, n_i, 1, NULL);
-			    }
-
-			    for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
-			      if (j < n_i) {
-				printf("      ");
-				printf("%16.8e", x[ix]);
-				printf("\n");
-			      }
-			      if (k < m_i) {
-				printf("      ");
-				printf("(%16.8e, %16.8e)",
-				       y_gen[k * incy_gen],
-				       y_gen[k * incy_gen + 1]);
-				printf("\n");
-				printf("      ");
-				printf("y_final[%d] = ", iy);
-				printf("(%16.8e, %16.8e)", y[iy], y[iy + 1]);
-				printf("\n");
-			      }
-			      ix += incx;
-			      iy += incy;
-			    }
+			    cge_print_matrix(A, m_i, n_i, lda, order_type,
+					     "A");
+			    sprint_vector(x, n_i, incx_val, "x");
+			    cprint_vector(y_gen, m_i, 1, "y");
+			    cprint_vector(y, m_i, incy_val, "y_final");
 
 			    printf("      ");
 			    printf("alpha = ");
@@ -13850,14 +12385,8 @@ end:
   *num_tests = tot_tests;
   return ratio_max;
 }				/* end of do_test_cgemv_c_s_x */
-
-double do_test_cgemv_s_c_x(int m, int n,
-			   int ntests,
-			   int *seed,
-			   double thresh,
-			   int debug,
-			   float test_prob,
-			   double *min_ratio,
+double do_test_cgemv_s_c_x(int m, int n, int ntests, int *seed, double thresh,
+			   int debug, float test_prob, double *min_ratio,
 			   int *num_bad_ratio, int *num_tests)
 
 /*
@@ -13942,10 +12471,10 @@ double do_test_cgemv_s_c_x(int m, int n,
      variables */
   int i;			/* iterate through the repeating tests */
   int j, k;			/* multipurpose counters or variables */
-  int ix, iy;			/* use to index x and y respectively */
+  int iy;			/* use to index y */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
+  int incy_gen;			/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
   int p_count;			/* counter for the number of debug lines printed */
@@ -14022,17 +12551,16 @@ double do_test_cgemv_s_c_x(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = 1;
-  incx_gen *= 2;
+  incy_gen = 1;
   incy_gen *= 2;
 
   /* get space for calculation */
-  x = (float *) blas_malloc(max_mn * 2 * incx_gen * sizeof(float) * 2);
-  if (max_mn * 2 * incx_gen > 0 && x == NULL) {
+  x = (float *) blas_malloc(max_mn * 2 * sizeof(float) * 2);
+  if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  y = (float *) blas_malloc(max_mn * 2 * incy_gen * sizeof(float) * 2);
-  if (max_mn * 2 * incy_gen > 0 && y == NULL) {
+  y = (float *) blas_malloc(max_mn * 2 * sizeof(float) * 2);
+  if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float) * 2);
@@ -14189,8 +12717,8 @@ double do_test_cgemv_s_c_x(int m, int n,
 
 		    /* in the trivial cases, no need to run testgen */
 		    if (m > 0 && n > 0)
-		      BLAS_cgemv_s_c_testgen(norm, order_type, trans_type,
-					     m, n, &alpha, alpha_flag, A, lda,
+		      BLAS_cgemv_s_c_testgen(norm, order_type, trans_type, m,
+					     n, &alpha, alpha_flag, A, lda,
 					     x_gen, &beta, beta_flag, y_gen,
 					     seed, head_r_true, tail_r_true);
 
@@ -14205,18 +12733,7 @@ double do_test_cgemv_s_c_x(int m, int n,
 		      incx = incx_val;
 		      incx *= 2;
 
-		      /* set x starting index */
-		      ix = 0;
-		      if (incx < 0)
-			ix = -(n_i - 1) * incx;
-
-		      /* copy x_gen to x */
-		      for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-			x[ix] = x_gen[j];
-			x[ix + 1] = x_gen[j + 1];
-
-			ix += incx;
-		      }
+		      ccopy_vector(x_gen, n_i, 1, x, incx_val);
 
 		      /* varying incy */
 		      for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -14227,20 +12744,8 @@ double do_test_cgemv_s_c_x(int m, int n,
 			incy = incy_val;
 			incy *= 2;
 
-			/* set y starting index */
-			iy = 0;
-			if (incy < 0)
-			  iy = -(m_i - 1) * incy;
+			ccopy_vector(y_gen, m_i, 1, y, incy_val);
 
-			/* copy y_gen to y */
-			for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			  y[iy] = y_gen[j];
-			  y[iy + 1] = y_gen[j + 1];
-
-			  iy += incy;
-			}
-
-			/* call BLAS_cgemv_s_c_x */
 			FPU_FIX_STOP;
 			BLAS_cgemv_s_c_x(order_type, trans_type, m, n, alpha,
 					 A, lda, x, incx_val, beta, y,
@@ -14259,13 +12764,12 @@ double do_test_cgemv_s_c_x(int m, int n,
 			    sge_copy_row(order_type, trans_type, m_i, n_i, A,
 					 lda, temp, j);
 
-			    test_BLAS_cdot_s_c(n_i, blas_no_conj,
-					       alpha, beta, &y_gen[k],
-					       &y[iy],
+			    test_BLAS_cdot_s_c(n_i, blas_no_conj, alpha, beta,
+					       &y_gen[k], &y[iy],
 					       &head_r_true[k],
-					       &tail_r_true[k],
-					       temp, 1, x, incx_val, eps_int,
-					       un_int, &ratios[j]);
+					       &tail_r_true[k], temp, 1, x,
+					       incx_val, eps_int, un_int,
+					       &ratios[j]);
 
 			    /* take the max ratio */
 			    if (j == 0) {
@@ -14345,44 +12849,11 @@ double do_test_cgemv_s_c_x(int m, int n,
 			    printf("lda=%d, incx=%d, incy=%d:\n", lda, incx,
 				   incy);
 
-			    ix = 0;
-			    iy = 0;
-			    if (incx < 0)
-			      ix = -(n_i - 1) * incx;
-			    if (incy < 0)
-			      iy = -(m_i - 1) * incy;
-
-			    printf("      A=");
-			    for (j = 0; j < m_i; j++) {
-			      /* copy row j of A to temp */
-			      sge_copy_row(order_type, trans_type, m_i, n_i,
-					   A, lda, temp, j);
-
-			      if (j > 0)
-				printf("        ");
-			      sprint_vector(temp, n_i, 1, NULL);
-			    }
-
-			    for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
-			      if (j < n_i) {
-				printf("      ");
-				printf("(%16.8e, %16.8e)", x[ix], x[ix + 1]);
-				printf("\n");
-			      }
-			      if (k < m_i) {
-				printf("      ");
-				printf("(%16.8e, %16.8e)",
-				       y_gen[k * incy_gen],
-				       y_gen[k * incy_gen + 1]);
-				printf("\n");
-				printf("      ");
-				printf("y_final[%d] = ", iy);
-				printf("(%16.8e, %16.8e)", y[iy], y[iy + 1]);
-				printf("\n");
-			      }
-			      ix += incx;
-			      iy += incy;
-			    }
+			    sge_print_matrix(A, m_i, n_i, lda, order_type,
+					     "A");
+			    cprint_vector(x, n_i, incx_val, "x");
+			    cprint_vector(y_gen, m_i, 1, "y");
+			    cprint_vector(y, m_i, incy_val, "y_final");
 
 			    printf("      ");
 			    printf("alpha = ");
@@ -14465,14 +12936,8 @@ end:
   *num_tests = tot_tests;
   return ratio_max;
 }				/* end of do_test_cgemv_s_c_x */
-
-double do_test_cgemv_s_s_x(int m, int n,
-			   int ntests,
-			   int *seed,
-			   double thresh,
-			   int debug,
-			   float test_prob,
-			   double *min_ratio,
+double do_test_cgemv_s_s_x(int m, int n, int ntests, int *seed, double thresh,
+			   int debug, float test_prob, double *min_ratio,
 			   int *num_bad_ratio, int *num_tests)
 
 /*
@@ -14557,10 +13022,10 @@ double do_test_cgemv_s_s_x(int m, int n,
      variables */
   int i;			/* iterate through the repeating tests */
   int j, k;			/* multipurpose counters or variables */
-  int ix, iy;			/* use to index x and y respectively */
+  int iy;			/* use to index y */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
+  int incy_gen;			/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
   int p_count;			/* counter for the number of debug lines printed */
@@ -14637,17 +13102,16 @@ double do_test_cgemv_s_s_x(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = 1;
-
+  incy_gen = 1;
   incy_gen *= 2;
 
   /* get space for calculation */
-  x = (float *) blas_malloc(max_mn * 2 * incx_gen * sizeof(float));
-  if (max_mn * 2 * incx_gen > 0 && x == NULL) {
+  x = (float *) blas_malloc(max_mn * 2 * sizeof(float));
+  if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  y = (float *) blas_malloc(max_mn * 2 * incy_gen * sizeof(float) * 2);
-  if (max_mn * 2 * incy_gen > 0 && y == NULL) {
+  y = (float *) blas_malloc(max_mn * 2 * sizeof(float) * 2);
+  if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   x_gen = (float *) blas_malloc(max_mn * sizeof(float));
@@ -14804,8 +13268,8 @@ double do_test_cgemv_s_s_x(int m, int n,
 
 		    /* in the trivial cases, no need to run testgen */
 		    if (m > 0 && n > 0)
-		      BLAS_cgemv_s_s_testgen(norm, order_type, trans_type,
-					     m, n, &alpha, alpha_flag, A, lda,
+		      BLAS_cgemv_s_s_testgen(norm, order_type, trans_type, m,
+					     n, &alpha, alpha_flag, A, lda,
 					     x_gen, &beta, beta_flag, y_gen,
 					     seed, head_r_true, tail_r_true);
 
@@ -14820,17 +13284,7 @@ double do_test_cgemv_s_s_x(int m, int n,
 		      incx = incx_val;
 
 
-		      /* set x starting index */
-		      ix = 0;
-		      if (incx < 0)
-			ix = -(n_i - 1) * incx;
-
-		      /* copy x_gen to x */
-		      for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-			x[ix] = x_gen[j];
-
-			ix += incx;
-		      }
+		      scopy_vector(x_gen, n_i, 1, x, incx_val);
 
 		      /* varying incy */
 		      for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -14841,20 +13295,8 @@ double do_test_cgemv_s_s_x(int m, int n,
 			incy = incy_val;
 			incy *= 2;
 
-			/* set y starting index */
-			iy = 0;
-			if (incy < 0)
-			  iy = -(m_i - 1) * incy;
+			ccopy_vector(y_gen, m_i, 1, y, incy_val);
 
-			/* copy y_gen to y */
-			for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			  y[iy] = y_gen[j];
-			  y[iy + 1] = y_gen[j + 1];
-
-			  iy += incy;
-			}
-
-			/* call BLAS_cgemv_s_s_x */
 			FPU_FIX_STOP;
 			BLAS_cgemv_s_s_x(order_type, trans_type, m, n, alpha,
 					 A, lda, x, incx_val, beta, y,
@@ -14873,13 +13315,12 @@ double do_test_cgemv_s_s_x(int m, int n,
 			    sge_copy_row(order_type, trans_type, m_i, n_i, A,
 					 lda, temp, j);
 
-			    test_BLAS_cdot_s_s(n_i, blas_no_conj,
-					       alpha, beta, &y_gen[k],
-					       &y[iy],
+			    test_BLAS_cdot_s_s(n_i, blas_no_conj, alpha, beta,
+					       &y_gen[k], &y[iy],
 					       &head_r_true[k],
-					       &tail_r_true[k],
-					       temp, 1, x, incx_val, eps_int,
-					       un_int, &ratios[j]);
+					       &tail_r_true[k], temp, 1, x,
+					       incx_val, eps_int, un_int,
+					       &ratios[j]);
 
 			    /* take the max ratio */
 			    if (j == 0) {
@@ -14959,44 +13400,11 @@ double do_test_cgemv_s_s_x(int m, int n,
 			    printf("lda=%d, incx=%d, incy=%d:\n", lda, incx,
 				   incy);
 
-			    ix = 0;
-			    iy = 0;
-			    if (incx < 0)
-			      ix = -(n_i - 1) * incx;
-			    if (incy < 0)
-			      iy = -(m_i - 1) * incy;
-
-			    printf("      A=");
-			    for (j = 0; j < m_i; j++) {
-			      /* copy row j of A to temp */
-			      sge_copy_row(order_type, trans_type, m_i, n_i,
-					   A, lda, temp, j);
-
-			      if (j > 0)
-				printf("        ");
-			      sprint_vector(temp, n_i, 1, NULL);
-			    }
-
-			    for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
-			      if (j < n_i) {
-				printf("      ");
-				printf("%16.8e", x[ix]);
-				printf("\n");
-			      }
-			      if (k < m_i) {
-				printf("      ");
-				printf("(%16.8e, %16.8e)",
-				       y_gen[k * incy_gen],
-				       y_gen[k * incy_gen + 1]);
-				printf("\n");
-				printf("      ");
-				printf("y_final[%d] = ", iy);
-				printf("(%16.8e, %16.8e)", y[iy], y[iy + 1]);
-				printf("\n");
-			      }
-			      ix += incx;
-			      iy += incy;
-			    }
+			    sge_print_matrix(A, m_i, n_i, lda, order_type,
+					     "A");
+			    sprint_vector(x, n_i, incx_val, "x");
+			    cprint_vector(y_gen, m_i, 1, "y");
+			    cprint_vector(y, m_i, incy_val, "y_final");
 
 			    printf("      ");
 			    printf("alpha = ");
@@ -15079,14 +13487,8 @@ end:
   *num_tests = tot_tests;
   return ratio_max;
 }				/* end of do_test_cgemv_s_s_x */
-
-double do_test_zgemv_z_d_x(int m, int n,
-			   int ntests,
-			   int *seed,
-			   double thresh,
-			   int debug,
-			   float test_prob,
-			   double *min_ratio,
+double do_test_zgemv_z_d_x(int m, int n, int ntests, int *seed, double thresh,
+			   int debug, float test_prob, double *min_ratio,
 			   int *num_bad_ratio, int *num_tests)
 
 /*
@@ -15171,10 +13573,10 @@ double do_test_zgemv_z_d_x(int m, int n,
      variables */
   int i;			/* iterate through the repeating tests */
   int j, k;			/* multipurpose counters or variables */
-  int ix, iy;			/* use to index x and y respectively */
+  int iy;			/* use to index y */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
+  int incy_gen;			/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
   int p_count;			/* counter for the number of debug lines printed */
@@ -15251,17 +13653,16 @@ double do_test_zgemv_z_d_x(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = 1;
-
+  incy_gen = 1;
   incy_gen *= 2;
 
   /* get space for calculation */
-  x = (double *) blas_malloc(max_mn * 2 * incx_gen * sizeof(double));
-  if (max_mn * 2 * incx_gen > 0 && x == NULL) {
+  x = (double *) blas_malloc(max_mn * 2 * sizeof(double));
+  if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double) * 2);
-  if (max_mn * 2 * incy_gen > 0 && y == NULL) {
+  y = (double *) blas_malloc(max_mn * 2 * sizeof(double) * 2);
+  if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   x_gen = (double *) blas_malloc(max_mn * sizeof(double));
@@ -15420,8 +13821,8 @@ double do_test_zgemv_z_d_x(int m, int n,
 
 		    /* in the trivial cases, no need to run testgen */
 		    if (m > 0 && n > 0)
-		      BLAS_zgemv_z_d_testgen(norm, order_type, trans_type,
-					     m, n, &alpha, alpha_flag, A, lda,
+		      BLAS_zgemv_z_d_testgen(norm, order_type, trans_type, m,
+					     n, &alpha, alpha_flag, A, lda,
 					     x_gen, &beta, beta_flag, y_gen,
 					     seed, head_r_true, tail_r_true);
 
@@ -15436,17 +13837,7 @@ double do_test_zgemv_z_d_x(int m, int n,
 		      incx = incx_val;
 
 
-		      /* set x starting index */
-		      ix = 0;
-		      if (incx < 0)
-			ix = -(n_i - 1) * incx;
-
-		      /* copy x_gen to x */
-		      for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-			x[ix] = x_gen[j];
-
-			ix += incx;
-		      }
+		      dcopy_vector(x_gen, n_i, 1, x, incx_val);
 
 		      /* varying incy */
 		      for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -15457,20 +13848,8 @@ double do_test_zgemv_z_d_x(int m, int n,
 			incy = incy_val;
 			incy *= 2;
 
-			/* set y starting index */
-			iy = 0;
-			if (incy < 0)
-			  iy = -(m_i - 1) * incy;
+			zcopy_vector(y_gen, m_i, 1, y, incy_val);
 
-			/* copy y_gen to y */
-			for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			  y[iy] = y_gen[j];
-			  y[iy + 1] = y_gen[j + 1];
-
-			  iy += incy;
-			}
-
-			/* call BLAS_zgemv_z_d_x */
 			FPU_FIX_STOP;
 			BLAS_zgemv_z_d_x(order_type, trans_type, m, n, alpha,
 					 A, lda, x, incx_val, beta, y,
@@ -15489,13 +13868,12 @@ double do_test_zgemv_z_d_x(int m, int n,
 			    zge_copy_row(order_type, trans_type, m_i, n_i, A,
 					 lda, temp, j);
 
-			    test_BLAS_zdot_z_d(n_i, blas_no_conj,
-					       alpha, beta, &y_gen[k],
-					       &y[iy],
+			    test_BLAS_zdot_z_d(n_i, blas_no_conj, alpha, beta,
+					       &y_gen[k], &y[iy],
 					       &head_r_true[k],
-					       &tail_r_true[k],
-					       temp, 1, x, incx_val, eps_int,
-					       un_int, &ratios[j]);
+					       &tail_r_true[k], temp, 1, x,
+					       incx_val, eps_int, un_int,
+					       &ratios[j]);
 
 			    /* take the max ratio */
 			    if (j == 0) {
@@ -15575,45 +13953,11 @@ double do_test_zgemv_z_d_x(int m, int n,
 			    printf("lda=%d, incx=%d, incy=%d:\n", lda, incx,
 				   incy);
 
-			    ix = 0;
-			    iy = 0;
-			    if (incx < 0)
-			      ix = -(n_i - 1) * incx;
-			    if (incy < 0)
-			      iy = -(m_i - 1) * incy;
-
-			    printf("      A=");
-			    for (j = 0; j < m_i; j++) {
-			      /* copy row j of A to temp */
-			      zge_copy_row(order_type, trans_type, m_i, n_i,
-					   A, lda, temp, j);
-
-			      if (j > 0)
-				printf("        ");
-			      zprint_vector(temp, n_i, 1, NULL);
-			    }
-
-			    for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
-			      if (j < n_i) {
-				printf("      ");
-				printf("%24.16e", x[ix]);
-				printf("\n");
-			      }
-			      if (k < m_i) {
-				printf("      ");
-				printf("(%24.16e, %24.16e)",
-				       y_gen[k * incy_gen],
-				       y_gen[k * incy_gen + 1]);
-				printf("\n");
-				printf("      ");
-				printf("y_final[%d] = ", iy);
-				printf("(%24.16e, %24.16e)", y[iy],
-				       y[iy + 1]);
-				printf("\n");
-			      }
-			      ix += incx;
-			      iy += incy;
-			    }
+			    zge_print_matrix(A, m_i, n_i, lda, order_type,
+					     "A");
+			    dprint_vector(x, n_i, incx_val, "x");
+			    zprint_vector(y_gen, m_i, 1, "y");
+			    zprint_vector(y, m_i, incy_val, "y_final");
 
 			    printf("      ");
 			    printf("alpha = ");
@@ -15696,14 +14040,8 @@ end:
   *num_tests = tot_tests;
   return ratio_max;
 }				/* end of do_test_zgemv_z_d_x */
-
-double do_test_zgemv_d_z_x(int m, int n,
-			   int ntests,
-			   int *seed,
-			   double thresh,
-			   int debug,
-			   float test_prob,
-			   double *min_ratio,
+double do_test_zgemv_d_z_x(int m, int n, int ntests, int *seed, double thresh,
+			   int debug, float test_prob, double *min_ratio,
 			   int *num_bad_ratio, int *num_tests)
 
 /*
@@ -15788,10 +14126,10 @@ double do_test_zgemv_d_z_x(int m, int n,
      variables */
   int i;			/* iterate through the repeating tests */
   int j, k;			/* multipurpose counters or variables */
-  int ix, iy;			/* use to index x and y respectively */
+  int iy;			/* use to index y */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
+  int incy_gen;			/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
   int p_count;			/* counter for the number of debug lines printed */
@@ -15868,17 +14206,16 @@ double do_test_zgemv_d_z_x(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = 1;
-  incx_gen *= 2;
+  incy_gen = 1;
   incy_gen *= 2;
 
   /* get space for calculation */
-  x = (double *) blas_malloc(max_mn * 2 * incx_gen * sizeof(double) * 2);
-  if (max_mn * 2 * incx_gen > 0 && x == NULL) {
+  x = (double *) blas_malloc(max_mn * 2 * sizeof(double) * 2);
+  if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double) * 2);
-  if (max_mn * 2 * incy_gen > 0 && y == NULL) {
+  y = (double *) blas_malloc(max_mn * 2 * sizeof(double) * 2);
+  if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   x_gen = (double *) blas_malloc(max_mn * sizeof(double) * 2);
@@ -16036,8 +14373,8 @@ double do_test_zgemv_d_z_x(int m, int n,
 
 		    /* in the trivial cases, no need to run testgen */
 		    if (m > 0 && n > 0)
-		      BLAS_zgemv_d_z_testgen(norm, order_type, trans_type,
-					     m, n, &alpha, alpha_flag, A, lda,
+		      BLAS_zgemv_d_z_testgen(norm, order_type, trans_type, m,
+					     n, &alpha, alpha_flag, A, lda,
 					     x_gen, &beta, beta_flag, y_gen,
 					     seed, head_r_true, tail_r_true);
 
@@ -16052,18 +14389,7 @@ double do_test_zgemv_d_z_x(int m, int n,
 		      incx = incx_val;
 		      incx *= 2;
 
-		      /* set x starting index */
-		      ix = 0;
-		      if (incx < 0)
-			ix = -(n_i - 1) * incx;
-
-		      /* copy x_gen to x */
-		      for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-			x[ix] = x_gen[j];
-			x[ix + 1] = x_gen[j + 1];
-
-			ix += incx;
-		      }
+		      zcopy_vector(x_gen, n_i, 1, x, incx_val);
 
 		      /* varying incy */
 		      for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -16074,20 +14400,8 @@ double do_test_zgemv_d_z_x(int m, int n,
 			incy = incy_val;
 			incy *= 2;
 
-			/* set y starting index */
-			iy = 0;
-			if (incy < 0)
-			  iy = -(m_i - 1) * incy;
+			zcopy_vector(y_gen, m_i, 1, y, incy_val);
 
-			/* copy y_gen to y */
-			for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			  y[iy] = y_gen[j];
-			  y[iy + 1] = y_gen[j + 1];
-
-			  iy += incy;
-			}
-
-			/* call BLAS_zgemv_d_z_x */
 			FPU_FIX_STOP;
 			BLAS_zgemv_d_z_x(order_type, trans_type, m, n, alpha,
 					 A, lda, x, incx_val, beta, y,
@@ -16106,13 +14420,12 @@ double do_test_zgemv_d_z_x(int m, int n,
 			    dge_copy_row(order_type, trans_type, m_i, n_i, A,
 					 lda, temp, j);
 
-			    test_BLAS_zdot_d_z(n_i, blas_no_conj,
-					       alpha, beta, &y_gen[k],
-					       &y[iy],
+			    test_BLAS_zdot_d_z(n_i, blas_no_conj, alpha, beta,
+					       &y_gen[k], &y[iy],
 					       &head_r_true[k],
-					       &tail_r_true[k],
-					       temp, 1, x, incx_val, eps_int,
-					       un_int, &ratios[j]);
+					       &tail_r_true[k], temp, 1, x,
+					       incx_val, eps_int, un_int,
+					       &ratios[j]);
 
 			    /* take the max ratio */
 			    if (j == 0) {
@@ -16192,46 +14505,11 @@ double do_test_zgemv_d_z_x(int m, int n,
 			    printf("lda=%d, incx=%d, incy=%d:\n", lda, incx,
 				   incy);
 
-			    ix = 0;
-			    iy = 0;
-			    if (incx < 0)
-			      ix = -(n_i - 1) * incx;
-			    if (incy < 0)
-			      iy = -(m_i - 1) * incy;
-
-			    printf("      A=");
-			    for (j = 0; j < m_i; j++) {
-			      /* copy row j of A to temp */
-			      dge_copy_row(order_type, trans_type, m_i, n_i,
-					   A, lda, temp, j);
-
-			      if (j > 0)
-				printf("        ");
-			      dprint_vector(temp, n_i, 1, NULL);
-			    }
-
-			    for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
-			      if (j < n_i) {
-				printf("      ");
-				printf("(%24.16e, %24.16e)", x[ix],
-				       x[ix + 1]);
-				printf("\n");
-			      }
-			      if (k < m_i) {
-				printf("      ");
-				printf("(%24.16e, %24.16e)",
-				       y_gen[k * incy_gen],
-				       y_gen[k * incy_gen + 1]);
-				printf("\n");
-				printf("      ");
-				printf("y_final[%d] = ", iy);
-				printf("(%24.16e, %24.16e)", y[iy],
-				       y[iy + 1]);
-				printf("\n");
-			      }
-			      ix += incx;
-			      iy += incy;
-			    }
+			    dge_print_matrix(A, m_i, n_i, lda, order_type,
+					     "A");
+			    zprint_vector(x, n_i, incx_val, "x");
+			    zprint_vector(y_gen, m_i, 1, "y");
+			    zprint_vector(y, m_i, incy_val, "y_final");
 
 			    printf("      ");
 			    printf("alpha = ");
@@ -16314,14 +14592,8 @@ end:
   *num_tests = tot_tests;
   return ratio_max;
 }				/* end of do_test_zgemv_d_z_x */
-
-double do_test_zgemv_d_d_x(int m, int n,
-			   int ntests,
-			   int *seed,
-			   double thresh,
-			   int debug,
-			   float test_prob,
-			   double *min_ratio,
+double do_test_zgemv_d_d_x(int m, int n, int ntests, int *seed, double thresh,
+			   int debug, float test_prob, double *min_ratio,
 			   int *num_bad_ratio, int *num_tests)
 
 /*
@@ -16406,10 +14678,10 @@ double do_test_zgemv_d_d_x(int m, int n,
      variables */
   int i;			/* iterate through the repeating tests */
   int j, k;			/* multipurpose counters or variables */
-  int ix, iy;			/* use to index x and y respectively */
+  int iy;			/* use to index y */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy;
-  int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
+  int incy_gen;			/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
   int p_count;			/* counter for the number of debug lines printed */
@@ -16486,17 +14758,16 @@ double do_test_zgemv_d_d_x(int m, int n,
 
   FPU_FIX_START;
 
-  incx_gen = incy_gen = 1;
-
+  incy_gen = 1;
   incy_gen *= 2;
 
   /* get space for calculation */
-  x = (double *) blas_malloc(max_mn * 2 * incx_gen * sizeof(double));
-  if (max_mn * 2 * incx_gen > 0 && x == NULL) {
+  x = (double *) blas_malloc(max_mn * 2 * sizeof(double));
+  if (max_mn * 2 > 0 && x == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
-  y = (double *) blas_malloc(max_mn * 2 * incy_gen * sizeof(double) * 2);
-  if (max_mn * 2 * incy_gen > 0 && y == NULL) {
+  y = (double *) blas_malloc(max_mn * 2 * sizeof(double) * 2);
+  if (max_mn * 2 > 0 && y == NULL) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   x_gen = (double *) blas_malloc(max_mn * sizeof(double));
@@ -16654,8 +14925,8 @@ double do_test_zgemv_d_d_x(int m, int n,
 
 		    /* in the trivial cases, no need to run testgen */
 		    if (m > 0 && n > 0)
-		      BLAS_zgemv_d_d_testgen(norm, order_type, trans_type,
-					     m, n, &alpha, alpha_flag, A, lda,
+		      BLAS_zgemv_d_d_testgen(norm, order_type, trans_type, m,
+					     n, &alpha, alpha_flag, A, lda,
 					     x_gen, &beta, beta_flag, y_gen,
 					     seed, head_r_true, tail_r_true);
 
@@ -16670,17 +14941,7 @@ double do_test_zgemv_d_d_x(int m, int n,
 		      incx = incx_val;
 
 
-		      /* set x starting index */
-		      ix = 0;
-		      if (incx < 0)
-			ix = -(n_i - 1) * incx;
-
-		      /* copy x_gen to x */
-		      for (j = 0; j < n_i * incx_gen; j += incx_gen) {
-			x[ix] = x_gen[j];
-
-			ix += incx;
-		      }
+		      dcopy_vector(x_gen, n_i, 1, x, incx_val);
 
 		      /* varying incy */
 		      for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -16691,20 +14952,8 @@ double do_test_zgemv_d_d_x(int m, int n,
 			incy = incy_val;
 			incy *= 2;
 
-			/* set y starting index */
-			iy = 0;
-			if (incy < 0)
-			  iy = -(m_i - 1) * incy;
+			zcopy_vector(y_gen, m_i, 1, y, incy_val);
 
-			/* copy y_gen to y */
-			for (j = 0; j < m_i * incy_gen; j += incy_gen) {
-			  y[iy] = y_gen[j];
-			  y[iy + 1] = y_gen[j + 1];
-
-			  iy += incy;
-			}
-
-			/* call BLAS_zgemv_d_d_x */
 			FPU_FIX_STOP;
 			BLAS_zgemv_d_d_x(order_type, trans_type, m, n, alpha,
 					 A, lda, x, incx_val, beta, y,
@@ -16723,13 +14972,12 @@ double do_test_zgemv_d_d_x(int m, int n,
 			    dge_copy_row(order_type, trans_type, m_i, n_i, A,
 					 lda, temp, j);
 
-			    test_BLAS_zdot_d_d(n_i, blas_no_conj,
-					       alpha, beta, &y_gen[k],
-					       &y[iy],
+			    test_BLAS_zdot_d_d(n_i, blas_no_conj, alpha, beta,
+					       &y_gen[k], &y[iy],
 					       &head_r_true[k],
-					       &tail_r_true[k],
-					       temp, 1, x, incx_val, eps_int,
-					       un_int, &ratios[j]);
+					       &tail_r_true[k], temp, 1, x,
+					       incx_val, eps_int, un_int,
+					       &ratios[j]);
 
 			    /* take the max ratio */
 			    if (j == 0) {
@@ -16809,45 +15057,11 @@ double do_test_zgemv_d_d_x(int m, int n,
 			    printf("lda=%d, incx=%d, incy=%d:\n", lda, incx,
 				   incy);
 
-			    ix = 0;
-			    iy = 0;
-			    if (incx < 0)
-			      ix = -(n_i - 1) * incx;
-			    if (incy < 0)
-			      iy = -(m_i - 1) * incy;
-
-			    printf("      A=");
-			    for (j = 0; j < m_i; j++) {
-			      /* copy row j of A to temp */
-			      dge_copy_row(order_type, trans_type, m_i, n_i,
-					   A, lda, temp, j);
-
-			      if (j > 0)
-				printf("        ");
-			      dprint_vector(temp, n_i, 1, NULL);
-			    }
-
-			    for (j = 0, k = 0; j < n_i || k < m_i; j++, k++) {
-			      if (j < n_i) {
-				printf("      ");
-				printf("%24.16e", x[ix]);
-				printf("\n");
-			      }
-			      if (k < m_i) {
-				printf("      ");
-				printf("(%24.16e, %24.16e)",
-				       y_gen[k * incy_gen],
-				       y_gen[k * incy_gen + 1]);
-				printf("\n");
-				printf("      ");
-				printf("y_final[%d] = ", iy);
-				printf("(%24.16e, %24.16e)", y[iy],
-				       y[iy + 1]);
-				printf("\n");
-			      }
-			      ix += incx;
-			      iy += incy;
-			    }
+			    dge_print_matrix(A, m_i, n_i, lda, order_type,
+					     "A");
+			    dprint_vector(x, n_i, incx_val, "x");
+			    zprint_vector(y_gen, m_i, 1, "y");
+			    zprint_vector(y, m_i, incy_val, "y_final");
 
 			    printf("      ");
 			    printf("alpha = ");
@@ -16997,9 +15211,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_dgemv_d_s(m, n, 1, &seed, thresh, debug,
-					test_prob, &total_min_ratio,
-					&num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_dgemv_d_s(m, n, 1, &seed, thresh, debug, test_prob,
+			&total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -17033,9 +15247,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_dgemv_s_d(m, n, 1, &seed, thresh, debug,
-					test_prob, &total_min_ratio,
-					&num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_dgemv_s_d(m, n, 1, &seed, thresh, debug, test_prob,
+			&total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -17069,9 +15283,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_dgemv_s_s(m, n, 1, &seed, thresh, debug,
-					test_prob, &total_min_ratio,
-					&num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_dgemv_s_s(m, n, 1, &seed, thresh, debug, test_prob,
+			&total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -17105,9 +15319,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_zgemv_z_c(m, n, 1, &seed, thresh, debug,
-					test_prob, &total_min_ratio,
-					&num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_zgemv_z_c(m, n, 1, &seed, thresh, debug, test_prob,
+			&total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -17141,9 +15355,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_zgemv_c_z(m, n, 1, &seed, thresh, debug,
-					test_prob, &total_min_ratio,
-					&num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_zgemv_c_z(m, n, 1, &seed, thresh, debug, test_prob,
+			&total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -17177,9 +15391,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_zgemv_c_c(m, n, 1, &seed, thresh, debug,
-					test_prob, &total_min_ratio,
-					&num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_zgemv_c_c(m, n, 1, &seed, thresh, debug, test_prob,
+			&total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -17213,9 +15427,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_cgemv_c_s(m, n, 1, &seed, thresh, debug,
-					test_prob, &total_min_ratio,
-					&num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_cgemv_c_s(m, n, 1, &seed, thresh, debug, test_prob,
+			&total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -17249,9 +15463,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_cgemv_s_c(m, n, 1, &seed, thresh, debug,
-					test_prob, &total_min_ratio,
-					&num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_cgemv_s_c(m, n, 1, &seed, thresh, debug, test_prob,
+			&total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -17285,9 +15499,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_cgemv_s_s(m, n, 1, &seed, thresh, debug,
-					test_prob, &total_min_ratio,
-					&num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_cgemv_s_s(m, n, 1, &seed, thresh, debug, test_prob,
+			&total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -17321,9 +15535,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_zgemv_z_d(m, n, 1, &seed, thresh, debug,
-					test_prob, &total_min_ratio,
-					&num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_zgemv_z_d(m, n, 1, &seed, thresh, debug, test_prob,
+			&total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -17357,9 +15571,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_zgemv_d_z(m, n, 1, &seed, thresh, debug,
-					test_prob, &total_min_ratio,
-					&num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_zgemv_d_z(m, n, 1, &seed, thresh, debug, test_prob,
+			&total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -17393,9 +15607,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_zgemv_d_d(m, n, 1, &seed, thresh, debug,
-					test_prob, &total_min_ratio,
-					&num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_zgemv_d_d(m, n, 1, &seed, thresh, debug, test_prob,
+			&total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -17429,9 +15643,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_sgemv_x(m, n, 1, &seed, thresh, debug,
-				      test_prob, &total_min_ratio,
-				      &num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_sgemv_x(m, n, 1, &seed, thresh, debug, test_prob,
+		      &total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -17465,9 +15679,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_dgemv_x(m, n, 1, &seed, thresh, debug,
-				      test_prob, &total_min_ratio,
-				      &num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_dgemv_x(m, n, 1, &seed, thresh, debug, test_prob,
+		      &total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -17501,9 +15715,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_cgemv_x(m, n, 1, &seed, thresh, debug,
-				      test_prob, &total_min_ratio,
-				      &num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_cgemv_x(m, n, 1, &seed, thresh, debug, test_prob,
+		      &total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -17537,9 +15751,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_zgemv_x(m, n, 1, &seed, thresh, debug,
-				      test_prob, &total_min_ratio,
-				      &num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_zgemv_x(m, n, 1, &seed, thresh, debug, test_prob,
+		      &total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -17573,9 +15787,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_dgemv_d_s_x(m, n, 1, &seed, thresh, debug,
-					  test_prob, &total_min_ratio,
-					  &num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_dgemv_d_s_x(m, n, 1, &seed, thresh, debug, test_prob,
+			  &total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -17609,9 +15823,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_dgemv_s_d_x(m, n, 1, &seed, thresh, debug,
-					  test_prob, &total_min_ratio,
-					  &num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_dgemv_s_d_x(m, n, 1, &seed, thresh, debug, test_prob,
+			  &total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -17645,9 +15859,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_dgemv_s_s_x(m, n, 1, &seed, thresh, debug,
-					  test_prob, &total_min_ratio,
-					  &num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_dgemv_s_s_x(m, n, 1, &seed, thresh, debug, test_prob,
+			  &total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -17681,9 +15895,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_zgemv_z_c_x(m, n, 1, &seed, thresh, debug,
-					  test_prob, &total_min_ratio,
-					  &num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_zgemv_z_c_x(m, n, 1, &seed, thresh, debug, test_prob,
+			  &total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -17717,9 +15931,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_zgemv_c_z_x(m, n, 1, &seed, thresh, debug,
-					  test_prob, &total_min_ratio,
-					  &num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_zgemv_c_z_x(m, n, 1, &seed, thresh, debug, test_prob,
+			  &total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -17753,9 +15967,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_zgemv_c_c_x(m, n, 1, &seed, thresh, debug,
-					  test_prob, &total_min_ratio,
-					  &num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_zgemv_c_c_x(m, n, 1, &seed, thresh, debug, test_prob,
+			  &total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -17789,9 +16003,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_cgemv_c_s_x(m, n, 1, &seed, thresh, debug,
-					  test_prob, &total_min_ratio,
-					  &num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_cgemv_c_s_x(m, n, 1, &seed, thresh, debug, test_prob,
+			  &total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -17825,9 +16039,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_cgemv_s_c_x(m, n, 1, &seed, thresh, debug,
-					  test_prob, &total_min_ratio,
-					  &num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_cgemv_s_c_x(m, n, 1, &seed, thresh, debug, test_prob,
+			  &total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -17861,9 +16075,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_cgemv_s_s_x(m, n, 1, &seed, thresh, debug,
-					  test_prob, &total_min_ratio,
-					  &num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_cgemv_s_s_x(m, n, 1, &seed, thresh, debug, test_prob,
+			  &total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -17897,9 +16111,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_zgemv_z_d_x(m, n, 1, &seed, thresh, debug,
-					  test_prob, &total_min_ratio,
-					  &num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_zgemv_z_d_x(m, n, 1, &seed, thresh, debug, test_prob,
+			  &total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -17933,9 +16147,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_zgemv_d_z_x(m, n, 1, &seed, thresh, debug,
-					  test_prob, &total_min_ratio,
-					  &num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_zgemv_d_z_x(m, n, 1, &seed, thresh, debug, test_prob,
+			  &total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -17969,9 +16183,9 @@ int main(int argc, char **argv)
   for (i = 0; i < nsizes; i++) {
     m = mn_pairs[i][0];
     n = mn_pairs[i][1];
-    total_max_ratio = do_test_zgemv_d_d_x(m, n, 1, &seed, thresh, debug,
-					  test_prob, &total_min_ratio,
-					  &num_bad_ratio, &num_tests);
+    total_max_ratio =
+      do_test_zgemv_d_d_x(m, n, 1, &seed, thresh, debug, test_prob,
+			  &total_min_ratio, &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 

@@ -1,5 +1,4 @@
 
-
 #include "f2c-bridge.h"
 #include "blas_enum.h"
 void BLAS_dsbmv_d_s(enum blas_order_type order, enum blas_uplo_type uplo,

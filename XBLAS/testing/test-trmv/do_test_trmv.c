@@ -342,8 +342,8 @@ double do_test_dtrmv_s(int n, int ntests, int *seed,
 		      row = 0;
 		      for (j = 0; j < n; j++) {
 			/* copy row j of T to temp */
-			strmv_copy(order_type, uplo_type, trans_type, n, T,
-				   lda, temp, j);
+			str_copy_row(order_type, uplo_type, trans_type, n, T,
+				     lda, temp, j);
 
 			test_BLAS_ddot_s_d(n, blas_no_conj,
 					   alpha, beta, rin,
@@ -449,8 +449,8 @@ double do_test_dtrmv_s(int n, int ntests, int *seed,
 			  printf("      T=");
 			  for (j = 0; j < n; j++) {
 			    /* copy row j of T to temp */
-			    strmv_copy(order_type, uplo_type, trans_type, n,
-				       T, lda, temp, j);
+			    str_copy_row(order_type, uplo_type, trans_type, n,
+					 T, lda, temp, j);
 
 			    if (j > 0)
 			      printf("        ");
@@ -879,8 +879,8 @@ double do_test_ztrmv_c(int n, int ntests, int *seed,
 		      row = 0;
 		      for (j = 0; j < n; j++) {
 			/* copy row j of T to temp */
-			ctrmv_copy(order_type, uplo_type, trans_type, n, T,
-				   lda, temp, j);
+			ctr_copy_row(order_type, uplo_type, trans_type, n, T,
+				     lda, temp, j);
 
 			test_BLAS_zdot_c_z(n, blas_no_conj,
 					   alpha, beta, rin,
@@ -986,8 +986,8 @@ double do_test_ztrmv_c(int n, int ntests, int *seed,
 			  printf("      T=");
 			  for (j = 0; j < n; j++) {
 			    /* copy row j of T to temp */
-			    ctrmv_copy(order_type, uplo_type, trans_type, n,
-				       T, lda, temp, j);
+			    ctr_copy_row(order_type, uplo_type, trans_type, n,
+					 T, lda, temp, j);
 
 			    if (j > 0)
 			      printf("        ");
@@ -1418,8 +1418,8 @@ double do_test_ctrmv_s(int n, int ntests, int *seed,
 		      row = 0;
 		      for (j = 0; j < n; j++) {
 			/* copy row j of T to temp */
-			strmv_copy(order_type, uplo_type, trans_type, n, T,
-				   lda, temp, j);
+			str_copy_row(order_type, uplo_type, trans_type, n, T,
+				     lda, temp, j);
 
 			test_BLAS_cdot_s_c(n, blas_no_conj,
 					   alpha, beta, rin,
@@ -1525,8 +1525,8 @@ double do_test_ctrmv_s(int n, int ntests, int *seed,
 			  printf("      T=");
 			  for (j = 0; j < n; j++) {
 			    /* copy row j of T to temp */
-			    strmv_copy(order_type, uplo_type, trans_type, n,
-				       T, lda, temp, j);
+			    str_copy_row(order_type, uplo_type, trans_type, n,
+					 T, lda, temp, j);
 
 			    if (j > 0)
 			      printf("        ");
@@ -1957,8 +1957,8 @@ double do_test_ztrmv_d(int n, int ntests, int *seed,
 		      row = 0;
 		      for (j = 0; j < n; j++) {
 			/* copy row j of T to temp */
-			dtrmv_copy(order_type, uplo_type, trans_type, n, T,
-				   lda, temp, j);
+			dtr_copy_row(order_type, uplo_type, trans_type, n, T,
+				     lda, temp, j);
 
 			test_BLAS_zdot_d_z(n, blas_no_conj,
 					   alpha, beta, rin,
@@ -2064,8 +2064,8 @@ double do_test_ztrmv_d(int n, int ntests, int *seed,
 			  printf("      T=");
 			  for (j = 0; j < n; j++) {
 			    /* copy row j of T to temp */
-			    dtrmv_copy(order_type, uplo_type, trans_type, n,
-				       T, lda, temp, j);
+			    dtr_copy_row(order_type, uplo_type, trans_type, n,
+					 T, lda, temp, j);
 
 			    if (j > 0)
 			      printf("        ");
@@ -2513,8 +2513,8 @@ double do_test_strmv_x(int n, int ntests, int *seed,
 			row = 0;
 			for (j = 0; j < n; j++) {
 			  /* copy row j of T to temp */
-			  strmv_copy(order_type, uplo_type, trans_type, n, T,
-				     lda, temp, j);
+			  str_copy_row(order_type, uplo_type, trans_type, n,
+				       T, lda, temp, j);
 
 			  test_BLAS_sdot(n, blas_no_conj,
 					 alpha, beta, rin,
@@ -2620,8 +2620,8 @@ double do_test_strmv_x(int n, int ntests, int *seed,
 			    printf("      T=");
 			    for (j = 0; j < n; j++) {
 			      /* copy row j of T to temp */
-			      strmv_copy(order_type, uplo_type, trans_type, n,
-					 T, lda, temp, j);
+			      str_copy_row(order_type, uplo_type, trans_type,
+					   n, T, lda, temp, j);
 
 			      if (j > 0)
 				printf("        ");
@@ -3067,8 +3067,8 @@ double do_test_dtrmv_x(int n, int ntests, int *seed,
 			row = 0;
 			for (j = 0; j < n; j++) {
 			  /* copy row j of T to temp */
-			  dtrmv_copy(order_type, uplo_type, trans_type, n, T,
-				     lda, temp, j);
+			  dtr_copy_row(order_type, uplo_type, trans_type, n,
+				       T, lda, temp, j);
 
 			  test_BLAS_ddot(n, blas_no_conj,
 					 alpha, beta, rin,
@@ -3174,8 +3174,8 @@ double do_test_dtrmv_x(int n, int ntests, int *seed,
 			    printf("      T=");
 			    for (j = 0; j < n; j++) {
 			      /* copy row j of T to temp */
-			      dtrmv_copy(order_type, uplo_type, trans_type, n,
-					 T, lda, temp, j);
+			      dtr_copy_row(order_type, uplo_type, trans_type,
+					   n, T, lda, temp, j);
 
 			      if (j > 0)
 				printf("        ");
@@ -3624,8 +3624,8 @@ double do_test_ctrmv_x(int n, int ntests, int *seed,
 			row = 0;
 			for (j = 0; j < n; j++) {
 			  /* copy row j of T to temp */
-			  ctrmv_copy(order_type, uplo_type, trans_type, n, T,
-				     lda, temp, j);
+			  ctr_copy_row(order_type, uplo_type, trans_type, n,
+				       T, lda, temp, j);
 
 			  test_BLAS_cdot(n, blas_no_conj,
 					 alpha, beta, rin,
@@ -3731,8 +3731,8 @@ double do_test_ctrmv_x(int n, int ntests, int *seed,
 			    printf("      T=");
 			    for (j = 0; j < n; j++) {
 			      /* copy row j of T to temp */
-			      ctrmv_copy(order_type, uplo_type, trans_type, n,
-					 T, lda, temp, j);
+			      ctr_copy_row(order_type, uplo_type, trans_type,
+					   n, T, lda, temp, j);
 
 			      if (j > 0)
 				printf("        ");
@@ -4184,8 +4184,8 @@ double do_test_ztrmv_x(int n, int ntests, int *seed,
 			row = 0;
 			for (j = 0; j < n; j++) {
 			  /* copy row j of T to temp */
-			  ztrmv_copy(order_type, uplo_type, trans_type, n, T,
-				     lda, temp, j);
+			  ztr_copy_row(order_type, uplo_type, trans_type, n,
+				       T, lda, temp, j);
 
 			  test_BLAS_zdot(n, blas_no_conj,
 					 alpha, beta, rin,
@@ -4291,8 +4291,8 @@ double do_test_ztrmv_x(int n, int ntests, int *seed,
 			    printf("      T=");
 			    for (j = 0; j < n; j++) {
 			      /* copy row j of T to temp */
-			      ztrmv_copy(order_type, uplo_type, trans_type, n,
-					 T, lda, temp, j);
+			      ztr_copy_row(order_type, uplo_type, trans_type,
+					   n, T, lda, temp, j);
 
 			      if (j > 0)
 				printf("        ");
@@ -4742,8 +4742,8 @@ double do_test_dtrmv_s_x(int n, int ntests, int *seed,
 			row = 0;
 			for (j = 0; j < n; j++) {
 			  /* copy row j of T to temp */
-			  strmv_copy(order_type, uplo_type, trans_type, n, T,
-				     lda, temp, j);
+			  str_copy_row(order_type, uplo_type, trans_type, n,
+				       T, lda, temp, j);
 
 			  test_BLAS_ddot_s_d(n, blas_no_conj,
 					     alpha, beta, rin,
@@ -4849,8 +4849,8 @@ double do_test_dtrmv_s_x(int n, int ntests, int *seed,
 			    printf("      T=");
 			    for (j = 0; j < n; j++) {
 			      /* copy row j of T to temp */
-			      strmv_copy(order_type, uplo_type, trans_type, n,
-					 T, lda, temp, j);
+			      str_copy_row(order_type, uplo_type, trans_type,
+					   n, T, lda, temp, j);
 
 			      if (j > 0)
 				printf("        ");
@@ -5300,8 +5300,8 @@ double do_test_ztrmv_c_x(int n, int ntests, int *seed,
 			row = 0;
 			for (j = 0; j < n; j++) {
 			  /* copy row j of T to temp */
-			  ctrmv_copy(order_type, uplo_type, trans_type, n, T,
-				     lda, temp, j);
+			  ctr_copy_row(order_type, uplo_type, trans_type, n,
+				       T, lda, temp, j);
 
 			  test_BLAS_zdot_c_z(n, blas_no_conj,
 					     alpha, beta, rin,
@@ -5407,8 +5407,8 @@ double do_test_ztrmv_c_x(int n, int ntests, int *seed,
 			    printf("      T=");
 			    for (j = 0; j < n; j++) {
 			      /* copy row j of T to temp */
-			      ctrmv_copy(order_type, uplo_type, trans_type, n,
-					 T, lda, temp, j);
+			      ctr_copy_row(order_type, uplo_type, trans_type,
+					   n, T, lda, temp, j);
 
 			      if (j > 0)
 				printf("        ");
@@ -5861,8 +5861,8 @@ double do_test_ctrmv_s_x(int n, int ntests, int *seed,
 			row = 0;
 			for (j = 0; j < n; j++) {
 			  /* copy row j of T to temp */
-			  strmv_copy(order_type, uplo_type, trans_type, n, T,
-				     lda, temp, j);
+			  str_copy_row(order_type, uplo_type, trans_type, n,
+				       T, lda, temp, j);
 
 			  test_BLAS_cdot_s_c(n, blas_no_conj,
 					     alpha, beta, rin,
@@ -5968,8 +5968,8 @@ double do_test_ctrmv_s_x(int n, int ntests, int *seed,
 			    printf("      T=");
 			    for (j = 0; j < n; j++) {
 			      /* copy row j of T to temp */
-			      strmv_copy(order_type, uplo_type, trans_type, n,
-					 T, lda, temp, j);
+			      str_copy_row(order_type, uplo_type, trans_type,
+					   n, T, lda, temp, j);
 
 			      if (j > 0)
 				printf("        ");
@@ -6422,8 +6422,8 @@ double do_test_ztrmv_d_x(int n, int ntests, int *seed,
 			row = 0;
 			for (j = 0; j < n; j++) {
 			  /* copy row j of T to temp */
-			  dtrmv_copy(order_type, uplo_type, trans_type, n, T,
-				     lda, temp, j);
+			  dtr_copy_row(order_type, uplo_type, trans_type, n,
+				       T, lda, temp, j);
 
 			  test_BLAS_zdot_d_z(n, blas_no_conj,
 					     alpha, beta, rin,
@@ -6529,8 +6529,8 @@ double do_test_ztrmv_d_x(int n, int ntests, int *seed,
 			    printf("      T=");
 			    for (j = 0; j < n; j++) {
 			      /* copy row j of T to temp */
-			      dtrmv_copy(order_type, uplo_type, trans_type, n,
-					 T, lda, temp, j);
+			      dtr_copy_row(order_type, uplo_type, trans_type,
+					   n, T, lda, temp, j);
 
 			      if (j > 0)
 				printf("        ");

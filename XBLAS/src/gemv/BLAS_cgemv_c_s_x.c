@@ -155,7 +155,6 @@ void BLAS_cgemv_c_s_x(enum blas_order_type order, enum blas_trans_type trans,
 	  }
 	}
       } else {
-
 	if (trans == blas_conj_trans) {
 
 	  /* if beta = 0, we can save m multiplies: y = alpha*A*x */
@@ -476,7 +475,6 @@ void BLAS_cgemv_c_s_x(enum blas_order_type order, enum blas_trans_type trans,
 	  }
 	}
       } else {
-
 	if (trans == blas_conj_trans) {
 
 	  /* if beta = 0, we can save m multiplies: y = alpha*A*x */
@@ -843,7 +841,6 @@ void BLAS_cgemv_c_s_x(enum blas_order_type order, enum blas_trans_type trans,
 	  }
 	}
       } else {
-
 	if (trans == blas_conj_trans) {
 
 	  /* if beta = 0, we can save m multiplies: y = alpha*A*x */

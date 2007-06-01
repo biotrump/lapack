@@ -1,14 +1,11 @@
 include ../../make.conf
 include ../../$(MAKEINC)
 
-DOT_PATH = ../../src/dot
 TEST_DOT_PATH = ../test-dot
 TEST_GEMM_PATH = ../test-gemm
 TEST_SYMV_PATH = ../test-symv
 LIB_PATH = ../../$(OUTPUT_DIR)
 HEADER_PATH = -I../../src -I..
-
-DOT_OBJS = $(DOT_PATH)/BLAS_sdot_x.o $(DOT_PATH)/BLAS_ddot_x.o
 
 TEST_DOT_OBJS = $(TEST_DOT_PATH)/testgen_BLAS_sdot.o \
 		$(TEST_DOT_PATH)/testgen_BLAS_ddot.o \
@@ -24,7 +21,7 @@ TEST_SRCS = do_test_symv.c BLAS_symv_testgen.c symv-support.c
 TEST_OBJS = $(TEST_SRCS:.c=.o)
 COMMON_OBJS = ../common/dummy_main.o
 
-ALL_OBJS = $(TEST_OBJS) $(TEST_DOT_OBJS) $(DOT_OBJS) $(COMMON_OBJS)
+ALL_OBJS = $(TEST_OBJS) $(TEST_DOT_OBJS) $(COMMON_OBJS)
 
 test: do_test_symv
 	@echo Testing SYMV - default quick test

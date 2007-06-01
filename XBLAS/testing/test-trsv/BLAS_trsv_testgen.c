@@ -2,14 +2,6 @@
 #include "blas_extended_private.h"
 #include "blas_extended_test.h"
 
-extern double xrand(int *);
-
-
-
-
-
-
-
 void BLAS_strsv_testgen(int norm, enum blas_order_type order,
 			enum blas_uplo_type uplo, enum blas_trans_type trans,
 			enum blas_diag_type diag, int n, float *alpha,
@@ -214,6 +206,7 @@ void BLAS_strsv_testgen(int norm, enum blas_order_type order,
 
   if (length != 0) {
 
+
     switch (prec) {
     case blas_prec_single:
       BLAS_sdot_testgen(length, 0, length, norm,
@@ -272,8 +265,7 @@ void BLAS_strsv_testgen(int norm, enum blas_order_type order,
 
   if (prec != blas_prec_extra)
     blas_free(xtemp2);
-}				/* end of BLAS_strsv_testgen */
-
+}
 void BLAS_dtrsv_testgen(int norm, enum blas_order_type order,
 			enum blas_uplo_type uplo, enum blas_trans_type trans,
 			enum blas_diag_type diag, int n, double *alpha,
@@ -490,15 +482,16 @@ void BLAS_dtrsv_testgen(int norm, enum blas_order_type order,
 
   if (length != 0) {
 
+
     switch (prec) {
     case blas_prec_single:
-    case blas_prec_double:
-    case blas_prec_indigenous:
       BLAS_ddot_testgen(length, 0, length, norm,
 			blas_no_conj, &minus_one, 1, alpha, 1,
 			&xtemp2[start], temp, seed, &x[row],
 			&head_r_true[row], &tail_r_true[row]);
       break;
+    case blas_prec_double:
+    case blas_prec_indigenous:
     case blas_prec_extra:
       BLAS_ddot_x_testgen(length, 0, length, norm,
 			  blas_no_conj, &minus_one, 1, alpha, 1,
@@ -506,7 +499,6 @@ void BLAS_dtrsv_testgen(int norm, enum blas_order_type order,
 			  seed, &x[row], &head_r_true[row],
 			  &tail_r_true[row]);
       break;
-
     }
     dtrsv_commit(order, uplo, trans, length, T, lda, temp, row);
   } else {
@@ -564,8 +556,7 @@ void BLAS_dtrsv_testgen(int norm, enum blas_order_type order,
 
   if (prec != blas_prec_extra)
     blas_free(xtemp2);
-}				/* end of BLAS_dtrsv_testgen */
-
+}
 void BLAS_dtrsv_s_testgen(int norm, enum blas_order_type order,
 			  enum blas_uplo_type uplo,
 			  enum blas_trans_type trans,
@@ -860,14 +851,13 @@ void BLAS_dtrsv_s_testgen(int norm, enum blas_order_type order,
 
   if (prec != blas_prec_extra)
     blas_free(xtemp2);
-}				/* end of BLAS_dtrsv_s_testgen */
-
+}
 void BLAS_ctrsv_testgen(int norm, enum blas_order_type order,
 			enum blas_uplo_type uplo, enum blas_trans_type trans,
 			enum blas_diag_type diag, int n, void *alpha,
-			int alpha_flag, void *T, int lda, void *x,
-			int *seed, double *head_r_true, double *tail_r_true,
-			int row, enum blas_prec_type prec)
+			int alpha_flag, void *T, int lda, void *x, int *seed,
+			double *head_r_true, double *tail_r_true, int row,
+			enum blas_prec_type prec)
 
 /*
  * Purpose
@@ -941,11 +931,8 @@ void BLAS_ctrsv_testgen(int norm, enum blas_order_type order,
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   head_r_true_r = (double *) blas_malloc(n * sizeof(double));
-  if (n > 0 && head_r_true_r == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
   tail_r_true_r = (double *) blas_malloc(n * sizeof(double));
-  if (n > 0 && tail_r_true_r == NULL) {
+  if (n > 0 && (head_r_true_r == NULL || tail_r_true_r == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
@@ -1034,7 +1021,7 @@ void BLAS_ctrsv_testgen(int norm, enum blas_order_type order,
   blas_free(x_r);
   blas_free(head_r_true_r);
   blas_free(tail_r_true_r);
-}				/* end of BLAS_ctrsv_testgen */
+}
 
 void BLAS_ztrsv_c_testgen(int norm, enum blas_order_type order,
 			  enum blas_uplo_type uplo,
@@ -1116,11 +1103,8 @@ void BLAS_ztrsv_c_testgen(int norm, enum blas_order_type order,
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   head_r_true_r = (double *) blas_malloc(n * sizeof(double));
-  if (n > 0 && head_r_true_r == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
   tail_r_true_r = (double *) blas_malloc(n * sizeof(double));
-  if (n > 0 && tail_r_true_r == NULL) {
+  if (n > 0 && (head_r_true_r == NULL || tail_r_true_r == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
@@ -1209,14 +1193,14 @@ void BLAS_ztrsv_c_testgen(int norm, enum blas_order_type order,
   blas_free(x_r);
   blas_free(head_r_true_r);
   blas_free(tail_r_true_r);
-}				/* end of BLAS_ztrsv_c_testgen */
+}
 
 void BLAS_ztrsv_testgen(int norm, enum blas_order_type order,
 			enum blas_uplo_type uplo, enum blas_trans_type trans,
 			enum blas_diag_type diag, int n, void *alpha,
-			int alpha_flag, void *T, int lda, void *x,
-			int *seed, double *head_r_true, double *tail_r_true,
-			int row, enum blas_prec_type prec)
+			int alpha_flag, void *T, int lda, void *x, int *seed,
+			double *head_r_true, double *tail_r_true, int row,
+			enum blas_prec_type prec)
 
 /*
  * Purpose
@@ -1290,11 +1274,8 @@ void BLAS_ztrsv_testgen(int norm, enum blas_order_type order,
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
   head_r_true_r = (double *) blas_malloc(n * sizeof(double));
-  if (n > 0 && head_r_true_r == NULL) {
-    BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
-  }
   tail_r_true_r = (double *) blas_malloc(n * sizeof(double));
-  if (n > 0 && tail_r_true_r == NULL) {
+  if (n > 0 && (head_r_true_r == NULL || tail_r_true_r == NULL)) {
     BLAS_error("blas_malloc", 0, 0, "malloc failed.\n");
   }
 
@@ -1383,7 +1364,7 @@ void BLAS_ztrsv_testgen(int norm, enum blas_order_type order,
   blas_free(x_r);
   blas_free(head_r_true_r);
   blas_free(tail_r_true_r);
-}				/* end of BLAS_ztrsv_testgen */
+}
 
 void BLAS_ctrsv_s_testgen(int norm, enum blas_order_type order,
 			  enum blas_uplo_type uplo,
@@ -1492,7 +1473,7 @@ void BLAS_ctrsv_s_testgen(int norm, enum blas_order_type order,
   blas_free(x_r);
   blas_free(head_r_true_r);
   blas_free(tail_r_true_r);
-}				/* end of BLAS_ctrsv_s_testgen */
+}
 
 void BLAS_ztrsv_d_testgen(int norm, enum blas_order_type order,
 			  enum blas_uplo_type uplo,
@@ -1601,4 +1582,4 @@ void BLAS_ztrsv_d_testgen(int norm, enum blas_order_type order,
   blas_free(x_r);
   blas_free(head_r_true_r);
   blas_free(tail_r_true_r);
-}				/* end of BLAS_ztrsv_d_testgen */
+}

@@ -1,17 +1,13 @@
+
 #include "blas_extended.h"
 #include "blas_extended_test.h"
-
-
-
-extern double xrand(int *);
-
 
 
 void BLAS_stpmv_testgen(int norm, enum blas_order_type order,
 			enum blas_uplo_type uplo, enum blas_trans_type trans,
 			enum blas_diag_type diag, int n, float *alpha,
-			int alpha_flag, float *tp, float *x,
-			int *seed, double *head_r_true, double *tail_r_true)
+			int alpha_flag, float *tp, float *x, int *seed,
+			double *head_r_true, double *tail_r_true)
 
 /*
  * Purpose
@@ -209,13 +205,13 @@ void BLAS_stpmv_testgen(int norm, enum blas_order_type order,
   }
 
   blas_free(temp);
-}				/* end of BLAS_stpmv_testgen */
+}
 
 void BLAS_dtpmv_testgen(int norm, enum blas_order_type order,
 			enum blas_uplo_type uplo, enum blas_trans_type trans,
 			enum blas_diag_type diag, int n, double *alpha,
-			int alpha_flag, double *tp, double *x,
-			int *seed, double *head_r_true, double *tail_r_true)
+			int alpha_flag, double *tp, double *x, int *seed,
+			double *head_r_true, double *tail_r_true)
 
 /*
  * Purpose
@@ -413,13 +409,13 @@ void BLAS_dtpmv_testgen(int norm, enum blas_order_type order,
   }
 
   blas_free(temp);
-}				/* end of BLAS_dtpmv_testgen */
+}
 
 void BLAS_ctpmv_testgen(int norm, enum blas_order_type order,
 			enum blas_uplo_type uplo, enum blas_trans_type trans,
 			enum blas_diag_type diag, int n, void *alpha,
-			int alpha_flag, void *tp, void *x,
-			int *seed, double *head_r_true, double *tail_r_true)
+			int alpha_flag, void *tp, void *x, int *seed,
+			double *head_r_true, double *tail_r_true)
 
 /*
  * Purpose
@@ -638,13 +634,13 @@ void BLAS_ctpmv_testgen(int norm, enum blas_order_type order,
   }
 
   blas_free(temp);
-}				/* end of BLAS_ctpmv_testgen */
+}
 
 void BLAS_ztpmv_testgen(int norm, enum blas_order_type order,
 			enum blas_uplo_type uplo, enum blas_trans_type trans,
 			enum blas_diag_type diag, int n, void *alpha,
-			int alpha_flag, void *tp, void *x,
-			int *seed, double *head_r_true, double *tail_r_true)
+			int alpha_flag, void *tp, void *x, int *seed,
+			double *head_r_true, double *tail_r_true)
 
 /*
  * Purpose
@@ -863,7 +859,7 @@ void BLAS_ztpmv_testgen(int norm, enum blas_order_type order,
   }
 
   blas_free(temp);
-}				/* end of BLAS_ztpmv_testgen */
+}
 
 void BLAS_dtpmv_s_testgen(int norm, enum blas_order_type order,
 			  enum blas_uplo_type uplo,
@@ -1068,7 +1064,7 @@ void BLAS_dtpmv_s_testgen(int norm, enum blas_order_type order,
   }
 
   blas_free(temp);
-}				/* end of BLAS_dtpmv_s_testgen */
+}
 
 void BLAS_ztpmv_c_testgen(int norm, enum blas_order_type order,
 			  enum blas_uplo_type uplo,
@@ -1295,7 +1291,7 @@ void BLAS_ztpmv_c_testgen(int norm, enum blas_order_type order,
   }
 
   blas_free(temp);
-}				/* end of BLAS_ztpmv_c_testgen */
+}
 
 void BLAS_ctpmv_s_testgen(int norm, enum blas_order_type order,
 			  enum blas_uplo_type uplo,
@@ -1514,7 +1510,7 @@ void BLAS_ctpmv_s_testgen(int norm, enum blas_order_type order,
   }
 
   blas_free(temp);
-}				/* end of BLAS_ctpmv_s_testgen */
+}
 
 void BLAS_ztpmv_d_testgen(int norm, enum blas_order_type order,
 			  enum blas_uplo_type uplo,
@@ -1733,4 +1729,4 @@ void BLAS_ztpmv_d_testgen(int norm, enum blas_order_type order,
   }
 
   blas_free(temp);
-}				/* end of BLAS_ztpmv_d_testgen */
+}

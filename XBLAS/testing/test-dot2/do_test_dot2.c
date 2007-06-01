@@ -5,10 +5,9 @@
 #include "blas_extended_private.h"
 #include "blas_extended_test.h"
 
-
-double do_test_sdot2_x(int n, int ntests, int *seed, double thresh,
-		       int debug, float test_prob, double *min_ratio,
-		       int *num_bad_ratio, int *num_tests)
+double do_test_sdot2_x(int n, int ntests, int *seed, double thresh, int debug,
+		       float test_prob, double *min_ratio, int *num_bad_ratio,
+		       int *num_tests)
 
 /*
  * Purpose  
@@ -65,10 +64,7 @@ double do_test_sdot2_x(int n, int ntests, int *seed, double thresh,
   /* Variables in the "x_val" form are loop vars for corresponding
      variables */
   int i;			/* iterate through the repeating tests */
-  int j;			/* multipurpose counter */
-  int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val;	/* for testing different inc values */
-  int incx, incy;
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -252,11 +248,10 @@ double do_test_sdot2_x(int n, int ntests, int *seed, double thresh,
 		if (xrand(seed) >= test_prob)
 		  continue;
 
-		BLAS_sdot2_testgen(n, 0, 0, norm, conj_type,
-				   &alpha, alpha_flag, &beta, beta_flag,
-				   head_y_gen, tail_y_gen, x_gen, seed,
-				   &r, &head_r_true, &tail_r_true);
-
+		BLAS_sdot2_testgen(n, 0, 0, norm, conj_type, &alpha,
+				   alpha_flag, &beta, beta_flag, head_y_gen,
+				   tail_y_gen, x_gen, seed, &r, &head_r_true,
+				   &tail_r_true);
 		count++;
 
 		/* varying incx */
@@ -264,41 +259,15 @@ double do_test_sdot2_x(int n, int ntests, int *seed, double thresh,
 		  if (incx_val == 0)
 		    continue;
 
-		  /* setting incx */
-		  incx = incx_val;
-
-
-		  /* set x starting index */
-		  ix = 0;
-		  if (incx < 0)
-		    ix = -(n - 1) * incx;
-
-		  /* copy x_gen to x */
-		  for (j = 0; j < n * incx_gen; j += incx_gen) {
-		    x[ix] = x_gen[j];
-		    ix += incx;
-		  }
+		  scopy_vector(x_gen, n, 1, x, incx_val);
 
 		  /* varying incy */
 		  for (incy_val = -2; incy_val <= 2; incy_val++) {
 		    if (incy_val == 0)
 		      continue;
 
-		    /* setting incy */
-		    incy = incy_val;
-
-
-		    /* set y starting index */
-		    iy = 0;
-		    if (incy < 0)
-		      iy = -(n - 1) * incy;
-
-		    /* copy y_gen to y */
-		    for (j = 0; j < n * incy_gen; j += incy_gen) {
-		      head_y[iy] = head_y_gen[j];
-		      tail_y[iy] = tail_y_gen[j];
-		      iy += incy;
-		    }
+		    scopy_vector(head_y_gen, n, 1, head_y, incy_val);
+		    scopy_vector(tail_y_gen, n, 1, tail_y, incy_val);
 
 		    /* call BLAS_sdot2_x to get r_comp */
 		    r_comp = r;
@@ -309,11 +278,10 @@ double do_test_sdot2_x(int n, int ntests, int *seed, double thresh,
 		    FPU_FIX_START;
 
 		    /* computing the ratio */
-		    test_BLAS_sdot2(n, conj_type,
-				    alpha, beta, r, r_comp,
-				    head_r_true, tail_r_true,
-				    x, incx_val, head_y, tail_y, incy_val,
-				    eps_int, un_int, &ratio);
+		    test_BLAS_sdot2(n, conj_type, alpha, beta, r, r_comp,
+				    head_r_true, tail_r_true, x, incx_val,
+				    head_y, tail_y, incy_val, eps_int, un_int,
+				    &ratio);
 
 		    /* Increase the number of bad ratios, if the ratio
 		       is bigger than the threshold.
@@ -371,24 +339,9 @@ double do_test_sdot2_x(int n, int ntests, int *seed, double thresh,
 
 			printf("incx=%d, incy=%d:\n", incx_val, incy_val);
 
-			ix = 0;
-			iy = 0;
-			if (incx < 0)
-			  ix = -(n - 1) * incx;
-			if (incy < 0)
-			  iy = -(n - 1) * incy;
-
-			for (j = 0; j < n; j++) {
-			  printf("      ");
-			  printf("%16.8e", x[ix]);
-			  printf("\n      ");
-			  printf("%16.8e", head_y[iy]);
-			  printf("\n");
-			  printf("%16.8e", tail_y[iy]);
-			  printf("\n");
-			  ix += incx;
-			  iy += incy;
-			}
+			sprint_vector(x, n, incx_val, "x");
+			sprint_vector(head_y, n, incx_val, "head_y");
+			sprint_vector(tail_y, n, incx_val, "tail_y");
 
 			printf("      ");
 			printf("alpha = ");
@@ -454,11 +407,10 @@ double do_test_sdot2_x(int n, int ntests, int *seed, double thresh,
 
   FPU_FIX_STOP;
   return ratio_max;
-}				/* end of do_test_sdot2_x */
-
-double do_test_ddot2_x(int n, int ntests, int *seed, double thresh,
-		       int debug, float test_prob, double *min_ratio,
-		       int *num_bad_ratio, int *num_tests)
+}
+double do_test_ddot2_x(int n, int ntests, int *seed, double thresh, int debug,
+		       float test_prob, double *min_ratio, int *num_bad_ratio,
+		       int *num_tests)
 
 /*
  * Purpose  
@@ -515,10 +467,7 @@ double do_test_ddot2_x(int n, int ntests, int *seed, double thresh,
   /* Variables in the "x_val" form are loop vars for corresponding
      variables */
   int i;			/* iterate through the repeating tests */
-  int j;			/* multipurpose counter */
-  int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val;	/* for testing different inc values */
-  int incx, incy;
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -702,11 +651,10 @@ double do_test_ddot2_x(int n, int ntests, int *seed, double thresh,
 		if (xrand(seed) >= test_prob)
 		  continue;
 
-		BLAS_ddot2_testgen(n, 0, 0, norm, conj_type,
-				   &alpha, alpha_flag, &beta, beta_flag,
-				   head_y_gen, tail_y_gen, x_gen, seed,
-				   &r, &head_r_true, &tail_r_true);
-
+		BLAS_ddot2_testgen(n, 0, 0, norm, conj_type, &alpha,
+				   alpha_flag, &beta, beta_flag, head_y_gen,
+				   tail_y_gen, x_gen, seed, &r, &head_r_true,
+				   &tail_r_true);
 		count++;
 
 		/* varying incx */
@@ -714,41 +662,15 @@ double do_test_ddot2_x(int n, int ntests, int *seed, double thresh,
 		  if (incx_val == 0)
 		    continue;
 
-		  /* setting incx */
-		  incx = incx_val;
-
-
-		  /* set x starting index */
-		  ix = 0;
-		  if (incx < 0)
-		    ix = -(n - 1) * incx;
-
-		  /* copy x_gen to x */
-		  for (j = 0; j < n * incx_gen; j += incx_gen) {
-		    x[ix] = x_gen[j];
-		    ix += incx;
-		  }
+		  dcopy_vector(x_gen, n, 1, x, incx_val);
 
 		  /* varying incy */
 		  for (incy_val = -2; incy_val <= 2; incy_val++) {
 		    if (incy_val == 0)
 		      continue;
 
-		    /* setting incy */
-		    incy = incy_val;
-
-
-		    /* set y starting index */
-		    iy = 0;
-		    if (incy < 0)
-		      iy = -(n - 1) * incy;
-
-		    /* copy y_gen to y */
-		    for (j = 0; j < n * incy_gen; j += incy_gen) {
-		      head_y[iy] = head_y_gen[j];
-		      tail_y[iy] = tail_y_gen[j];
-		      iy += incy;
-		    }
+		    dcopy_vector(head_y_gen, n, 1, head_y, incy_val);
+		    dcopy_vector(tail_y_gen, n, 1, tail_y, incy_val);
 
 		    /* call BLAS_ddot2_x to get r_comp */
 		    r_comp = r;
@@ -759,11 +681,10 @@ double do_test_ddot2_x(int n, int ntests, int *seed, double thresh,
 		    FPU_FIX_START;
 
 		    /* computing the ratio */
-		    test_BLAS_ddot2(n, conj_type,
-				    alpha, beta, r, r_comp,
-				    head_r_true, tail_r_true,
-				    x, incx_val, head_y, tail_y, incy_val,
-				    eps_int, un_int, &ratio);
+		    test_BLAS_ddot2(n, conj_type, alpha, beta, r, r_comp,
+				    head_r_true, tail_r_true, x, incx_val,
+				    head_y, tail_y, incy_val, eps_int, un_int,
+				    &ratio);
 
 		    /* Increase the number of bad ratios, if the ratio
 		       is bigger than the threshold.
@@ -821,24 +742,9 @@ double do_test_ddot2_x(int n, int ntests, int *seed, double thresh,
 
 			printf("incx=%d, incy=%d:\n", incx_val, incy_val);
 
-			ix = 0;
-			iy = 0;
-			if (incx < 0)
-			  ix = -(n - 1) * incx;
-			if (incy < 0)
-			  iy = -(n - 1) * incy;
-
-			for (j = 0; j < n; j++) {
-			  printf("      ");
-			  printf("%24.16e", x[ix]);
-			  printf("\n      ");
-			  printf("%24.16e", head_y[iy]);
-			  printf("\n");
-			  printf("%24.16e", tail_y[iy]);
-			  printf("\n");
-			  ix += incx;
-			  iy += incy;
-			}
+			dprint_vector(x, n, incx_val, "x");
+			dprint_vector(head_y, n, incx_val, "head_y");
+			dprint_vector(tail_y, n, incx_val, "tail_y");
 
 			printf("      ");
 			printf("alpha = ");
@@ -904,11 +810,10 @@ double do_test_ddot2_x(int n, int ntests, int *seed, double thresh,
 
   FPU_FIX_STOP;
   return ratio_max;
-}				/* end of do_test_ddot2_x */
-
-double do_test_cdot2_x(int n, int ntests, int *seed, double thresh,
-		       int debug, float test_prob, double *min_ratio,
-		       int *num_bad_ratio, int *num_tests)
+}
+double do_test_cdot2_x(int n, int ntests, int *seed, double thresh, int debug,
+		       float test_prob, double *min_ratio, int *num_bad_ratio,
+		       int *num_tests)
 
 /*
  * Purpose  
@@ -965,10 +870,7 @@ double do_test_cdot2_x(int n, int ntests, int *seed, double thresh,
   /* Variables in the "x_val" form are loop vars for corresponding
      variables */
   int i;			/* iterate through the repeating tests */
-  int j;			/* multipurpose counter */
-  int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val;	/* for testing different inc values */
-  int incx, incy;
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -1154,11 +1056,10 @@ double do_test_cdot2_x(int n, int ntests, int *seed, double thresh,
 		if (xrand(seed) >= test_prob)
 		  continue;
 
-		BLAS_cdot2_testgen(n, 0, 0, norm, conj_type,
-				   &alpha, alpha_flag, &beta, beta_flag,
-				   head_y_gen, tail_y_gen, x_gen, seed,
-				   &r, head_r_true, tail_r_true);
-
+		BLAS_cdot2_testgen(n, 0, 0, norm, conj_type, &alpha,
+				   alpha_flag, &beta, beta_flag, head_y_gen,
+				   tail_y_gen, x_gen, seed, &r, head_r_true,
+				   tail_r_true);
 		count++;
 
 		/* varying incx */
@@ -1166,44 +1067,15 @@ double do_test_cdot2_x(int n, int ntests, int *seed, double thresh,
 		  if (incx_val == 0)
 		    continue;
 
-		  /* setting incx */
-		  incx = incx_val;
-		  incx *= 2;
-
-		  /* set x starting index */
-		  ix = 0;
-		  if (incx < 0)
-		    ix = -(n - 1) * incx;
-
-		  /* copy x_gen to x */
-		  for (j = 0; j < n * incx_gen; j += incx_gen) {
-		    x[ix] = x_gen[j];
-		    x[ix + 1] = x_gen[j + 1];
-		    ix += incx;
-		  }
+		  ccopy_vector(x_gen, n, 1, x, incx_val);
 
 		  /* varying incy */
 		  for (incy_val = -2; incy_val <= 2; incy_val++) {
 		    if (incy_val == 0)
 		      continue;
 
-		    /* setting incy */
-		    incy = incy_val;
-		    incy *= 2;
-
-		    /* set y starting index */
-		    iy = 0;
-		    if (incy < 0)
-		      iy = -(n - 1) * incy;
-
-		    /* copy y_gen to y */
-		    for (j = 0; j < n * incy_gen; j += incy_gen) {
-		      head_y[iy] = head_y_gen[j];
-		      head_y[iy + 1] = head_y_gen[j + 1];
-		      tail_y[iy] = tail_y_gen[j];
-		      tail_y[iy + 1] = tail_y_gen[j + 1];
-		      iy += incy;
-		    }
+		    ccopy_vector(head_y_gen, n, 1, head_y, incy_val);
+		    ccopy_vector(tail_y_gen, n, 1, tail_y, incy_val);
 
 		    /* call BLAS_cdot2_x to get r_comp */
 		    r_comp[0] = r[0];
@@ -1215,11 +1087,10 @@ double do_test_cdot2_x(int n, int ntests, int *seed, double thresh,
 		    FPU_FIX_START;
 
 		    /* computing the ratio */
-		    test_BLAS_cdot2(n, conj_type,
-				    alpha, beta, r, r_comp,
-				    head_r_true, tail_r_true,
-				    x, incx_val, head_y, tail_y, incy_val,
-				    eps_int, un_int, &ratio);
+		    test_BLAS_cdot2(n, conj_type, alpha, beta, r, r_comp,
+				    head_r_true, tail_r_true, x, incx_val,
+				    head_y, tail_y, incy_val, eps_int, un_int,
+				    &ratio);
 
 		    /* Increase the number of bad ratios, if the ratio
 		       is bigger than the threshold.
@@ -1277,26 +1148,9 @@ double do_test_cdot2_x(int n, int ntests, int *seed, double thresh,
 
 			printf("incx=%d, incy=%d:\n", incx_val, incy_val);
 
-			ix = 0;
-			iy = 0;
-			if (incx < 0)
-			  ix = -(n - 1) * incx;
-			if (incy < 0)
-			  iy = -(n - 1) * incy;
-
-			for (j = 0; j < n; j++) {
-			  printf("      ");
-			  printf("(%16.8e, %16.8e)", x[ix], x[ix + 1]);
-			  printf("\n      ");
-			  printf("(%16.8e, %16.8e)", head_y[iy],
-				 head_y[iy + 1]);
-			  printf("\n");
-			  printf("(%16.8e, %16.8e)", tail_y[iy],
-				 tail_y[iy + 1]);
-			  printf("\n");
-			  ix += incx;
-			  iy += incy;
-			}
+			cprint_vector(x, n, incx_val, "x");
+			cprint_vector(head_y, n, incx_val, "head_y");
+			cprint_vector(tail_y, n, incx_val, "tail_y");
 
 			printf("      ");
 			printf("alpha = ");
@@ -1364,11 +1218,10 @@ double do_test_cdot2_x(int n, int ntests, int *seed, double thresh,
 
   FPU_FIX_STOP;
   return ratio_max;
-}				/* end of do_test_cdot2_x */
-
-double do_test_zdot2_x(int n, int ntests, int *seed, double thresh,
-		       int debug, float test_prob, double *min_ratio,
-		       int *num_bad_ratio, int *num_tests)
+}
+double do_test_zdot2_x(int n, int ntests, int *seed, double thresh, int debug,
+		       float test_prob, double *min_ratio, int *num_bad_ratio,
+		       int *num_tests)
 
 /*
  * Purpose  
@@ -1425,10 +1278,7 @@ double do_test_zdot2_x(int n, int ntests, int *seed, double thresh,
   /* Variables in the "x_val" form are loop vars for corresponding
      variables */
   int i;			/* iterate through the repeating tests */
-  int j;			/* multipurpose counter */
-  int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val;	/* for testing different inc values */
-  int incx, incy;
   int incx_gen, incy_gen;	/* for complex case inc=2, for real case inc=1 */
   int d_count;			/* counter for debug */
   int find_max_ratio;		/* find_max_ratio = 1 only if debug = 3 */
@@ -1614,11 +1464,10 @@ double do_test_zdot2_x(int n, int ntests, int *seed, double thresh,
 		if (xrand(seed) >= test_prob)
 		  continue;
 
-		BLAS_zdot2_testgen(n, 0, 0, norm, conj_type,
-				   &alpha, alpha_flag, &beta, beta_flag,
-				   head_y_gen, tail_y_gen, x_gen, seed,
-				   &r, head_r_true, tail_r_true);
-
+		BLAS_zdot2_testgen(n, 0, 0, norm, conj_type, &alpha,
+				   alpha_flag, &beta, beta_flag, head_y_gen,
+				   tail_y_gen, x_gen, seed, &r, head_r_true,
+				   tail_r_true);
 		count++;
 
 		/* varying incx */
@@ -1626,44 +1475,15 @@ double do_test_zdot2_x(int n, int ntests, int *seed, double thresh,
 		  if (incx_val == 0)
 		    continue;
 
-		  /* setting incx */
-		  incx = incx_val;
-		  incx *= 2;
-
-		  /* set x starting index */
-		  ix = 0;
-		  if (incx < 0)
-		    ix = -(n - 1) * incx;
-
-		  /* copy x_gen to x */
-		  for (j = 0; j < n * incx_gen; j += incx_gen) {
-		    x[ix] = x_gen[j];
-		    x[ix + 1] = x_gen[j + 1];
-		    ix += incx;
-		  }
+		  zcopy_vector(x_gen, n, 1, x, incx_val);
 
 		  /* varying incy */
 		  for (incy_val = -2; incy_val <= 2; incy_val++) {
 		    if (incy_val == 0)
 		      continue;
 
-		    /* setting incy */
-		    incy = incy_val;
-		    incy *= 2;
-
-		    /* set y starting index */
-		    iy = 0;
-		    if (incy < 0)
-		      iy = -(n - 1) * incy;
-
-		    /* copy y_gen to y */
-		    for (j = 0; j < n * incy_gen; j += incy_gen) {
-		      head_y[iy] = head_y_gen[j];
-		      head_y[iy + 1] = head_y_gen[j + 1];
-		      tail_y[iy] = tail_y_gen[j];
-		      tail_y[iy + 1] = tail_y_gen[j + 1];
-		      iy += incy;
-		    }
+		    zcopy_vector(head_y_gen, n, 1, head_y, incy_val);
+		    zcopy_vector(tail_y_gen, n, 1, tail_y, incy_val);
 
 		    /* call BLAS_zdot2_x to get r_comp */
 		    r_comp[0] = r[0];
@@ -1675,11 +1495,10 @@ double do_test_zdot2_x(int n, int ntests, int *seed, double thresh,
 		    FPU_FIX_START;
 
 		    /* computing the ratio */
-		    test_BLAS_zdot2(n, conj_type,
-				    alpha, beta, r, r_comp,
-				    head_r_true, tail_r_true,
-				    x, incx_val, head_y, tail_y, incy_val,
-				    eps_int, un_int, &ratio);
+		    test_BLAS_zdot2(n, conj_type, alpha, beta, r, r_comp,
+				    head_r_true, tail_r_true, x, incx_val,
+				    head_y, tail_y, incy_val, eps_int, un_int,
+				    &ratio);
 
 		    /* Increase the number of bad ratios, if the ratio
 		       is bigger than the threshold.
@@ -1737,26 +1556,9 @@ double do_test_zdot2_x(int n, int ntests, int *seed, double thresh,
 
 			printf("incx=%d, incy=%d:\n", incx_val, incy_val);
 
-			ix = 0;
-			iy = 0;
-			if (incx < 0)
-			  ix = -(n - 1) * incx;
-			if (incy < 0)
-			  iy = -(n - 1) * incy;
-
-			for (j = 0; j < n; j++) {
-			  printf("      ");
-			  printf("(%24.16e, %24.16e)", x[ix], x[ix + 1]);
-			  printf("\n      ");
-			  printf("(%24.16e, %24.16e)", head_y[iy],
-				 head_y[iy + 1]);
-			  printf("\n");
-			  printf("(%24.16e, %24.16e)", tail_y[iy],
-				 tail_y[iy + 1]);
-			  printf("\n");
-			  ix += incx;
-			  iy += incy;
-			}
+			zprint_vector(x, n, incx_val, "x");
+			zprint_vector(head_y, n, incx_val, "head_y");
+			zprint_vector(tail_y, n, incx_val, "tail_y");
 
 			printf("      ");
 			printf("alpha = ");
@@ -1824,7 +1626,7 @@ double do_test_zdot2_x(int n, int ntests, int *seed, double thresh,
 
   FPU_FIX_STOP;
   return ratio_max;
-}				/* end of do_test_zdot2_x */
+}
 
 
 int main(int argc, char **argv)
@@ -1908,8 +1710,8 @@ int main(int argc, char **argv)
   if (min_ratio == 1e308)
     min_ratio = 0.0;
 
-  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
-	 fname, total_bad_ratios, total_tests, max_ratio);
+  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n", fname,
+	 total_bad_ratios, total_tests, max_ratio);
 
   min_ratio = 1e308;
   max_ratio = 0.0;
@@ -1943,8 +1745,8 @@ int main(int argc, char **argv)
   if (min_ratio == 1e308)
     min_ratio = 0.0;
 
-  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
-	 fname, total_bad_ratios, total_tests, max_ratio);
+  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n", fname,
+	 total_bad_ratios, total_tests, max_ratio);
 
   min_ratio = 1e308;
   max_ratio = 0.0;
@@ -1978,8 +1780,8 @@ int main(int argc, char **argv)
   if (min_ratio == 1e308)
     min_ratio = 0.0;
 
-  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
-	 fname, total_bad_ratios, total_tests, max_ratio);
+  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n", fname,
+	 total_bad_ratios, total_tests, max_ratio);
 
   min_ratio = 1e308;
   max_ratio = 0.0;
@@ -2013,8 +1815,8 @@ int main(int argc, char **argv)
   if (min_ratio == 1e308)
     min_ratio = 0.0;
 
-  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
-	 fname, total_bad_ratios, total_tests, max_ratio);
+  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n", fname,
+	 total_bad_ratios, total_tests, max_ratio);
 
 
 

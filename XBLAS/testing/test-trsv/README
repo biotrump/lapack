@@ -1,8 +1,0 @@
-The following files are manually created:
-	testgen_c_sdot_x.c   : SDOT Generator with X vector in extra precision
-	c_dot_testgen_trsv.c : wrappers to call TESTGEN_C_SDOT_X
-            c_sdot_x_testgen
-   	    c_ddot_x_testgen
-	    c_ddot_s_x_testgen
-	    	      
-			

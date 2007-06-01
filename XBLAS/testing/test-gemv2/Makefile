@@ -3,6 +3,7 @@ include ../../$(MAKEINC)
 
 TEST_DOT_PATH = ../test-dot
 TEST_DOT2_PATH = ../test-dot2
+TEST_GEMV_PATH = ../test-gemv
 LIB_PATH = ../../$(OUTPUT_DIR)
 HEADER_PATH = -I../../src -I..
 
@@ -17,12 +18,14 @@ TEST_DOT2_OBJS = $(TEST_DOT2_PATH)/dot2.o \
 		 $(TEST_DOT2_PATH)/test_dot2.o \
 		 $(TEST_DOT2_PATH)/r_truth2.o \
 		 $(TEST_DOT2_PATH)/BLAS_dot2_testgen.o
+TEST_GEMV_OBJS = $(TEST_GEMV_PATH)/gemv-support.o
 
-TEST_SRCS = do_test_gemv2.c BLAS_gemv2_testgen.c gemv2-support.c 
+TEST_SRCS = do_test_gemv2.c BLAS_gemv2_testgen.c
 TEST_OBJS = $(TEST_SRCS:.c=.o)
 COMMON_OBJS = ../common/dummy_main.o
 
-ALL_OBJS = $(TEST_OBJS) $(TEST_DOT_OBJS) $(TEST_DOT2_OBJS) $(COMMON_OBJS)
+ALL_OBJS = $(TEST_OBJS) $(TEST_DOT_OBJS) $(TEST_DOT2_OBJS) \
+	   $(TEST_GEMV_OBJS) $(COMMON_OBJS)
 
 test: do_test_gemv2
 	@echo Testing GEMV2 - default quick test

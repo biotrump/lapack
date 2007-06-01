@@ -355,7 +355,6 @@ void BLAS_sdot2_x(enum blas_conj_type conj, int n, float alpha,
     break;
   }
 }
-
 void BLAS_ddot2_x(enum blas_conj_type conj, int n, double alpha,
 		  const double *x, int incx, double beta,
 		  const double *head_y, const double *tail_y, int incy,
@@ -749,7 +748,6 @@ void BLAS_ddot2_x(enum blas_conj_type conj, int n, double alpha,
     break;
   }
 }
-
 void BLAS_cdot2_x(enum blas_conj_type conj, int n, const void *alpha,
 		  const void *x, int incx, const void *beta,
 		  const void *head_y, const void *tail_y, int incy,
@@ -1855,7 +1853,6 @@ void BLAS_cdot2_x(enum blas_conj_type conj, int n, const void *alpha,
     break;
   }
 }
-
 void BLAS_zdot2_x(enum blas_conj_type conj, int n, const void *alpha,
 		  const void *x, int incx, const void *beta,
 		  const void *head_y, const void *tail_y, int incy,

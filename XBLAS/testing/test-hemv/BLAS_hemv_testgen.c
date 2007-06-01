@@ -1,30 +1,9 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "blas_extended.h"
 #include "blas_extended_private.h"
 #include "blas_extended_test.h"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 void BLAS_sskew_testgen_hemv(int norm, enum blas_order_type order,
 			     enum blas_uplo_type uplo,

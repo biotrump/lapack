@@ -1,7 +1,6 @@
 include ../../make.conf
 include ../../$(MAKEINC)
 
-DOT_PATH = ../../src/dot
 TEST_DOT_PATH = ../test-dot
 TEST_GEMV_PATH = ../test-gemv
 TEST_GEMM_PATH = ../test-gemm
@@ -10,7 +9,6 @@ TEST_GE_SUM_MV_PATH = ../test-ge_sum_mv
 LIB_PATH = ../../$(OUTPUT_DIR)
 HEADER_PATH = -I../../src -I..
 
-DOT_OBJS = $(DOT_PATH)/BLAS_sdot_x.o $(DOT_PATH)/BLAS_ddot_x.o
 GEMV_OBJS = $(TEST_GEMV_PATH)/gemv-support.o \
 	$(TEST_GEMV_PATH)/BLAS_gemv_testgen.o
 GEMM_OBJS = $(TEST_GEMM_PATH)/BLAS_gemm_testgen.o
@@ -26,11 +24,11 @@ TEST_DOT_OBJS = $(TEST_DOT_PATH)/testgen_BLAS_sdot.o \
 		$(TEST_DOT_PATH)/print_vector.o \
 		$(TEST_DOT_PATH)/copy_vector.o
 
-TEST_SRCS = do_test_ge_sum_mv.c ge_sum_mv-support.c BLAS_ge_sum_mv_testgen.c 
+TEST_SRCS = do_test_ge_sum_mv.c BLAS_ge_sum_mv_testgen.c 
 TEST_OBJS = $(TEST_SRCS:.c=.o)
 COMMON_OBJS = ../common/dummy_main.o
 
-ALL_OBJS = $(TEST_OBJS) $(TEST_DOT_OBJS) $(DOT_OBJS) $(GEMV_OBJS) \
+ALL_OBJS = $(TEST_OBJS) $(TEST_DOT_OBJS) $(GEMV_OBJS) \
 	$(SYMV_OBJS) $(GEMM_OBJS) $(COMMON_OBJS)
 
 test: do_test_ge_sum_mv warning

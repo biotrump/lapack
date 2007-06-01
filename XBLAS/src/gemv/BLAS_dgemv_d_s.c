@@ -139,7 +139,6 @@ void BLAS_dgemv_d_s(enum blas_order_type order, enum blas_trans_type trans,
     }
   } else {
 
-
     /* if beta = 0, we can save m multiplies: y = alpha*A*x */
     if (beta_i == 0.0) {
       /* save m more multiplies if alpha = 1 */

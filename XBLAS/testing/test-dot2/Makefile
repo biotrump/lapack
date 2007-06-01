@@ -1,17 +1,20 @@
 include ../../make.conf
 include ../../$(MAKEINC)
 
+TEST_DOT_PATH = ../test-dot
 LIB_PATH = ../../$(OUTPUT_DIR)
 HEADER_PATH = -I../../src -I..
 
 TEST_SRCS = do_test_dot2.c test_dot2.c BLAS_dot2_testgen.c \
-	    dot2.c ../test-dot/testgen_aux.c  r_truth2.c \
+	    dot2.c r_truth2.c \
 	    testgen_BLAS_sdot2.c testgen_BLAS_ddot2.c \
-	    testgen_BLAS_zdot2.c testgen_BLAS_cdot2.c \
-	    ../test-dot/print_vector.c \
-	    ../test-dot/copy_vector.c
+	    testgen_BLAS_zdot2.c testgen_BLAS_cdot2.c
 
 TEST_OBJS = $(TEST_SRCS:.c=.o)
+TEST_DOT_OBJS = $(TEST_DOT_PATH)/testgen_aux.o \
+		$(TEST_DOT_PATH)/print_vector.o \
+		$(TEST_DOT_PATH)/copy_vector.o
+
 COMMON_OBJS = ../common/dummy_main.o
 
 ALL_OBJS = $(TEST_OBJS) $(TEST_DOT_OBJS) $(COMMON_OBJS)
@@ -23,7 +26,7 @@ test: do_test_dot2
 test-lib: $(TEST_OBJS)
 
 do_test_dot2: $(TEST_OBJS) $(COMMON_OBJS) $(LIB_PATH)/$(XBLASLIB)
-	$(LINKER) $(LDFLAGS) $(TEST_OBJS) $(COMMON_OBJS) $(LIB_PATH)/$(XBLASLIB) \
+	$(LINKER) $(LDFLAGS) $(ALL_OBJS) $(LIB_PATH)/$(XBLASLIB) \
 	-o do_test_dot2 $(EXTRA_LIBS)
 
 .c.o:

@@ -1,12 +1,10 @@
 include ../../make.conf
 include ../../$(MAKEINC)
 
-DOT_PATH = ../../src/dot
 TEST_DOT_PATH = ../test-dot
+TEST_TRMV_PATH = ../test-trmv
 LIB_PATH = ../../$(OUTPUT_DIR)
 HEADER_PATH = -I../../src -I..
-
-DOT_OBJS = $(DOT_PATH)/BLAS_sdot_x.o $(DOT_PATH)/BLAS_ddot_x.o
 
 TEST_DOT_OBJS = $(TEST_DOT_PATH)/testgen_BLAS_sdot.o \
 		$(TEST_DOT_PATH)/testgen_BLAS_ddot.o \
@@ -22,8 +20,9 @@ TEST_SRCS = do_test_trsv.c BLAS_trsv_testgen.c trsv-support.c \
 	BLAS_dot_testgen_trsv.c testgen_BLAS_sdot_x.c
 TEST_OBJS = $(TEST_SRCS:.c=.o)
 COMMON_OBJS = ../common/dummy_main.o
+TEST_TRMV_OBJS = $(TEST_TRMV_PATH)/trmv-support.o
 
-ALL_OBJS = $(TEST_OBJS) $(TEST_DOT_OBJS) $(DOT_OBJS) $(COMMON_OBJS)
+ALL_OBJS = $(TEST_OBJS) $(TEST_DOT_OBJS) $(TEST_TRMV_OBJS) $(COMMON_OBJS)
 
 test: do_test_trsv
 	@echo Testing TRSV - default quick test

@@ -212,7 +212,6 @@ void s_r_truth2(enum blas_conj_type conj, int n, float alpha,
   FPU_FIX_STOP;
 
 }
-
 void d_r_truth2(enum blas_conj_type conj, int n, double alpha,
 		const double *x, int incx, double beta,
 		const double *head_y, const double *tail_y, int incy,
@@ -463,7 +462,6 @@ void d_r_truth2(enum blas_conj_type conj, int n, double alpha,
   FPU_FIX_STOP;
 
 }
-
 void c_r_truth2(enum blas_conj_type conj, int n, const void *alpha,
 		const void *x, int incx, const void *beta,
 		const void *head_y, const void *tail_y, int incy, void *r,
@@ -1324,7 +1322,6 @@ void c_r_truth2(enum blas_conj_type conj, int n, const void *alpha,
   FPU_FIX_STOP;
 
 }
-
 void z_r_truth2(enum blas_conj_type conj, int n, const void *alpha,
 		const void *x, int incx, const void *beta,
 		const void *head_y, const void *tail_y, int incy, void *r,

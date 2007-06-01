@@ -81,7 +81,6 @@ double do_test_daxpby_s(int n, int ntests, int *seed, double thresh,
   /* Variables in the "x_val" form are loop vars for corresponding
      variables */
   int i;			/* iterate through the repeating tests */
-  int j;			/* multipurpose counter */
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy, incx_gen, incy_gen, ygen_val, xgen_val, test_val;
@@ -104,8 +103,6 @@ double do_test_daxpby_s(int n, int ntests, int *seed, double thresh,
   double *y_ori;
   double *y_comp;		/* the y computed  by BLAS_daxpby_s */
 
-  float x_genj;			/* used to store x_gen[j] when copying x_gen[j] -> x[j] */
-  double y_genj;		/* used to store y_gen[j] when copying y_gen[j] -> y[j] */
   int ixmax, iymax;
   int ixmax_max, iymax_max;
 
@@ -266,18 +263,7 @@ double do_test_daxpby_s(int n, int ntests, int *seed, double thresh,
 	      /* setting incx */
 	      incx = incx_val;
 
-
-	      /* set x starting index */
-	      ix = 0;
-	      if (incx < 0)
-		ix = -(n - 1) * incx;
-
-	      /* copy x_gen to x */
-	      for (j = 0; j < n * incx_gen; j += incx_gen) {
-		x_genj = x_gen[j];	/* x_genj = x_gen[j] */
-		x[ix] = x_genj;	/* x[ix] = x_genj */
-		ix += incx;
-	      }
+	      scopy_vector(x_gen, n, 1, x, incx_val);
 
 	      /* varying incy */
 	      for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -288,19 +274,8 @@ double do_test_daxpby_s(int n, int ntests, int *seed, double thresh,
 		incy = incy_val;
 
 
-		/* set y starting index */
-		iy = 0;
-		if (incy < 0)
-		  iy = -(n - 1) * incy;
-
-		/* copy y_gen to y */
-		for (j = 0; j < n * incy_gen; j += incy_gen) {
-		  y_genj = y_gen[j];	/* y_genj = y_gen[j] */
-		  y_ori[iy] = y_genj;	/* y_ori[ix] = y_genj */
-		  y_comp[iy] = y_genj;	/* y_comp[ix] = y_genj */
-		  iy += incy;
-		}
-
+		dcopy_vector(y_gen, n, 1, y_ori, incy_val);
+		dcopy_vector(y_gen, n, 1, y_comp, incy_val);
 
 		/* call BLAS_daxpby_s to get y_comp */
 		FPU_FIX_STOP;
@@ -387,24 +362,9 @@ double do_test_daxpby_s(int n, int ntests, int *seed, double thresh,
 
 		    printf("incx=%d, incy=%d:\n", incx, incy);
 
-		    ix = 0;
-		    iy = 0;
-		    if (incx < 0)
-		      ix = -(n - 1) * incx;
-		    if (incy < 0)
-		      iy = -(n - 1) * incy;
-
-		    for (j = 0; j < n; j++) {
-		      printf("      ");
-		      printf("%16.8e", x[ix]);
-		      printf("; ");
-		      printf("%24.16e", y_ori[iy]);
-		      printf("; ");
-		      printf("%24.16e", y_comp[iy]);
-		      printf("\n");
-		      ix += incx;
-		      iy += incy;
-		    }
+		    sprint_vector(x, n, incx_val, "x");
+		    dprint_vector(y_ori, n, incy_val, "y_ori");
+		    dprint_vector(y_comp, n, incy_val, "y_comp");
 
 		    printf("      ");
 		    printf("alpha = ");
@@ -541,7 +501,6 @@ double do_test_caxpby_s(int n, int ntests, int *seed, double thresh,
   /* Variables in the "x_val" form are loop vars for corresponding
      variables */
   int i;			/* iterate through the repeating tests */
-  int j;			/* multipurpose counter */
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy, incx_gen, incy_gen, ygen_val, xgen_val, test_val;
@@ -564,8 +523,6 @@ double do_test_caxpby_s(int n, int ntests, int *seed, double thresh,
   float *y_ori;
   float *y_comp;		/* the y computed  by BLAS_caxpby_s */
 
-  float x_genj;			/* used to store x_gen[j] when copying x_gen[j] -> x[j] */
-  float y_genj[2];		/* used to store y_gen[j] when copying y_gen[j] -> y[j] */
   int ixmax, iymax;
   int ixmax_max, iymax_max;
 
@@ -729,18 +686,7 @@ double do_test_caxpby_s(int n, int ntests, int *seed, double thresh,
 	      /* setting incx */
 	      incx = incx_val;
 
-
-	      /* set x starting index */
-	      ix = 0;
-	      if (incx < 0)
-		ix = -(n - 1) * incx;
-
-	      /* copy x_gen to x */
-	      for (j = 0; j < n * incx_gen; j += incx_gen) {
-		x_genj = x_gen[j];	/* x_genj = x_gen[j] */
-		x[ix] = x_genj;	/* x[ix] = x_genj */
-		ix += incx;
-	      }
+	      scopy_vector(x_gen, n, 1, x, incx_val);
 
 	      /* varying incy */
 	      for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -751,22 +697,8 @@ double do_test_caxpby_s(int n, int ntests, int *seed, double thresh,
 		incy = incy_val;
 		incy *= 2;
 
-		/* set y starting index */
-		iy = 0;
-		if (incy < 0)
-		  iy = -(n - 1) * incy;
-
-		/* copy y_gen to y */
-		for (j = 0; j < n * incy_gen; j += incy_gen) {
-		  y_genj[0] = y_gen[j];
-		  y_genj[1] = y_gen[1 + j];	/* y_genj = y_gen[j] */
-		  y_ori[iy] = y_genj[0];
-		  y_ori[1 + iy] = y_genj[1];	/* y_ori[ix] = y_genj */
-		  y_comp[iy] = y_genj[0];
-		  y_comp[1 + iy] = y_genj[1];	/* y_comp[ix] = y_genj */
-		  iy += incy;
-		}
-
+		ccopy_vector(y_gen, n, 1, y_ori, incy_val);
+		ccopy_vector(y_gen, n, 1, y_comp, incy_val);
 
 		/* call BLAS_caxpby_s to get y_comp */
 		FPU_FIX_STOP;
@@ -853,24 +785,9 @@ double do_test_caxpby_s(int n, int ntests, int *seed, double thresh,
 
 		    printf("incx=%d, incy=%d:\n", incx, incy);
 
-		    ix = 0;
-		    iy = 0;
-		    if (incx < 0)
-		      ix = -(n - 1) * incx;
-		    if (incy < 0)
-		      iy = -(n - 1) * incy;
-
-		    for (j = 0; j < n; j++) {
-		      printf("      ");
-		      printf("%16.8e", x[ix]);
-		      printf("; ");
-		      printf("(%16.8e, %16.8e)", y_ori[iy], y_ori[iy + 1]);
-		      printf("; ");
-		      printf("(%16.8e, %16.8e)", y_comp[iy], y_comp[iy + 1]);
-		      printf("\n");
-		      ix += incx;
-		      iy += incy;
-		    }
+		    sprint_vector(x, n, incx_val, "x");
+		    cprint_vector(y_ori, n, incy_val, "y_ori");
+		    cprint_vector(y_comp, n, incy_val, "y_comp");
 
 		    printf("      ");
 		    printf("alpha = ");
@@ -1007,7 +924,6 @@ double do_test_zaxpby_c(int n, int ntests, int *seed, double thresh,
   /* Variables in the "x_val" form are loop vars for corresponding
      variables */
   int i;			/* iterate through the repeating tests */
-  int j;			/* multipurpose counter */
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy, incx_gen, incy_gen, ygen_val, xgen_val, test_val;
@@ -1030,8 +946,6 @@ double do_test_zaxpby_c(int n, int ntests, int *seed, double thresh,
   double *y_ori;
   double *y_comp;		/* the y computed  by BLAS_zaxpby_c */
 
-  float x_genj[2];		/* used to store x_gen[j] when copying x_gen[j] -> x[j] */
-  double y_genj[2];		/* used to store y_gen[j] when copying y_gen[j] -> y[j] */
   int ixmax, iymax;
   int ixmax_max, iymax_max;
 
@@ -1195,21 +1109,8 @@ double do_test_zaxpby_c(int n, int ntests, int *seed, double thresh,
 
 	      /* setting incx */
 	      incx = incx_val;
-	      incx *= 2;
 
-	      /* set x starting index */
-	      ix = 0;
-	      if (incx < 0)
-		ix = -(n - 1) * incx;
-
-	      /* copy x_gen to x */
-	      for (j = 0; j < n * incx_gen; j += incx_gen) {
-		x_genj[0] = x_gen[j];
-		x_genj[1] = x_gen[1 + j];	/* x_genj = x_gen[j] */
-		x[ix] = x_genj[0];
-		x[1 + ix] = x_genj[1];	/* x[ix] = x_genj */
-		ix += incx;
-	      }
+	      ccopy_vector(x_gen, n, 1, x, incx_val);
 
 	      /* varying incy */
 	      for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -1220,22 +1121,8 @@ double do_test_zaxpby_c(int n, int ntests, int *seed, double thresh,
 		incy = incy_val;
 		incy *= 2;
 
-		/* set y starting index */
-		iy = 0;
-		if (incy < 0)
-		  iy = -(n - 1) * incy;
-
-		/* copy y_gen to y */
-		for (j = 0; j < n * incy_gen; j += incy_gen) {
-		  y_genj[0] = y_gen[j];
-		  y_genj[1] = y_gen[1 + j];	/* y_genj = y_gen[j] */
-		  y_ori[iy] = y_genj[0];
-		  y_ori[1 + iy] = y_genj[1];	/* y_ori[ix] = y_genj */
-		  y_comp[iy] = y_genj[0];
-		  y_comp[1 + iy] = y_genj[1];	/* y_comp[ix] = y_genj */
-		  iy += incy;
-		}
-
+		zcopy_vector(y_gen, n, 1, y_ori, incy_val);
+		zcopy_vector(y_gen, n, 1, y_comp, incy_val);
 
 		/* call BLAS_zaxpby_c to get y_comp */
 		FPU_FIX_STOP;
@@ -1322,25 +1209,9 @@ double do_test_zaxpby_c(int n, int ntests, int *seed, double thresh,
 
 		    printf("incx=%d, incy=%d:\n", incx, incy);
 
-		    ix = 0;
-		    iy = 0;
-		    if (incx < 0)
-		      ix = -(n - 1) * incx;
-		    if (incy < 0)
-		      iy = -(n - 1) * incy;
-
-		    for (j = 0; j < n; j++) {
-		      printf("      ");
-		      printf("(%16.8e, %16.8e)", x[ix], x[ix + 1]);
-		      printf("; ");
-		      printf("(%24.16e, %24.16e)", y_ori[iy], y_ori[iy + 1]);
-		      printf("; ");
-		      printf("(%24.16e, %24.16e)", y_comp[iy],
-			     y_comp[iy + 1]);
-		      printf("\n");
-		      ix += incx;
-		      iy += incy;
-		    }
+		    cprint_vector(x, n, incx_val, "x");
+		    zprint_vector(y_ori, n, incy_val, "y_ori");
+		    zprint_vector(y_comp, n, incy_val, "y_comp");
 
 		    printf("      ");
 		    printf("alpha = ");
@@ -1477,7 +1348,6 @@ double do_test_zaxpby_d(int n, int ntests, int *seed, double thresh,
   /* Variables in the "x_val" form are loop vars for corresponding
      variables */
   int i;			/* iterate through the repeating tests */
-  int j;			/* multipurpose counter */
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy, incx_gen, incy_gen, ygen_val, xgen_val, test_val;
@@ -1500,8 +1370,6 @@ double do_test_zaxpby_d(int n, int ntests, int *seed, double thresh,
   double *y_ori;
   double *y_comp;		/* the y computed  by BLAS_zaxpby_d */
 
-  double x_genj;		/* used to store x_gen[j] when copying x_gen[j] -> x[j] */
-  double y_genj[2];		/* used to store y_gen[j] when copying y_gen[j] -> y[j] */
   int ixmax, iymax;
   int ixmax_max, iymax_max;
 
@@ -1665,18 +1533,7 @@ double do_test_zaxpby_d(int n, int ntests, int *seed, double thresh,
 	      /* setting incx */
 	      incx = incx_val;
 
-
-	      /* set x starting index */
-	      ix = 0;
-	      if (incx < 0)
-		ix = -(n - 1) * incx;
-
-	      /* copy x_gen to x */
-	      for (j = 0; j < n * incx_gen; j += incx_gen) {
-		x_genj = x_gen[j];	/* x_genj = x_gen[j] */
-		x[ix] = x_genj;	/* x[ix] = x_genj */
-		ix += incx;
-	      }
+	      dcopy_vector(x_gen, n, 1, x, incx_val);
 
 	      /* varying incy */
 	      for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -1687,22 +1544,8 @@ double do_test_zaxpby_d(int n, int ntests, int *seed, double thresh,
 		incy = incy_val;
 		incy *= 2;
 
-		/* set y starting index */
-		iy = 0;
-		if (incy < 0)
-		  iy = -(n - 1) * incy;
-
-		/* copy y_gen to y */
-		for (j = 0; j < n * incy_gen; j += incy_gen) {
-		  y_genj[0] = y_gen[j];
-		  y_genj[1] = y_gen[1 + j];	/* y_genj = y_gen[j] */
-		  y_ori[iy] = y_genj[0];
-		  y_ori[1 + iy] = y_genj[1];	/* y_ori[ix] = y_genj */
-		  y_comp[iy] = y_genj[0];
-		  y_comp[1 + iy] = y_genj[1];	/* y_comp[ix] = y_genj */
-		  iy += incy;
-		}
-
+		zcopy_vector(y_gen, n, 1, y_ori, incy_val);
+		zcopy_vector(y_gen, n, 1, y_comp, incy_val);
 
 		/* call BLAS_zaxpby_d to get y_comp */
 		FPU_FIX_STOP;
@@ -1789,25 +1632,9 @@ double do_test_zaxpby_d(int n, int ntests, int *seed, double thresh,
 
 		    printf("incx=%d, incy=%d:\n", incx, incy);
 
-		    ix = 0;
-		    iy = 0;
-		    if (incx < 0)
-		      ix = -(n - 1) * incx;
-		    if (incy < 0)
-		      iy = -(n - 1) * incy;
-
-		    for (j = 0; j < n; j++) {
-		      printf("      ");
-		      printf("%24.16e", x[ix]);
-		      printf("; ");
-		      printf("(%24.16e, %24.16e)", y_ori[iy], y_ori[iy + 1]);
-		      printf("; ");
-		      printf("(%24.16e, %24.16e)", y_comp[iy],
-			     y_comp[iy + 1]);
-		      printf("\n");
-		      ix += incx;
-		      iy += incy;
-		    }
+		    dprint_vector(x, n, incx_val, "x");
+		    zprint_vector(y_ori, n, incy_val, "y_ori");
+		    zprint_vector(y_comp, n, incy_val, "y_comp");
 
 		    printf("      ");
 		    printf("alpha = ");
@@ -1944,7 +1771,6 @@ double do_test_saxpby_x(int n, int ntests, int *seed, double thresh,
   /* Variables in the "x_val" form are loop vars for corresponding
      variables */
   int i;			/* iterate through the repeating tests */
-  int j;			/* multipurpose counter */
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy, incx_gen, incy_gen, ygen_val, xgen_val, test_val;
@@ -1967,8 +1793,6 @@ double do_test_saxpby_x(int n, int ntests, int *seed, double thresh,
   float *y_ori;
   float *y_comp;		/* the y computed  by BLAS_saxpby_x */
 
-  float x_genj;			/* used to store x_gen[j] when copying x_gen[j] -> x[j] */
-  float y_genj;			/* used to store y_gen[j] when copying y_gen[j] -> y[j] */
   int ixmax, iymax;
   int ixmax_max, iymax_max;
 
@@ -2148,18 +1972,7 @@ double do_test_saxpby_x(int n, int ntests, int *seed, double thresh,
 		/* setting incx */
 		incx = incx_val;
 
-
-		/* set x starting index */
-		ix = 0;
-		if (incx < 0)
-		  ix = -(n - 1) * incx;
-
-		/* copy x_gen to x */
-		for (j = 0; j < n * incx_gen; j += incx_gen) {
-		  x_genj = x_gen[j];	/* x_genj = x_gen[j] */
-		  x[ix] = x_genj;	/* x[ix] = x_genj */
-		  ix += incx;
-		}
+		scopy_vector(x_gen, n, 1, x, incx_val);
 
 		/* varying incy */
 		for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -2170,19 +1983,8 @@ double do_test_saxpby_x(int n, int ntests, int *seed, double thresh,
 		  incy = incy_val;
 
 
-		  /* set y starting index */
-		  iy = 0;
-		  if (incy < 0)
-		    iy = -(n - 1) * incy;
-
-		  /* copy y_gen to y */
-		  for (j = 0; j < n * incy_gen; j += incy_gen) {
-		    y_genj = y_gen[j];	/* y_genj = y_gen[j] */
-		    y_ori[iy] = y_genj;	/* y_ori[ix] = y_genj */
-		    y_comp[iy] = y_genj;	/* y_comp[ix] = y_genj */
-		    iy += incy;
-		  }
-
+		  scopy_vector(y_gen, n, 1, y_ori, incy_val);
+		  scopy_vector(y_gen, n, 1, y_comp, incy_val);
 
 		  /* call BLAS_saxpby_x to get y_comp */
 		  FPU_FIX_STOP;
@@ -2269,24 +2071,9 @@ double do_test_saxpby_x(int n, int ntests, int *seed, double thresh,
 
 		      printf("incx=%d, incy=%d:\n", incx, incy);
 
-		      ix = 0;
-		      iy = 0;
-		      if (incx < 0)
-			ix = -(n - 1) * incx;
-		      if (incy < 0)
-			iy = -(n - 1) * incy;
-
-		      for (j = 0; j < n; j++) {
-			printf("      ");
-			printf("%16.8e", x[ix]);
-			printf("; ");
-			printf("%16.8e", y_ori[iy]);
-			printf("; ");
-			printf("%16.8e", y_comp[iy]);
-			printf("\n");
-			ix += incx;
-			iy += incy;
-		      }
+		      sprint_vector(x, n, incx_val, "x");
+		      sprint_vector(y_ori, n, incy_val, "y_ori");
+		      sprint_vector(y_comp, n, incy_val, "y_comp");
 
 		      printf("      ");
 		      printf("alpha = ");
@@ -2423,7 +2210,6 @@ double do_test_daxpby_x(int n, int ntests, int *seed, double thresh,
   /* Variables in the "x_val" form are loop vars for corresponding
      variables */
   int i;			/* iterate through the repeating tests */
-  int j;			/* multipurpose counter */
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy, incx_gen, incy_gen, ygen_val, xgen_val, test_val;
@@ -2446,8 +2232,6 @@ double do_test_daxpby_x(int n, int ntests, int *seed, double thresh,
   double *y_ori;
   double *y_comp;		/* the y computed  by BLAS_daxpby_x */
 
-  double x_genj;		/* used to store x_gen[j] when copying x_gen[j] -> x[j] */
-  double y_genj;		/* used to store y_gen[j] when copying y_gen[j] -> y[j] */
   int ixmax, iymax;
   int ixmax_max, iymax_max;
 
@@ -2627,18 +2411,7 @@ double do_test_daxpby_x(int n, int ntests, int *seed, double thresh,
 		/* setting incx */
 		incx = incx_val;
 
-
-		/* set x starting index */
-		ix = 0;
-		if (incx < 0)
-		  ix = -(n - 1) * incx;
-
-		/* copy x_gen to x */
-		for (j = 0; j < n * incx_gen; j += incx_gen) {
-		  x_genj = x_gen[j];	/* x_genj = x_gen[j] */
-		  x[ix] = x_genj;	/* x[ix] = x_genj */
-		  ix += incx;
-		}
+		dcopy_vector(x_gen, n, 1, x, incx_val);
 
 		/* varying incy */
 		for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -2649,19 +2422,8 @@ double do_test_daxpby_x(int n, int ntests, int *seed, double thresh,
 		  incy = incy_val;
 
 
-		  /* set y starting index */
-		  iy = 0;
-		  if (incy < 0)
-		    iy = -(n - 1) * incy;
-
-		  /* copy y_gen to y */
-		  for (j = 0; j < n * incy_gen; j += incy_gen) {
-		    y_genj = y_gen[j];	/* y_genj = y_gen[j] */
-		    y_ori[iy] = y_genj;	/* y_ori[ix] = y_genj */
-		    y_comp[iy] = y_genj;	/* y_comp[ix] = y_genj */
-		    iy += incy;
-		  }
-
+		  dcopy_vector(y_gen, n, 1, y_ori, incy_val);
+		  dcopy_vector(y_gen, n, 1, y_comp, incy_val);
 
 		  /* call BLAS_daxpby_x to get y_comp */
 		  FPU_FIX_STOP;
@@ -2748,24 +2510,9 @@ double do_test_daxpby_x(int n, int ntests, int *seed, double thresh,
 
 		      printf("incx=%d, incy=%d:\n", incx, incy);
 
-		      ix = 0;
-		      iy = 0;
-		      if (incx < 0)
-			ix = -(n - 1) * incx;
-		      if (incy < 0)
-			iy = -(n - 1) * incy;
-
-		      for (j = 0; j < n; j++) {
-			printf("      ");
-			printf("%24.16e", x[ix]);
-			printf("; ");
-			printf("%24.16e", y_ori[iy]);
-			printf("; ");
-			printf("%24.16e", y_comp[iy]);
-			printf("\n");
-			ix += incx;
-			iy += incy;
-		      }
+		      dprint_vector(x, n, incx_val, "x");
+		      dprint_vector(y_ori, n, incy_val, "y_ori");
+		      dprint_vector(y_comp, n, incy_val, "y_comp");
 
 		      printf("      ");
 		      printf("alpha = ");
@@ -2902,7 +2649,6 @@ double do_test_caxpby_x(int n, int ntests, int *seed, double thresh,
   /* Variables in the "x_val" form are loop vars for corresponding
      variables */
   int i;			/* iterate through the repeating tests */
-  int j;			/* multipurpose counter */
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy, incx_gen, incy_gen, ygen_val, xgen_val, test_val;
@@ -2925,8 +2671,6 @@ double do_test_caxpby_x(int n, int ntests, int *seed, double thresh,
   float *y_ori;
   float *y_comp;		/* the y computed  by BLAS_caxpby_x */
 
-  float x_genj[2];		/* used to store x_gen[j] when copying x_gen[j] -> x[j] */
-  float y_genj[2];		/* used to store y_gen[j] when copying y_gen[j] -> y[j] */
   int ixmax, iymax;
   int ixmax_max, iymax_max;
 
@@ -3109,21 +2853,8 @@ double do_test_caxpby_x(int n, int ntests, int *seed, double thresh,
 
 		/* setting incx */
 		incx = incx_val;
-		incx *= 2;
 
-		/* set x starting index */
-		ix = 0;
-		if (incx < 0)
-		  ix = -(n - 1) * incx;
-
-		/* copy x_gen to x */
-		for (j = 0; j < n * incx_gen; j += incx_gen) {
-		  x_genj[0] = x_gen[j];
-		  x_genj[1] = x_gen[1 + j];	/* x_genj = x_gen[j] */
-		  x[ix] = x_genj[0];
-		  x[1 + ix] = x_genj[1];	/* x[ix] = x_genj */
-		  ix += incx;
-		}
+		ccopy_vector(x_gen, n, 1, x, incx_val);
 
 		/* varying incy */
 		for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -3134,22 +2865,8 @@ double do_test_caxpby_x(int n, int ntests, int *seed, double thresh,
 		  incy = incy_val;
 		  incy *= 2;
 
-		  /* set y starting index */
-		  iy = 0;
-		  if (incy < 0)
-		    iy = -(n - 1) * incy;
-
-		  /* copy y_gen to y */
-		  for (j = 0; j < n * incy_gen; j += incy_gen) {
-		    y_genj[0] = y_gen[j];
-		    y_genj[1] = y_gen[1 + j];	/* y_genj = y_gen[j] */
-		    y_ori[iy] = y_genj[0];
-		    y_ori[1 + iy] = y_genj[1];	/* y_ori[ix] = y_genj */
-		    y_comp[iy] = y_genj[0];
-		    y_comp[1 + iy] = y_genj[1];	/* y_comp[ix] = y_genj */
-		    iy += incy;
-		  }
-
+		  ccopy_vector(y_gen, n, 1, y_ori, incy_val);
+		  ccopy_vector(y_gen, n, 1, y_comp, incy_val);
 
 		  /* call BLAS_caxpby_x to get y_comp */
 		  FPU_FIX_STOP;
@@ -3236,25 +2953,9 @@ double do_test_caxpby_x(int n, int ntests, int *seed, double thresh,
 
 		      printf("incx=%d, incy=%d:\n", incx, incy);
 
-		      ix = 0;
-		      iy = 0;
-		      if (incx < 0)
-			ix = -(n - 1) * incx;
-		      if (incy < 0)
-			iy = -(n - 1) * incy;
-
-		      for (j = 0; j < n; j++) {
-			printf("      ");
-			printf("(%16.8e, %16.8e)", x[ix], x[ix + 1]);
-			printf("; ");
-			printf("(%16.8e, %16.8e)", y_ori[iy], y_ori[iy + 1]);
-			printf("; ");
-			printf("(%16.8e, %16.8e)", y_comp[iy],
-			       y_comp[iy + 1]);
-			printf("\n");
-			ix += incx;
-			iy += incy;
-		      }
+		      cprint_vector(x, n, incx_val, "x");
+		      cprint_vector(y_ori, n, incy_val, "y_ori");
+		      cprint_vector(y_comp, n, incy_val, "y_comp");
 
 		      printf("      ");
 		      printf("alpha = ");
@@ -3391,7 +3092,6 @@ double do_test_zaxpby_x(int n, int ntests, int *seed, double thresh,
   /* Variables in the "x_val" form are loop vars for corresponding
      variables */
   int i;			/* iterate through the repeating tests */
-  int j;			/* multipurpose counter */
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy, incx_gen, incy_gen, ygen_val, xgen_val, test_val;
@@ -3414,8 +3114,6 @@ double do_test_zaxpby_x(int n, int ntests, int *seed, double thresh,
   double *y_ori;
   double *y_comp;		/* the y computed  by BLAS_zaxpby_x */
 
-  double x_genj[2];		/* used to store x_gen[j] when copying x_gen[j] -> x[j] */
-  double y_genj[2];		/* used to store y_gen[j] when copying y_gen[j] -> y[j] */
   int ixmax, iymax;
   int ixmax_max, iymax_max;
 
@@ -3598,21 +3296,8 @@ double do_test_zaxpby_x(int n, int ntests, int *seed, double thresh,
 
 		/* setting incx */
 		incx = incx_val;
-		incx *= 2;
 
-		/* set x starting index */
-		ix = 0;
-		if (incx < 0)
-		  ix = -(n - 1) * incx;
-
-		/* copy x_gen to x */
-		for (j = 0; j < n * incx_gen; j += incx_gen) {
-		  x_genj[0] = x_gen[j];
-		  x_genj[1] = x_gen[1 + j];	/* x_genj = x_gen[j] */
-		  x[ix] = x_genj[0];
-		  x[1 + ix] = x_genj[1];	/* x[ix] = x_genj */
-		  ix += incx;
-		}
+		zcopy_vector(x_gen, n, 1, x, incx_val);
 
 		/* varying incy */
 		for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -3623,22 +3308,8 @@ double do_test_zaxpby_x(int n, int ntests, int *seed, double thresh,
 		  incy = incy_val;
 		  incy *= 2;
 
-		  /* set y starting index */
-		  iy = 0;
-		  if (incy < 0)
-		    iy = -(n - 1) * incy;
-
-		  /* copy y_gen to y */
-		  for (j = 0; j < n * incy_gen; j += incy_gen) {
-		    y_genj[0] = y_gen[j];
-		    y_genj[1] = y_gen[1 + j];	/* y_genj = y_gen[j] */
-		    y_ori[iy] = y_genj[0];
-		    y_ori[1 + iy] = y_genj[1];	/* y_ori[ix] = y_genj */
-		    y_comp[iy] = y_genj[0];
-		    y_comp[1 + iy] = y_genj[1];	/* y_comp[ix] = y_genj */
-		    iy += incy;
-		  }
-
+		  zcopy_vector(y_gen, n, 1, y_ori, incy_val);
+		  zcopy_vector(y_gen, n, 1, y_comp, incy_val);
 
 		  /* call BLAS_zaxpby_x to get y_comp */
 		  FPU_FIX_STOP;
@@ -3725,26 +3396,9 @@ double do_test_zaxpby_x(int n, int ntests, int *seed, double thresh,
 
 		      printf("incx=%d, incy=%d:\n", incx, incy);
 
-		      ix = 0;
-		      iy = 0;
-		      if (incx < 0)
-			ix = -(n - 1) * incx;
-		      if (incy < 0)
-			iy = -(n - 1) * incy;
-
-		      for (j = 0; j < n; j++) {
-			printf("      ");
-			printf("(%24.16e, %24.16e)", x[ix], x[ix + 1]);
-			printf("; ");
-			printf("(%24.16e, %24.16e)", y_ori[iy],
-			       y_ori[iy + 1]);
-			printf("; ");
-			printf("(%24.16e, %24.16e)", y_comp[iy],
-			       y_comp[iy + 1]);
-			printf("\n");
-			ix += incx;
-			iy += incy;
-		      }
+		      zprint_vector(x, n, incx_val, "x");
+		      zprint_vector(y_ori, n, incy_val, "y_ori");
+		      zprint_vector(y_comp, n, incy_val, "y_comp");
 
 		      printf("      ");
 		      printf("alpha = ");
@@ -3881,7 +3535,6 @@ double do_test_daxpby_s_x(int n, int ntests, int *seed, double thresh,
   /* Variables in the "x_val" form are loop vars for corresponding
      variables */
   int i;			/* iterate through the repeating tests */
-  int j;			/* multipurpose counter */
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy, incx_gen, incy_gen, ygen_val, xgen_val, test_val;
@@ -3904,8 +3557,6 @@ double do_test_daxpby_s_x(int n, int ntests, int *seed, double thresh,
   double *y_ori;
   double *y_comp;		/* the y computed  by BLAS_daxpby_s_x */
 
-  float x_genj;			/* used to store x_gen[j] when copying x_gen[j] -> x[j] */
-  double y_genj;		/* used to store y_gen[j] when copying y_gen[j] -> y[j] */
   int ixmax, iymax;
   int ixmax_max, iymax_max;
 
@@ -4087,18 +3738,7 @@ double do_test_daxpby_s_x(int n, int ntests, int *seed, double thresh,
 		/* setting incx */
 		incx = incx_val;
 
-
-		/* set x starting index */
-		ix = 0;
-		if (incx < 0)
-		  ix = -(n - 1) * incx;
-
-		/* copy x_gen to x */
-		for (j = 0; j < n * incx_gen; j += incx_gen) {
-		  x_genj = x_gen[j];	/* x_genj = x_gen[j] */
-		  x[ix] = x_genj;	/* x[ix] = x_genj */
-		  ix += incx;
-		}
+		scopy_vector(x_gen, n, 1, x, incx_val);
 
 		/* varying incy */
 		for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -4109,19 +3749,8 @@ double do_test_daxpby_s_x(int n, int ntests, int *seed, double thresh,
 		  incy = incy_val;
 
 
-		  /* set y starting index */
-		  iy = 0;
-		  if (incy < 0)
-		    iy = -(n - 1) * incy;
-
-		  /* copy y_gen to y */
-		  for (j = 0; j < n * incy_gen; j += incy_gen) {
-		    y_genj = y_gen[j];	/* y_genj = y_gen[j] */
-		    y_ori[iy] = y_genj;	/* y_ori[ix] = y_genj */
-		    y_comp[iy] = y_genj;	/* y_comp[ix] = y_genj */
-		    iy += incy;
-		  }
-
+		  dcopy_vector(y_gen, n, 1, y_ori, incy_val);
+		  dcopy_vector(y_gen, n, 1, y_comp, incy_val);
 
 		  /* call BLAS_daxpby_s_x to get y_comp */
 		  FPU_FIX_STOP;
@@ -4210,24 +3839,9 @@ double do_test_daxpby_s_x(int n, int ntests, int *seed, double thresh,
 
 		      printf("incx=%d, incy=%d:\n", incx, incy);
 
-		      ix = 0;
-		      iy = 0;
-		      if (incx < 0)
-			ix = -(n - 1) * incx;
-		      if (incy < 0)
-			iy = -(n - 1) * incy;
-
-		      for (j = 0; j < n; j++) {
-			printf("      ");
-			printf("%16.8e", x[ix]);
-			printf("; ");
-			printf("%24.16e", y_ori[iy]);
-			printf("; ");
-			printf("%24.16e", y_comp[iy]);
-			printf("\n");
-			ix += incx;
-			iy += incy;
-		      }
+		      sprint_vector(x, n, incx_val, "x");
+		      dprint_vector(y_ori, n, incy_val, "y_ori");
+		      dprint_vector(y_comp, n, incy_val, "y_comp");
 
 		      printf("      ");
 		      printf("alpha = ");
@@ -4364,7 +3978,6 @@ double do_test_zaxpby_c_x(int n, int ntests, int *seed, double thresh,
   /* Variables in the "x_val" form are loop vars for corresponding
      variables */
   int i;			/* iterate through the repeating tests */
-  int j;			/* multipurpose counter */
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy, incx_gen, incy_gen, ygen_val, xgen_val, test_val;
@@ -4387,8 +4000,6 @@ double do_test_zaxpby_c_x(int n, int ntests, int *seed, double thresh,
   double *y_ori;
   double *y_comp;		/* the y computed  by BLAS_zaxpby_c_x */
 
-  float x_genj[2];		/* used to store x_gen[j] when copying x_gen[j] -> x[j] */
-  double y_genj[2];		/* used to store y_gen[j] when copying y_gen[j] -> y[j] */
   int ixmax, iymax;
   int ixmax_max, iymax_max;
 
@@ -4572,21 +4183,8 @@ double do_test_zaxpby_c_x(int n, int ntests, int *seed, double thresh,
 
 		/* setting incx */
 		incx = incx_val;
-		incx *= 2;
 
-		/* set x starting index */
-		ix = 0;
-		if (incx < 0)
-		  ix = -(n - 1) * incx;
-
-		/* copy x_gen to x */
-		for (j = 0; j < n * incx_gen; j += incx_gen) {
-		  x_genj[0] = x_gen[j];
-		  x_genj[1] = x_gen[1 + j];	/* x_genj = x_gen[j] */
-		  x[ix] = x_genj[0];
-		  x[1 + ix] = x_genj[1];	/* x[ix] = x_genj */
-		  ix += incx;
-		}
+		ccopy_vector(x_gen, n, 1, x, incx_val);
 
 		/* varying incy */
 		for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -4597,22 +4195,8 @@ double do_test_zaxpby_c_x(int n, int ntests, int *seed, double thresh,
 		  incy = incy_val;
 		  incy *= 2;
 
-		  /* set y starting index */
-		  iy = 0;
-		  if (incy < 0)
-		    iy = -(n - 1) * incy;
-
-		  /* copy y_gen to y */
-		  for (j = 0; j < n * incy_gen; j += incy_gen) {
-		    y_genj[0] = y_gen[j];
-		    y_genj[1] = y_gen[1 + j];	/* y_genj = y_gen[j] */
-		    y_ori[iy] = y_genj[0];
-		    y_ori[1 + iy] = y_genj[1];	/* y_ori[ix] = y_genj */
-		    y_comp[iy] = y_genj[0];
-		    y_comp[1 + iy] = y_genj[1];	/* y_comp[ix] = y_genj */
-		    iy += incy;
-		  }
-
+		  zcopy_vector(y_gen, n, 1, y_ori, incy_val);
+		  zcopy_vector(y_gen, n, 1, y_comp, incy_val);
 
 		  /* call BLAS_zaxpby_c_x to get y_comp */
 		  FPU_FIX_STOP;
@@ -4701,26 +4285,9 @@ double do_test_zaxpby_c_x(int n, int ntests, int *seed, double thresh,
 
 		      printf("incx=%d, incy=%d:\n", incx, incy);
 
-		      ix = 0;
-		      iy = 0;
-		      if (incx < 0)
-			ix = -(n - 1) * incx;
-		      if (incy < 0)
-			iy = -(n - 1) * incy;
-
-		      for (j = 0; j < n; j++) {
-			printf("      ");
-			printf("(%16.8e, %16.8e)", x[ix], x[ix + 1]);
-			printf("; ");
-			printf("(%24.16e, %24.16e)", y_ori[iy],
-			       y_ori[iy + 1]);
-			printf("; ");
-			printf("(%24.16e, %24.16e)", y_comp[iy],
-			       y_comp[iy + 1]);
-			printf("\n");
-			ix += incx;
-			iy += incy;
-		      }
+		      cprint_vector(x, n, incx_val, "x");
+		      zprint_vector(y_ori, n, incy_val, "y_ori");
+		      zprint_vector(y_comp, n, incy_val, "y_comp");
 
 		      printf("      ");
 		      printf("alpha = ");
@@ -4857,7 +4424,6 @@ double do_test_caxpby_s_x(int n, int ntests, int *seed, double thresh,
   /* Variables in the "x_val" form are loop vars for corresponding
      variables */
   int i;			/* iterate through the repeating tests */
-  int j;			/* multipurpose counter */
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy, incx_gen, incy_gen, ygen_val, xgen_val, test_val;
@@ -4880,8 +4446,6 @@ double do_test_caxpby_s_x(int n, int ntests, int *seed, double thresh,
   float *y_ori;
   float *y_comp;		/* the y computed  by BLAS_caxpby_s_x */
 
-  float x_genj;			/* used to store x_gen[j] when copying x_gen[j] -> x[j] */
-  float y_genj[2];		/* used to store y_gen[j] when copying y_gen[j] -> y[j] */
   int ixmax, iymax;
   int ixmax_max, iymax_max;
 
@@ -5066,18 +4630,7 @@ double do_test_caxpby_s_x(int n, int ntests, int *seed, double thresh,
 		/* setting incx */
 		incx = incx_val;
 
-
-		/* set x starting index */
-		ix = 0;
-		if (incx < 0)
-		  ix = -(n - 1) * incx;
-
-		/* copy x_gen to x */
-		for (j = 0; j < n * incx_gen; j += incx_gen) {
-		  x_genj = x_gen[j];	/* x_genj = x_gen[j] */
-		  x[ix] = x_genj;	/* x[ix] = x_genj */
-		  ix += incx;
-		}
+		scopy_vector(x_gen, n, 1, x, incx_val);
 
 		/* varying incy */
 		for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -5088,22 +4641,8 @@ double do_test_caxpby_s_x(int n, int ntests, int *seed, double thresh,
 		  incy = incy_val;
 		  incy *= 2;
 
-		  /* set y starting index */
-		  iy = 0;
-		  if (incy < 0)
-		    iy = -(n - 1) * incy;
-
-		  /* copy y_gen to y */
-		  for (j = 0; j < n * incy_gen; j += incy_gen) {
-		    y_genj[0] = y_gen[j];
-		    y_genj[1] = y_gen[1 + j];	/* y_genj = y_gen[j] */
-		    y_ori[iy] = y_genj[0];
-		    y_ori[1 + iy] = y_genj[1];	/* y_ori[ix] = y_genj */
-		    y_comp[iy] = y_genj[0];
-		    y_comp[1 + iy] = y_genj[1];	/* y_comp[ix] = y_genj */
-		    iy += incy;
-		  }
-
+		  ccopy_vector(y_gen, n, 1, y_ori, incy_val);
+		  ccopy_vector(y_gen, n, 1, y_comp, incy_val);
 
 		  /* call BLAS_caxpby_s_x to get y_comp */
 		  FPU_FIX_STOP;
@@ -5192,25 +4731,9 @@ double do_test_caxpby_s_x(int n, int ntests, int *seed, double thresh,
 
 		      printf("incx=%d, incy=%d:\n", incx, incy);
 
-		      ix = 0;
-		      iy = 0;
-		      if (incx < 0)
-			ix = -(n - 1) * incx;
-		      if (incy < 0)
-			iy = -(n - 1) * incy;
-
-		      for (j = 0; j < n; j++) {
-			printf("      ");
-			printf("%16.8e", x[ix]);
-			printf("; ");
-			printf("(%16.8e, %16.8e)", y_ori[iy], y_ori[iy + 1]);
-			printf("; ");
-			printf("(%16.8e, %16.8e)", y_comp[iy],
-			       y_comp[iy + 1]);
-			printf("\n");
-			ix += incx;
-			iy += incy;
-		      }
+		      sprint_vector(x, n, incx_val, "x");
+		      cprint_vector(y_ori, n, incy_val, "y_ori");
+		      cprint_vector(y_comp, n, incy_val, "y_comp");
 
 		      printf("      ");
 		      printf("alpha = ");
@@ -5347,7 +4870,6 @@ double do_test_zaxpby_d_x(int n, int ntests, int *seed, double thresh,
   /* Variables in the "x_val" form are loop vars for corresponding
      variables */
   int i;			/* iterate through the repeating tests */
-  int j;			/* multipurpose counter */
   int ix, iy;			/* use to index x and y respectively */
   int incx_val, incy_val,	/* for testing different inc values */
     incx, incy, incx_gen, incy_gen, ygen_val, xgen_val, test_val;
@@ -5370,8 +4892,6 @@ double do_test_zaxpby_d_x(int n, int ntests, int *seed, double thresh,
   double *y_ori;
   double *y_comp;		/* the y computed  by BLAS_zaxpby_d_x */
 
-  double x_genj;		/* used to store x_gen[j] when copying x_gen[j] -> x[j] */
-  double y_genj[2];		/* used to store y_gen[j] when copying y_gen[j] -> y[j] */
   int ixmax, iymax;
   int ixmax_max, iymax_max;
 
@@ -5556,18 +5076,7 @@ double do_test_zaxpby_d_x(int n, int ntests, int *seed, double thresh,
 		/* setting incx */
 		incx = incx_val;
 
-
-		/* set x starting index */
-		ix = 0;
-		if (incx < 0)
-		  ix = -(n - 1) * incx;
-
-		/* copy x_gen to x */
-		for (j = 0; j < n * incx_gen; j += incx_gen) {
-		  x_genj = x_gen[j];	/* x_genj = x_gen[j] */
-		  x[ix] = x_genj;	/* x[ix] = x_genj */
-		  ix += incx;
-		}
+		dcopy_vector(x_gen, n, 1, x, incx_val);
 
 		/* varying incy */
 		for (incy_val = -2; incy_val <= 2; incy_val++) {
@@ -5578,22 +5087,8 @@ double do_test_zaxpby_d_x(int n, int ntests, int *seed, double thresh,
 		  incy = incy_val;
 		  incy *= 2;
 
-		  /* set y starting index */
-		  iy = 0;
-		  if (incy < 0)
-		    iy = -(n - 1) * incy;
-
-		  /* copy y_gen to y */
-		  for (j = 0; j < n * incy_gen; j += incy_gen) {
-		    y_genj[0] = y_gen[j];
-		    y_genj[1] = y_gen[1 + j];	/* y_genj = y_gen[j] */
-		    y_ori[iy] = y_genj[0];
-		    y_ori[1 + iy] = y_genj[1];	/* y_ori[ix] = y_genj */
-		    y_comp[iy] = y_genj[0];
-		    y_comp[1 + iy] = y_genj[1];	/* y_comp[ix] = y_genj */
-		    iy += incy;
-		  }
-
+		  zcopy_vector(y_gen, n, 1, y_ori, incy_val);
+		  zcopy_vector(y_gen, n, 1, y_comp, incy_val);
 
 		  /* call BLAS_zaxpby_d_x to get y_comp */
 		  FPU_FIX_STOP;
@@ -5682,26 +5177,9 @@ double do_test_zaxpby_d_x(int n, int ntests, int *seed, double thresh,
 
 		      printf("incx=%d, incy=%d:\n", incx, incy);
 
-		      ix = 0;
-		      iy = 0;
-		      if (incx < 0)
-			ix = -(n - 1) * incx;
-		      if (incy < 0)
-			iy = -(n - 1) * incy;
-
-		      for (j = 0; j < n; j++) {
-			printf("      ");
-			printf("%24.16e", x[ix]);
-			printf("; ");
-			printf("(%24.16e, %24.16e)", y_ori[iy],
-			       y_ori[iy + 1]);
-			printf("; ");
-			printf("(%24.16e, %24.16e)", y_comp[iy],
-			       y_comp[iy + 1]);
-			printf("\n");
-			ix += incx;
-			iy += incy;
-		      }
+		      dprint_vector(x, n, incx_val, "x");
+		      zprint_vector(y_ori, n, incy_val, "y_ori");
+		      zprint_vector(y_comp, n, incy_val, "y_comp");
 
 		      printf("      ");
 		      printf("alpha = ");
@@ -5820,10 +5298,9 @@ int main(int argc, char **argv)
   fname = "BLAS_daxpby_s";
   printf("Testing %s...\n", fname);
   for (n = 0; n <= nsizes; n++) {
-
-    total_max_ratio = do_test_daxpby_s(n, ntests, &seed, thresh, debug,
-				       &total_min_ratio, &num_bad_ratio,
-				       &num_tests);
+    total_max_ratio =
+      do_test_daxpby_s(n, ntests, &seed, thresh, debug, &total_min_ratio,
+		       &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -5842,8 +5319,8 @@ int main(int argc, char **argv)
   }
   nr_routines++;
 
-  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
-	 fname, total_bad_ratios, total_tests, max_ratio);
+  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n", fname,
+	 total_bad_ratios, total_tests, max_ratio);
 
   min_ratio = 1e308;
   max_ratio = 0.0;
@@ -5852,10 +5329,9 @@ int main(int argc, char **argv)
   fname = "BLAS_caxpby_s";
   printf("Testing %s...\n", fname);
   for (n = 0; n <= nsizes; n++) {
-
-    total_max_ratio = do_test_caxpby_s(n, ntests, &seed, thresh, debug,
-				       &total_min_ratio, &num_bad_ratio,
-				       &num_tests);
+    total_max_ratio =
+      do_test_caxpby_s(n, ntests, &seed, thresh, debug, &total_min_ratio,
+		       &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -5874,8 +5350,8 @@ int main(int argc, char **argv)
   }
   nr_routines++;
 
-  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
-	 fname, total_bad_ratios, total_tests, max_ratio);
+  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n", fname,
+	 total_bad_ratios, total_tests, max_ratio);
 
   min_ratio = 1e308;
   max_ratio = 0.0;
@@ -5884,10 +5360,9 @@ int main(int argc, char **argv)
   fname = "BLAS_zaxpby_c";
   printf("Testing %s...\n", fname);
   for (n = 0; n <= nsizes; n++) {
-
-    total_max_ratio = do_test_zaxpby_c(n, ntests, &seed, thresh, debug,
-				       &total_min_ratio, &num_bad_ratio,
-				       &num_tests);
+    total_max_ratio =
+      do_test_zaxpby_c(n, ntests, &seed, thresh, debug, &total_min_ratio,
+		       &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -5906,8 +5381,8 @@ int main(int argc, char **argv)
   }
   nr_routines++;
 
-  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
-	 fname, total_bad_ratios, total_tests, max_ratio);
+  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n", fname,
+	 total_bad_ratios, total_tests, max_ratio);
 
   min_ratio = 1e308;
   max_ratio = 0.0;
@@ -5916,10 +5391,9 @@ int main(int argc, char **argv)
   fname = "BLAS_zaxpby_d";
   printf("Testing %s...\n", fname);
   for (n = 0; n <= nsizes; n++) {
-
-    total_max_ratio = do_test_zaxpby_d(n, ntests, &seed, thresh, debug,
-				       &total_min_ratio, &num_bad_ratio,
-				       &num_tests);
+    total_max_ratio =
+      do_test_zaxpby_d(n, ntests, &seed, thresh, debug, &total_min_ratio,
+		       &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -5938,8 +5412,8 @@ int main(int argc, char **argv)
   }
   nr_routines++;
 
-  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
-	 fname, total_bad_ratios, total_tests, max_ratio);
+  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n", fname,
+	 total_bad_ratios, total_tests, max_ratio);
 
   min_ratio = 1e308;
   max_ratio = 0.0;
@@ -5948,10 +5422,9 @@ int main(int argc, char **argv)
   fname = "BLAS_saxpby_x";
   printf("Testing %s...\n", fname);
   for (n = 0; n <= nsizes; n++) {
-
-    total_max_ratio = do_test_saxpby_x(n, ntests, &seed, thresh, debug,
-				       &total_min_ratio, &num_bad_ratio,
-				       &num_tests);
+    total_max_ratio =
+      do_test_saxpby_x(n, ntests, &seed, thresh, debug, &total_min_ratio,
+		       &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -5970,8 +5443,8 @@ int main(int argc, char **argv)
   }
   nr_routines++;
 
-  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
-	 fname, total_bad_ratios, total_tests, max_ratio);
+  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n", fname,
+	 total_bad_ratios, total_tests, max_ratio);
 
   min_ratio = 1e308;
   max_ratio = 0.0;
@@ -5980,10 +5453,9 @@ int main(int argc, char **argv)
   fname = "BLAS_daxpby_x";
   printf("Testing %s...\n", fname);
   for (n = 0; n <= nsizes; n++) {
-
-    total_max_ratio = do_test_daxpby_x(n, ntests, &seed, thresh, debug,
-				       &total_min_ratio, &num_bad_ratio,
-				       &num_tests);
+    total_max_ratio =
+      do_test_daxpby_x(n, ntests, &seed, thresh, debug, &total_min_ratio,
+		       &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -6002,8 +5474,8 @@ int main(int argc, char **argv)
   }
   nr_routines++;
 
-  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
-	 fname, total_bad_ratios, total_tests, max_ratio);
+  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n", fname,
+	 total_bad_ratios, total_tests, max_ratio);
 
   min_ratio = 1e308;
   max_ratio = 0.0;
@@ -6012,10 +5484,9 @@ int main(int argc, char **argv)
   fname = "BLAS_caxpby_x";
   printf("Testing %s...\n", fname);
   for (n = 0; n <= nsizes; n++) {
-
-    total_max_ratio = do_test_caxpby_x(n, ntests, &seed, thresh, debug,
-				       &total_min_ratio, &num_bad_ratio,
-				       &num_tests);
+    total_max_ratio =
+      do_test_caxpby_x(n, ntests, &seed, thresh, debug, &total_min_ratio,
+		       &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -6034,8 +5505,8 @@ int main(int argc, char **argv)
   }
   nr_routines++;
 
-  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
-	 fname, total_bad_ratios, total_tests, max_ratio);
+  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n", fname,
+	 total_bad_ratios, total_tests, max_ratio);
 
   min_ratio = 1e308;
   max_ratio = 0.0;
@@ -6044,10 +5515,9 @@ int main(int argc, char **argv)
   fname = "BLAS_zaxpby_x";
   printf("Testing %s...\n", fname);
   for (n = 0; n <= nsizes; n++) {
-
-    total_max_ratio = do_test_zaxpby_x(n, ntests, &seed, thresh, debug,
-				       &total_min_ratio, &num_bad_ratio,
-				       &num_tests);
+    total_max_ratio =
+      do_test_zaxpby_x(n, ntests, &seed, thresh, debug, &total_min_ratio,
+		       &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -6066,8 +5536,8 @@ int main(int argc, char **argv)
   }
   nr_routines++;
 
-  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
-	 fname, total_bad_ratios, total_tests, max_ratio);
+  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n", fname,
+	 total_bad_ratios, total_tests, max_ratio);
 
   min_ratio = 1e308;
   max_ratio = 0.0;
@@ -6076,10 +5546,9 @@ int main(int argc, char **argv)
   fname = "BLAS_daxpby_s_x";
   printf("Testing %s...\n", fname);
   for (n = 0; n <= nsizes; n++) {
-
-    total_max_ratio = do_test_daxpby_s_x(n, ntests, &seed, thresh, debug,
-					 &total_min_ratio, &num_bad_ratio,
-					 &num_tests);
+    total_max_ratio =
+      do_test_daxpby_s_x(n, ntests, &seed, thresh, debug, &total_min_ratio,
+			 &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -6098,8 +5567,8 @@ int main(int argc, char **argv)
   }
   nr_routines++;
 
-  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
-	 fname, total_bad_ratios, total_tests, max_ratio);
+  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n", fname,
+	 total_bad_ratios, total_tests, max_ratio);
 
   min_ratio = 1e308;
   max_ratio = 0.0;
@@ -6108,10 +5577,9 @@ int main(int argc, char **argv)
   fname = "BLAS_zaxpby_c_x";
   printf("Testing %s...\n", fname);
   for (n = 0; n <= nsizes; n++) {
-
-    total_max_ratio = do_test_zaxpby_c_x(n, ntests, &seed, thresh, debug,
-					 &total_min_ratio, &num_bad_ratio,
-					 &num_tests);
+    total_max_ratio =
+      do_test_zaxpby_c_x(n, ntests, &seed, thresh, debug, &total_min_ratio,
+			 &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -6130,8 +5598,8 @@ int main(int argc, char **argv)
   }
   nr_routines++;
 
-  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
-	 fname, total_bad_ratios, total_tests, max_ratio);
+  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n", fname,
+	 total_bad_ratios, total_tests, max_ratio);
 
   min_ratio = 1e308;
   max_ratio = 0.0;
@@ -6140,10 +5608,9 @@ int main(int argc, char **argv)
   fname = "BLAS_caxpby_s_x";
   printf("Testing %s...\n", fname);
   for (n = 0; n <= nsizes; n++) {
-
-    total_max_ratio = do_test_caxpby_s_x(n, ntests, &seed, thresh, debug,
-					 &total_min_ratio, &num_bad_ratio,
-					 &num_tests);
+    total_max_ratio =
+      do_test_caxpby_s_x(n, ntests, &seed, thresh, debug, &total_min_ratio,
+			 &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -6162,8 +5629,8 @@ int main(int argc, char **argv)
   }
   nr_routines++;
 
-  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
-	 fname, total_bad_ratios, total_tests, max_ratio);
+  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n", fname,
+	 total_bad_ratios, total_tests, max_ratio);
 
   min_ratio = 1e308;
   max_ratio = 0.0;
@@ -6172,10 +5639,9 @@ int main(int argc, char **argv)
   fname = "BLAS_zaxpby_d_x";
   printf("Testing %s...\n", fname);
   for (n = 0; n <= nsizes; n++) {
-
-    total_max_ratio = do_test_zaxpby_d_x(n, ntests, &seed, thresh, debug,
-					 &total_min_ratio, &num_bad_ratio,
-					 &num_tests);
+    total_max_ratio =
+      do_test_zaxpby_d_x(n, ntests, &seed, thresh, debug, &total_min_ratio,
+			 &num_bad_ratio, &num_tests);
     if (total_max_ratio > max_ratio)
       max_ratio = total_max_ratio;
 
@@ -6194,8 +5660,8 @@ int main(int argc, char **argv)
   }
   nr_routines++;
 
-  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n",
-	 fname, total_bad_ratios, total_tests, max_ratio);
+  printf("%-24s: bad/total = %d/%d, max_ratio = %.2e\n\n", fname,
+	 total_bad_ratios, total_tests, max_ratio);
 
 
 
