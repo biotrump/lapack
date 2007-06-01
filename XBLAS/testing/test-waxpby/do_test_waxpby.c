@@ -334,9 +334,8 @@ double do_test_dwaxpby_d_s(int n,
 	      incw = incw_val;
 
 
-	      /* For the sake of speed, we throw out this case
-	         at random */
-	      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+	      /* For the sake of speed, we throw out this case at random */
+	      if (xrand(seed) >= test_prob)
 		continue;
 
 	      /* call BLAS_dwaxpby_d_s to get w */
@@ -829,9 +828,8 @@ double do_test_dwaxpby_s_d(int n,
 	      incw = incw_val;
 
 
-	      /* For the sake of speed, we throw out this case
-	         at random */
-	      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+	      /* For the sake of speed, we throw out this case at random */
+	      if (xrand(seed) >= test_prob)
 		continue;
 
 	      /* call BLAS_dwaxpby_s_d to get w */
@@ -1324,9 +1322,8 @@ double do_test_dwaxpby_s_s(int n,
 	      incw = incw_val;
 
 
-	      /* For the sake of speed, we throw out this case
-	         at random */
-	      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+	      /* For the sake of speed, we throw out this case at random */
+	      if (xrand(seed) >= test_prob)
 		continue;
 
 	      /* call BLAS_dwaxpby_s_s to get w */
@@ -1847,9 +1844,8 @@ double do_test_zwaxpby_z_c(int n,
 	      incw = incw_val;
 	      incw *= 2;
 
-	      /* For the sake of speed, we throw out this case
-	         at random */
-	      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+	      /* For the sake of speed, we throw out this case at random */
+	      if (xrand(seed) >= test_prob)
 		continue;
 
 	      /* call BLAS_zwaxpby_z_c to get w */
@@ -2359,9 +2355,8 @@ double do_test_zwaxpby_c_z(int n,
 	      incw = incw_val;
 	      incw *= 2;
 
-	      /* For the sake of speed, we throw out this case
-	         at random */
-	      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+	      /* For the sake of speed, we throw out this case at random */
+	      if (xrand(seed) >= test_prob)
 		continue;
 
 	      /* call BLAS_zwaxpby_c_z to get w */
@@ -2871,9 +2866,8 @@ double do_test_zwaxpby_c_c(int n,
 	      incw = incw_val;
 	      incw *= 2;
 
-	      /* For the sake of speed, we throw out this case
-	         at random */
-	      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+	      /* For the sake of speed, we throw out this case at random */
+	      if (xrand(seed) >= test_prob)
 		continue;
 
 	      /* call BLAS_zwaxpby_c_c to get w */
@@ -3411,9 +3405,8 @@ double do_test_cwaxpby_c_s(int n,
 	      incw = incw_val;
 	      incw *= 2;
 
-	      /* For the sake of speed, we throw out this case
-	         at random */
-	      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+	      /* For the sake of speed, we throw out this case at random */
+	      if (xrand(seed) >= test_prob)
 		continue;
 
 	      /* call BLAS_cwaxpby_c_s to get w */
@@ -3934,9 +3927,8 @@ double do_test_cwaxpby_s_c(int n,
 	      incw = incw_val;
 	      incw *= 2;
 
-	      /* For the sake of speed, we throw out this case
-	         at random */
-	      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+	      /* For the sake of speed, we throw out this case at random */
+	      if (xrand(seed) >= test_prob)
 		continue;
 
 	      /* call BLAS_cwaxpby_s_c to get w */
@@ -4449,9 +4441,8 @@ double do_test_cwaxpby_s_s(int n,
 	      incw = incw_val;
 	      incw *= 2;
 
-	      /* For the sake of speed, we throw out this case
-	         at random */
-	      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+	      /* For the sake of speed, we throw out this case at random */
+	      if (xrand(seed) >= test_prob)
 		continue;
 
 	      /* call BLAS_cwaxpby_s_s to get w */
@@ -4970,9 +4961,8 @@ double do_test_zwaxpby_z_d(int n,
 	      incw = incw_val;
 	      incw *= 2;
 
-	      /* For the sake of speed, we throw out this case
-	         at random */
-	      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+	      /* For the sake of speed, we throw out this case at random */
+	      if (xrand(seed) >= test_prob)
 		continue;
 
 	      /* call BLAS_zwaxpby_z_d to get w */
@@ -5477,9 +5467,8 @@ double do_test_zwaxpby_d_z(int n,
 	      incw = incw_val;
 	      incw *= 2;
 
-	      /* For the sake of speed, we throw out this case
-	         at random */
-	      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+	      /* For the sake of speed, we throw out this case at random */
+	      if (xrand(seed) >= test_prob)
 		continue;
 
 	      /* call BLAS_zwaxpby_d_z to get w */
@@ -5979,9 +5968,8 @@ double do_test_zwaxpby_d_d(int n,
 	      incw = incw_val;
 	      incw *= 2;
 
-	      /* For the sake of speed, we throw out this case
-	         at random */
-	      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+	      /* For the sake of speed, we throw out this case at random */
+	      if (xrand(seed) >= test_prob)
 		continue;
 
 	      /* call BLAS_zwaxpby_d_d to get w */
@@ -6503,9 +6491,8 @@ double do_test_swaxpby_x(int n,
 		incw = incw_val;
 
 
-		/* For the sake of speed, we throw out this case
-		   at random */
-		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		/* For the sake of speed, we throw out this case at random */
+		if (xrand(seed) >= test_prob)
 		  continue;
 
 		/* call BLAS_swaxpby_x to get w */
@@ -7013,9 +7000,8 @@ double do_test_dwaxpby_x(int n,
 		incw = incw_val;
 
 
-		/* For the sake of speed, we throw out this case
-		   at random */
-		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		/* For the sake of speed, we throw out this case at random */
+		if (xrand(seed) >= test_prob)
 		  continue;
 
 		/* call BLAS_dwaxpby_x to get w */
@@ -7531,9 +7517,8 @@ double do_test_cwaxpby_x(int n,
 		incw = incw_val;
 		incw *= 2;
 
-		/* For the sake of speed, we throw out this case
-		   at random */
-		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		/* For the sake of speed, we throw out this case at random */
+		if (xrand(seed) >= test_prob)
 		  continue;
 
 		/* call BLAS_cwaxpby_x to get w */
@@ -8049,9 +8034,8 @@ double do_test_zwaxpby_x(int n,
 		incw = incw_val;
 		incw *= 2;
 
-		/* For the sake of speed, we throw out this case
-		   at random */
-		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		/* For the sake of speed, we throw out this case at random */
+		if (xrand(seed) >= test_prob)
 		  continue;
 
 		/* call BLAS_zwaxpby_x to get w */
@@ -8563,9 +8547,8 @@ double do_test_dwaxpby_d_s_x(int n,
 		incw = incw_val;
 
 
-		/* For the sake of speed, we throw out this case
-		   at random */
-		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		/* For the sake of speed, we throw out this case at random */
+		if (xrand(seed) >= test_prob)
 		  continue;
 
 		/* call BLAS_dwaxpby_d_s_x to get w */
@@ -9078,9 +9061,8 @@ double do_test_dwaxpby_s_d_x(int n,
 		incw = incw_val;
 
 
-		/* For the sake of speed, we throw out this case
-		   at random */
-		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		/* For the sake of speed, we throw out this case at random */
+		if (xrand(seed) >= test_prob)
 		  continue;
 
 		/* call BLAS_dwaxpby_s_d_x to get w */
@@ -9593,9 +9575,8 @@ double do_test_dwaxpby_s_s_x(int n,
 		incw = incw_val;
 
 
-		/* For the sake of speed, we throw out this case
-		   at random */
-		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		/* For the sake of speed, we throw out this case at random */
+		if (xrand(seed) >= test_prob)
 		  continue;
 
 		/* call BLAS_dwaxpby_s_s_x to get w */
@@ -10135,9 +10116,8 @@ double do_test_zwaxpby_z_c_x(int n,
 		incw = incw_val;
 		incw *= 2;
 
-		/* For the sake of speed, we throw out this case
-		   at random */
-		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		/* For the sake of speed, we throw out this case at random */
+		if (xrand(seed) >= test_prob)
 		  continue;
 
 		/* call BLAS_zwaxpby_z_c_x to get w */
@@ -10667,9 +10647,8 @@ double do_test_zwaxpby_c_z_x(int n,
 		incw = incw_val;
 		incw *= 2;
 
-		/* For the sake of speed, we throw out this case
-		   at random */
-		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		/* For the sake of speed, we throw out this case at random */
+		if (xrand(seed) >= test_prob)
 		  continue;
 
 		/* call BLAS_zwaxpby_c_z_x to get w */
@@ -11199,9 +11178,8 @@ double do_test_zwaxpby_c_c_x(int n,
 		incw = incw_val;
 		incw *= 2;
 
-		/* For the sake of speed, we throw out this case
-		   at random */
-		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		/* For the sake of speed, we throw out this case at random */
+		if (xrand(seed) >= test_prob)
 		  continue;
 
 		/* call BLAS_zwaxpby_c_c_x to get w */
@@ -11758,9 +11736,8 @@ double do_test_cwaxpby_c_s_x(int n,
 		incw = incw_val;
 		incw *= 2;
 
-		/* For the sake of speed, we throw out this case
-		   at random */
-		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		/* For the sake of speed, we throw out this case at random */
+		if (xrand(seed) >= test_prob)
 		  continue;
 
 		/* call BLAS_cwaxpby_c_s_x to get w */
@@ -12301,9 +12278,8 @@ double do_test_cwaxpby_s_c_x(int n,
 		incw = incw_val;
 		incw *= 2;
 
-		/* For the sake of speed, we throw out this case
-		   at random */
-		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		/* For the sake of speed, we throw out this case at random */
+		if (xrand(seed) >= test_prob)
 		  continue;
 
 		/* call BLAS_cwaxpby_s_c_x to get w */
@@ -12836,9 +12812,8 @@ double do_test_cwaxpby_s_s_x(int n,
 		incw = incw_val;
 		incw *= 2;
 
-		/* For the sake of speed, we throw out this case
-		   at random */
-		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		/* For the sake of speed, we throw out this case at random */
+		if (xrand(seed) >= test_prob)
 		  continue;
 
 		/* call BLAS_cwaxpby_s_s_x to get w */
@@ -13376,9 +13351,8 @@ double do_test_zwaxpby_z_d_x(int n,
 		incw = incw_val;
 		incw *= 2;
 
-		/* For the sake of speed, we throw out this case
-		   at random */
-		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		/* For the sake of speed, we throw out this case at random */
+		if (xrand(seed) >= test_prob)
 		  continue;
 
 		/* call BLAS_zwaxpby_z_d_x to get w */
@@ -13903,9 +13877,8 @@ double do_test_zwaxpby_d_z_x(int n,
 		incw = incw_val;
 		incw *= 2;
 
-		/* For the sake of speed, we throw out this case
-		   at random */
-		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		/* For the sake of speed, we throw out this case at random */
+		if (xrand(seed) >= test_prob)
 		  continue;
 
 		/* call BLAS_zwaxpby_d_z_x to get w */
@@ -14425,9 +14398,8 @@ double do_test_zwaxpby_d_d_x(int n,
 		incw = incw_val;
 		incw *= 2;
 
-		/* For the sake of speed, we throw out this case
-		   at random */
-		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		/* For the sake of speed, we throw out this case at random */
+		if (xrand(seed) >= test_prob)
 		  continue;
 
 		/* call BLAS_zwaxpby_d_d_x to get w */

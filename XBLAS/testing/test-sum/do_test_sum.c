@@ -157,9 +157,8 @@ void do_test_ssum_x(int n, int ntests, int *seed, double thresh,
 
 	for (i = 0; i < ntests; i++) {
 
-	  /* For the sake of speed, we throw out this case
-	     at random */
-	  if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+	  /* For the sake of speed, we throw out this case at random */
+	  if (xrand(seed) >= test_prob)
 	    continue;
 
 	  saved_seed = *seed;
@@ -403,9 +402,8 @@ void do_test_dsum_x(int n, int ntests, int *seed, double thresh,
 
 	for (i = 0; i < ntests; i++) {
 
-	  /* For the sake of speed, we throw out this case
-	     at random */
-	  if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+	  /* For the sake of speed, we throw out this case at random */
+	  if (xrand(seed) >= test_prob)
 	    continue;
 
 	  saved_seed = *seed;
@@ -649,9 +647,8 @@ void do_test_csum_x(int n, int ntests, int *seed, double thresh,
 
 	for (i = 0; i < ntests; i++) {
 
-	  /* For the sake of speed, we throw out this case
-	     at random */
-	  if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+	  /* For the sake of speed, we throw out this case at random */
+	  if (xrand(seed) >= test_prob)
 	    continue;
 
 	  saved_seed = *seed;
@@ -899,9 +896,8 @@ void do_test_zsum_x(int n, int ntests, int *seed, double thresh,
 
 	for (i = 0; i < ntests; i++) {
 
-	  /* For the sake of speed, we throw out this case
-	     at random */
-	  if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+	  /* For the sake of speed, we throw out this case at random */
+	  if (xrand(seed) >= test_prob)
 	    continue;
 
 	  saved_seed = *seed;

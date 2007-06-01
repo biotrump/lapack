@@ -270,10 +270,8 @@ void do_test_zhemm_z_c(int m, int n,
 		      for (randomize_val = RANDOMIZE_START;
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-			/* For the sake of speed, we throw out this case
-			   at random */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    test_prob)
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
 
 			saved_seed = *seed;
@@ -708,10 +706,8 @@ void do_test_zhemm_c_z(int m, int n,
 		      for (randomize_val = RANDOMIZE_START;
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-			/* For the sake of speed, we throw out this case
-			   at random */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    test_prob)
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
 
 			saved_seed = *seed;
@@ -1146,10 +1142,8 @@ void do_test_zhemm_c_c(int m, int n,
 		      for (randomize_val = RANDOMIZE_START;
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-			/* For the sake of speed, we throw out this case
-			   at random */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    test_prob)
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
 
 			saved_seed = *seed;
@@ -1584,10 +1578,8 @@ void do_test_chemm_c_s(int m, int n,
 		      for (randomize_val = RANDOMIZE_START;
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-			/* For the sake of speed, we throw out this case
-			   at random */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    test_prob)
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
 
 			saved_seed = *seed;
@@ -2022,10 +2014,8 @@ void do_test_zhemm_z_d(int m, int n,
 		      for (randomize_val = RANDOMIZE_START;
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-			/* For the sake of speed, we throw out this case
-			   at random */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    test_prob)
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
 
 			saved_seed = *seed;
@@ -2480,10 +2470,8 @@ void do_test_chemm_x(int m, int n,
 			     randomize_val <= RANDOMIZE_END;
 			     randomize_val++) {
 
-			  /* For the sake of speed, we throw out this case
-			     at random */
-			  if (((float) rand()) / ((float) RAND_MAX) >=
-			      test_prob)
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
 
 			  saved_seed = *seed;
@@ -2942,10 +2930,8 @@ void do_test_zhemm_x(int m, int n,
 			     randomize_val <= RANDOMIZE_END;
 			     randomize_val++) {
 
-			  /* For the sake of speed, we throw out this case
-			     at random */
-			  if (((float) rand()) / ((float) RAND_MAX) >=
-			      test_prob)
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
 
 			  saved_seed = *seed;
@@ -3406,10 +3392,8 @@ void do_test_zhemm_z_c_x(int m, int n,
 			     randomize_val <= RANDOMIZE_END;
 			     randomize_val++) {
 
-			  /* For the sake of speed, we throw out this case
-			     at random */
-			  if (((float) rand()) / ((float) RAND_MAX) >=
-			      test_prob)
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
 
 			  saved_seed = *seed;
@@ -3870,10 +3854,8 @@ void do_test_zhemm_c_z_x(int m, int n,
 			     randomize_val <= RANDOMIZE_END;
 			     randomize_val++) {
 
-			  /* For the sake of speed, we throw out this case
-			     at random */
-			  if (((float) rand()) / ((float) RAND_MAX) >=
-			      test_prob)
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
 
 			  saved_seed = *seed;
@@ -4334,10 +4316,8 @@ void do_test_zhemm_c_c_x(int m, int n,
 			     randomize_val <= RANDOMIZE_END;
 			     randomize_val++) {
 
-			  /* For the sake of speed, we throw out this case
-			     at random */
-			  if (((float) rand()) / ((float) RAND_MAX) >=
-			      test_prob)
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
 
 			  saved_seed = *seed;
@@ -4798,10 +4778,8 @@ void do_test_chemm_c_s_x(int m, int n,
 			     randomize_val <= RANDOMIZE_END;
 			     randomize_val++) {
 
-			  /* For the sake of speed, we throw out this case
-			     at random */
-			  if (((float) rand()) / ((float) RAND_MAX) >=
-			      test_prob)
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
 
 			  saved_seed = *seed;
@@ -5261,10 +5239,8 @@ void do_test_zhemm_z_d_x(int m, int n,
 			     randomize_val <= RANDOMIZE_END;
 			     randomize_val++) {
 
-			  /* For the sake of speed, we throw out this case
-			     at random */
-			  if (((float) rand()) / ((float) RAND_MAX) >=
-			      test_prob)
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
 
 			  saved_seed = *seed;

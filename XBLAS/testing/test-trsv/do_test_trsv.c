@@ -292,9 +292,8 @@ double do_test_dtrsv_s(int n,
 		      break;
 		    }
 
-		    /* For the sake of speed, we throw out this case
-		       at random */
-		    if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		    /* For the sake of speed, we throw out this case at random */
+		    if (xrand(seed) >= test_prob)
 		      continue;
 
 		    for (row = 0; row < n; row++) {
@@ -860,9 +859,8 @@ double do_test_ztrsv_c(int n,
 		      break;
 		    }
 
-		    /* For the sake of speed, we throw out this case
-		       at random */
-		    if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		    /* For the sake of speed, we throw out this case at random */
+		    if (xrand(seed) >= test_prob)
 		      continue;
 
 		    for (row = 0; row < n; row++) {
@@ -1461,9 +1459,8 @@ double do_test_ctrsv_s(int n,
 		      break;
 		    }
 
-		    /* For the sake of speed, we throw out this case
-		       at random */
-		    if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		    /* For the sake of speed, we throw out this case at random */
+		    if (xrand(seed) >= test_prob)
 		      continue;
 
 		    for (row = 0; row < n; row++) {
@@ -2060,9 +2057,8 @@ double do_test_ztrsv_d(int n,
 		      break;
 		    }
 
-		    /* For the sake of speed, we throw out this case
-		       at random */
-		    if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		    /* For the sake of speed, we throw out this case at random */
+		    if (xrand(seed) >= test_prob)
 		      continue;
 
 		    for (row = 0; row < n; row++) {
@@ -2677,9 +2673,8 @@ double do_test_strsv_x(int n,
 			break;
 		      }
 
-		      /* For the sake of speed, we throw out this case
-		         at random */
-		      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
 
 		      for (row = 0; row < n; row++) {
@@ -3264,9 +3259,8 @@ double do_test_dtrsv_x(int n,
 			break;
 		      }
 
-		      /* For the sake of speed, we throw out this case
-		         at random */
-		      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
 
 		      for (row = 0; row < n; row++) {
@@ -3852,9 +3846,8 @@ double do_test_dtrsv_s_x(int n,
 			break;
 		      }
 
-		      /* For the sake of speed, we throw out this case
-		         at random */
-		      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
 
 		      for (row = 0; row < n; row++) {
@@ -4441,9 +4434,8 @@ double do_test_ctrsv_x(int n,
 			break;
 		      }
 
-		      /* For the sake of speed, we throw out this case
-		         at random */
-		      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
 
 		      for (row = 0; row < n; row++) {
@@ -5063,9 +5055,8 @@ double do_test_ztrsv_x(int n,
 			break;
 		      }
 
-		      /* For the sake of speed, we throw out this case
-		         at random */
-		      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
 
 		      for (row = 0; row < n; row++) {
@@ -5688,9 +5679,8 @@ double do_test_ztrsv_c_x(int n,
 			break;
 		      }
 
-		      /* For the sake of speed, we throw out this case
-		         at random */
-		      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
 
 		      for (row = 0; row < n; row++) {
@@ -6313,9 +6303,8 @@ double do_test_ctrsv_s_x(int n,
 			break;
 		      }
 
-		      /* For the sake of speed, we throw out this case
-		         at random */
-		      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
 
 		      for (row = 0; row < n; row++) {
@@ -6935,9 +6924,8 @@ double do_test_ztrsv_d_x(int n,
 			break;
 		      }
 
-		      /* For the sake of speed, we throw out this case
-		         at random */
-		      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
 
 		      for (row = 0; row < n; row++) {

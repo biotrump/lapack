@@ -286,10 +286,8 @@ void do_test_dsymm_d_s
 		      for (randomize_val = RANDOMIZE_START;
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-			/* For the sake of speed, we throw out this case
-			   at random */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    test_prob)
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
 
 			saved_seed = *seed;
@@ -709,10 +707,8 @@ void do_test_dsymm_s_d
 		      for (randomize_val = RANDOMIZE_START;
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-			/* For the sake of speed, we throw out this case
-			   at random */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    test_prob)
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
 
 			saved_seed = *seed;
@@ -1132,10 +1128,8 @@ void do_test_dsymm_s_s
 		      for (randomize_val = RANDOMIZE_START;
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-			/* For the sake of speed, we throw out this case
-			   at random */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    test_prob)
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
 
 			saved_seed = *seed;
@@ -1558,10 +1552,8 @@ void do_test_zsymm_z_c
 		      for (randomize_val = RANDOMIZE_START;
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-			/* For the sake of speed, we throw out this case
-			   at random */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    test_prob)
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
 
 			saved_seed = *seed;
@@ -1988,10 +1980,8 @@ void do_test_zsymm_c_z
 		      for (randomize_val = RANDOMIZE_START;
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-			/* For the sake of speed, we throw out this case
-			   at random */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    test_prob)
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
 
 			saved_seed = *seed;
@@ -2418,10 +2408,8 @@ void do_test_zsymm_c_c
 		      for (randomize_val = RANDOMIZE_START;
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-			/* For the sake of speed, we throw out this case
-			   at random */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    test_prob)
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
 
 			saved_seed = *seed;
@@ -2848,10 +2836,8 @@ void do_test_csymm_c_s
 		      for (randomize_val = RANDOMIZE_START;
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-			/* For the sake of speed, we throw out this case
-			   at random */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    test_prob)
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
 
 			saved_seed = *seed;
@@ -3278,10 +3264,8 @@ void do_test_csymm_s_c
 		      for (randomize_val = RANDOMIZE_START;
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-			/* For the sake of speed, we throw out this case
-			   at random */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    test_prob)
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
 
 			saved_seed = *seed;
@@ -3708,10 +3692,8 @@ void do_test_csymm_s_s
 		      for (randomize_val = RANDOMIZE_START;
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-			/* For the sake of speed, we throw out this case
-			   at random */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    test_prob)
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
 
 			saved_seed = *seed;
@@ -4138,10 +4120,8 @@ void do_test_zsymm_z_d
 		      for (randomize_val = RANDOMIZE_START;
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-			/* For the sake of speed, we throw out this case
-			   at random */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    test_prob)
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
 
 			saved_seed = *seed;
@@ -4568,10 +4548,8 @@ void do_test_zsymm_d_z
 		      for (randomize_val = RANDOMIZE_START;
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-			/* For the sake of speed, we throw out this case
-			   at random */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    test_prob)
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
 
 			saved_seed = *seed;
@@ -4998,10 +4976,8 @@ void do_test_zsymm_d_d
 		      for (randomize_val = RANDOMIZE_START;
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-			/* For the sake of speed, we throw out this case
-			   at random */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    test_prob)
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
 
 			saved_seed = *seed;
@@ -5445,10 +5421,8 @@ void do_test_ssymm_x
 			     randomize_val <= RANDOMIZE_END;
 			     randomize_val++) {
 
-			  /* For the sake of speed, we throw out this case
-			     at random */
-			  if (((float) rand()) / ((float) RAND_MAX) >=
-			      test_prob)
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
 
 			  saved_seed = *seed;
@@ -5892,10 +5866,8 @@ void do_test_dsymm_x
 			     randomize_val <= RANDOMIZE_END;
 			     randomize_val++) {
 
-			  /* For the sake of speed, we throw out this case
-			     at random */
-			  if (((float) rand()) / ((float) RAND_MAX) >=
-			      test_prob)
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
 
 			  saved_seed = *seed;
@@ -6342,10 +6314,8 @@ void do_test_csymm_x
 			     randomize_val <= RANDOMIZE_END;
 			     randomize_val++) {
 
-			  /* For the sake of speed, we throw out this case
-			     at random */
-			  if (((float) rand()) / ((float) RAND_MAX) >=
-			      test_prob)
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
 
 			  saved_seed = *seed;
@@ -6796,10 +6766,8 @@ void do_test_zsymm_x
 			     randomize_val <= RANDOMIZE_END;
 			     randomize_val++) {
 
-			  /* For the sake of speed, we throw out this case
-			     at random */
-			  if (((float) rand()) / ((float) RAND_MAX) >=
-			      test_prob)
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
 
 			  saved_seed = *seed;
@@ -7248,10 +7216,8 @@ void do_test_dsymm_d_s_x
 			     randomize_val <= RANDOMIZE_END;
 			     randomize_val++) {
 
-			  /* For the sake of speed, we throw out this case
-			     at random */
-			  if (((float) rand()) / ((float) RAND_MAX) >=
-			      test_prob)
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
 
 			  saved_seed = *seed;
@@ -7695,10 +7661,8 @@ void do_test_dsymm_s_d_x
 			     randomize_val <= RANDOMIZE_END;
 			     randomize_val++) {
 
-			  /* For the sake of speed, we throw out this case
-			     at random */
-			  if (((float) rand()) / ((float) RAND_MAX) >=
-			      test_prob)
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
 
 			  saved_seed = *seed;
@@ -8142,10 +8106,8 @@ void do_test_dsymm_s_s_x
 			     randomize_val <= RANDOMIZE_END;
 			     randomize_val++) {
 
-			  /* For the sake of speed, we throw out this case
-			     at random */
-			  if (((float) rand()) / ((float) RAND_MAX) >=
-			      test_prob)
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
 
 			  saved_seed = *seed;
@@ -8592,10 +8554,8 @@ void do_test_zsymm_z_c_x
 			     randomize_val <= RANDOMIZE_END;
 			     randomize_val++) {
 
-			  /* For the sake of speed, we throw out this case
-			     at random */
-			  if (((float) rand()) / ((float) RAND_MAX) >=
-			      test_prob)
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
 
 			  saved_seed = *seed;
@@ -9047,10 +9007,8 @@ void do_test_zsymm_c_z_x
 			     randomize_val <= RANDOMIZE_END;
 			     randomize_val++) {
 
-			  /* For the sake of speed, we throw out this case
-			     at random */
-			  if (((float) rand()) / ((float) RAND_MAX) >=
-			      test_prob)
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
 
 			  saved_seed = *seed;
@@ -9502,10 +9460,8 @@ void do_test_zsymm_c_c_x
 			     randomize_val <= RANDOMIZE_END;
 			     randomize_val++) {
 
-			  /* For the sake of speed, we throw out this case
-			     at random */
-			  if (((float) rand()) / ((float) RAND_MAX) >=
-			      test_prob)
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
 
 			  saved_seed = *seed;
@@ -9957,10 +9913,8 @@ void do_test_csymm_c_s_x
 			     randomize_val <= RANDOMIZE_END;
 			     randomize_val++) {
 
-			  /* For the sake of speed, we throw out this case
-			     at random */
-			  if (((float) rand()) / ((float) RAND_MAX) >=
-			      test_prob)
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
 
 			  saved_seed = *seed;
@@ -10411,10 +10365,8 @@ void do_test_csymm_s_c_x
 			     randomize_val <= RANDOMIZE_END;
 			     randomize_val++) {
 
-			  /* For the sake of speed, we throw out this case
-			     at random */
-			  if (((float) rand()) / ((float) RAND_MAX) >=
-			      test_prob)
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
 
 			  saved_seed = *seed;
@@ -10865,10 +10817,8 @@ void do_test_csymm_s_s_x
 			     randomize_val <= RANDOMIZE_END;
 			     randomize_val++) {
 
-			  /* For the sake of speed, we throw out this case
-			     at random */
-			  if (((float) rand()) / ((float) RAND_MAX) >=
-			      test_prob)
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
 
 			  saved_seed = *seed;
@@ -11319,10 +11269,8 @@ void do_test_zsymm_z_d_x
 			     randomize_val <= RANDOMIZE_END;
 			     randomize_val++) {
 
-			  /* For the sake of speed, we throw out this case
-			     at random */
-			  if (((float) rand()) / ((float) RAND_MAX) >=
-			      test_prob)
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
 
 			  saved_seed = *seed;
@@ -11774,10 +11722,8 @@ void do_test_zsymm_d_z_x
 			     randomize_val <= RANDOMIZE_END;
 			     randomize_val++) {
 
-			  /* For the sake of speed, we throw out this case
-			     at random */
-			  if (((float) rand()) / ((float) RAND_MAX) >=
-			      test_prob)
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
 
 			  saved_seed = *seed;
@@ -12229,10 +12175,8 @@ void do_test_zsymm_d_d_x
 			     randomize_val <= RANDOMIZE_END;
 			     randomize_val++) {
 
-			  /* For the sake of speed, we throw out this case
-			     at random */
-			  if (((float) rand()) / ((float) RAND_MAX) >=
-			      test_prob)
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
 
 			  saved_seed = *seed;

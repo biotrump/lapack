@@ -263,13 +263,9 @@ void do_test_dsymv_d_s
 			 randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 		      saved_seed = *seed;
-		      if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			  test_prob) {
-			/* for the sake of speed, 
-			   we throw out this case
-			   at random */
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
-		      }
 
 		      alpha_flag = 0;
 		      switch (alpha_val) {
@@ -676,13 +672,9 @@ void do_test_dsymv_s_d
 			 randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 		      saved_seed = *seed;
-		      if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			  test_prob) {
-			/* for the sake of speed, 
-			   we throw out this case
-			   at random */
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
-		      }
 
 		      alpha_flag = 0;
 		      switch (alpha_val) {
@@ -1089,13 +1081,9 @@ void do_test_dsymv_s_s
 			 randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 		      saved_seed = *seed;
-		      if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			  test_prob) {
-			/* for the sake of speed, 
-			   we throw out this case
-			   at random */
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
-		      }
 
 		      alpha_flag = 0;
 		      switch (alpha_val) {
@@ -1505,13 +1493,9 @@ void do_test_zsymv_z_c
 			 randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 		      saved_seed = *seed;
-		      if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			  test_prob) {
-			/* for the sake of speed, 
-			   we throw out this case
-			   at random */
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
-		      }
 
 		      alpha_flag = 0;
 		      switch (alpha_val) {
@@ -1927,13 +1911,9 @@ void do_test_zsymv_c_z
 			 randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 		      saved_seed = *seed;
-		      if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			  test_prob) {
-			/* for the sake of speed, 
-			   we throw out this case
-			   at random */
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
-		      }
 
 		      alpha_flag = 0;
 		      switch (alpha_val) {
@@ -2349,13 +2329,9 @@ void do_test_zsymv_c_c
 			 randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 		      saved_seed = *seed;
-		      if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			  test_prob) {
-			/* for the sake of speed, 
-			   we throw out this case
-			   at random */
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
-		      }
 
 		      alpha_flag = 0;
 		      switch (alpha_val) {
@@ -2771,13 +2747,9 @@ void do_test_csymv_c_s
 			 randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 		      saved_seed = *seed;
-		      if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			  test_prob) {
-			/* for the sake of speed, 
-			   we throw out this case
-			   at random */
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
-		      }
 
 		      alpha_flag = 0;
 		      switch (alpha_val) {
@@ -3193,13 +3165,9 @@ void do_test_csymv_s_c
 			 randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 		      saved_seed = *seed;
-		      if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			  test_prob) {
-			/* for the sake of speed, 
-			   we throw out this case
-			   at random */
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
-		      }
 
 		      alpha_flag = 0;
 		      switch (alpha_val) {
@@ -3615,13 +3583,9 @@ void do_test_csymv_s_s
 			 randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 		      saved_seed = *seed;
-		      if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			  test_prob) {
-			/* for the sake of speed, 
-			   we throw out this case
-			   at random */
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
-		      }
 
 		      alpha_flag = 0;
 		      switch (alpha_val) {
@@ -4037,13 +4001,9 @@ void do_test_zsymv_z_d
 			 randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 		      saved_seed = *seed;
-		      if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			  test_prob) {
-			/* for the sake of speed, 
-			   we throw out this case
-			   at random */
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
-		      }
 
 		      alpha_flag = 0;
 		      switch (alpha_val) {
@@ -4459,13 +4419,9 @@ void do_test_zsymv_d_z
 			 randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 		      saved_seed = *seed;
-		      if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			  test_prob) {
-			/* for the sake of speed, 
-			   we throw out this case
-			   at random */
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
-		      }
 
 		      alpha_flag = 0;
 		      switch (alpha_val) {
@@ -4881,13 +4837,9 @@ void do_test_zsymv_d_d
 			 randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 		      saved_seed = *seed;
-		      if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			  test_prob) {
-			/* for the sake of speed, 
-			   we throw out this case
-			   at random */
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
-		      }
 
 		      alpha_flag = 0;
 		      switch (alpha_val) {
@@ -5320,13 +5272,9 @@ void do_test_ssymv_x
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 			saved_seed = *seed;
-			if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			    test_prob) {
-			  /* for the sake of speed, 
-			     we throw out this case
-			     at random */
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
-			}
 
 			alpha_flag = 0;
 			switch (alpha_val) {
@@ -5754,13 +5702,9 @@ void do_test_dsymv_x
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 			saved_seed = *seed;
-			if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			    test_prob) {
-			  /* for the sake of speed, 
-			     we throw out this case
-			     at random */
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
-			}
 
 			alpha_flag = 0;
 			switch (alpha_val) {
@@ -6191,13 +6135,9 @@ void do_test_csymv_x
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 			saved_seed = *seed;
-			if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			    test_prob) {
-			  /* for the sake of speed, 
-			     we throw out this case
-			     at random */
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
-			}
 
 			alpha_flag = 0;
 			switch (alpha_val) {
@@ -6634,13 +6574,9 @@ void do_test_zsymv_x
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 			saved_seed = *seed;
-			if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			    test_prob) {
-			  /* for the sake of speed, 
-			     we throw out this case
-			     at random */
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
-			}
 
 			alpha_flag = 0;
 			switch (alpha_val) {
@@ -7074,13 +7010,9 @@ void do_test_dsymv_d_s_x
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 			saved_seed = *seed;
-			if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			    test_prob) {
-			  /* for the sake of speed, 
-			     we throw out this case
-			     at random */
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
-			}
 
 			alpha_flag = 0;
 			switch (alpha_val) {
@@ -7509,13 +7441,9 @@ void do_test_dsymv_s_d_x
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 			saved_seed = *seed;
-			if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			    test_prob) {
-			  /* for the sake of speed, 
-			     we throw out this case
-			     at random */
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
-			}
 
 			alpha_flag = 0;
 			switch (alpha_val) {
@@ -7944,13 +7872,9 @@ void do_test_dsymv_s_s_x
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 			saved_seed = *seed;
-			if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			    test_prob) {
-			  /* for the sake of speed, 
-			     we throw out this case
-			     at random */
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
-			}
 
 			alpha_flag = 0;
 			switch (alpha_val) {
@@ -8382,13 +8306,9 @@ void do_test_zsymv_z_c_x
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 			saved_seed = *seed;
-			if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			    test_prob) {
-			  /* for the sake of speed, 
-			     we throw out this case
-			     at random */
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
-			}
 
 			alpha_flag = 0;
 			switch (alpha_val) {
@@ -8826,13 +8746,9 @@ void do_test_zsymv_c_z_x
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 			saved_seed = *seed;
-			if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			    test_prob) {
-			  /* for the sake of speed, 
-			     we throw out this case
-			     at random */
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
-			}
 
 			alpha_flag = 0;
 			switch (alpha_val) {
@@ -9270,13 +9186,9 @@ void do_test_zsymv_c_c_x
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 			saved_seed = *seed;
-			if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			    test_prob) {
-			  /* for the sake of speed, 
-			     we throw out this case
-			     at random */
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
-			}
 
 			alpha_flag = 0;
 			switch (alpha_val) {
@@ -9714,13 +9626,9 @@ void do_test_csymv_c_s_x
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 			saved_seed = *seed;
-			if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			    test_prob) {
-			  /* for the sake of speed, 
-			     we throw out this case
-			     at random */
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
-			}
 
 			alpha_flag = 0;
 			switch (alpha_val) {
@@ -10158,13 +10066,9 @@ void do_test_csymv_s_c_x
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 			saved_seed = *seed;
-			if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			    test_prob) {
-			  /* for the sake of speed, 
-			     we throw out this case
-			     at random */
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
-			}
 
 			alpha_flag = 0;
 			switch (alpha_val) {
@@ -10602,13 +10506,9 @@ void do_test_csymv_s_s_x
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 			saved_seed = *seed;
-			if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			    test_prob) {
-			  /* for the sake of speed, 
-			     we throw out this case
-			     at random */
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
-			}
 
 			alpha_flag = 0;
 			switch (alpha_val) {
@@ -11046,13 +10946,9 @@ void do_test_zsymv_z_d_x
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 			saved_seed = *seed;
-			if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			    test_prob) {
-			  /* for the sake of speed, 
-			     we throw out this case
-			     at random */
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
-			}
 
 			alpha_flag = 0;
 			switch (alpha_val) {
@@ -11490,13 +11386,9 @@ void do_test_zsymv_d_z_x
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 			saved_seed = *seed;
-			if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			    test_prob) {
-			  /* for the sake of speed, 
-			     we throw out this case
-			     at random */
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
-			}
 
 			alpha_flag = 0;
 			switch (alpha_val) {
@@ -11934,13 +11826,9 @@ void do_test_zsymv_d_d_x
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 			saved_seed = *seed;
-			if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			    test_prob) {
-			  /* for the sake of speed, 
-			     we throw out this case
-			     at random */
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
-			}
 
 			alpha_flag = 0;
 			switch (alpha_val) {

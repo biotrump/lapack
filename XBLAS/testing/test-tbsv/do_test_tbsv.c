@@ -303,9 +303,8 @@ double do_test_dtbsv_s(int n,
 		    }
 
 
-		    /* For the sake of speed, we throw out this case
-		       at random */
-		    if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		    /* For the sake of speed, we throw out this case at random */
+		    if (xrand(seed) >= test_prob)
 		      continue;
 
 		    for (k_val = 0; k_val < ldt - 1 && k_val < n; k_val++) {
@@ -313,8 +312,7 @@ double do_test_dtbsv_s(int n,
 		      /* For the sake of speed, we throw out this case
 		         at random.  We put this in a second time
 		         to make the k testing go much faster when prob < 1 and n is large */
-		      if (((float) rand()) / ((float) RAND_MAX) >=
-			  (test_prob + (2.0 / n)))
+		      if (xrand(seed) >= test_prob + (2.0 / n))
 			continue;
 
 		      k = k_val;
@@ -889,9 +887,8 @@ double do_test_ztbsv_c(int n,
 		    }
 
 
-		    /* For the sake of speed, we throw out this case
-		       at random */
-		    if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		    /* For the sake of speed, we throw out this case at random */
+		    if (xrand(seed) >= test_prob)
 		      continue;
 
 		    for (k_val = 0; k_val < ldt - 1 && k_val < n; k_val++) {
@@ -899,8 +896,7 @@ double do_test_ztbsv_c(int n,
 		      /* For the sake of speed, we throw out this case
 		         at random.  We put this in a second time
 		         to make the k testing go much faster when prob < 1 and n is large */
-		      if (((float) rand()) / ((float) RAND_MAX) >=
-			  (test_prob + (2.0 / n)))
+		      if (xrand(seed) >= test_prob + (2.0 / n))
 			continue;
 
 		      k = k_val;
@@ -1510,9 +1506,8 @@ double do_test_ctbsv_s(int n,
 		    }
 
 
-		    /* For the sake of speed, we throw out this case
-		       at random */
-		    if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		    /* For the sake of speed, we throw out this case at random */
+		    if (xrand(seed) >= test_prob)
 		      continue;
 
 		    for (k_val = 0; k_val < ldt - 1 && k_val < n; k_val++) {
@@ -1520,8 +1515,7 @@ double do_test_ctbsv_s(int n,
 		      /* For the sake of speed, we throw out this case
 		         at random.  We put this in a second time
 		         to make the k testing go much faster when prob < 1 and n is large */
-		      if (((float) rand()) / ((float) RAND_MAX) >=
-			  (test_prob + (2.0 / n)))
+		      if (xrand(seed) >= test_prob + (2.0 / n))
 			continue;
 
 		      k = k_val;
@@ -2127,9 +2121,8 @@ double do_test_ztbsv_d(int n,
 		    }
 
 
-		    /* For the sake of speed, we throw out this case
-		       at random */
-		    if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		    /* For the sake of speed, we throw out this case at random */
+		    if (xrand(seed) >= test_prob)
 		      continue;
 
 		    for (k_val = 0; k_val < ldt - 1 && k_val < n; k_val++) {
@@ -2137,8 +2130,7 @@ double do_test_ztbsv_d(int n,
 		      /* For the sake of speed, we throw out this case
 		         at random.  We put this in a second time
 		         to make the k testing go much faster when prob < 1 and n is large */
-		      if (((float) rand()) / ((float) RAND_MAX) >=
-			  (test_prob + (2.0 / n)))
+		      if (xrand(seed) >= test_prob + (2.0 / n))
 			continue;
 
 		      k = k_val;
@@ -2763,9 +2755,8 @@ double do_test_stbsv_x(int n,
 		      }
 
 
-		      /* For the sake of speed, we throw out this case
-		         at random */
-		      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
 
 		      for (k_val = 0; k_val < ldt - 1 && k_val < n; k_val++) {
@@ -2773,8 +2764,7 @@ double do_test_stbsv_x(int n,
 			/* For the sake of speed, we throw out this case
 			   at random.  We put this in a second time
 			   to make the k testing go much faster when prob < 1 and n is large */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    (test_prob + (2.0 / n)))
+			if (xrand(seed) >= test_prob + (2.0 / n))
 			  continue;
 
 			k = k_val;
@@ -3366,9 +3356,8 @@ double do_test_dtbsv_x(int n,
 		      }
 
 
-		      /* For the sake of speed, we throw out this case
-		         at random */
-		      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
 
 		      for (k_val = 0; k_val < ldt - 1 && k_val < n; k_val++) {
@@ -3376,8 +3365,7 @@ double do_test_dtbsv_x(int n,
 			/* For the sake of speed, we throw out this case
 			   at random.  We put this in a second time
 			   to make the k testing go much faster when prob < 1 and n is large */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    (test_prob + (2.0 / n)))
+			if (xrand(seed) >= test_prob + (2.0 / n))
 			  continue;
 
 			k = k_val;
@@ -3970,9 +3958,8 @@ double do_test_dtbsv_s_x(int n,
 		      }
 
 
-		      /* For the sake of speed, we throw out this case
-		         at random */
-		      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
 
 		      for (k_val = 0; k_val < ldt - 1 && k_val < n; k_val++) {
@@ -3980,8 +3967,7 @@ double do_test_dtbsv_s_x(int n,
 			/* For the sake of speed, we throw out this case
 			   at random.  We put this in a second time
 			   to make the k testing go much faster when prob < 1 and n is large */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    (test_prob + (2.0 / n)))
+			if (xrand(seed) >= test_prob + (2.0 / n))
 			  continue;
 
 			k = k_val;
@@ -4576,9 +4562,8 @@ double do_test_ctbsv_x(int n,
 		      }
 
 
-		      /* For the sake of speed, we throw out this case
-		         at random */
-		      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
 
 		      for (k_val = 0; k_val < ldt - 1 && k_val < n; k_val++) {
@@ -4586,8 +4571,7 @@ double do_test_ctbsv_x(int n,
 			/* For the sake of speed, we throw out this case
 			   at random.  We put this in a second time
 			   to make the k testing go much faster when prob < 1 and n is large */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    (test_prob + (2.0 / n)))
+			if (xrand(seed) >= test_prob + (2.0 / n))
 			  continue;
 
 			k = k_val;
@@ -5217,9 +5201,8 @@ double do_test_ztbsv_x(int n,
 		      }
 
 
-		      /* For the sake of speed, we throw out this case
-		         at random */
-		      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
 
 		      for (k_val = 0; k_val < ldt - 1 && k_val < n; k_val++) {
@@ -5227,8 +5210,7 @@ double do_test_ztbsv_x(int n,
 			/* For the sake of speed, we throw out this case
 			   at random.  We put this in a second time
 			   to make the k testing go much faster when prob < 1 and n is large */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    (test_prob + (2.0 / n)))
+			if (xrand(seed) >= test_prob + (2.0 / n))
 			  continue;
 
 			k = k_val;
@@ -5859,9 +5841,8 @@ double do_test_ztbsv_c_x(int n,
 		      }
 
 
-		      /* For the sake of speed, we throw out this case
-		         at random */
-		      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
 
 		      for (k_val = 0; k_val < ldt - 1 && k_val < n; k_val++) {
@@ -5869,8 +5850,7 @@ double do_test_ztbsv_c_x(int n,
 			/* For the sake of speed, we throw out this case
 			   at random.  We put this in a second time
 			   to make the k testing go much faster when prob < 1 and n is large */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    (test_prob + (2.0 / n)))
+			if (xrand(seed) >= test_prob + (2.0 / n))
 			  continue;
 
 			k = k_val;
@@ -6503,9 +6483,8 @@ double do_test_ctbsv_s_x(int n,
 		      }
 
 
-		      /* For the sake of speed, we throw out this case
-		         at random */
-		      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
 
 		      for (k_val = 0; k_val < ldt - 1 && k_val < n; k_val++) {
@@ -6513,8 +6492,7 @@ double do_test_ctbsv_s_x(int n,
 			/* For the sake of speed, we throw out this case
 			   at random.  We put this in a second time
 			   to make the k testing go much faster when prob < 1 and n is large */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    (test_prob + (2.0 / n)))
+			if (xrand(seed) >= test_prob + (2.0 / n))
 			  continue;
 
 			k = k_val;
@@ -7145,9 +7123,8 @@ double do_test_ztbsv_d_x(int n,
 		      }
 
 
-		      /* For the sake of speed, we throw out this case
-		         at random */
-		      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
 
 		      for (k_val = 0; k_val < ldt - 1 && k_val < n; k_val++) {
@@ -7155,8 +7132,7 @@ double do_test_ztbsv_d_x(int n,
 			/* For the sake of speed, we throw out this case
 			   at random.  We put this in a second time
 			   to make the k testing go much faster when prob < 1 and n is large */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    (test_prob + (2.0 / n)))
+			if (xrand(seed) >= test_prob + (2.0 / n))
 			  continue;
 
 			k = k_val;

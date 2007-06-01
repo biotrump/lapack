@@ -292,9 +292,8 @@ double do_test_dtrmv_s(int n, int ntests, int *seed,
 		      break;
 		    }
 
-		    /* For the sake of speed, we throw out this case
-		       at random */
-		    if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		    /* For the sake of speed, we throw out this case at random */
+		    if (xrand(seed) >= test_prob)
 		      continue;
 
 		    /* generate test case */
@@ -829,9 +828,8 @@ double do_test_ztrmv_c(int n, int ntests, int *seed,
 		      break;
 		    }
 
-		    /* For the sake of speed, we throw out this case
-		       at random */
-		    if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		    /* For the sake of speed, we throw out this case at random */
+		    if (xrand(seed) >= test_prob)
 		      continue;
 
 		    /* generate test case */
@@ -1369,9 +1367,8 @@ double do_test_ctrmv_s(int n, int ntests, int *seed,
 		      break;
 		    }
 
-		    /* For the sake of speed, we throw out this case
-		       at random */
-		    if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		    /* For the sake of speed, we throw out this case at random */
+		    if (xrand(seed) >= test_prob)
 		      continue;
 
 		    /* generate test case */
@@ -1909,9 +1906,8 @@ double do_test_ztrmv_d(int n, int ntests, int *seed,
 		      break;
 		    }
 
-		    /* For the sake of speed, we throw out this case
-		       at random */
-		    if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		    /* For the sake of speed, we throw out this case at random */
+		    if (xrand(seed) >= test_prob)
 		      continue;
 
 		    /* generate test case */
@@ -2466,9 +2462,8 @@ double do_test_strmv_x(int n, int ntests, int *seed,
 			break;
 		      }
 
-		      /* For the sake of speed, we throw out this case
-		         at random */
-		      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
 
 		      /* generate test case */
@@ -3021,9 +3016,8 @@ double do_test_dtrmv_x(int n, int ntests, int *seed,
 			break;
 		      }
 
-		      /* For the sake of speed, we throw out this case
-		         at random */
-		      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
 
 		      /* generate test case */
@@ -3578,9 +3572,8 @@ double do_test_ctrmv_x(int n, int ntests, int *seed,
 			break;
 		      }
 
-		      /* For the sake of speed, we throw out this case
-		         at random */
-		      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
 
 		      /* generate test case */
@@ -4139,9 +4132,8 @@ double do_test_ztrmv_x(int n, int ntests, int *seed,
 			break;
 		      }
 
-		      /* For the sake of speed, we throw out this case
-		         at random */
-		      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
 
 		      /* generate test case */
@@ -4699,9 +4691,8 @@ double do_test_dtrmv_s_x(int n, int ntests, int *seed,
 			break;
 		      }
 
-		      /* For the sake of speed, we throw out this case
-		         at random */
-		      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
 
 		      /* generate test case */
@@ -5257,9 +5248,8 @@ double do_test_ztrmv_c_x(int n, int ntests, int *seed,
 			break;
 		      }
 
-		      /* For the sake of speed, we throw out this case
-		         at random */
-		      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
 
 		      /* generate test case */
@@ -5819,9 +5809,8 @@ double do_test_ctrmv_s_x(int n, int ntests, int *seed,
 			break;
 		      }
 
-		      /* For the sake of speed, we throw out this case
-		         at random */
-		      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
 
 		      /* generate test case */
@@ -6381,9 +6370,8 @@ double do_test_ztrmv_d_x(int n, int ntests, int *seed,
 			break;
 		      }
 
-		      /* For the sake of speed, we throw out this case
-		         at random */
-		      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
 
 		      /* generate test case */

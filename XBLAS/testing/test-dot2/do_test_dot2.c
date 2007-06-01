@@ -248,9 +248,8 @@ double do_test_sdot2_x(int n, int ntests, int *seed, double thresh,
 		  break;
 		}
 
-		/* For the sake of speed, we throw out this case
-		   at random */
-		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		/* For the sake of speed, we throw out this case at random */
+		if (xrand(seed) >= test_prob)
 		  continue;
 
 		BLAS_sdot2_testgen(n, 0, 0, norm, conj_type,
@@ -699,9 +698,8 @@ double do_test_ddot2_x(int n, int ntests, int *seed, double thresh,
 		  break;
 		}
 
-		/* For the sake of speed, we throw out this case
-		   at random */
-		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		/* For the sake of speed, we throw out this case at random */
+		if (xrand(seed) >= test_prob)
 		  continue;
 
 		BLAS_ddot2_testgen(n, 0, 0, norm, conj_type,
@@ -1152,9 +1150,8 @@ double do_test_cdot2_x(int n, int ntests, int *seed, double thresh,
 		  break;
 		}
 
-		/* For the sake of speed, we throw out this case
-		   at random */
-		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		/* For the sake of speed, we throw out this case at random */
+		if (xrand(seed) >= test_prob)
 		  continue;
 
 		BLAS_cdot2_testgen(n, 0, 0, norm, conj_type,
@@ -1613,9 +1610,8 @@ double do_test_zdot2_x(int n, int ntests, int *seed, double thresh,
 		  break;
 		}
 
-		/* For the sake of speed, we throw out this case
-		   at random */
-		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		/* For the sake of speed, we throw out this case at random */
+		if (xrand(seed) >= test_prob)
 		  continue;
 
 		BLAS_zdot2_testgen(n, 0, 0, norm, conj_type,

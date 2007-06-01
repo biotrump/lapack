@@ -223,9 +223,8 @@ double do_test_ddot_d_s(int n,
 		break;
 	      }
 
-	      /* For the sake of speed, we throw out this case
-	         at random */
-	      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+	      /* For the sake of speed, we throw out this case at random */
+	      if (xrand(seed) >= test_prob)
 		continue;
 
 	      BLAS_ddot_d_s_testgen(n, 0, 0, norm, conj_type,
@@ -645,9 +644,8 @@ double do_test_ddot_s_d(int n,
 		break;
 	      }
 
-	      /* For the sake of speed, we throw out this case
-	         at random */
-	      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+	      /* For the sake of speed, we throw out this case at random */
+	      if (xrand(seed) >= test_prob)
 		continue;
 
 	      BLAS_ddot_s_d_testgen(n, 0, 0, norm, conj_type,
@@ -1067,9 +1065,8 @@ double do_test_ddot_s_s(int n,
 		break;
 	      }
 
-	      /* For the sake of speed, we throw out this case
-	         at random */
-	      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+	      /* For the sake of speed, we throw out this case at random */
+	      if (xrand(seed) >= test_prob)
 		continue;
 
 	      BLAS_ddot_s_s_testgen(n, 0, 0, norm, conj_type,
@@ -1491,9 +1488,8 @@ double do_test_zdot_z_c(int n,
 		break;
 	      }
 
-	      /* For the sake of speed, we throw out this case
-	         at random */
-	      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+	      /* For the sake of speed, we throw out this case at random */
+	      if (xrand(seed) >= test_prob)
 		continue;
 
 	      BLAS_zdot_z_c_testgen(n, 0, 0, norm, conj_type,
@@ -1920,9 +1916,8 @@ double do_test_zdot_c_z(int n,
 		break;
 	      }
 
-	      /* For the sake of speed, we throw out this case
-	         at random */
-	      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+	      /* For the sake of speed, we throw out this case at random */
+	      if (xrand(seed) >= test_prob)
 		continue;
 
 	      BLAS_zdot_c_z_testgen(n, 0, 0, norm, conj_type,
@@ -2349,9 +2344,8 @@ double do_test_zdot_c_c(int n,
 		break;
 	      }
 
-	      /* For the sake of speed, we throw out this case
-	         at random */
-	      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+	      /* For the sake of speed, we throw out this case at random */
+	      if (xrand(seed) >= test_prob)
 		continue;
 
 	      BLAS_zdot_c_c_testgen(n, 0, 0, norm, conj_type,
@@ -2778,9 +2772,8 @@ double do_test_cdot_c_s(int n,
 		break;
 	      }
 
-	      /* For the sake of speed, we throw out this case
-	         at random */
-	      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+	      /* For the sake of speed, we throw out this case at random */
+	      if (xrand(seed) >= test_prob)
 		continue;
 
 	      BLAS_cdot_c_s_testgen(n, 0, 0, norm, conj_type,
@@ -3206,9 +3199,8 @@ double do_test_cdot_s_c(int n,
 		break;
 	      }
 
-	      /* For the sake of speed, we throw out this case
-	         at random */
-	      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+	      /* For the sake of speed, we throw out this case at random */
+	      if (xrand(seed) >= test_prob)
 		continue;
 
 	      BLAS_cdot_s_c_testgen(n, 0, 0, norm, conj_type,
@@ -3634,9 +3626,8 @@ double do_test_cdot_s_s(int n,
 		break;
 	      }
 
-	      /* For the sake of speed, we throw out this case
-	         at random */
-	      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+	      /* For the sake of speed, we throw out this case at random */
+	      if (xrand(seed) >= test_prob)
 		continue;
 
 	      BLAS_cdot_s_s_testgen(n, 0, 0, norm, conj_type,
@@ -4061,9 +4052,8 @@ double do_test_zdot_z_d(int n,
 		break;
 	      }
 
-	      /* For the sake of speed, we throw out this case
-	         at random */
-	      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+	      /* For the sake of speed, we throw out this case at random */
+	      if (xrand(seed) >= test_prob)
 		continue;
 
 	      BLAS_zdot_z_d_testgen(n, 0, 0, norm, conj_type,
@@ -4489,9 +4479,8 @@ double do_test_zdot_d_z(int n,
 		break;
 	      }
 
-	      /* For the sake of speed, we throw out this case
-	         at random */
-	      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+	      /* For the sake of speed, we throw out this case at random */
+	      if (xrand(seed) >= test_prob)
 		continue;
 
 	      BLAS_zdot_d_z_testgen(n, 0, 0, norm, conj_type,
@@ -4917,9 +4906,8 @@ double do_test_zdot_d_d(int n,
 		break;
 	      }
 
-	      /* For the sake of speed, we throw out this case
-	         at random */
-	      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+	      /* For the sake of speed, we throw out this case at random */
+	      if (xrand(seed) >= test_prob)
 		continue;
 
 	      BLAS_zdot_d_d_testgen(n, 0, 0, norm, conj_type,
@@ -5361,9 +5349,8 @@ double do_test_sdot_x(int n,
 		  break;
 		}
 
-		/* For the sake of speed, we throw out this case
-		   at random */
-		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		/* For the sake of speed, we throw out this case at random */
+		if (xrand(seed) >= test_prob)
 		  continue;
 
 		BLAS_sdot_testgen(n, 0, 0, norm, conj_type,
@@ -5803,9 +5790,8 @@ double do_test_ddot_x(int n,
 		  break;
 		}
 
-		/* For the sake of speed, we throw out this case
-		   at random */
-		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		/* For the sake of speed, we throw out this case at random */
+		if (xrand(seed) >= test_prob)
 		  continue;
 
 		BLAS_ddot_testgen(n, 0, 0, norm, conj_type,
@@ -6247,9 +6233,8 @@ double do_test_cdot_x(int n,
 		  break;
 		}
 
-		/* For the sake of speed, we throw out this case
-		   at random */
-		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		/* For the sake of speed, we throw out this case at random */
+		if (xrand(seed) >= test_prob)
 		  continue;
 
 		BLAS_cdot_testgen(n, 0, 0, norm, conj_type,
@@ -6696,9 +6681,8 @@ double do_test_zdot_x(int n,
 		  break;
 		}
 
-		/* For the sake of speed, we throw out this case
-		   at random */
-		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		/* For the sake of speed, we throw out this case at random */
+		if (xrand(seed) >= test_prob)
 		  continue;
 
 		BLAS_zdot_testgen(n, 0, 0, norm, conj_type,
@@ -7144,9 +7128,8 @@ double do_test_ddot_d_s_x(int n,
 		  break;
 		}
 
-		/* For the sake of speed, we throw out this case
-		   at random */
-		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		/* For the sake of speed, we throw out this case at random */
+		if (xrand(seed) >= test_prob)
 		  continue;
 
 		BLAS_ddot_d_s_testgen(n, 0, 0, norm, conj_type,
@@ -7587,9 +7570,8 @@ double do_test_ddot_s_d_x(int n,
 		  break;
 		}
 
-		/* For the sake of speed, we throw out this case
-		   at random */
-		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		/* For the sake of speed, we throw out this case at random */
+		if (xrand(seed) >= test_prob)
 		  continue;
 
 		BLAS_ddot_s_d_testgen(n, 0, 0, norm, conj_type,
@@ -8030,9 +8012,8 @@ double do_test_ddot_s_s_x(int n,
 		  break;
 		}
 
-		/* For the sake of speed, we throw out this case
-		   at random */
-		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		/* For the sake of speed, we throw out this case at random */
+		if (xrand(seed) >= test_prob)
 		  continue;
 
 		BLAS_ddot_s_s_testgen(n, 0, 0, norm, conj_type,
@@ -8475,9 +8456,8 @@ double do_test_zdot_z_c_x(int n,
 		  break;
 		}
 
-		/* For the sake of speed, we throw out this case
-		   at random */
-		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		/* For the sake of speed, we throw out this case at random */
+		if (xrand(seed) >= test_prob)
 		  continue;
 
 		BLAS_zdot_z_c_testgen(n, 0, 0, norm, conj_type,
@@ -8925,9 +8905,8 @@ double do_test_zdot_c_z_x(int n,
 		  break;
 		}
 
-		/* For the sake of speed, we throw out this case
-		   at random */
-		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		/* For the sake of speed, we throw out this case at random */
+		if (xrand(seed) >= test_prob)
 		  continue;
 
 		BLAS_zdot_c_z_testgen(n, 0, 0, norm, conj_type,
@@ -9375,9 +9354,8 @@ double do_test_zdot_c_c_x(int n,
 		  break;
 		}
 
-		/* For the sake of speed, we throw out this case
-		   at random */
-		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		/* For the sake of speed, we throw out this case at random */
+		if (xrand(seed) >= test_prob)
 		  continue;
 
 		BLAS_zdot_c_c_testgen(n, 0, 0, norm, conj_type,
@@ -9825,9 +9803,8 @@ double do_test_cdot_c_s_x(int n,
 		  break;
 		}
 
-		/* For the sake of speed, we throw out this case
-		   at random */
-		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		/* For the sake of speed, we throw out this case at random */
+		if (xrand(seed) >= test_prob)
 		  continue;
 
 		BLAS_cdot_c_s_testgen(n, 0, 0, norm, conj_type,
@@ -10274,9 +10251,8 @@ double do_test_cdot_s_c_x(int n,
 		  break;
 		}
 
-		/* For the sake of speed, we throw out this case
-		   at random */
-		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		/* For the sake of speed, we throw out this case at random */
+		if (xrand(seed) >= test_prob)
 		  continue;
 
 		BLAS_cdot_s_c_testgen(n, 0, 0, norm, conj_type,
@@ -10723,9 +10699,8 @@ double do_test_cdot_s_s_x(int n,
 		  break;
 		}
 
-		/* For the sake of speed, we throw out this case
-		   at random */
-		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		/* For the sake of speed, we throw out this case at random */
+		if (xrand(seed) >= test_prob)
 		  continue;
 
 		BLAS_cdot_s_s_testgen(n, 0, 0, norm, conj_type,
@@ -11171,9 +11146,8 @@ double do_test_zdot_z_d_x(int n,
 		  break;
 		}
 
-		/* For the sake of speed, we throw out this case
-		   at random */
-		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		/* For the sake of speed, we throw out this case at random */
+		if (xrand(seed) >= test_prob)
 		  continue;
 
 		BLAS_zdot_z_d_testgen(n, 0, 0, norm, conj_type,
@@ -11620,9 +11594,8 @@ double do_test_zdot_d_z_x(int n,
 		  break;
 		}
 
-		/* For the sake of speed, we throw out this case
-		   at random */
-		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		/* For the sake of speed, we throw out this case at random */
+		if (xrand(seed) >= test_prob)
 		  continue;
 
 		BLAS_zdot_d_z_testgen(n, 0, 0, norm, conj_type,
@@ -12069,9 +12042,8 @@ double do_test_zdot_d_d_x(int n,
 		  break;
 		}
 
-		/* For the sake of speed, we throw out this case
-		   at random */
-		if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		/* For the sake of speed, we throw out this case at random */
+		if (xrand(seed) >= test_prob)
 		  continue;
 
 		BLAS_zdot_d_d_testgen(n, 0, 0, norm, conj_type,

@@ -223,8 +223,9 @@ void BLAS_sge_sum_mv_testgen(int norm, enum blas_order_type order,
 
   /* choose k */
   k = 0;
-  while (!k)
-    k = (rand() % 7) - 3;	/* value between -3, +3 */
+  while (!k) {
+    k = xrand(seed) * 7 - 3;
+  }
 
   multiplier = 1.0;
   divider = 1.0;
@@ -1031,8 +1032,9 @@ void BLAS_dge_sum_mv_testgen(int norm, enum blas_order_type order,
 
   /* choose k */
   k = 0;
-  while (!k)
-    k = (rand() % 7) - 3;	/* value between -3, +3 */
+  while (!k) {
+    k = xrand(seed) * 7 - 3;
+  }
 
   multiplier = 1.0;
   divider = 1.0;
@@ -1839,8 +1841,9 @@ void BLAS_dge_sum_mv_d_s_testgen(int norm, enum blas_order_type order,
 
   /* choose k */
   k = 0;
-  while (!k)
-    k = (rand() % 7) - 3;	/* value between -3, +3 */
+  while (!k) {
+    k = xrand(seed) * 7 - 3;
+  }
 
   multiplier = 1.0;
   divider = 1.0;
@@ -2651,8 +2654,9 @@ void BLAS_dge_sum_mv_s_d_testgen(int norm, enum blas_order_type order,
 
   /* choose k */
   k = 0;
-  while (!k)
-    k = (rand() % 7) - 3;	/* value between -3, +3 */
+  while (!k) {
+    k = xrand(seed) * 7 - 3;
+  }
 
   multiplier = 1.0;
   divider = 1.0;
@@ -3463,8 +3467,9 @@ void BLAS_dge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 
   /* choose k */
   k = 0;
-  while (!k)
-    k = (rand() % 7) - 3;	/* value between -3, +3 */
+  while (!k) {
+    k = xrand(seed) * 7 - 3;
+  }
 
   multiplier = 1.0;
   divider = 1.0;
@@ -4287,8 +4292,9 @@ void BLAS_cge_sum_mv_testgen(int norm, enum blas_order_type order,
 
   /* choose k */
   k = 0;
-  while (!k)
-    k = (rand() % 7) - 3;	/* value between -3, +3 */
+  while (!k) {
+    k = xrand(seed) * 7 - 3;
+  }
 
   multiplier = 1.0;
   divider = 1.0;
@@ -5647,8 +5653,9 @@ void BLAS_zge_sum_mv_testgen(int norm, enum blas_order_type order,
 
   /* choose k */
   k = 0;
-  while (!k)
-    k = (rand() % 7) - 3;	/* value between -3, +3 */
+  while (!k) {
+    k = xrand(seed) * 7 - 3;
+  }
 
   multiplier = 1.0;
   divider = 1.0;
@@ -7106,8 +7113,9 @@ void BLAS_zge_sum_mv_c_z_testgen(int norm, enum blas_order_type order,
 
   /* choose k */
   k = 0;
-  while (!k)
-    k = (rand() % 7) - 3;	/* value between -3, +3 */
+  while (!k) {
+    k = xrand(seed) * 7 - 3;
+  }
 
   multiplier = 1.0;
   divider = 1.0;
@@ -8509,8 +8517,9 @@ void BLAS_zge_sum_mv_z_c_testgen(int norm, enum blas_order_type order,
 
   /* choose k */
   k = 0;
-  while (!k)
-    k = (rand() % 7) - 3;	/* value between -3, +3 */
+  while (!k) {
+    k = xrand(seed) * 7 - 3;
+  }
 
   multiplier = 1.0;
   divider = 1.0;
@@ -9968,8 +9977,9 @@ void BLAS_zge_sum_mv_c_c_testgen(int norm, enum blas_order_type order,
 
   /* choose k */
   k = 0;
-  while (!k)
-    k = (rand() % 7) - 3;	/* value between -3, +3 */
+  while (!k) {
+    k = xrand(seed) * 7 - 3;
+  }
 
   multiplier = 1.0;
   divider = 1.0;
@@ -11371,8 +11381,9 @@ void BLAS_zge_sum_mv_z_d_testgen(int norm, enum blas_order_type order,
 
   /* choose k */
   k = 0;
-  while (!k)
-    k = (rand() % 7) - 3;	/* value between -3, +3 */
+  while (!k) {
+    k = xrand(seed) * 7 - 3;
+  }
 
   multiplier = 1.0;
   divider = 1.0;
@@ -12830,8 +12841,9 @@ void BLAS_zge_sum_mv_d_z_testgen(int norm, enum blas_order_type order,
 
   /* choose k */
   k = 0;
-  while (!k)
-    k = (rand() % 7) - 3;	/* value between -3, +3 */
+  while (!k) {
+    k = xrand(seed) * 7 - 3;
+  }
 
   multiplier = 1.0;
   divider = 1.0;
@@ -13750,8 +13762,9 @@ void BLAS_zge_sum_mv_d_d_testgen(int norm, enum blas_order_type order,
 
   /* choose k */
   k = 0;
-  while (!k)
-    k = (rand() % 7) - 3;	/* value between -3, +3 */
+  while (!k) {
+    k = xrand(seed) * 7 - 3;
+  }
 
   multiplier = 1.0;
   divider = 1.0;
@@ -14689,8 +14702,9 @@ void BLAS_cge_sum_mv_c_s_testgen(int norm, enum blas_order_type order,
 
   /* choose k */
   k = 0;
-  while (!k)
-    k = (rand() % 7) - 3;	/* value between -3, +3 */
+  while (!k) {
+    k = xrand(seed) * 7 - 3;
+  }
 
   multiplier = 1.0;
   divider = 1.0;
@@ -16050,8 +16064,9 @@ void BLAS_cge_sum_mv_s_c_testgen(int norm, enum blas_order_type order,
 
   /* choose k */
   k = 0;
-  while (!k)
-    k = (rand() % 7) - 3;	/* value between -3, +3 */
+  while (!k) {
+    k = xrand(seed) * 7 - 3;
+  }
 
   multiplier = 1.0;
   divider = 1.0;
@@ -16970,8 +16985,9 @@ void BLAS_cge_sum_mv_s_s_testgen(int norm, enum blas_order_type order,
 
   /* choose k */
   k = 0;
-  while (!k)
-    k = (rand() % 7) - 3;	/* value between -3, +3 */
+  while (!k) {
+    k = xrand(seed) * 7 - 3;
+  }
 
   multiplier = 1.0;
   divider = 1.0;

@@ -298,12 +298,9 @@ void do_test_dgemm_d_s(int m, int n, int k, int ntests, int *seed,
 		      for (randomize_val = RANDOMIZE_START;
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-			/* For the sake of speed, we throw out this case
-			   at random */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    test_prob)
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
-
 
 			/* finally we are here to generate the test case */
 			BLAS_dgemm_d_s_testgen(norm, order,
@@ -749,12 +746,9 @@ void do_test_dgemm_s_d(int m, int n, int k, int ntests, int *seed,
 		      for (randomize_val = RANDOMIZE_START;
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-			/* For the sake of speed, we throw out this case
-			   at random */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    test_prob)
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
-
 
 			/* finally we are here to generate the test case */
 			BLAS_dgemm_s_d_testgen(norm, order,
@@ -1200,12 +1194,9 @@ void do_test_dgemm_s_s(int m, int n, int k, int ntests, int *seed,
 		      for (randomize_val = RANDOMIZE_START;
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-			/* For the sake of speed, we throw out this case
-			   at random */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    test_prob)
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
-
 
 			/* finally we are here to generate the test case */
 			BLAS_dgemm_s_s_testgen(norm, order,
@@ -1654,12 +1645,9 @@ void do_test_zgemm_z_c(int m, int n, int k, int ntests, int *seed,
 		      for (randomize_val = RANDOMIZE_START;
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-			/* For the sake of speed, we throw out this case
-			   at random */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    test_prob)
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
-
 
 			/* finally we are here to generate the test case */
 			BLAS_zgemm_z_c_testgen(norm, order,
@@ -2108,12 +2096,9 @@ void do_test_zgemm_c_z(int m, int n, int k, int ntests, int *seed,
 		      for (randomize_val = RANDOMIZE_START;
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-			/* For the sake of speed, we throw out this case
-			   at random */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    test_prob)
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
-
 
 			/* finally we are here to generate the test case */
 			BLAS_zgemm_c_z_testgen(norm, order,
@@ -2562,12 +2547,9 @@ void do_test_zgemm_c_c(int m, int n, int k, int ntests, int *seed,
 		      for (randomize_val = RANDOMIZE_START;
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-			/* For the sake of speed, we throw out this case
-			   at random */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    test_prob)
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
-
 
 			/* finally we are here to generate the test case */
 			BLAS_zgemm_c_c_testgen(norm, order,
@@ -3016,12 +2998,9 @@ void do_test_cgemm_c_s(int m, int n, int k, int ntests, int *seed,
 		      for (randomize_val = RANDOMIZE_START;
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-			/* For the sake of speed, we throw out this case
-			   at random */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    test_prob)
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
-
 
 			/* finally we are here to generate the test case */
 			BLAS_cgemm_c_s_testgen(norm, order,
@@ -3470,12 +3449,9 @@ void do_test_cgemm_s_c(int m, int n, int k, int ntests, int *seed,
 		      for (randomize_val = RANDOMIZE_START;
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-			/* For the sake of speed, we throw out this case
-			   at random */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    test_prob)
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
-
 
 			/* finally we are here to generate the test case */
 			BLAS_cgemm_s_c_testgen(norm, order,
@@ -3924,12 +3900,9 @@ void do_test_cgemm_s_s(int m, int n, int k, int ntests, int *seed,
 		      for (randomize_val = RANDOMIZE_START;
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-			/* For the sake of speed, we throw out this case
-			   at random */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    test_prob)
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
-
 
 			/* finally we are here to generate the test case */
 			BLAS_cgemm_s_s_testgen(norm, order,
@@ -4378,12 +4351,9 @@ void do_test_zgemm_z_d(int m, int n, int k, int ntests, int *seed,
 		      for (randomize_val = RANDOMIZE_START;
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-			/* For the sake of speed, we throw out this case
-			   at random */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    test_prob)
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
-
 
 			/* finally we are here to generate the test case */
 			BLAS_zgemm_z_d_testgen(norm, order,
@@ -4832,12 +4802,9 @@ void do_test_zgemm_d_z(int m, int n, int k, int ntests, int *seed,
 		      for (randomize_val = RANDOMIZE_START;
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-			/* For the sake of speed, we throw out this case
-			   at random */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    test_prob)
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
-
 
 			/* finally we are here to generate the test case */
 			BLAS_zgemm_d_z_testgen(norm, order,
@@ -5286,12 +5253,9 @@ void do_test_zgemm_d_d(int m, int n, int k, int ntests, int *seed,
 		      for (randomize_val = RANDOMIZE_START;
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-			/* For the sake of speed, we throw out this case
-			   at random */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    test_prob)
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
-
 
 			/* finally we are here to generate the test case */
 			BLAS_zgemm_d_d_testgen(norm, order,
@@ -5757,12 +5721,9 @@ void do_test_sgemm_x(int m, int n, int k, int ntests, int *seed,
 			     randomize_val <= RANDOMIZE_END;
 			     randomize_val++) {
 
-			  /* For the sake of speed, we throw out this case
-			     at random */
-			  if (((float) rand()) / ((float) RAND_MAX) >=
-			      test_prob)
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
-
 
 			  /* finally we are here to generate the test case */
 			  BLAS_sgemm_testgen(norm, order,
@@ -6244,12 +6205,9 @@ void do_test_dgemm_x(int m, int n, int k, int ntests, int *seed,
 			     randomize_val <= RANDOMIZE_END;
 			     randomize_val++) {
 
-			  /* For the sake of speed, we throw out this case
-			     at random */
-			  if (((float) rand()) / ((float) RAND_MAX) >=
-			      test_prob)
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
-
 
 			  /* finally we are here to generate the test case */
 			  BLAS_dgemm_testgen(norm, order,
@@ -6734,12 +6692,9 @@ void do_test_cgemm_x(int m, int n, int k, int ntests, int *seed,
 			     randomize_val <= RANDOMIZE_END;
 			     randomize_val++) {
 
-			  /* For the sake of speed, we throw out this case
-			     at random */
-			  if (((float) rand()) / ((float) RAND_MAX) >=
-			      test_prob)
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
-
 
 			  /* finally we are here to generate the test case */
 			  BLAS_cgemm_testgen(norm, order,
@@ -7224,12 +7179,9 @@ void do_test_zgemm_x(int m, int n, int k, int ntests, int *seed,
 			     randomize_val <= RANDOMIZE_END;
 			     randomize_val++) {
 
-			  /* For the sake of speed, we throw out this case
-			     at random */
-			  if (((float) rand()) / ((float) RAND_MAX) >=
-			      test_prob)
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
-
 
 			  /* finally we are here to generate the test case */
 			  BLAS_zgemm_testgen(norm, order,
@@ -7712,12 +7664,9 @@ void do_test_dgemm_d_s_x(int m, int n, int k, int ntests, int *seed,
 			     randomize_val <= RANDOMIZE_END;
 			     randomize_val++) {
 
-			  /* For the sake of speed, we throw out this case
-			     at random */
-			  if (((float) rand()) / ((float) RAND_MAX) >=
-			      test_prob)
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
-
 
 			  /* finally we are here to generate the test case */
 			  BLAS_dgemm_d_s_testgen(norm, order,
@@ -8200,12 +8149,9 @@ void do_test_dgemm_s_d_x(int m, int n, int k, int ntests, int *seed,
 			     randomize_val <= RANDOMIZE_END;
 			     randomize_val++) {
 
-			  /* For the sake of speed, we throw out this case
-			     at random */
-			  if (((float) rand()) / ((float) RAND_MAX) >=
-			      test_prob)
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
-
 
 			  /* finally we are here to generate the test case */
 			  BLAS_dgemm_s_d_testgen(norm, order,
@@ -8688,12 +8634,9 @@ void do_test_dgemm_s_s_x(int m, int n, int k, int ntests, int *seed,
 			     randomize_val <= RANDOMIZE_END;
 			     randomize_val++) {
 
-			  /* For the sake of speed, we throw out this case
-			     at random */
-			  if (((float) rand()) / ((float) RAND_MAX) >=
-			      test_prob)
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
-
 
 			  /* finally we are here to generate the test case */
 			  BLAS_dgemm_s_s_testgen(norm, order,
@@ -9179,12 +9122,9 @@ void do_test_zgemm_z_c_x(int m, int n, int k, int ntests, int *seed,
 			     randomize_val <= RANDOMIZE_END;
 			     randomize_val++) {
 
-			  /* For the sake of speed, we throw out this case
-			     at random */
-			  if (((float) rand()) / ((float) RAND_MAX) >=
-			      test_prob)
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
-
 
 			  /* finally we are here to generate the test case */
 			  BLAS_zgemm_z_c_testgen(norm, order,
@@ -9671,12 +9611,9 @@ void do_test_zgemm_c_z_x(int m, int n, int k, int ntests, int *seed,
 			     randomize_val <= RANDOMIZE_END;
 			     randomize_val++) {
 
-			  /* For the sake of speed, we throw out this case
-			     at random */
-			  if (((float) rand()) / ((float) RAND_MAX) >=
-			      test_prob)
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
-
 
 			  /* finally we are here to generate the test case */
 			  BLAS_zgemm_c_z_testgen(norm, order,
@@ -10163,12 +10100,9 @@ void do_test_zgemm_c_c_x(int m, int n, int k, int ntests, int *seed,
 			     randomize_val <= RANDOMIZE_END;
 			     randomize_val++) {
 
-			  /* For the sake of speed, we throw out this case
-			     at random */
-			  if (((float) rand()) / ((float) RAND_MAX) >=
-			      test_prob)
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
-
 
 			  /* finally we are here to generate the test case */
 			  BLAS_zgemm_c_c_testgen(norm, order,
@@ -10655,12 +10589,9 @@ void do_test_cgemm_c_s_x(int m, int n, int k, int ntests, int *seed,
 			     randomize_val <= RANDOMIZE_END;
 			     randomize_val++) {
 
-			  /* For the sake of speed, we throw out this case
-			     at random */
-			  if (((float) rand()) / ((float) RAND_MAX) >=
-			      test_prob)
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
-
 
 			  /* finally we are here to generate the test case */
 			  BLAS_cgemm_c_s_testgen(norm, order,
@@ -11146,12 +11077,9 @@ void do_test_cgemm_s_c_x(int m, int n, int k, int ntests, int *seed,
 			     randomize_val <= RANDOMIZE_END;
 			     randomize_val++) {
 
-			  /* For the sake of speed, we throw out this case
-			     at random */
-			  if (((float) rand()) / ((float) RAND_MAX) >=
-			      test_prob)
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
-
 
 			  /* finally we are here to generate the test case */
 			  BLAS_cgemm_s_c_testgen(norm, order,
@@ -11637,12 +11565,9 @@ void do_test_cgemm_s_s_x(int m, int n, int k, int ntests, int *seed,
 			     randomize_val <= RANDOMIZE_END;
 			     randomize_val++) {
 
-			  /* For the sake of speed, we throw out this case
-			     at random */
-			  if (((float) rand()) / ((float) RAND_MAX) >=
-			      test_prob)
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
-
 
 			  /* finally we are here to generate the test case */
 			  BLAS_cgemm_s_s_testgen(norm, order,
@@ -12128,12 +12053,9 @@ void do_test_zgemm_z_d_x(int m, int n, int k, int ntests, int *seed,
 			     randomize_val <= RANDOMIZE_END;
 			     randomize_val++) {
 
-			  /* For the sake of speed, we throw out this case
-			     at random */
-			  if (((float) rand()) / ((float) RAND_MAX) >=
-			      test_prob)
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
-
 
 			  /* finally we are here to generate the test case */
 			  BLAS_zgemm_z_d_testgen(norm, order,
@@ -12620,12 +12542,9 @@ void do_test_zgemm_d_z_x(int m, int n, int k, int ntests, int *seed,
 			     randomize_val <= RANDOMIZE_END;
 			     randomize_val++) {
 
-			  /* For the sake of speed, we throw out this case
-			     at random */
-			  if (((float) rand()) / ((float) RAND_MAX) >=
-			      test_prob)
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
-
 
 			  /* finally we are here to generate the test case */
 			  BLAS_zgemm_d_z_testgen(norm, order,
@@ -13112,12 +13031,9 @@ void do_test_zgemm_d_d_x(int m, int n, int k, int ntests, int *seed,
 			     randomize_val <= RANDOMIZE_END;
 			     randomize_val++) {
 
-			  /* For the sake of speed, we throw out this case
-			     at random */
-			  if (((float) rand()) / ((float) RAND_MAX) >=
-			      test_prob)
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
-
 
 			  /* finally we are here to generate the test case */
 			  BLAS_zgemm_d_d_testgen(norm, order,

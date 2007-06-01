@@ -281,12 +281,9 @@ double do_test_dtpmv_s(int n,
 
 		/* number of tests */
 		for (i = 0; i < ntests; i++) {
-		  if (((float) rand()) / ((float) RAND_MAX + 1) >= test_prob) {
-		    /* for the sake of speed, 
-		     * we throw out this case
-		     * at random */
+		  /* For the sake of speed, we throw out this case at random */
+		  if (xrand(seed) >= test_prob)
 		    continue;
-		  }
 
 		  BLAS_dtpmv_s_testgen(norm, order_type, uplo_type,
 				       trans_type, diag_type, n,
@@ -796,12 +793,9 @@ double do_test_ztpmv_c(int n,
 
 		/* number of tests */
 		for (i = 0; i < ntests; i++) {
-		  if (((float) rand()) / ((float) RAND_MAX + 1) >= test_prob) {
-		    /* for the sake of speed, 
-		     * we throw out this case
-		     * at random */
+		  /* For the sake of speed, we throw out this case at random */
+		  if (xrand(seed) >= test_prob)
 		    continue;
-		  }
 
 		  BLAS_ztpmv_c_testgen(norm, order_type, uplo_type,
 				       trans_type, diag_type, n,
@@ -1315,12 +1309,9 @@ double do_test_ctpmv_s(int n,
 
 		/* number of tests */
 		for (i = 0; i < ntests; i++) {
-		  if (((float) rand()) / ((float) RAND_MAX + 1) >= test_prob) {
-		    /* for the sake of speed, 
-		     * we throw out this case
-		     * at random */
+		  /* For the sake of speed, we throw out this case at random */
+		  if (xrand(seed) >= test_prob)
 		    continue;
-		  }
 
 		  BLAS_ctpmv_s_testgen(norm, order_type, uplo_type,
 				       trans_type, diag_type, n,
@@ -1834,12 +1825,9 @@ double do_test_ztpmv_d(int n,
 
 		/* number of tests */
 		for (i = 0; i < ntests; i++) {
-		  if (((float) rand()) / ((float) RAND_MAX + 1) >= test_prob) {
-		    /* for the sake of speed, 
-		     * we throw out this case
-		     * at random */
+		  /* For the sake of speed, we throw out this case at random */
+		  if (xrand(seed) >= test_prob)
 		    continue;
-		  }
 
 		  BLAS_ztpmv_d_testgen(norm, order_type, uplo_type,
 				       trans_type, diag_type, n,
@@ -2370,13 +2358,9 @@ double do_test_stpmv_x(int n,
 
 		  /* number of tests */
 		  for (i = 0; i < ntests; i++) {
-		    if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			test_prob) {
-		      /* for the sake of speed, 
-		       * we throw out this case
-		       * at random */
+		    /* For the sake of speed, we throw out this case at random */
+		    if (xrand(seed) >= test_prob)
 		      continue;
-		    }
 
 		    BLAS_stpmv_testgen(norm, order_type, uplo_type,
 				       trans_type, diag_type, n,
@@ -2903,13 +2887,9 @@ double do_test_dtpmv_x(int n,
 
 		  /* number of tests */
 		  for (i = 0; i < ntests; i++) {
-		    if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			test_prob) {
-		      /* for the sake of speed, 
-		       * we throw out this case
-		       * at random */
+		    /* For the sake of speed, we throw out this case at random */
+		    if (xrand(seed) >= test_prob)
 		      continue;
-		    }
 
 		    BLAS_dtpmv_testgen(norm, order_type, uplo_type,
 				       trans_type, diag_type, n,
@@ -3438,13 +3418,9 @@ double do_test_ctpmv_x(int n,
 
 		  /* number of tests */
 		  for (i = 0; i < ntests; i++) {
-		    if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			test_prob) {
-		      /* for the sake of speed, 
-		       * we throw out this case
-		       * at random */
+		    /* For the sake of speed, we throw out this case at random */
+		    if (xrand(seed) >= test_prob)
 		      continue;
-		    }
 
 		    BLAS_ctpmv_testgen(norm, order_type, uplo_type,
 				       trans_type, diag_type, n,
@@ -3977,13 +3953,9 @@ double do_test_ztpmv_x(int n,
 
 		  /* number of tests */
 		  for (i = 0; i < ntests; i++) {
-		    if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			test_prob) {
-		      /* for the sake of speed, 
-		       * we throw out this case
-		       * at random */
+		    /* For the sake of speed, we throw out this case at random */
+		    if (xrand(seed) >= test_prob)
 		      continue;
-		    }
 
 		    BLAS_ztpmv_testgen(norm, order_type, uplo_type,
 				       trans_type, diag_type, n,
@@ -4515,13 +4487,9 @@ double do_test_dtpmv_s_x(int n,
 
 		  /* number of tests */
 		  for (i = 0; i < ntests; i++) {
-		    if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			test_prob) {
-		      /* for the sake of speed, 
-		       * we throw out this case
-		       * at random */
+		    /* For the sake of speed, we throw out this case at random */
+		    if (xrand(seed) >= test_prob)
 		      continue;
-		    }
 
 		    BLAS_dtpmv_s_testgen(norm, order_type, uplo_type,
 					 trans_type, diag_type, n,
@@ -5052,13 +5020,9 @@ double do_test_ztpmv_c_x(int n,
 
 		  /* number of tests */
 		  for (i = 0; i < ntests; i++) {
-		    if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			test_prob) {
-		      /* for the sake of speed, 
-		       * we throw out this case
-		       * at random */
+		    /* For the sake of speed, we throw out this case at random */
+		    if (xrand(seed) >= test_prob)
 		      continue;
-		    }
 
 		    BLAS_ztpmv_c_testgen(norm, order_type, uplo_type,
 					 trans_type, diag_type, n,
@@ -5593,13 +5557,9 @@ double do_test_ctpmv_s_x(int n,
 
 		  /* number of tests */
 		  for (i = 0; i < ntests; i++) {
-		    if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			test_prob) {
-		      /* for the sake of speed, 
-		       * we throw out this case
-		       * at random */
+		    /* For the sake of speed, we throw out this case at random */
+		    if (xrand(seed) >= test_prob)
 		      continue;
-		    }
 
 		    BLAS_ctpmv_s_testgen(norm, order_type, uplo_type,
 					 trans_type, diag_type, n,
@@ -6134,13 +6094,9 @@ double do_test_ztpmv_d_x(int n,
 
 		  /* number of tests */
 		  for (i = 0; i < ntests; i++) {
-		    if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			test_prob) {
-		      /* for the sake of speed, 
-		       * we throw out this case
-		       * at random */
+		    /* For the sake of speed, we throw out this case at random */
+		    if (xrand(seed) >= test_prob)
 		      continue;
-		    }
 
 		    BLAS_ztpmv_d_testgen(norm, order_type, uplo_type,
 					 trans_type, diag_type, n,

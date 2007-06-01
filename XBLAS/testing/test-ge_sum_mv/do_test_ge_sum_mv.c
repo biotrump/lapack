@@ -272,12 +272,9 @@ void do_test_dge_sum_mv_d_s
 		for (randomize_val = RANDOMIZE_START;
 		     randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-		  if (((float) rand()) / ((float) RAND_MAX + 1) >= test_prob) {
-		    /* for the sake of speed, 
-		       we throw out this case
-		       at random */
+		  /* For the sake of speed, we throw out this case at random */
+		  if (xrand(seed) >= test_prob)
 		    continue;
-		  }
 
 		  /* finally we are here to generate the test case */
 		  /* alpha_use, a_use, B_use are the generated alpha, a, B
@@ -704,12 +701,9 @@ void do_test_dge_sum_mv_s_d
 		for (randomize_val = RANDOMIZE_START;
 		     randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-		  if (((float) rand()) / ((float) RAND_MAX + 1) >= test_prob) {
-		    /* for the sake of speed, 
-		       we throw out this case
-		       at random */
+		  /* For the sake of speed, we throw out this case at random */
+		  if (xrand(seed) >= test_prob)
 		    continue;
-		  }
 
 		  /* finally we are here to generate the test case */
 		  /* alpha_use, a_use, B_use are the generated alpha, a, B
@@ -1136,12 +1130,9 @@ void do_test_dge_sum_mv_s_s
 		for (randomize_val = RANDOMIZE_START;
 		     randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-		  if (((float) rand()) / ((float) RAND_MAX + 1) >= test_prob) {
-		    /* for the sake of speed, 
-		       we throw out this case
-		       at random */
+		  /* For the sake of speed, we throw out this case at random */
+		  if (xrand(seed) >= test_prob)
 		    continue;
-		  }
 
 		  /* finally we are here to generate the test case */
 		  /* alpha_use, a_use, B_use are the generated alpha, a, B
@@ -1573,12 +1564,9 @@ void do_test_zge_sum_mv_z_c
 		for (randomize_val = RANDOMIZE_START;
 		     randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-		  if (((float) rand()) / ((float) RAND_MAX + 1) >= test_prob) {
-		    /* for the sake of speed, 
-		       we throw out this case
-		       at random */
+		  /* For the sake of speed, we throw out this case at random */
+		  if (xrand(seed) >= test_prob)
 		    continue;
-		  }
 
 		  /* finally we are here to generate the test case */
 		  /* alpha_use, a_use, B_use are the generated alpha, a, B
@@ -2014,12 +2002,9 @@ void do_test_zge_sum_mv_c_z
 		for (randomize_val = RANDOMIZE_START;
 		     randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-		  if (((float) rand()) / ((float) RAND_MAX + 1) >= test_prob) {
-		    /* for the sake of speed, 
-		       we throw out this case
-		       at random */
+		  /* For the sake of speed, we throw out this case at random */
+		  if (xrand(seed) >= test_prob)
 		    continue;
-		  }
 
 		  /* finally we are here to generate the test case */
 		  /* alpha_use, a_use, B_use are the generated alpha, a, B
@@ -2455,12 +2440,9 @@ void do_test_zge_sum_mv_c_c
 		for (randomize_val = RANDOMIZE_START;
 		     randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-		  if (((float) rand()) / ((float) RAND_MAX + 1) >= test_prob) {
-		    /* for the sake of speed, 
-		       we throw out this case
-		       at random */
+		  /* For the sake of speed, we throw out this case at random */
+		  if (xrand(seed) >= test_prob)
 		    continue;
-		  }
 
 		  /* finally we are here to generate the test case */
 		  /* alpha_use, a_use, B_use are the generated alpha, a, B
@@ -2896,12 +2878,9 @@ void do_test_cge_sum_mv_c_s
 		for (randomize_val = RANDOMIZE_START;
 		     randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-		  if (((float) rand()) / ((float) RAND_MAX + 1) >= test_prob) {
-		    /* for the sake of speed, 
-		       we throw out this case
-		       at random */
+		  /* For the sake of speed, we throw out this case at random */
+		  if (xrand(seed) >= test_prob)
 		    continue;
-		  }
 
 		  /* finally we are here to generate the test case */
 		  /* alpha_use, a_use, B_use are the generated alpha, a, B
@@ -3335,12 +3314,9 @@ void do_test_cge_sum_mv_s_c
 		for (randomize_val = RANDOMIZE_START;
 		     randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-		  if (((float) rand()) / ((float) RAND_MAX + 1) >= test_prob) {
-		    /* for the sake of speed, 
-		       we throw out this case
-		       at random */
+		  /* For the sake of speed, we throw out this case at random */
+		  if (xrand(seed) >= test_prob)
 		    continue;
-		  }
 
 		  /* finally we are here to generate the test case */
 		  /* alpha_use, a_use, B_use are the generated alpha, a, B
@@ -3774,12 +3750,9 @@ void do_test_cge_sum_mv_s_s
 		for (randomize_val = RANDOMIZE_START;
 		     randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-		  if (((float) rand()) / ((float) RAND_MAX + 1) >= test_prob) {
-		    /* for the sake of speed, 
-		       we throw out this case
-		       at random */
+		  /* For the sake of speed, we throw out this case at random */
+		  if (xrand(seed) >= test_prob)
 		    continue;
-		  }
 
 		  /* finally we are here to generate the test case */
 		  /* alpha_use, a_use, B_use are the generated alpha, a, B
@@ -4215,12 +4188,9 @@ void do_test_zge_sum_mv_z_d
 		for (randomize_val = RANDOMIZE_START;
 		     randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-		  if (((float) rand()) / ((float) RAND_MAX + 1) >= test_prob) {
-		    /* for the sake of speed, 
-		       we throw out this case
-		       at random */
+		  /* For the sake of speed, we throw out this case at random */
+		  if (xrand(seed) >= test_prob)
 		    continue;
-		  }
 
 		  /* finally we are here to generate the test case */
 		  /* alpha_use, a_use, B_use are the generated alpha, a, B
@@ -4654,12 +4624,9 @@ void do_test_zge_sum_mv_d_z
 		for (randomize_val = RANDOMIZE_START;
 		     randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-		  if (((float) rand()) / ((float) RAND_MAX + 1) >= test_prob) {
-		    /* for the sake of speed, 
-		       we throw out this case
-		       at random */
+		  /* For the sake of speed, we throw out this case at random */
+		  if (xrand(seed) >= test_prob)
 		    continue;
-		  }
 
 		  /* finally we are here to generate the test case */
 		  /* alpha_use, a_use, B_use are the generated alpha, a, B
@@ -5093,12 +5060,9 @@ void do_test_zge_sum_mv_d_d
 		for (randomize_val = RANDOMIZE_START;
 		     randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-		  if (((float) rand()) / ((float) RAND_MAX + 1) >= test_prob) {
-		    /* for the sake of speed, 
-		       we throw out this case
-		       at random */
+		  /* For the sake of speed, we throw out this case at random */
+		  if (xrand(seed) >= test_prob)
 		    continue;
-		  }
 
 		  /* finally we are here to generate the test case */
 		  /* alpha_use, a_use, B_use are the generated alpha, a, B
@@ -5548,13 +5512,9 @@ void do_test_sge_sum_mv_x
 		  for (randomize_val = RANDOMIZE_START;
 		       randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-		    if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			test_prob) {
-		      /* for the sake of speed, 
-		         we throw out this case
-		         at random */
+		    /* For the sake of speed, we throw out this case at random */
+		    if (xrand(seed) >= test_prob)
 		      continue;
-		    }
 
 		    /* finally we are here to generate the test case */
 		    /* alpha_use, a_use, B_use are the generated alpha, a, B
@@ -6003,13 +5963,9 @@ void do_test_dge_sum_mv_x
 		  for (randomize_val = RANDOMIZE_START;
 		       randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-		    if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			test_prob) {
-		      /* for the sake of speed, 
-		         we throw out this case
-		         at random */
+		    /* For the sake of speed, we throw out this case at random */
+		    if (xrand(seed) >= test_prob)
 		      continue;
-		    }
 
 		    /* finally we are here to generate the test case */
 		    /* alpha_use, a_use, B_use are the generated alpha, a, B
@@ -6463,13 +6419,9 @@ void do_test_cge_sum_mv_x
 		  for (randomize_val = RANDOMIZE_START;
 		       randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-		    if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			test_prob) {
-		      /* for the sake of speed, 
-		         we throw out this case
-		         at random */
+		    /* For the sake of speed, we throw out this case at random */
+		    if (xrand(seed) >= test_prob)
 		      continue;
-		    }
 
 		    /* finally we are here to generate the test case */
 		    /* alpha_use, a_use, B_use are the generated alpha, a, B
@@ -6927,13 +6879,9 @@ void do_test_zge_sum_mv_x
 		  for (randomize_val = RANDOMIZE_START;
 		       randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-		    if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			test_prob) {
-		      /* for the sake of speed, 
-		         we throw out this case
-		         at random */
+		    /* For the sake of speed, we throw out this case at random */
+		    if (xrand(seed) >= test_prob)
 		      continue;
-		    }
 
 		    /* finally we are here to generate the test case */
 		    /* alpha_use, a_use, B_use are the generated alpha, a, B
@@ -7386,13 +7334,9 @@ void do_test_dge_sum_mv_d_s_x
 		  for (randomize_val = RANDOMIZE_START;
 		       randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-		    if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			test_prob) {
-		      /* for the sake of speed, 
-		         we throw out this case
-		         at random */
+		    /* For the sake of speed, we throw out this case at random */
+		    if (xrand(seed) >= test_prob)
 		      continue;
-		    }
 
 		    /* finally we are here to generate the test case */
 		    /* alpha_use, a_use, B_use are the generated alpha, a, B
@@ -7843,13 +7787,9 @@ void do_test_dge_sum_mv_s_d_x
 		  for (randomize_val = RANDOMIZE_START;
 		       randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-		    if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			test_prob) {
-		      /* for the sake of speed, 
-		         we throw out this case
-		         at random */
+		    /* For the sake of speed, we throw out this case at random */
+		    if (xrand(seed) >= test_prob)
 		      continue;
-		    }
 
 		    /* finally we are here to generate the test case */
 		    /* alpha_use, a_use, B_use are the generated alpha, a, B
@@ -8300,13 +8240,9 @@ void do_test_dge_sum_mv_s_s_x
 		  for (randomize_val = RANDOMIZE_START;
 		       randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-		    if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			test_prob) {
-		      /* for the sake of speed, 
-		         we throw out this case
-		         at random */
+		    /* For the sake of speed, we throw out this case at random */
+		    if (xrand(seed) >= test_prob)
 		      continue;
-		    }
 
 		    /* finally we are here to generate the test case */
 		    /* alpha_use, a_use, B_use are the generated alpha, a, B
@@ -8762,13 +8698,9 @@ void do_test_zge_sum_mv_z_c_x
 		  for (randomize_val = RANDOMIZE_START;
 		       randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-		    if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			test_prob) {
-		      /* for the sake of speed, 
-		         we throw out this case
-		         at random */
+		    /* For the sake of speed, we throw out this case at random */
+		    if (xrand(seed) >= test_prob)
 		      continue;
-		    }
 
 		    /* finally we are here to generate the test case */
 		    /* alpha_use, a_use, B_use are the generated alpha, a, B
@@ -9228,13 +9160,9 @@ void do_test_zge_sum_mv_c_z_x
 		  for (randomize_val = RANDOMIZE_START;
 		       randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-		    if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			test_prob) {
-		      /* for the sake of speed, 
-		         we throw out this case
-		         at random */
+		    /* For the sake of speed, we throw out this case at random */
+		    if (xrand(seed) >= test_prob)
 		      continue;
-		    }
 
 		    /* finally we are here to generate the test case */
 		    /* alpha_use, a_use, B_use are the generated alpha, a, B
@@ -9694,13 +9622,9 @@ void do_test_zge_sum_mv_c_c_x
 		  for (randomize_val = RANDOMIZE_START;
 		       randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-		    if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			test_prob) {
-		      /* for the sake of speed, 
-		         we throw out this case
-		         at random */
+		    /* For the sake of speed, we throw out this case at random */
+		    if (xrand(seed) >= test_prob)
 		      continue;
-		    }
 
 		    /* finally we are here to generate the test case */
 		    /* alpha_use, a_use, B_use are the generated alpha, a, B
@@ -10160,13 +10084,9 @@ void do_test_cge_sum_mv_c_s_x
 		  for (randomize_val = RANDOMIZE_START;
 		       randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-		    if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			test_prob) {
-		      /* for the sake of speed, 
-		         we throw out this case
-		         at random */
+		    /* For the sake of speed, we throw out this case at random */
+		    if (xrand(seed) >= test_prob)
 		      continue;
-		    }
 
 		    /* finally we are here to generate the test case */
 		    /* alpha_use, a_use, B_use are the generated alpha, a, B
@@ -10624,13 +10544,9 @@ void do_test_cge_sum_mv_s_c_x
 		  for (randomize_val = RANDOMIZE_START;
 		       randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-		    if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			test_prob) {
-		      /* for the sake of speed, 
-		         we throw out this case
-		         at random */
+		    /* For the sake of speed, we throw out this case at random */
+		    if (xrand(seed) >= test_prob)
 		      continue;
-		    }
 
 		    /* finally we are here to generate the test case */
 		    /* alpha_use, a_use, B_use are the generated alpha, a, B
@@ -11088,13 +11004,9 @@ void do_test_cge_sum_mv_s_s_x
 		  for (randomize_val = RANDOMIZE_START;
 		       randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-		    if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			test_prob) {
-		      /* for the sake of speed, 
-		         we throw out this case
-		         at random */
+		    /* For the sake of speed, we throw out this case at random */
+		    if (xrand(seed) >= test_prob)
 		      continue;
-		    }
 
 		    /* finally we are here to generate the test case */
 		    /* alpha_use, a_use, B_use are the generated alpha, a, B
@@ -11554,13 +11466,9 @@ void do_test_zge_sum_mv_z_d_x
 		  for (randomize_val = RANDOMIZE_START;
 		       randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-		    if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			test_prob) {
-		      /* for the sake of speed, 
-		         we throw out this case
-		         at random */
+		    /* For the sake of speed, we throw out this case at random */
+		    if (xrand(seed) >= test_prob)
 		      continue;
-		    }
 
 		    /* finally we are here to generate the test case */
 		    /* alpha_use, a_use, B_use are the generated alpha, a, B
@@ -12018,13 +11926,9 @@ void do_test_zge_sum_mv_d_z_x
 		  for (randomize_val = RANDOMIZE_START;
 		       randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-		    if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			test_prob) {
-		      /* for the sake of speed, 
-		         we throw out this case
-		         at random */
+		    /* For the sake of speed, we throw out this case at random */
+		    if (xrand(seed) >= test_prob)
 		      continue;
-		    }
 
 		    /* finally we are here to generate the test case */
 		    /* alpha_use, a_use, B_use are the generated alpha, a, B
@@ -12482,13 +12386,9 @@ void do_test_zge_sum_mv_d_d_x
 		  for (randomize_val = RANDOMIZE_START;
 		       randomize_val <= RANDOMIZE_END; randomize_val++) {
 
-		    if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			test_prob) {
-		      /* for the sake of speed, 
-		         we throw out this case
-		         at random */
+		    /* For the sake of speed, we throw out this case at random */
+		    if (xrand(seed) >= test_prob)
 		      continue;
-		    }
 
 		    /* finally we are here to generate the test case */
 		    /* alpha_use, a_use, B_use are the generated alpha, a, B

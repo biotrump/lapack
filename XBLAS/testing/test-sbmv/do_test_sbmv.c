@@ -284,13 +284,9 @@ void do_test_dsbmv_d_s
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 			saved_seed = *seed;
-			if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			    test_prob) {
-			  /* for the sake of speed, 
-			     we throw out this case
-			     at random */
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
-			}
 
 			/* finally we are here to generate the test case */
 			BLAS_dsbmv_d_s_testgen(norm, order_type,
@@ -696,13 +692,9 @@ void do_test_dsbmv_s_d
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 			saved_seed = *seed;
-			if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			    test_prob) {
-			  /* for the sake of speed, 
-			     we throw out this case
-			     at random */
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
-			}
 
 			/* finally we are here to generate the test case */
 			BLAS_dsbmv_s_d_testgen(norm, order_type,
@@ -1108,13 +1100,9 @@ void do_test_dsbmv_s_s
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 			saved_seed = *seed;
-			if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			    test_prob) {
-			  /* for the sake of speed, 
-			     we throw out this case
-			     at random */
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
-			}
 
 			/* finally we are here to generate the test case */
 			BLAS_dsbmv_s_s_testgen(norm, order_type,
@@ -1523,13 +1511,9 @@ void do_test_zsbmv_z_c
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 			saved_seed = *seed;
-			if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			    test_prob) {
-			  /* for the sake of speed, 
-			     we throw out this case
-			     at random */
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
-			}
 
 			/* finally we are here to generate the test case */
 			BLAS_zsbmv_z_c_testgen(norm, order_type,
@@ -1943,13 +1927,9 @@ void do_test_zsbmv_c_z
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 			saved_seed = *seed;
-			if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			    test_prob) {
-			  /* for the sake of speed, 
-			     we throw out this case
-			     at random */
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
-			}
 
 			/* finally we are here to generate the test case */
 			BLAS_zsbmv_c_z_testgen(norm, order_type,
@@ -2363,13 +2343,9 @@ void do_test_zsbmv_c_c
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 			saved_seed = *seed;
-			if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			    test_prob) {
-			  /* for the sake of speed, 
-			     we throw out this case
-			     at random */
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
-			}
 
 			/* finally we are here to generate the test case */
 			BLAS_zsbmv_c_c_testgen(norm, order_type,
@@ -2783,13 +2759,9 @@ void do_test_csbmv_c_s
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 			saved_seed = *seed;
-			if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			    test_prob) {
-			  /* for the sake of speed, 
-			     we throw out this case
-			     at random */
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
-			}
 
 			/* finally we are here to generate the test case */
 			BLAS_csbmv_c_s_testgen(norm, order_type,
@@ -3203,13 +3175,9 @@ void do_test_csbmv_s_c
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 			saved_seed = *seed;
-			if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			    test_prob) {
-			  /* for the sake of speed, 
-			     we throw out this case
-			     at random */
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
-			}
 
 			/* finally we are here to generate the test case */
 			BLAS_csbmv_s_c_testgen(norm, order_type,
@@ -3623,13 +3591,9 @@ void do_test_csbmv_s_s
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 			saved_seed = *seed;
-			if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			    test_prob) {
-			  /* for the sake of speed, 
-			     we throw out this case
-			     at random */
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
-			}
 
 			/* finally we are here to generate the test case */
 			BLAS_csbmv_s_s_testgen(norm, order_type,
@@ -4043,13 +4007,9 @@ void do_test_zsbmv_z_d
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 			saved_seed = *seed;
-			if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			    test_prob) {
-			  /* for the sake of speed, 
-			     we throw out this case
-			     at random */
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
-			}
 
 			/* finally we are here to generate the test case */
 			BLAS_zsbmv_z_d_testgen(norm, order_type,
@@ -4463,13 +4423,9 @@ void do_test_zsbmv_d_z
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 			saved_seed = *seed;
-			if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			    test_prob) {
-			  /* for the sake of speed, 
-			     we throw out this case
-			     at random */
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
-			}
 
 			/* finally we are here to generate the test case */
 			BLAS_zsbmv_d_z_testgen(norm, order_type,
@@ -4883,13 +4839,9 @@ void do_test_zsbmv_d_d
 			   randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 			saved_seed = *seed;
-			if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			    test_prob) {
-			  /* for the sake of speed, 
-			     we throw out this case
-			     at random */
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
-			}
 
 			/* finally we are here to generate the test case */
 			BLAS_zsbmv_d_d_testgen(norm, order_type,
@@ -5320,13 +5272,9 @@ void do_test_ssbmv_x
 			     randomize_val++) {
 
 			  saved_seed = *seed;
-			  if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			      test_prob) {
-			    /* for the sake of speed, 
-			       we throw out this case
-			       at random */
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
-			  }
 
 			  /* finally we are here to generate the test case */
 			  BLAS_ssbmv_testgen(norm, order_type,
@@ -5753,13 +5701,9 @@ void do_test_dsbmv_x
 			     randomize_val++) {
 
 			  saved_seed = *seed;
-			  if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			      test_prob) {
-			    /* for the sake of speed, 
-			       we throw out this case
-			       at random */
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
-			  }
 
 			  /* finally we are here to generate the test case */
 			  BLAS_dsbmv_testgen(norm, order_type,
@@ -6189,13 +6133,9 @@ void do_test_csbmv_x
 			     randomize_val++) {
 
 			  saved_seed = *seed;
-			  if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			      test_prob) {
-			    /* for the sake of speed, 
-			       we throw out this case
-			       at random */
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
-			  }
 
 			  /* finally we are here to generate the test case */
 			  BLAS_csbmv_testgen(norm, order_type,
@@ -6630,13 +6570,9 @@ void do_test_zsbmv_x
 			     randomize_val++) {
 
 			  saved_seed = *seed;
-			  if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			      test_prob) {
-			    /* for the sake of speed, 
-			       we throw out this case
-			       at random */
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
-			  }
 
 			  /* finally we are here to generate the test case */
 			  BLAS_zsbmv_testgen(norm, order_type,
@@ -7069,13 +7005,9 @@ void do_test_dsbmv_d_s_x
 			     randomize_val++) {
 
 			  saved_seed = *seed;
-			  if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			      test_prob) {
-			    /* for the sake of speed, 
-			       we throw out this case
-			       at random */
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
-			  }
 
 			  /* finally we are here to generate the test case */
 			  BLAS_dsbmv_d_s_testgen(norm, order_type,
@@ -7503,13 +7435,9 @@ void do_test_dsbmv_s_d_x
 			     randomize_val++) {
 
 			  saved_seed = *seed;
-			  if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			      test_prob) {
-			    /* for the sake of speed, 
-			       we throw out this case
-			       at random */
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
-			  }
 
 			  /* finally we are here to generate the test case */
 			  BLAS_dsbmv_s_d_testgen(norm, order_type,
@@ -7937,13 +7865,9 @@ void do_test_dsbmv_s_s_x
 			     randomize_val++) {
 
 			  saved_seed = *seed;
-			  if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			      test_prob) {
-			    /* for the sake of speed, 
-			       we throw out this case
-			       at random */
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
-			  }
 
 			  /* finally we are here to generate the test case */
 			  BLAS_dsbmv_s_s_testgen(norm, order_type,
@@ -8374,13 +8298,9 @@ void do_test_zsbmv_z_c_x
 			     randomize_val++) {
 
 			  saved_seed = *seed;
-			  if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			      test_prob) {
-			    /* for the sake of speed, 
-			       we throw out this case
-			       at random */
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
-			  }
 
 			  /* finally we are here to generate the test case */
 			  BLAS_zsbmv_z_c_testgen(norm, order_type,
@@ -8817,13 +8737,9 @@ void do_test_zsbmv_c_z_x
 			     randomize_val++) {
 
 			  saved_seed = *seed;
-			  if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			      test_prob) {
-			    /* for the sake of speed, 
-			       we throw out this case
-			       at random */
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
-			  }
 
 			  /* finally we are here to generate the test case */
 			  BLAS_zsbmv_c_z_testgen(norm, order_type,
@@ -9260,13 +9176,9 @@ void do_test_zsbmv_c_c_x
 			     randomize_val++) {
 
 			  saved_seed = *seed;
-			  if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			      test_prob) {
-			    /* for the sake of speed, 
-			       we throw out this case
-			       at random */
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
-			  }
 
 			  /* finally we are here to generate the test case */
 			  BLAS_zsbmv_c_c_testgen(norm, order_type,
@@ -9703,13 +9615,9 @@ void do_test_csbmv_c_s_x
 			     randomize_val++) {
 
 			  saved_seed = *seed;
-			  if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			      test_prob) {
-			    /* for the sake of speed, 
-			       we throw out this case
-			       at random */
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
-			  }
 
 			  /* finally we are here to generate the test case */
 			  BLAS_csbmv_c_s_testgen(norm, order_type,
@@ -10145,13 +10053,9 @@ void do_test_csbmv_s_c_x
 			     randomize_val++) {
 
 			  saved_seed = *seed;
-			  if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			      test_prob) {
-			    /* for the sake of speed, 
-			       we throw out this case
-			       at random */
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
-			  }
 
 			  /* finally we are here to generate the test case */
 			  BLAS_csbmv_s_c_testgen(norm, order_type,
@@ -10587,13 +10491,9 @@ void do_test_csbmv_s_s_x
 			     randomize_val++) {
 
 			  saved_seed = *seed;
-			  if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			      test_prob) {
-			    /* for the sake of speed, 
-			       we throw out this case
-			       at random */
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
-			  }
 
 			  /* finally we are here to generate the test case */
 			  BLAS_csbmv_s_s_testgen(norm, order_type,
@@ -11029,13 +10929,9 @@ void do_test_zsbmv_z_d_x
 			     randomize_val++) {
 
 			  saved_seed = *seed;
-			  if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			      test_prob) {
-			    /* for the sake of speed, 
-			       we throw out this case
-			       at random */
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
-			  }
 
 			  /* finally we are here to generate the test case */
 			  BLAS_zsbmv_z_d_testgen(norm, order_type,
@@ -11472,13 +11368,9 @@ void do_test_zsbmv_d_z_x
 			     randomize_val++) {
 
 			  saved_seed = *seed;
-			  if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			      test_prob) {
-			    /* for the sake of speed, 
-			       we throw out this case
-			       at random */
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
-			  }
 
 			  /* finally we are here to generate the test case */
 			  BLAS_zsbmv_d_z_testgen(norm, order_type,
@@ -11915,13 +11807,9 @@ void do_test_zsbmv_d_d_x
 			     randomize_val++) {
 
 			  saved_seed = *seed;
-			  if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			      test_prob) {
-			    /* for the sake of speed, 
-			       we throw out this case
-			       at random */
+			  /* For the sake of speed, we throw out this case at random */
+			  if (xrand(seed) >= test_prob)
 			    continue;
-			  }
 
 			  /* finally we are here to generate the test case */
 			  BLAS_zsbmv_d_d_testgen(norm, order_type,

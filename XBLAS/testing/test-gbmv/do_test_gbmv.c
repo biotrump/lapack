@@ -335,9 +335,8 @@ double do_test_dgbmv_d_s(int m, int n,
 			  (order_type == blas_colmajor && lda < m))
 			continue;
 
-		      /* For the sake of speed, we throw out this case
-		         at random */
-		      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
 
 		      /* in the trivial cases, no need to run testgen */
@@ -948,9 +947,8 @@ double do_test_dgbmv_s_d(int m, int n,
 			  (order_type == blas_colmajor && lda < m))
 			continue;
 
-		      /* For the sake of speed, we throw out this case
-		         at random */
-		      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
 
 		      /* in the trivial cases, no need to run testgen */
@@ -1561,9 +1559,8 @@ double do_test_dgbmv_s_s(int m, int n,
 			  (order_type == blas_colmajor && lda < m))
 			continue;
 
-		      /* For the sake of speed, we throw out this case
-		         at random */
-		      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
 
 		      /* in the trivial cases, no need to run testgen */
@@ -2178,9 +2175,8 @@ double do_test_zgbmv_z_c(int m, int n,
 			  (order_type == blas_colmajor && lda < m))
 			continue;
 
-		      /* For the sake of speed, we throw out this case
-		         at random */
-		      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
 
 		      /* in the trivial cases, no need to run testgen */
@@ -2805,9 +2801,8 @@ double do_test_zgbmv_c_z(int m, int n,
 			  (order_type == blas_colmajor && lda < m))
 			continue;
 
-		      /* For the sake of speed, we throw out this case
-		         at random */
-		      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
 
 		      /* in the trivial cases, no need to run testgen */
@@ -3432,9 +3427,8 @@ double do_test_zgbmv_c_c(int m, int n,
 			  (order_type == blas_colmajor && lda < m))
 			continue;
 
-		      /* For the sake of speed, we throw out this case
-		         at random */
-		      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
 
 		      /* in the trivial cases, no need to run testgen */
@@ -4059,9 +4053,8 @@ double do_test_cgbmv_c_s(int m, int n,
 			  (order_type == blas_colmajor && lda < m))
 			continue;
 
-		      /* For the sake of speed, we throw out this case
-		         at random */
-		      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
 
 		      /* in the trivial cases, no need to run testgen */
@@ -4682,9 +4675,8 @@ double do_test_cgbmv_s_c(int m, int n,
 			  (order_type == blas_colmajor && lda < m))
 			continue;
 
-		      /* For the sake of speed, we throw out this case
-		         at random */
-		      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
 
 		      /* in the trivial cases, no need to run testgen */
@@ -5307,9 +5299,8 @@ double do_test_cgbmv_s_s(int m, int n,
 			  (order_type == blas_colmajor && lda < m))
 			continue;
 
-		      /* For the sake of speed, we throw out this case
-		         at random */
-		      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
 
 		      /* in the trivial cases, no need to run testgen */
@@ -5931,9 +5922,8 @@ double do_test_zgbmv_z_d(int m, int n,
 			  (order_type == blas_colmajor && lda < m))
 			continue;
 
-		      /* For the sake of speed, we throw out this case
-		         at random */
-		      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
 
 		      /* in the trivial cases, no need to run testgen */
@@ -6555,9 +6545,8 @@ double do_test_zgbmv_d_z(int m, int n,
 			  (order_type == blas_colmajor && lda < m))
 			continue;
 
-		      /* For the sake of speed, we throw out this case
-		         at random */
-		      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
 
 		      /* in the trivial cases, no need to run testgen */
@@ -7181,9 +7170,8 @@ double do_test_zgbmv_d_d(int m, int n,
 			  (order_type == blas_colmajor && lda < m))
 			continue;
 
-		      /* For the sake of speed, we throw out this case
-		         at random */
-		      if (((float) rand()) / ((float) RAND_MAX) >= test_prob)
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
 
 		      /* in the trivial cases, no need to run testgen */
@@ -7820,10 +7808,8 @@ double do_test_sgbmv_x(int m, int n,
 			    (order_type == blas_colmajor && lda < m))
 			  continue;
 
-			/* For the sake of speed, we throw out this case
-			   at random */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    test_prob)
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
 
 			/* in the trivial cases, no need to run testgen */
@@ -8453,10 +8439,8 @@ double do_test_dgbmv_x(int m, int n,
 			    (order_type == blas_colmajor && lda < m))
 			  continue;
 
-			/* For the sake of speed, we throw out this case
-			   at random */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    test_prob)
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
 
 			/* in the trivial cases, no need to run testgen */
@@ -9090,10 +9074,8 @@ double do_test_cgbmv_x(int m, int n,
 			    (order_type == blas_colmajor && lda < m))
 			  continue;
 
-			/* For the sake of speed, we throw out this case
-			   at random */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    test_prob)
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
 
 			/* in the trivial cases, no need to run testgen */
@@ -9737,10 +9719,8 @@ double do_test_zgbmv_x(int m, int n,
 			    (order_type == blas_colmajor && lda < m))
 			  continue;
 
-			/* For the sake of speed, we throw out this case
-			   at random */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    test_prob)
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
 
 			/* in the trivial cases, no need to run testgen */
@@ -10382,10 +10362,8 @@ double do_test_dgbmv_d_s_x(int m, int n,
 			    (order_type == blas_colmajor && lda < m))
 			  continue;
 
-			/* For the sake of speed, we throw out this case
-			   at random */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    test_prob)
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
 
 			/* in the trivial cases, no need to run testgen */
@@ -11017,10 +10995,8 @@ double do_test_dgbmv_s_d_x(int m, int n,
 			    (order_type == blas_colmajor && lda < m))
 			  continue;
 
-			/* For the sake of speed, we throw out this case
-			   at random */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    test_prob)
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
 
 			/* in the trivial cases, no need to run testgen */
@@ -11652,10 +11628,8 @@ double do_test_dgbmv_s_s_x(int m, int n,
 			    (order_type == blas_colmajor && lda < m))
 			  continue;
 
-			/* For the sake of speed, we throw out this case
-			   at random */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    test_prob)
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
 
 			/* in the trivial cases, no need to run testgen */
@@ -12291,10 +12265,8 @@ double do_test_zgbmv_z_c_x(int m, int n,
 			    (order_type == blas_colmajor && lda < m))
 			  continue;
 
-			/* For the sake of speed, we throw out this case
-			   at random */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    test_prob)
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
 
 			/* in the trivial cases, no need to run testgen */
@@ -12941,10 +12913,8 @@ double do_test_zgbmv_c_z_x(int m, int n,
 			    (order_type == blas_colmajor && lda < m))
 			  continue;
 
-			/* For the sake of speed, we throw out this case
-			   at random */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    test_prob)
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
 
 			/* in the trivial cases, no need to run testgen */
@@ -13591,10 +13561,8 @@ double do_test_zgbmv_c_c_x(int m, int n,
 			    (order_type == blas_colmajor && lda < m))
 			  continue;
 
-			/* For the sake of speed, we throw out this case
-			   at random */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    test_prob)
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
 
 			/* in the trivial cases, no need to run testgen */
@@ -14241,10 +14209,8 @@ double do_test_cgbmv_c_s_x(int m, int n,
 			    (order_type == blas_colmajor && lda < m))
 			  continue;
 
-			/* For the sake of speed, we throw out this case
-			   at random */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    test_prob)
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
 
 			/* in the trivial cases, no need to run testgen */
@@ -14887,10 +14853,8 @@ double do_test_cgbmv_s_c_x(int m, int n,
 			    (order_type == blas_colmajor && lda < m))
 			  continue;
 
-			/* For the sake of speed, we throw out this case
-			   at random */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    test_prob)
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
 
 			/* in the trivial cases, no need to run testgen */
@@ -15535,10 +15499,8 @@ double do_test_cgbmv_s_s_x(int m, int n,
 			    (order_type == blas_colmajor && lda < m))
 			  continue;
 
-			/* For the sake of speed, we throw out this case
-			   at random */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    test_prob)
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
 
 			/* in the trivial cases, no need to run testgen */
@@ -16182,10 +16144,8 @@ double do_test_zgbmv_z_d_x(int m, int n,
 			    (order_type == blas_colmajor && lda < m))
 			  continue;
 
-			/* For the sake of speed, we throw out this case
-			   at random */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    test_prob)
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
 
 			/* in the trivial cases, no need to run testgen */
@@ -16829,10 +16789,8 @@ double do_test_zgbmv_d_z_x(int m, int n,
 			    (order_type == blas_colmajor && lda < m))
 			  continue;
 
-			/* For the sake of speed, we throw out this case
-			   at random */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    test_prob)
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
 
 			/* in the trivial cases, no need to run testgen */
@@ -17478,10 +17436,8 @@ double do_test_zgbmv_d_d_x(int m, int n,
 			    (order_type == blas_colmajor && lda < m))
 			  continue;
 
-			/* For the sake of speed, we throw out this case
-			   at random */
-			if (((float) rand()) / ((float) RAND_MAX) >=
-			    test_prob)
+			/* For the sake of speed, we throw out this case at random */
+			if (xrand(seed) >= test_prob)
 			  continue;
 
 			/* in the trivial cases, no need to run testgen */

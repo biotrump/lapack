@@ -252,13 +252,9 @@ void do_test_dspmv_d_s(int n,
 		       randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 		    saved_seed = *seed;
-		    if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			test_prob) {
-		      /* for the sake of speed, 
-		         we throw out this case
-		         at random */
+		    /* For the sake of speed, we throw out this case at random */
+		    if (xrand(seed) >= test_prob)
 		      continue;
-		    }
 
 		    /* finally we are here to generate the test case */
 		    BLAS_dspmv_d_s_testgen(norm, order_type,
@@ -626,13 +622,9 @@ void do_test_dspmv_s_d(int n,
 		       randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 		    saved_seed = *seed;
-		    if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			test_prob) {
-		      /* for the sake of speed, 
-		         we throw out this case
-		         at random */
+		    /* For the sake of speed, we throw out this case at random */
+		    if (xrand(seed) >= test_prob)
 		      continue;
-		    }
 
 		    /* finally we are here to generate the test case */
 		    BLAS_dspmv_s_d_testgen(norm, order_type,
@@ -1000,13 +992,9 @@ void do_test_dspmv_s_s(int n,
 		       randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 		    saved_seed = *seed;
-		    if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			test_prob) {
-		      /* for the sake of speed, 
-		         we throw out this case
-		         at random */
+		    /* For the sake of speed, we throw out this case at random */
+		    if (xrand(seed) >= test_prob)
 		      continue;
-		    }
 
 		    /* finally we are here to generate the test case */
 		    BLAS_dspmv_s_s_testgen(norm, order_type,
@@ -1377,13 +1365,9 @@ void do_test_zspmv_z_c(int n,
 		       randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 		    saved_seed = *seed;
-		    if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			test_prob) {
-		      /* for the sake of speed, 
-		         we throw out this case
-		         at random */
+		    /* For the sake of speed, we throw out this case at random */
+		    if (xrand(seed) >= test_prob)
 		      continue;
-		    }
 
 		    /* finally we are here to generate the test case */
 		    BLAS_zspmv_z_c_testgen(norm, order_type,
@@ -1758,13 +1742,9 @@ void do_test_zspmv_c_z(int n,
 		       randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 		    saved_seed = *seed;
-		    if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			test_prob) {
-		      /* for the sake of speed, 
-		         we throw out this case
-		         at random */
+		    /* For the sake of speed, we throw out this case at random */
+		    if (xrand(seed) >= test_prob)
 		      continue;
-		    }
 
 		    /* finally we are here to generate the test case */
 		    BLAS_zspmv_c_z_testgen(norm, order_type,
@@ -2139,13 +2119,9 @@ void do_test_zspmv_c_c(int n,
 		       randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 		    saved_seed = *seed;
-		    if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			test_prob) {
-		      /* for the sake of speed, 
-		         we throw out this case
-		         at random */
+		    /* For the sake of speed, we throw out this case at random */
+		    if (xrand(seed) >= test_prob)
 		      continue;
-		    }
 
 		    /* finally we are here to generate the test case */
 		    BLAS_zspmv_c_c_testgen(norm, order_type,
@@ -2520,13 +2496,9 @@ void do_test_cspmv_c_s(int n,
 		       randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 		    saved_seed = *seed;
-		    if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			test_prob) {
-		      /* for the sake of speed, 
-		         we throw out this case
-		         at random */
+		    /* For the sake of speed, we throw out this case at random */
+		    if (xrand(seed) >= test_prob)
 		      continue;
-		    }
 
 		    /* finally we are here to generate the test case */
 		    BLAS_cspmv_c_s_testgen(norm, order_type,
@@ -2901,13 +2873,9 @@ void do_test_cspmv_s_c(int n,
 		       randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 		    saved_seed = *seed;
-		    if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			test_prob) {
-		      /* for the sake of speed, 
-		         we throw out this case
-		         at random */
+		    /* For the sake of speed, we throw out this case at random */
+		    if (xrand(seed) >= test_prob)
 		      continue;
-		    }
 
 		    /* finally we are here to generate the test case */
 		    BLAS_cspmv_s_c_testgen(norm, order_type,
@@ -3282,13 +3250,9 @@ void do_test_cspmv_s_s(int n,
 		       randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 		    saved_seed = *seed;
-		    if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			test_prob) {
-		      /* for the sake of speed, 
-		         we throw out this case
-		         at random */
+		    /* For the sake of speed, we throw out this case at random */
+		    if (xrand(seed) >= test_prob)
 		      continue;
-		    }
 
 		    /* finally we are here to generate the test case */
 		    BLAS_cspmv_s_s_testgen(norm, order_type,
@@ -3663,13 +3627,9 @@ void do_test_zspmv_z_d(int n,
 		       randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 		    saved_seed = *seed;
-		    if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			test_prob) {
-		      /* for the sake of speed, 
-		         we throw out this case
-		         at random */
+		    /* For the sake of speed, we throw out this case at random */
+		    if (xrand(seed) >= test_prob)
 		      continue;
-		    }
 
 		    /* finally we are here to generate the test case */
 		    BLAS_zspmv_z_d_testgen(norm, order_type,
@@ -4044,13 +4004,9 @@ void do_test_zspmv_d_z(int n,
 		       randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 		    saved_seed = *seed;
-		    if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			test_prob) {
-		      /* for the sake of speed, 
-		         we throw out this case
-		         at random */
+		    /* For the sake of speed, we throw out this case at random */
+		    if (xrand(seed) >= test_prob)
 		      continue;
-		    }
 
 		    /* finally we are here to generate the test case */
 		    BLAS_zspmv_d_z_testgen(norm, order_type,
@@ -4425,13 +4381,9 @@ void do_test_zspmv_d_d(int n,
 		       randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 		    saved_seed = *seed;
-		    if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			test_prob) {
-		      /* for the sake of speed, 
-		         we throw out this case
-		         at random */
+		    /* For the sake of speed, we throw out this case at random */
+		    if (xrand(seed) >= test_prob)
 		      continue;
-		    }
 
 		    /* finally we are here to generate the test case */
 		    BLAS_zspmv_d_d_testgen(norm, order_type,
@@ -4823,13 +4775,9 @@ void do_test_sspmv_x(int n,
 			 randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 		      saved_seed = *seed;
-		      if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			  test_prob) {
-			/* for the sake of speed, 
-			   we throw out this case
-			   at random */
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
-		      }
 
 		      /* finally we are here to generate the test case */
 		      BLAS_sspmv_testgen(norm, order_type,
@@ -5219,13 +5167,9 @@ void do_test_dspmv_x(int n,
 			 randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 		      saved_seed = *seed;
-		      if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			  test_prob) {
-			/* for the sake of speed, 
-			   we throw out this case
-			   at random */
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
-		      }
 
 		      /* finally we are here to generate the test case */
 		      BLAS_dspmv_testgen(norm, order_type,
@@ -5618,13 +5562,9 @@ void do_test_cspmv_x(int n,
 			 randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 		      saved_seed = *seed;
-		      if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			  test_prob) {
-			/* for the sake of speed, 
-			   we throw out this case
-			   at random */
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
-		      }
 
 		      /* finally we are here to generate the test case */
 		      BLAS_cspmv_testgen(norm, order_type,
@@ -6021,13 +5961,9 @@ void do_test_zspmv_x(int n,
 			 randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 		      saved_seed = *seed;
-		      if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			  test_prob) {
-			/* for the sake of speed, 
-			   we throw out this case
-			   at random */
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
-		      }
 
 		      /* finally we are here to generate the test case */
 		      BLAS_zspmv_testgen(norm, order_type,
@@ -6422,13 +6358,9 @@ void do_test_dspmv_d_s_x(int n,
 			 randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 		      saved_seed = *seed;
-		      if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			  test_prob) {
-			/* for the sake of speed, 
-			   we throw out this case
-			   at random */
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
-		      }
 
 		      /* finally we are here to generate the test case */
 		      BLAS_dspmv_d_s_testgen(norm, order_type,
@@ -6819,13 +6751,9 @@ void do_test_dspmv_s_d_x(int n,
 			 randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 		      saved_seed = *seed;
-		      if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			  test_prob) {
-			/* for the sake of speed, 
-			   we throw out this case
-			   at random */
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
-		      }
 
 		      /* finally we are here to generate the test case */
 		      BLAS_dspmv_s_d_testgen(norm, order_type,
@@ -7216,13 +7144,9 @@ void do_test_dspmv_s_s_x(int n,
 			 randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 		      saved_seed = *seed;
-		      if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			  test_prob) {
-			/* for the sake of speed, 
-			   we throw out this case
-			   at random */
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
-		      }
 
 		      /* finally we are here to generate the test case */
 		      BLAS_dspmv_s_s_testgen(norm, order_type,
@@ -7616,13 +7540,9 @@ void do_test_zspmv_z_c_x(int n,
 			 randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 		      saved_seed = *seed;
-		      if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			  test_prob) {
-			/* for the sake of speed, 
-			   we throw out this case
-			   at random */
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
-		      }
 
 		      /* finally we are here to generate the test case */
 		      BLAS_zspmv_z_c_testgen(norm, order_type,
@@ -8020,13 +7940,9 @@ void do_test_zspmv_c_z_x(int n,
 			 randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 		      saved_seed = *seed;
-		      if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			  test_prob) {
-			/* for the sake of speed, 
-			   we throw out this case
-			   at random */
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
-		      }
 
 		      /* finally we are here to generate the test case */
 		      BLAS_zspmv_c_z_testgen(norm, order_type,
@@ -8424,13 +8340,9 @@ void do_test_zspmv_c_c_x(int n,
 			 randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 		      saved_seed = *seed;
-		      if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			  test_prob) {
-			/* for the sake of speed, 
-			   we throw out this case
-			   at random */
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
-		      }
 
 		      /* finally we are here to generate the test case */
 		      BLAS_zspmv_c_c_testgen(norm, order_type,
@@ -8828,13 +8740,9 @@ void do_test_cspmv_c_s_x(int n,
 			 randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 		      saved_seed = *seed;
-		      if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			  test_prob) {
-			/* for the sake of speed, 
-			   we throw out this case
-			   at random */
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
-		      }
 
 		      /* finally we are here to generate the test case */
 		      BLAS_cspmv_c_s_testgen(norm, order_type,
@@ -9232,13 +9140,9 @@ void do_test_cspmv_s_c_x(int n,
 			 randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 		      saved_seed = *seed;
-		      if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			  test_prob) {
-			/* for the sake of speed, 
-			   we throw out this case
-			   at random */
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
-		      }
 
 		      /* finally we are here to generate the test case */
 		      BLAS_cspmv_s_c_testgen(norm, order_type,
@@ -9636,13 +9540,9 @@ void do_test_cspmv_s_s_x(int n,
 			 randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 		      saved_seed = *seed;
-		      if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			  test_prob) {
-			/* for the sake of speed, 
-			   we throw out this case
-			   at random */
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
-		      }
 
 		      /* finally we are here to generate the test case */
 		      BLAS_cspmv_s_s_testgen(norm, order_type,
@@ -10040,13 +9940,9 @@ void do_test_zspmv_z_d_x(int n,
 			 randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 		      saved_seed = *seed;
-		      if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			  test_prob) {
-			/* for the sake of speed, 
-			   we throw out this case
-			   at random */
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
-		      }
 
 		      /* finally we are here to generate the test case */
 		      BLAS_zspmv_z_d_testgen(norm, order_type,
@@ -10444,13 +10340,9 @@ void do_test_zspmv_d_z_x(int n,
 			 randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 		      saved_seed = *seed;
-		      if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			  test_prob) {
-			/* for the sake of speed, 
-			   we throw out this case
-			   at random */
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
-		      }
 
 		      /* finally we are here to generate the test case */
 		      BLAS_zspmv_d_z_testgen(norm, order_type,
@@ -10848,13 +10740,9 @@ void do_test_zspmv_d_d_x(int n,
 			 randomize_val <= RANDOMIZE_END; randomize_val++) {
 
 		      saved_seed = *seed;
-		      if (((float) rand()) / ((float) RAND_MAX + 1) >=
-			  test_prob) {
-			/* for the sake of speed, 
-			   we throw out this case
-			   at random */
+		      /* For the sake of speed, we throw out this case at random */
+		      if (xrand(seed) >= test_prob)
 			continue;
-		      }
 
 		      /* finally we are here to generate the test case */
 		      BLAS_zspmv_d_d_testgen(norm, order_type,
