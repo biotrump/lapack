@@ -1,15 +1,3 @@
-############################################################################
-#
-#  Program:         XBLAS
-#
-#  Module:          Makefile
-#
-#  Purpose:         Makefile for SPMV testing
-#
-#  Creation date:   September 1, 1999, Version 0.0
-#
-#  Modified:	    January 12, 2001, Version 1.0
-############################################################################
 include ../../make.conf
 include ../../$(MAKEINC)
 

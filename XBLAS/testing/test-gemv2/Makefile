@@ -1,15 +1,3 @@
-############################################################################
-#
-#  Program:         XBLAS
-#
-#  Module:          Makefile
-#
-#  Purpose:         Makefile for GEMV2 testing
-#
-#  Creation date:   August 10, 2005, Version 1.0
-#
-#  Modified:	    
-############################################################################
 include ../../make.conf
 include ../../$(MAKEINC)
 

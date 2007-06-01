@@ -1,15 +1,3 @@
-############################################################################
-#
-#  Program:         XBLAS
-#
-#  Module:          Makefile
-#
-#  Purpose:         Makefile for GBMV testing
-#
-#  Creation date:   September 1, 1999, Version 0.0
-#
-#  Modified:	    June 1, 2000, Version 1.0
-############################################################################
 include ../../make.conf
 include ../../$(MAKEINC)
 

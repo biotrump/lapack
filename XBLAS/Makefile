@@ -1,16 +1,5 @@
-############################################################################
+# Top-level makefile for XBLAS.
 #
-#  Program:         XBLAS
-#
-#  Module:          Makefile
-#
-#  Purpose:         Top-level Makefile
-#
-#  Creation date:   September 1, 1999, Version 0.0
-#
-#  Modified:	    
-############################################################################
-
 # To generate all libraries and test results, just type make
 #
 # To generate the library, type make lib

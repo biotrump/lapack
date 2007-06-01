@@ -1,15 +1,3 @@
-############################################################################
-#
-#  Program:         XBLAS
-#
-#  Module:          Makefile
-#
-#  Purpose:         Makefile for GE_SUM_MV testing
-#
-#  Creation date:   Mar 14, 2001, Version 1.0
-#
-#  Modified:	    
-############################################################################
 include ../../make.conf
 include ../../$(MAKEINC)
 

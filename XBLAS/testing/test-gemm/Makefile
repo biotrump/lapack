@@ -1,15 +1,3 @@
-############################################################################
-#
-#  Program:         XBLAS
-#
-#  Module:          Makefile
-#
-#  Purpose:         Makefile for GEMM testing
-#
-#  Creation date:   June 1, 2000, Version 1.0
-#
-#  Modified:	    
-############################################################################
 include ../../make.conf
 include ../../$(MAKEINC)
 

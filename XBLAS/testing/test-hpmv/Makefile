@@ -1,15 +1,3 @@
-############################################################################
-#
-#  Program:         XBLAS
-#
-#  Module:          Makefile
-#
-#  Purpose:         Makefile for HPMV testing
-#
-#  Creation date:   January 11, 2001, Version 1.0
-#
-#  Modified:	    
-############################################################################
 include ../../make.conf
 include ../../$(MAKEINC)
 

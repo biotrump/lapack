@@ -1,14 +1,3 @@
-############################################################################
-#
-#  Program:         XBLAS
-#
-#  Module:          Makefile
-#
-#  Purpose:         Makefile for DOT2 testing
-#
-#  Creation date:   July 28, 2005, Version 1.0
-#
-############################################################################
 include ../../make.conf
 include ../../$(MAKEINC)
 
