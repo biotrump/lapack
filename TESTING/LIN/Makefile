@@ -69,7 +69,7 @@ SLINTST = schkaa.o \
    stbt02.o stbt03.o stbt05.o stbt06.o stpt01.o \
    stpt02.o stpt03.o stpt05.o stpt06.o strt01.o \
    strt02.o strt03.o strt05.o strt06.o \
-   stzt01.o stzt02.o
+   stzt01.o stzt02.o sgennd.o
 
 CLINTST = cchkaa.o \
    cchkeq.o cchkgb.o cchkge.o cchkgt.o \
@@ -102,7 +102,7 @@ CLINTST = cchkaa.o \
    ctbt02.o ctbt03.o ctbt05.o ctbt06.o ctpt01.o \
    ctpt02.o ctpt03.o ctpt05.o ctpt06.o ctrt01.o \
    ctrt02.o ctrt03.o ctrt05.o ctrt06.o \
-   ctzt01.o ctzt02.o sget06.o
+   ctzt01.o ctzt02.o sget06.o cgennd.o
 
 DLINTST = dchkaa.o \
    dchkeq.o dchkgb.o dchkge.o dchkgt.o \
@@ -131,7 +131,7 @@ DLINTST = dchkaa.o \
    dtbt02.o dtbt03.o dtbt05.o dtbt06.o dtpt01.o \
    dtpt02.o dtpt03.o dtpt05.o dtpt06.o dtrt01.o \
    dtrt02.o dtrt03.o dtrt05.o dtrt06.o \
-   dtzt01.o dtzt02.o
+   dtzt01.o dtzt02.o dgennd.o
 
 ZLINTST = zchkaa.o \
    zchkeq.o zchkgb.o zchkge.o zchkgt.o \
@@ -164,7 +164,7 @@ ZLINTST = zchkaa.o \
    ztbt02.o ztbt03.o ztbt05.o ztbt06.o ztpt01.o \
    ztpt02.o ztpt03.o ztpt05.o ztpt06.o ztrt01.o \
    ztrt02.o ztrt03.o ztrt05.o ztrt06.o \
-   ztzt01.o ztzt02.o dget06.o
+   ztzt01.o ztzt02.o dget06.o zgennd.o
 
 DSLINTST = dchkab.o \
 	ddrvab.o derrab.o dget08.o          \
