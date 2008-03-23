@@ -21,8 +21,8 @@
 *        H' * ( alpha ) = ( beta ),   H' * H = I.
 *             (   x   )   (   0  )
 *
-*  where alpha and beta are scalars, with beta real, and x is an
-*  (n-1)-element complex vector. H is represented in the form
+*  where alpha and beta are scalars, beta is real and non-negative, and
+*  x is an (n-1)-element complex vector.  H is represented in the form
 *
 *        H = I - tau * ( 1 ) * ( 1 v' ) ,
 *                      ( v )
@@ -59,17 +59,17 @@
 *  =====================================================================
 *
 *     .. Parameters ..
-      DOUBLE PRECISION   ONE, ZERO
-      PARAMETER          ( ONE = 1.0D+0, ZERO = 0.0D+0 )
+      DOUBLE PRECISION   TWO, ONE, ZERO
+      PARAMETER          ( TWO = 2.0D+0, ONE = 1.0D+0, ZERO = 0.0D+0 )
 *     ..
 *     .. Local Scalars ..
       INTEGER            J, KNT
       DOUBLE PRECISION   ALPHI, ALPHR, BETA, RSAFMN, SAFMIN, XNORM
 *     ..
 *     .. External Functions ..
-      DOUBLE PRECISION   DLAMCH, DLAPY3, DZNRM2
+      DOUBLE PRECISION   DLAMCH, DLAPY3, DLAPY2, DZNRM2
       COMPLEX*16         ZLADIV
-      EXTERNAL           DLAMCH, DLAPY3, DZNRM2, ZLADIV
+      EXTERNAL           DLAMCH, DLAPY3, DLAPY2, DZNRM2, ZLADIV
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, DBLE, DCMPLX, DIMAG, SIGN
@@ -90,9 +90,31 @@
 *
       IF( XNORM.EQ.ZERO .AND. ALPHI.EQ.ZERO ) THEN
 *
-*        H  =  I
+*        H  =  [1-alpha/abs(alpha) 0; 0 I], sign chosen so ALPHA >= 0.
 *
-         TAU = ZERO
+         IF( ALPHI.EQ.ZERO ) THEN
+            IF( ALPHR.GE.ZERO ) THEN
+!              When TAU.eq.ZERO, the vector is special-cased to be
+!              all zeros in the application routines.  We do not need
+!              to clear it.
+               TAU = ZERO
+            ELSE
+!              However, the application routines rely on explicit
+!              zero checks when TAU.ne.ZERO, and we must clear X.
+               TAU = TWO
+               DO J = 1, N-1
+                  X( 1 + (J-1)*INCX ) = 0
+               END DO
+               ALPHA = -ALPHA
+            END IF
+         ELSE
+            XNORM = DLAPY2( ALPHR, ALPHI )
+            TAU = CMPLX( ONE - ALPHR / XNORM, -ALPHI / XNORM )
+            DO J = 1, N-1
+               X( 1 + (J-1)*INCX ) = 0
+            END DO
+            ALPHA = XNORM
+         END IF
       ELSE
 *
 *        general case
@@ -122,8 +144,14 @@
             BETA = SIGN( DLAPY3( ALPHR, ALPHI, XNORM ), ALPHR )
          END IF
          ALPHA = ALPHA + BETA
-         BETA = -BETA
-         TAU = -ALPHA / BETA
+         IF( BETA.LT.ZERO ) THEN
+            BETA = -BETA
+            TAU = -ALPHA / BETA
+         ELSE
+            TAU = ZLADIV( DCMPLX( (XNORM/BETA)*XNORM, -2*ALPHI ),
+     $           DCONJG( ALPHA ) )
+            ALPHA = -TAU * BETA
+         END IF
          ALPHA = ZLADIV( DCMPLX( ONE ), ALPHA )
          CALL ZSCAL( N-1, ALPHA, X, INCX )
 *

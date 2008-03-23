@@ -21,8 +21,8 @@
 *        H * ( alpha ) = ( beta ),   H' * H = I.
 *            (   x   )   (   0  )
 *
-*  where alpha and beta are scalars, and x is an (n-1)-element real
-*  vector. H is represented in the form
+*  where alpha and beta are scalars, beta is non-negative, and x is
+*  an (n-1)-element real vector.  H is represented in the form
 *
 *        H = I - tau * ( 1 ) * ( 1 v' ) ,
 *                      ( v )
@@ -59,8 +59,8 @@
 *  =====================================================================
 *
 *     .. Parameters ..
-      DOUBLE PRECISION   ONE, ZERO
-      PARAMETER          ( ONE = 1.0D+0, ZERO = 0.0D+0 )
+      DOUBLE PRECISION   TWO, ONE, ZERO
+      PARAMETER          ( TWO = 2.0D+0, ONE = 1.0D+0, ZERO = 0.0D+0 )
 *     ..
 *     .. Local Scalars ..
       INTEGER            J, KNT
@@ -78,7 +78,7 @@
 *     ..
 *     .. Executable Statements ..
 *
-      IF( N.LE.1 ) THEN
+      IF( N.LE.0 ) THEN
          TAU = ZERO
          RETURN
       END IF
@@ -87,9 +87,22 @@
 *
       IF( XNORM.EQ.ZERO ) THEN
 *
-*        H  =  I
+*        H  =  [+/-1, 0; I], sign chosen so ALPHA >= 0
 *
-         TAU = ZERO
+         IF( ALPHA.GE.ZERO ) THEN
+!           When TAU.eq.ZERO, the vector is special-cased to be
+!           all zeros in the application routines.  We do not need
+!           to clear it.
+            TAU = ZERO
+         ELSE
+!           However, the application routines rely on explicit
+!           zero checks when TAU.ne.ZERO, and we must clear X.
+            TAU = TWO
+            DO J = 1, N-1
+               X( 1 + (J-1)*INCX ) = 0
+            END DO
+            ALPHA = -ALPHA
+         END IF
       ELSE
 *
 *        general case
@@ -116,8 +129,13 @@
             BETA = SIGN( DLAPY2( ALPHA, XNORM ), ALPHA )
          END IF
          ALPHA = ALPHA + BETA
-         BETA = -BETA
-         TAU = -ALPHA / BETA
+         IF( BETA.LT.ZERO ) THEN
+            BETA = -BETA
+            TAU = -ALPHA / BETA
+         ELSE
+            TAU = ( (XNORM/BETA)*XNORM ) / ALPHA
+            ALPHA = -TAU * BETA
+         END IF
          CALL DSCAL( N-1, ONE / ALPHA, X, INCX )
 *
 *        If BETA is subnormal, it may lose relative accuracy
@@ -133,3 +151,4 @@
 *     End of DLARFP
 *
       END
+
