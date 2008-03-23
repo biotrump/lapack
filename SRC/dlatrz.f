@@ -89,7 +89,7 @@
       INTEGER            I
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DLARFG, DLARZ
+      EXTERNAL           DLARFP, DLARZ
 *     ..
 *     .. Executable Statements ..
 *
@@ -111,7 +111,7 @@
 *        Generate elementary reflector H(i) to annihilate
 *        [ A(i,i) A(i,n-l+1:n) ]
 *
-         CALL DLARFG( L+1, A( I, I ), A( I, N-L+1 ), LDA, TAU( I ) )
+         CALL DLARFP( L+1, A( I, I ), A( I, N-L+1 ), LDA, TAU( I ) )
 *
 *        Apply H(i) to A(1:i-1,i:n) from the right
 *

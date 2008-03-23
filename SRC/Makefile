@@ -98,7 +98,7 @@ SLASRC = \
    slaqr0.o slaqr1.o slaqr2.o slaqr3.o slaqr4.o slaqr5.o \
    slaqtr.o slar1v.o slar2v.o ilaslr.o ilaslc.o \
    slarf.o  slarfb.o slarfg.o slarft.o slarfx.o slargv.o \
-   slarrv.o slartv.o \
+   slarrv.o slartv.o slarfp.o \
    slarz.o  slarzb.o slarzt.o slaswp.o slasy2.o slasyf.o \
    slatbs.o slatdf.o slatps.o slatrd.o slatrs.o slatrz.o slatzm.o \
    slauu2.o slauum.o sopgtr.o sopmtr.o sorg2l.o sorg2r.o \
@@ -156,7 +156,7 @@ CLASRC = \
    claqhb.o claqhe.o claqhp.o claqp2.o claqps.o claqsb.o \
    claqr0.o claqr1.o claqr2.o claqr3.o claqr4.o claqr5.o \
    claqsp.o claqsy.o clar1v.o clar2v.o ilaclr.o ilaclc.o \
-   clarf.o  clarfb.o clarfg.o clarft.o \
+   clarf.o  clarfb.o clarfg.o clarft.o clarfp.o \
    clarfx.o clargv.o clarnv.o clarrv.o clartg.o clartv.o \
    clarz.o  clarzb.o clarzt.o clascl.o claset.o clasr.o  classq.o \
    claswp.o clasyf.o clatbs.o clatdf.o clatps.o clatrd.o clatrs.o clatrz.o \
@@ -202,7 +202,7 @@ DLASRC = \
    dlaqr0.o dlaqr1.o dlaqr2.o dlaqr3.o dlaqr4.o dlaqr5.o \
    dlaqtr.o dlar1v.o dlar2v.o iladlr.o iladlc.o \
    dlarf.o  dlarfb.o dlarfg.o dlarft.o dlarfx.o dlargv.o \
-   dlarrv.o dlartv.o \
+   dlarrv.o dlartv.o dlarfp.o \
    dlarz.o  dlarzb.o dlarzt.o dlaswp.o dlasy2.o dlasyf.o \
    dlatbs.o dlatdf.o dlatps.o dlatrd.o dlatrs.o dlatrz.o dlatzm.o dlauu2.o \
    dlauum.o dopgtr.o dopmtr.o dorg2l.o dorg2r.o \
@@ -264,7 +264,7 @@ ZLASRC = \
    zlaqr0.o zlaqr1.o zlaqr2.o zlaqr3.o zlaqr4.o zlaqr5.o \
    zlaqsp.o zlaqsy.o zlar1v.o zlar2v.o ilazlr.o ilazlc.o \
    zlarcm.o zlarf.o  zlarfb.o \
-   zlarfg.o zlarft.o \
+   zlarfg.o zlarft.o zlarfp.o \
    zlarfx.o zlargv.o zlarnv.o zlarrv.o zlartg.o zlartv.o \
    zlarz.o  zlarzb.o zlarzt.o zlascl.o zlaset.o zlasr.o  \
    zlassq.o zlaswp.o zlasyf.o \

@@ -102,7 +102,7 @@
       COMPLEX*16         AKK
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ZGEMM, ZGEMV, ZLARFG, ZSWAP
+      EXTERNAL           ZGEMM, ZGEMV, ZLARFP, ZSWAP
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, DBLE, DCONJG, MAX, MIN, NINT, SQRT
@@ -156,9 +156,9 @@
 *        Generate elementary reflector H(k).
 *
          IF( RK.LT.M ) THEN
-            CALL ZLARFG( M-RK+1, A( RK, K ), A( RK+1, K ), 1, TAU( K ) )
+            CALL ZLARFP( M-RK+1, A( RK, K ), A( RK+1, K ), 1, TAU( K ) )
          ELSE
-            CALL ZLARFG( 1, A( RK, K ), A( RK, K ), 1, TAU( K ) )
+            CALL ZLARFP( 1, A( RK, K ), A( RK, K ), 1, TAU( K ) )
          END IF
 *
          AKK = A( RK, K )

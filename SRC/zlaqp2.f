@@ -90,7 +90,7 @@
       COMPLEX*16         AII
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ZLARF, ZLARFG, ZSWAP
+      EXTERNAL           ZLARF, ZLARFP, ZSWAP
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, DCONJG, MAX, MIN, SQRT
@@ -127,10 +127,10 @@
 *        Generate elementary reflector H(i).
 *
          IF( OFFPI.LT.M ) THEN
-            CALL ZLARFG( M-OFFPI+1, A( OFFPI, I ), A( OFFPI+1, I ), 1,
+            CALL ZLARFP( M-OFFPI+1, A( OFFPI, I ), A( OFFPI+1, I ), 1,
      $                   TAU( I ) )
          ELSE
-            CALL ZLARFG( 1, A( M, I ), A( M, I ), 1, TAU( I ) )
+            CALL ZLARFP( 1, A( M, I ), A( M, I ), 1, TAU( I ) )
          END IF
 *
          IF( I.LT.N ) THEN
