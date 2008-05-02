@@ -133,8 +133,9 @@
             BETA = -BETA
             TAU = -ALPHA / BETA
          ELSE
-            TAU = ( (XNORM/BETA)*XNORM ) / ALPHA
-            ALPHA = -TAU * BETA
+            ALPHA = XNORM * (XNORM/ALPHA)
+            TAU = ALPHA / BETA
+            ALPHA = -ALPHA
          END IF
          CALL DSCAL( N-1, ONE / ALPHA, X, INCX )
 *

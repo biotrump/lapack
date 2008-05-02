@@ -108,6 +108,7 @@
                ALPHA = -ALPHA
             END IF
          ELSE
+!           Only "reflecting" the diagonal entry to be real and non-negative.
             XNORM = SLAPY2( ALPHR, ALPHI )
             TAU = CMPLX( ONE - ALPHR / XNORM, -ALPHI / XNORM )
             DO J = 1, N-1
@@ -148,9 +149,10 @@
             BETA = -BETA
             TAU = -ALPHA / BETA
          ELSE
-            TAU = CLADIV( CMPLX( (XNORM/BETA)*XNORM, -2*ALPHI ),
-     $           CONJG( ALPHA ) )
-            ALPHA = -TAU * BETA
+            ALPHR = ALPHI * (ALPHI/REAL( ALPHA ))
+            ALPHR = ALPHR + XNORM * (XNORM/REAL( ALPHA ))
+            TAU = CMPLX( ALPHR/BETA, -ALPHI/BETA )
+            ALPHA = CMPLX( -ALPHR, ALPHI )
          END IF
          ALPHA = CLADIV( CMPLX( ONE ), ALPHA )
          CALL CSCAL( N-1, ALPHA, X, INCX )

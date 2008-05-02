@@ -108,6 +108,7 @@
                ALPHA = -ALPHA
             END IF
          ELSE
+!           Only "reflecting" the diagonal entry to be real and non-negative.
             XNORM = DLAPY2( ALPHR, ALPHI )
             TAU = CMPLX( ONE - ALPHR / XNORM, -ALPHI / XNORM )
             DO J = 1, N-1
@@ -148,9 +149,10 @@
             BETA = -BETA
             TAU = -ALPHA / BETA
          ELSE
-            TAU = ZLADIV( DCMPLX( (XNORM/BETA)*XNORM, -2*ALPHI ),
-     $           DCONJG( ALPHA ) )
-            ALPHA = -TAU * BETA
+            ALPHR = ALPHI * (ALPHI/DBLE( ALPHA ))
+            ALPHR = ALPHR + XNORM * (XNORM/DBLE( ALPHA ))
+            TAU = DCMPLX( ALPHR/BETA, -ALPHI/BETA )
+            ALPHA = DCMPLX( -ALPHR, ALPHI )
          END IF
          ALPHA = ZLADIV( DCMPLX( ONE ), ALPHA )
          CALL ZSCAL( N-1, ALPHA, X, INCX )
