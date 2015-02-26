@@ -1,0 +1,76 @@
+#!/bin/bash
+#migrate lapack from "svn" to "git"
+#http://git-scm.com/book/en/v1/Git-and-Other-Systems-Git-and-Subversion
+#http://blog.elijaa.org/index.php?post/2010/09/23/revprop-change-blocked-by-pre-revprop-change-hook-%28exit-code-255%29-with-no-output-error
+#sync lapack first!
+#!!!press "enter" couple times if user name and password are requested to pass the authentication!!!
+svn co https://icl.cs.utk.edu/svn/lapack-dev/lapack/trunk
+
+#Migrate SVN repository with history to a new Git repository
+#http://stackoverflow.com/questions/79165/migrate-svn-repository-with-history-to-a-new-git-repository
+#Create a users file (i.e. users.txt) for mapping SVN users to GIT:
+#user1 = First Last Name <email@address.com>
+#user2 = First Last Name <email@address.com>
+#svn log --xml | grep author | sort -u | perl -pe 's/.*>(.*?)<.*/$1 = /' > users.txt
+#create a script :lsuser
+#----------------------------
+#!/usr/bin/env bash
+authors=$(svn log -q | grep -e '^r' | awk 'BEGIN { FS = "|" } ; { print $2 }' | sort | uniq)
+for author in ${authors}; do
+  echo "${author} = NAME <USER@DOMAIN>";
+done
+#---------------------------
+chmod +x lsuser
+./lsuser > users.txt
+
+brian = NAME <USER@DOMAIN>
+deaglanhalligan = NAME <USER@DOMAIN>
+du = NAME <USER@DOMAIN>
+igor175 = NAME <USER@DOMAIN>
+james = NAME <USER@DOMAIN>
+jason = NAME <USER@DOMAIN>
+julie = NAME <USER@DOMAIN>
+langou = NAME <USER@DOMAIN>
+lawrence.mulholland = NAME <USER@DOMAIN>
+lipshitz = NAME <USER@DOMAIN>
+philippe.theveny = NAME <USER@DOMAIN>
+hammarli = NAME <USER@DOMAIN>
+sven  = NAME <USER@DOMAIN>
+delmas = NAME <USER@DOMAIN>
+yozo = NAME <USER@DOMAIN>
+
+#Now pull the SVN data from the repo:
+git svn clone --stdlayout --no-metadata --authors-file=users.txt https://icl.cs.utk.edu/svn/lapack-dev/lapack/ dest_dir-tmp
+
+#If a user name is not found, update your users.txt file then:
+cd dest_dir-tmp
+git svn fetch
+#You might have to repeat that last command several times,
+#if you have a large project, until all of the Subversion commits have been fetched:
+#When completed, git will checkout the SVN trunk into a new branch.
+#Any other branches are setup as remotes. You can view the other SVN branches with:
+
+#If you want to keep other remote branches in your repo,
+#you want to create a local branch for each one manually.
+#(Skip trunk/master.) If you don't do this, the branches won't get cloned in the final step.
+git checkout -b local_branch remote_branch
+# it's ok if local_branch and remote_branch are the same name
+#Tags are imported as branches. You have to create a local branch,
+#make a tag and delete the branch to have them as tags in git. To do it with tag "v1":
+git checkout -b tag_v1 remotes/tags/v1
+git checkout master
+git tag v1 tag_v1
+git branch -D tag_v1
+
+#Clone your GIT-SVN repo into a clean git repo:
+git clone dest_dir-tmp dest_dir
+rm -rf dest_dir-tmp
+cd dest_dir
+
+#The local branches that you created earlier from remote branches
+#will only have been copied as remote branches into the new cloned repository.
+#(Skip trunk/master.) For each branch you want to keep:
+git checkout -b local_branch origin/remote_branch
+
+#Finally, remove the remote from your clean git repo that points to the now deleted temp repo:
+git remote rm origin
