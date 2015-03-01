@@ -201,7 +201,7 @@ endif(BUILD_TESTING)
 
 # --------------------------------------------------
 # LAPACKE
-option(LAPACKE "Build LAPACKE" OFF)
+option(LAPACKE "Build LAPACKE" ON)
 
 # LAPACKE has also the interface to some routines from tmglib,
 # if LAPACKE_WITH_TMG is selected, we need to add those routines to LAPACKE

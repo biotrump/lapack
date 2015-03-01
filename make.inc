@@ -14,9 +14,13 @@ SHELL = /bin/sh
 #
 FORTRAN  = gfortran
 #-fpie -fPIE for  position independent code can be only linked into executables
-OPTS     = -O2 -frecursive -fPIC -fpic
+#-fpic -fPIc for  position independent code
+#OPTS     = -O2 -frecursive -fPIC -fpic
+#https://wikis.utexas.edu/display/~cdupree/BLAS,+LAPACK,+ATLAS
+OPTS     = -fomit-frame-pointer -mfpmath=sse -O2 -fno-schedule-insns2 -mavx -fPIC -m64
 DRVOPTS  = $(OPTS)
-NOOPT    = -O0 -frecursive -fPIC -fpic
+#NOOPT    = -O0 -frecursive -fPIC -fpic
+NOOPT    = -O0 -fomit-frame-pointer -mfpmath=sse -O2 -fno-schedule-insns2 -mavx -fPIC -m64
 LOADER   = gfortran
 LOADOPTS =
 #

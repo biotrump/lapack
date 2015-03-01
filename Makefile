@@ -6,9 +6,10 @@
 
 include make.inc
 
-all: lapack_install lib blas_testing lapack_testing 
+all: lapack_install lib blas_testing lapack_testing lapacke_example
+#all: lib lapacke_example
 
-lib: lapacklib tmglib
+lib: lapacklib tmglib lapackelib
 #lib: blaslib variants lapacklib tmglib
 
 clean: cleanlib cleantesting cleanblas_testing cleancblas_testing
@@ -22,7 +23,7 @@ blaslib:
 
 cblaslib:
 	( cd CBLAS/src; $(MAKE) )
-	
+
 lapacklib:	lapack_install
 	( cd SRC; $(MAKE) )
 
@@ -37,7 +38,7 @@ lapacke_example: lapackelib
 
 variants:
 	( cd SRC/VARIANTS ; $(MAKE))
-	
+
 tmglib:
 	( cd TESTING/MATGEN; $(MAKE) )
 
@@ -58,13 +59,13 @@ variants_testing: lib variants
 	mv stest.out stest_lurec.out ; mv dtest.out dtest_lurec.out ; mv ctest.out ctest_lurec.out ; mv ztest.out ztest_lurec.out )
 	( cd TESTING ;  rm -f xlintst* ; $(MAKE)  VARLIB='SRC/VARIANTS/LIB/qrll.a' ; \
 	mv stest.out stest_qrll.out ; mv dtest.out dtest_qrll.out ; mv ctest.out ctest_qrll.out ; mv ztest.out ztest_qrll.out )
-		
+
 blas_testing:
 	( cd BLAS/TESTING; $(MAKE) -f Makeblat1 )
 	( cd BLAS; ./xblat1s > sblat1.out    ; \
 	           ./xblat1d > dblat1.out    ; \
 	           ./xblat1c > cblat1.out    ; \
-	           ./xblat1z > zblat1.out    ) 
+	           ./xblat1z > zblat1.out    )
 	( cd BLAS/TESTING; $(MAKE) -f Makeblat2 )
 	( cd BLAS; ./xblat2s < sblat2.in     ; \
 	           ./xblat2d < dblat2.in     ; \
@@ -74,7 +75,7 @@ blas_testing:
 	( cd BLAS; ./xblat3s < sblat3.in     ; \
 	           ./xblat3d < dblat3.in     ; \
 	           ./xblat3c < cblat3.in     ; \
-	           ./xblat3z < zblat3.in     ) 
+	           ./xblat3z < zblat3.in     )
 
 cblas_testing: blaslib
 	( cd CBLAS ; $(MAKE) cblas_testing)
@@ -85,7 +86,7 @@ cblas_testing: blaslib
 html:
 	@echo "LAPACK HTML PAGES GENRATION with Doxygen"
 	doxygen DOCS/Doxyfile
-	@echo "=================="	
+	@echo "=================="
 	@echo "LAPACK HTML PAGES GENRATED in DOCS/explore-html"
 	@echo "Usage: open DOCS/explore-html/index.html"
 	@echo "Online version available at http://www.netlib.org/lapack/explore-html/"
@@ -108,9 +109,9 @@ cleanlib:
 	( cd SRC/VARIANTS; $(MAKE) clean )
 	( cd TESTING/MATGEN; $(MAKE) clean )
 	( cd LAPACKE; $(MAKE) clean )
-	
 
-cleanblas_testing:	
+
+cleanblas_testing:
 	( cd BLAS/TESTING; $(MAKE) -f Makeblat1 clean )
 	( cd BLAS/TESTING; $(MAKE) -f Makeblat2 clean )
 	( cd BLAS/TESTING; $(MAKE) -f Makeblat3 clean )
@@ -124,6 +125,6 @@ cleantesting:
 	( cd TESTING/EIG; $(MAKE) clean )
 	( cd TESTING; rm -f xlin* xeig* )
 
-cleanall: cleanlib cleanblas_testing cleancblas_testing cleantesting 
+cleanall: cleanlib cleanblas_testing cleancblas_testing cleantesting
 	rm -f *.a TESTING/*.out INSTALL/test*  BLAS/*.out
 
