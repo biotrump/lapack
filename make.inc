@@ -69,12 +69,12 @@ XBLASLIB     =
 #  The location of the libraries to which you will link.  (The
 #  machine-specific, optimized BLAS library should be used whenever
 #  possible.)
-#
-BLASLIB      = ../../librefblas.a
-CBLASLIB     = ../../libcblas.a
+#lapack stanalone build
+#BLASLIB      = ../../librefblas.a
+#CBLASLIB     = ../../libcblas.a
 #Using ATLAS
-#BLASLIB		= ../ATLAS/build/lib/libf77refblas.a
-#CBLASLIB     = ../ATLAS/build/libcblas.a
+BLASLIB		= ../../libf77refblas.a
+CBLASLIB     = ../../libcblas.a
 LAPACKLIB    = liblapack.a
 TMGLIB       = libtmglib.a
 LAPACKELIB   = liblapacke.a
