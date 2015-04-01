@@ -5,11 +5,11 @@
 #
 
 include make.inc
-
-all: lapack_install lib blas_testing lapack_testing lapacke_example
+#lapack_install
+all:  lib blas_testing cblas_example cblas_testing lapack_testing lapacke_example
 #all: lib lapacke_example
 
-lib: lapacklib tmglib lapackelib
+lib: blaslib lapacklib tmglib lapackelib
 #lib: blaslib variants lapacklib tmglib
 
 clean: cleanlib cleantesting cleanblas_testing cleancblas_testing
@@ -24,7 +24,8 @@ blaslib:
 cblaslib:
 	( cd CBLAS/src; $(MAKE) )
 
-lapacklib:	lapack_install
+#lapacklib:	lapack_install
+lapacklib:
 	( cd SRC; $(MAKE) )
 
 lapackelib: lapacklib
@@ -60,6 +61,7 @@ variants_testing: lib variants
 	( cd TESTING ;  rm -f xlintst* ; $(MAKE)  VARLIB='SRC/VARIANTS/LIB/qrll.a' ; \
 	mv stest.out stest_qrll.out ; mv dtest.out dtest_qrll.out ; mv ctest.out ctest_qrll.out ; mv ztest.out ztest_qrll.out )
 
+#x86
 blas_testing:
 	( cd BLAS/TESTING; $(MAKE) -f Makeblat1 )
 	( cd BLAS; ./xblat1s > sblat1.out    ; \
@@ -77,10 +79,20 @@ blas_testing:
 	           ./xblat3c < cblat3.in     ; \
 	           ./xblat3z < zblat3.in     )
 
+blas_testing_android:
+	( cd BLAS/TESTING; $(MAKE) -f Makeblat1 ; \
+		$(MAKE) -f Makeblat2; \
+		$(MAKE) -f Makeblat3 )
+
+eig_testing_android:
+	( cd TESTING/EIG; $(MAKE) )
+
+lin_testing_android:
+	( cd TESTING/LIN; $(MAKE) )
+
 cblas_testing: blaslib
 	( cd CBLAS ; $(MAKE) cblas_testing)
-	( cd CBLAS ; $(MAKE) runtst)
-
+#	( cd CBLAS ; $(MAKE) runtst)
 
 
 html:

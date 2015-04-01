@@ -140,11 +140,16 @@ DLINTSTPROTO= dstest.out dtest_rfp.out
 ZLINTST= ztest.out
 
 ZLINTSTPROTO= zctest.out ztest_rfp.out
-
-single:         $(SLINTST) $(SEIGTST)
-complex:        $(CLINTST) $(CEIGTST)
-double:         $(DLINTST) $(DEIGTST)
-complex16:      $(ZLINTST) $(ZEIGTST)
+#Don't do the test in ARM build.
+#x86 can run after building.
+single:         $(SLINTST)
+#$(SEIGTST)
+complex:        $(CLINTST)
+#$(CEIGTST)
+double:         $(DLINTST)
+#$(DEIGTST)
+complex16:      $(ZLINTST)
+#$(ZEIGTST)
 singleproto:    $(SLINTSTPROTO)
 complexproto:   $(CLINTSTPROTO)
 doubleproto:    $(DLINTSTPROTO)
