@@ -32,7 +32,7 @@ include ../../make.inc
 #       make single FRC=FRC
 #
 #######################################################################
- 
+
 SCATGEN = slatm1.o slaran.o slarnd.o
 
 SMATGEN = slatms.o slatme.o slatmr.o slatmt.o \
@@ -59,23 +59,23 @@ ALLOBJ = $(SMATGEN) $(CMATGEN) $(SCATGEN) $(DMATGEN) $(ZMATGEN)	\
 	$(DZATGEN)
 
 ../../$(TMGLIB): $(ALLOBJ)
-	$(ARCH) $(ARCHFLAGS) $@ $(ALLOBJ)
+	$(AR) $(ARCHFLAGS) $@ $(ALLOBJ)
 	$(RANLIB) $@
 
 single: $(SMATGEN) $(SCATGEN)
-	$(ARCH) $(ARCHFLAGS) ../../$(TMGLIB) $(SMATGEN) $(SCATGEN)
+	$(AR) $(ARCHFLAGS) ../../$(TMGLIB) $(SMATGEN) $(SCATGEN)
 	$(RANLIB) ../../$(TMGLIB)
 
 complex: $(CMATGEN) $(SCATGEN)
-	$(ARCH) $(ARCHFLAGS) ../../$(TMGLIB) $(CMATGEN) $(SCATGEN)
+	$(AR) $(ARCHFLAGS) ../../$(TMGLIB) $(CMATGEN) $(SCATGEN)
 	$(RANLIB) ../../$(TMGLIB)
 
 double: $(DMATGEN) $(DZATGEN)
-	$(ARCH) $(ARCHFLAGS) ../../$(TMGLIB) $(DMATGEN) $(DZATGEN)
+	$(AR) $(ARCHFLAGS) ../../$(TMGLIB) $(DMATGEN) $(DZATGEN)
 	$(RANLIB) ../../$(TMGLIB)
 
 complex16: $(ZMATGEN) $(DZATGEN)
-	$(ARCH) $(ARCHFLAGS) ../../$(TMGLIB) $(ZMATGEN) $(DZATGEN)
+	$(AR) $(ARCHFLAGS) ../../$(TMGLIB) $(ZMATGEN) $(DZATGEN)
 	$(RANLIB) ../../$(TMGLIB)
 
 $(SCATGEN): $(FRC)
@@ -84,7 +84,7 @@ $(CMATGEN): $(FRC)
 $(DZATGEN): $(FRC)
 $(DMATGEN): $(FRC)
 $(ZMATGEN): $(FRC)
- 
+
 FRC:
 	@FRC=$(FRC)
 

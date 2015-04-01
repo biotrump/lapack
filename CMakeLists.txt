@@ -109,7 +109,8 @@ if(BLAS_LIBRARIES)
 
 # User did not provide a BLAS Library but specified to search for one
 elseif( USE_OPTIMIZED_BLAS )
-  find_package( BLAS )
+  find_package( BLAS
+  PATHS /home/thomas/build/BLAS/ATLAS/git/build/lib)
 endif (BLAS_LIBRARIES)
 
 # Neither user specified or optimized BLAS libraries can be used
