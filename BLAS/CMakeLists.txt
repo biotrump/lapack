@@ -1,4 +1,6 @@
 add_subdirectory(SRC)
+option(BUILD_TESTING "Build BLAS" ON)
+
 if(BUILD_TESTING)
 add_subdirectory(TESTING)
 endif(BUILD_TESTING)

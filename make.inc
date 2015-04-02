@@ -19,10 +19,10 @@ SHELL = /bin/sh
 #https://wikis.utexas.edu/display/~cdupree/BLAS,+LAPACK,+ATLAS
 #OPTS     = -fomit-frame-pointer -mfpmath=sse -O2 -fno-schedule-insns2 -mavx -fPIC -m64
 #-mfpu=vfpv3
-OPTS     =  -O3 -fPIE -fPIC -mfloat-abi=softfp  -marm -march=armv7-a -mfpu=vfpv3 -D_POSIX_C_SOURCE=200112L
+OPTS     =  -Os -fPIE -fPIC -mfloat-abi=softfp  -marm -march=armv7-a -mfpu=vfp3 -D_POSIX_C_SOURCE=200112L
 DRVOPTS  = $(OPTS)
 #-mfpu=vfpv3
-NOOPT    = -O3 -fPIE -fPIC -mfloat-abi=softfp -marm -march=armv7-a -mfpu=vfpv3 -D_POSIX_C_SOURCE=200112L -g
+NOOPT    = -fPIE -fPIC -mfloat-abi=softfp -marm -march=armv7-a -mfpu=vfp3 -D_POSIX_C_SOURCE=200112L -g
 #LOADER   = gfortran
 LOADER = $(FORTRAN)
 #LOADER = $(CC)
@@ -77,13 +77,14 @@ XBLASLIB     =
 #  machine-specific, optimized BLAS library should be used whenever
 #  possible.)
 #lapack stanalone build
-BLASLIB      = ../../librefblas.a
-CBLASLIB     = ../../libcblas.a
+#BLASLIB      = ../../librefblas.a
+#CBLASLIB     = ../../libcblas.a
 #Using ATLAS
 #BLASLIB		= ../../libf77refblas.a
 #CBLASLIB     = ../../libcblas.a
 #BLASLIB = /home/thomas/build/libFLAME/blis/lib/cortex-a9/libblis.a
-#BLASLIB = /home/thomas/build/libFLAME/blis/lib/armv7a/libblis.a
+BLASLIB = /home/thomas/build/libFLAME/blis/lib/cortex-a9/libblis.a
+CBLASLIB = /home/thomas/build/libFLAME/blis/lib/cortex-a9/libblis.a
 #BLASLIB = $(BLAS_LIB)
 LAPACKLIB    = liblapack.a
 TMGLIB       = libtmglib.a

@@ -2,10 +2,10 @@ message(STATUS "CBLAS enable")
 enable_language(C)
 
 set(LAPACK_INSTALL_EXPORT_NAME cblas-targets)
-
+if(!ANDROID_NDK)
 # Create a header file cblas.h for the routines called in my C programs
 include(FortranCInterface)
-FortranCInterface_HEADER( ${CMAKE_CURRENT_SOURCE_DIR}/include/cblas_mangling.h 
+FortranCInterface_HEADER( ${CMAKE_CURRENT_SOURCE_DIR}/include/cblas_mangling.h
                           MACRO_NAMESPACE "F77_"
                           SYMBOL_NAMESPACE "F77_" )
 
@@ -14,7 +14,7 @@ FortranCInterface_HEADER( ${CMAKE_CURRENT_SOURCE_DIR}/include/cblas_mangling.h
 #FORTRAN_MANGLING(CDEFS)
 #set(CDEFS ${CDEFS} CACHE STRING "Fortran Mangling" FORCE)
 #MESSAGE(STATUS "=========")
-
+endif(!ANDROID_NDK)
 # --------------------------------------------------
 # Compiler Flags
 #ADD_DEFINITIONS( "-D${CDEFS}")
@@ -65,9 +65,9 @@ if(ALL_TARGETS)
   list(GET ALL_TARGETS 0 _cblas_config_build_guard_target)
 endif()
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CMAKE/cblas-config-version.cmake.in
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/cblas-config-version.cmake.in
   ${LAPACK_BINARY_DIR}/cblas-config-version.cmake @ONLY)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CMAKE/cblas-config-build.cmake.in
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/cblas-config-build.cmake.in
   ${LAPACK_BINARY_DIR}/cblas-config.cmake @ONLY)
 
 

@@ -4,16 +4,12 @@ enable_language(C)
 set(LAPACK_INSTALL_EXPORT_NAME lapacke-targets)
 
 # Create a header file netlib.h for the routines called in my C programs
+if(!ANDROID_NDK)
 include(FortranCInterface)
-FortranCInterface_HEADER( ${CMAKE_CURRENT_SOURCE_DIR}/include/lapacke_mangling.h 
+FortranCInterface_HEADER( ${CMAKE_CURRENT_SOURCE_DIR}/include/lapacke_mangling.h
                           MACRO_NAMESPACE "LAPACK_"
                           SYMBOL_NAMESPACE "LAPACK_" )
-
-# Old way to detect mangling
-#include(FortranMangling)
-#FORTRAN_MANGLING(CDEFS)
-#set(CDEFS ${CDEFS} CACHE STRING "Fortran Mangling" FORCE)
-#MESSAGE(STATUS "=========")
+endif(!ANDROID_NDK)
 
 # --------------------------------------------------
 # Compiler Flags
@@ -23,6 +19,12 @@ if (WIN32 AND NOT UNIX)
  ADD_DEFINITIONS(-DHAVE_LAPACK_CONFIG_H -DLAPACK_COMPLEX_STRUCTURE)
  MESSAGE (STATUS "Windows BUILD")
 endif (WIN32 AND NOT UNIX)
+
+#!!!! don't use complex.h,because NDK does not have complex.h !!!
+if (ANDROID_NDK AND NOT UNIX)
+ ADD_DEFINITIONS(-DHAVE_LAPACK_CONFIG_H -DLAPACK_COMPLEX_STRUCTURE)
+ MESSAGE (STATUS "*** ANDROID_NDK BUILD")
+endif (ANDROID_NDK AND NOT UNIX)
 
 get_directory_property( DirDefs COMPILE_DEFINITIONS )
 

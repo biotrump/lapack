@@ -12,7 +12,26 @@ configure_file(
 
 # Add the CMake directory for custon CMake modules
 set(CMAKE_MODULE_PATH "${LAPACK_SOURCE_DIR}/CMAKE" ${CMAKE_MODULE_PATH})
+#LAPACKE to skip default complex.h whichis not found in NDK
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIE -DHAVE_LAPACK_CONFIG_H  -DLAPACK_COMPLEX_STRUCTURE -D_POSIX_C_SOURCE=200112L -DADD_ -std=c99")
 
+if(ANDROID_NDK)
+# export FC=/path/to/android-ndk-r9/toolchains/arm-linux-androideabi-4.8.0/prebuilt/linux-x86/bin/arm-linux-androideabi-gfortran
+message ("**** CMAKE_Fortran_COMPILER full path: " ${CMAKE_Fortran_COMPILER})
+get_filename_component (Fortran_COMPILER_NAME ${CMAKE_Fortran_COMPILER} NAME)
+if (Fortran_COMPILER_NAME MATCHES "gfortran.*")
+  # gfortran
+  message ("*** Fortran compiler: " ${Fortran_COMPILER_NAME})
+  set (CMAKE_Fortran_FLAGS_RELEASE "-funroll-all-loops -fPIE -pie -fPIC -fno-f2c -O3")
+  set (CMAKE_Fortran_FLAGS_DEBUG   "-fno-f2c -O0 -fPIE -pie -fPIC -g")
+else (Fortran_COMPILER_NAME MATCHES "gfortran.*")
+  message ("CMAKE_Fortran_COMPILER full path: " ${CMAKE_Fortran_COMPILER})
+  message ("Fortran compiler: " ${Fortran_COMPILER_NAME})
+  message ("No optimized Fortran compiler flags are known, we just try -O2...")
+  set (CMAKE_Fortran_FLAGS_RELEASE "-O2")
+  set (CMAKE_Fortran_FLAGS_DEBUG   "-O0 -g")
+endif (Fortran_COMPILER_NAME MATCHES "gfortran.*")
+else(ANDROID_NDK)
 if (UNIX)
    if ( "${CMAKE_Fortran_COMPILER}" MATCHES "ifort" )
   set( CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -fltconsistency -fp_port" )
@@ -24,13 +43,17 @@ if (UNIX)
 # This library is not present in the Sun package SolarisStudio12.3-linux-x86-bin
    STRING(REPLACE \;mtsk\; \; CMAKE_Fortran_IMPLICIT_LINK_LIBRARIES "${CMAKE_Fortran_IMPLICIT_LINK_LIBRARIES}")
 endif ()
+endif(ANDROID_NDK)
 
 # Get Python
+IF(WIN32 AND NOT UNIX)
 find_package(PythonInterp)
 message(STATUS "Looking for Python found - ${PYTHONINTERP_FOUND}")
 if (PYTHONINTERP_FOUND)
    message(STATUS "Using Python version ${PYTHON_VERSION_STRING}")
 endif()
+ENDIF(WIN32 AND NOT UNIX)
+
 # --------------------------------------------------
 
 set(LAPACK_INSTALL_EXPORT_NAME lapack-targets)
@@ -133,7 +156,7 @@ endif( NOT BLAS_FOUND )
 
 # --------------------------------------------------
 # CBLAS
-option(CBLAS "Build CBLAS" OFF)
+option(CBLAS "Build CBLAS" ON)
 
 if(CBLAS)
   add_subdirectory(CBLAS)

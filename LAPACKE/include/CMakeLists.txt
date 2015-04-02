@@ -1,3 +1,7 @@
-SET (LAPACKE_INCLUDE lapacke.h lapacke_config.h lapacke_utils.h lapacke_mangling.h)
-
+SET (LAPACKE_INCLUDE lapacke.h lapacke_config.h lapacke_utils.h lapacke_mangling.h lapacke_mangling_with_flags.h)
+#message("*** CMAKE_CURRENT_SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}")
+#message("*** CMAKE_CURRENT_BINARY_DIR=${CMAKE_CURRENT_BINARY_DIR}")
+if(ANDROID_NDK)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/lapacke_mangling_with_flags.h ${CMAKE_CURRENT_SOURCE_DIR}/lapacke_mangling.h COPYONLY)
+endif(ANDROID_NDK)
 file(COPY ${LAPACKE_INCLUDE} DESTINATION ${LAPACK_BINARY_DIR}/include)

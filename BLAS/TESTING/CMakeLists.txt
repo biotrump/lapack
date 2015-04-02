@@ -38,12 +38,17 @@ macro(add_blas_test name src)
       -DINTDIR=${CMAKE_CFG_INTDIR}
       -P "${LAPACK_SOURCE_DIR}/TESTING/runtest.cmake")
     else()
-      add_test(NAME BLAS-${name} COMMAND "${CMAKE_COMMAND}" 
+      add_test(NAME BLAS-${name} COMMAND "${CMAKE_COMMAND}"
         -DTEST=$<TARGET_FILE:${name}>
         -DINTDIR=${CMAKE_CFG_INTDIR}
         -P "${LAPACK_SOURCE_DIR}/TESTING/runtest.cmake")
     endif()
 endmacro(add_blas_test)
+
+option(BUILD_SINGLE "Build BLAS SINGLE" ON)
+option(BUILD_DOUBLE "Build BLAS DOUBLE" ON)
+option(BUILD_COMPLEX "Build BLAS COMPLEX" ON)
+option(BUILD_COMPLEX16 "Build BLAS COMPLEX16" ON)
 
 if(BUILD_SINGLE)
   add_blas_test(xblat1s sblat1.f)
