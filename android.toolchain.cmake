@@ -1077,6 +1077,7 @@ unset( _ndk_ccache )
 
 
 # setup the cross-compiler
+set( CMAKE_Fortran_COMPILER   "${ANDROID_TOOLCHAIN_ROOT}/bin/${ANDROID_TOOLCHAIN_MACHINE_NAME}-gfortran${TOOL_OS_SUFFIX}"    CACHE PATH "gfortran compiler" )
 if( NOT CMAKE_C_COMPILER )
  if( NDK_CCACHE AND NOT ANDROID_SYSROOT MATCHES "[ ;\"]" )
   set( CMAKE_C_COMPILER   "${NDK_CCACHE}" CACHE PATH "ccache as C compiler" )
