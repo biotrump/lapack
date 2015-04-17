@@ -3,6 +3,7 @@
 #  LAPACK, Version 3.6.0                                           #
 #  November 2014                                                   #
 ####################################################################
+# ATLAS makes/Make.Flp will use make.inc.example to replace make.inc.
 #
 SHELL = /bin/sh
 #
@@ -12,21 +13,17 @@ SHELL = /bin/sh
 #  selected.  Define LOADER and LOADOPTS to refer to the loader and
 #  desired load options for your machine.
 #
-#FORTRAN  = gfortran
+FORTRAN  = gfortran
 #-fpie -fPIE for  position independent code can be only linked into executables
 #-fpic -fPIc for  position independent code
 #OPTS     = -O2 -frecursive -fPIC -fpic
 #https://wikis.utexas.edu/display/~cdupree/BLAS,+LAPACK,+ATLAS
-#OPTS     = -fomit-frame-pointer -mfpmath=sse -O2 -fno-schedule-insns2 -mavx -fPIC -m64
-#-mfpu=vfpv3
-OPTS     =  -Os -fPIE -fPIC -mfloat-abi=softfp  -marm -march=armv7-a -mfpu=vfp3 -D_POSIX_C_SOURCE=200112L
+OPTS     = -fomit-frame-pointer -mfpmath=sse -O2 -fno-schedule-insns2 -mavx -fPIC -m64
 DRVOPTS  = $(OPTS)
-#-mfpu=vfpv3
-NOOPT    = -fPIE -fPIC -mfloat-abi=softfp -marm -march=armv7-a -mfpu=vfp3 -D_POSIX_C_SOURCE=200112L -g
-#LOADER   = gfortran
-LOADER = $(FORTRAN)
-#LOADER = $(CC)
-LOADOPTS = -lgfortran -lm -fPIE -pie
+#NOOPT    = -O0 -frecursive -fPIC -fpic
+NOOPT    = -O0 -fomit-frame-pointer -mfpmath=sse -O2 -fno-schedule-insns2 -mavx -fPIC -m64
+LOADER   = gfortran
+LOADOPTS =
 #
 # Timer for the SECOND and DSECND routines
 #
@@ -51,18 +48,15 @@ TIMER    = INT_ETIME
 #
 # CC is the C compiler, normally invoked with options CFLAGS.
 #
-#CC = ${CC}
-#!!!-DHAVE_LAPACK_CONFIG_H  -DLAPACK_COMPLEX_STRUCTURE : to avoid complex.h missing!!!
-CFLAGS += -D_POSIX_C_SOURCE=200112L -std=c99 -O3 -DHAVE_LAPACK_CONFIG_H  -DLAPACK_COMPLEX_STRUCTURE -fPIE
-
+CC = gcc
+CFLAGS = -O3
 #
 #  The archiver and the flag(s) to use when building archive (library)
 #  If you system has no ranlib, set RANLIB = echo.
 #
-#ARCH     = $(AR)
-#ARCHFLAGS= cr
-ARCHFLAGS= cru
-#RANLIB   = $(RANLIB)
+ARCH     = ar
+ARCHFLAGS= cr
+RANLIB   = ranlib
 #
 #  Location of the extended-precision BLAS (XBLAS) Fortran library
 #  used for building and testing extended-precision routines.  The
@@ -80,12 +74,8 @@ XBLASLIB     =
 #BLASLIB      = ../../librefblas.a
 #CBLASLIB     = ../../libcblas.a
 #Using ATLAS
-#BLASLIB		= ../../libf77refblas.a
-#CBLASLIB     = ../../libcblas.a
-#BLASLIB = /home/thomas/build/libFLAME/blis/lib/cortex-a9/libblis.a
-BLASLIB = /home/thomas/build/libFLAME/blis/lib/cortex-a9/libblis.a
-CBLASLIB = /home/thomas/build/libFLAME/blis/lib/cortex-a9/libblis.a
-#BLASLIB = $(BLAS_LIB)
+BLASLIB		= ../../libf77refblas.a
+CBLASLIB     = ../../libcblas.a
 LAPACKLIB    = liblapack.a
 TMGLIB       = libtmglib.a
 LAPACKELIB   = liblapacke.a
