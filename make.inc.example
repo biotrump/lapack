@@ -49,7 +49,7 @@ TIMER    = INT_ETIME
 # CC is the C compiler, normally invoked with options CFLAGS.
 #
 CC = gcc
-CFLAGS = -O3
+CFLAGS = -O3 -fPIC -fpic
 #
 #  The archiver and the flag(s) to use when building archive (library)
 #  If you system has no ranlib, set RANLIB = echo.
