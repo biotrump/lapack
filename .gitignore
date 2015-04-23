@@ -40,7 +40,9 @@
 *.hex
 
 # -- build system files --
-
+make.inc
+build_x86
+build_and
 # CMake
 CMakeCache.txt
 CMakeFiles

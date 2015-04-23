@@ -21,12 +21,12 @@ if [ -f make.inc.example ]; then
 cp -f make.inc.example make.inc
 fi
 
-if [ ! -d build-x86 ]; then
-mkdir build-x86
+if [ ! -d build_x86 ]; then
+mkdir build_x86
 else
-rm -rf build-x86/*
+rm -rf build_x86/*
 fi
-pushd build-x86
+pushd build_x86
 cmake ..
 make -j${CORE_COUNT}
 popd
