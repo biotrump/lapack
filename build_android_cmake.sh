@@ -1,5 +1,29 @@
 #!/bin/bash
 # Make sure you have NDK_ROOT defined in .bashrc or .bash_profile
+
+#export CMAKE_BUILD_TYPE "Debug"
+export CMAKE_BUILD_TYPE="Release"
+
+#get cpu counts
+case $(uname -s) in
+  Darwin)
+    CONFBUILD=i386-apple-darwin`uname -r`
+    HOSTPLAT=darwin-x86
+    CORE_COUNT=`sysctl -n hw.ncpu`
+  ;;
+  Linux)
+    CONFBUILD=x86-unknown-linux
+    HOSTPLAT=linux-`uname -m`
+    CORE_COUNT=`grep processor /proc/cpuinfo | wc -l`
+  ;;
+CYGWIN*)
+	CORE_COUNT=`grep processor /proc/cpuinfo | wc -l`
+	;;
+  *) echo $0: Unknown platform; exit
+esac
+
+export LAPACK_SRC=`pwd`
+
 # Modify INSTALL_DIR to suit your situation
 #Lollipop	5.0 - 5.1	API level 21, 22
 #KitKat	4.4 - 4.4.4	API level 19
@@ -20,7 +44,9 @@
 #gofortran is supported in r9
 export NDK_ROOT=${HOME}/NDK/android-ndk-r9
 export ANDROID_NDK=${NDK_ROOT}
-export LAPACK_SRC=`pwd`
+
+if [[ ${NDK_ROOT} =~ .*"-r9".* ]]
+then
 #ANDROID_APIVER=android-8
 #ANDROID_APIVER=android-9
 #android 4.0.1 ICS and above
@@ -28,47 +54,37 @@ ANDROID_APIVER=android-14
 #TOOL_VER="4.6"
 #gfortran is in r9d V4.8.0
 TOOL_VER="4.8.0"
+else
+#android 4.0.1 ICS and above
+ANDROID_APIVER=android-14
+TOOL_VER="4.9"
+fi
 
-case $(uname -s) in
-  Darwin)
-    CONFBUILD=i386-apple-darwin`uname -r`
-    HOSTPLAT=darwin-x86
-    CORE_COUNT=`sysctl -n hw.ncpu`
-  ;;
-  Linux)
-    CONFBUILD=x86-unknown-linux
-    HOSTPLAT=linux-`uname -m`
-    CORE_COUNT=`grep processor /proc/cpuinfo | wc -l`
-  ;;
-CYGWIN*)
-	CORE_COUNT=`grep processor /proc/cpuinfo | wc -l`
-	;;
-  *) echo $0: Unknown platform; exit
-esac
-
+#default is arm
 arm=${arm:-arm}
 echo arm=$arm
 case arm in
   arm)
     TARGPLAT=arm-linux-androideabi
-    ARCHI=arm
     CONFTARG=arm-eabi
+    ARCHI=arm
   ;;
   x86)
-    TARGPLAT=x86
-    ARCHI=x86
+    TARGPLAT=i686-linux-android
     CONFTARG=x86
+    ARCHI=x86
   ;;
   mips)
   ## probably wrong
     TARGPLAT=mipsel-linux-android
-    ARCHI=mips
     CONFTARG=mips
+    ARCHI=mips
   ;;
   *) echo $0: Unknown target; exit
 esac
+echo ARCHI=$ARCHI
 
-: ${NDK_ROOT:?}
+#: ${NDK_ROOT:?}
 
 echo "Using: $NDK_ROOT/toolchains/${TARGPLAT}-${TOOL_VER}/prebuilt/${HOSTPLAT}/bin"
 export ARCHI
@@ -87,17 +103,11 @@ export STRIP="${TARGPLAT}-strip"
 export CFLAGS="-Os -fPIE --sysroot=$SYS_ROOT"
 export CXXFLAGS="-fPIE --sysroot=$SYS_ROOT"
 export FORTRAN="${TARGPLAT}-gfortran --sysroot=$SYS_ROOT"
-#include path :
-#platforms/android-21/arch-arm/usr/include/
 
 #!!! quite importnat for cmake to define the NDK's fortran compiler.!!!
 #Don't let cmake decide it.
-#export FC=/home/thomas/aosp/NDK/android-ndk-r9/toolchains/arm-linux-androideabi-4.8.0/prebuilt/linux-x86/bin/arm-linux-androideabi-gfortran
 export FC=${FORTRAN}
 
-#BLISLIB=${BLISLIB:-${LAPACK_SRC}/../blis/lib/armv7a/libblis.a}
-#export BLISLIB
-#echo $BLISLIB
 
 if [ -f make.inc.armv7-a ]; then
 cp -f make.inc.armv7-a make.inc
