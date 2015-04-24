@@ -1,5 +1,4 @@
 #!/bin/bash
-# Compiles ffts for Android
 # Make sure you have NDK_ROOT defined in .bashrc or .bash_profile
 # Modify INSTALL_DIR to suit your situation
 #Lollipop	5.0 - 5.1	API level 21, 22
@@ -21,7 +20,7 @@
 #gofortran is supported in r9
 export NDK_ROOT=${HOME}/NDK/android-ndk-r9
 export ANDROID_NDK=${NDK_ROOT}
-
+export LAPACK_SRC=`pwd`
 #ANDROID_APIVER=android-8
 #ANDROID_APIVER=android-9
 #android 4.0.1 ICS and above
@@ -91,20 +90,27 @@ export FORTRAN="${TARGPLAT}-gfortran --sysroot=$SYS_ROOT"
 #include path :
 #platforms/android-21/arch-arm/usr/include/
 
-BLISLIB=${BLISLIB:-/home/thomas/build/libFLAME/blis/lib/armv7a/libblis.a}
-export BLISLIB
-echo $BLISLIB
-
 #!!! quite importnat for cmake to define the NDK's fortran compiler.!!!
 #Don't let cmake decide it.
 #export FC=/home/thomas/aosp/NDK/android-ndk-r9/toolchains/arm-linux-androideabi-4.8.0/prebuilt/linux-x86/bin/arm-linux-androideabi-gfortran
 export FC=${FORTRAN}
 
-BLISLIB=${BLISLIB:-/home/thomas/build/libFLAME/blis/lib/armv7a/libblis.a}
-export BLISLIB
-echo $BLISLIB
+#BLISLIB=${BLISLIB:-${LAPACK_SRC}/../blis/lib/armv7a/libblis.a}
+#export BLISLIB
+#echo $BLISLIB
 
-cmake -DCMAKE_TOOLCHAIN_FILE=../android.toolchain.cmake -DANDROID_NATIVE_API_LEVEL=${ANDROID_APIVER} \
+if [ -f make.inc.armv7-a ]; then
+cp -f make.inc.armv7-a make.inc
+fi
+
+if [ ! -d build_and ]; then
+mkdir build_and
+else
+rm -rf build_and/*
+fi
+pushd build_and
+
+cmake -DCMAKE_TOOLCHAIN_FILE=${LAPACK_SRC}/android.toolchain.cmake -DANDROID_NATIVE_API_LEVEL=${ANDROID_APIVER} \
 -DANDROID_NDK=${NDK_ROOT} -DANDROID_TOOLCHAIN_NAME=${TARGPLAT}-${TOOL_VER} \
 -DCMAKE_BUILD_TYPE=Release -DANDROID_ABI="armeabi-v7a with VFPV3" ..
 
