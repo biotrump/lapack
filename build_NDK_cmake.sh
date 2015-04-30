@@ -60,38 +60,48 @@ ANDROID_APIVER=android-14
 TOOL_VER="4.9"
 fi
 
+if [ $# -ge 1 ]; then
+	export ARCHI=$1
+else
+#default
+	export ARCHI=arm
+fi
+echo ARCHI=$ARCHI
+
 #default is arm
-arm=${arm:-arm}
-echo arm=$arm
-case arm in
+case $ARCHI in
   arm)
     TARGPLAT=arm-linux-androideabi
     CONFTARG=arm-eabi
-    ARCHI=arm
+	echo "Using: $NDK_ROOT/toolchains/${TARGPLAT}-${TOOL_VER}/prebuilt/${HOSTPLAT}/bin"
+	#export PATH="$NDK_ROOT/toolchains/${TARGPLAT}-${TOOL_VER}/prebuilt/${HOSTPLAT}/bin/:\
+	#$NDK_ROOT/toolchains/${TARGPLAT}-${TOOL_VER}/prebuilt/${HOSTPLAT}/${TARGPLAT}/bin/:$PATH"
+	export PATH="${NDK_ROOT}/toolchains/${TARGPLAT}-${TOOL_VER}/prebuilt/${HOSTPLAT}/bin/:$PATH"
   ;;
   x86)
     TARGPLAT=i686-linux-android
     CONFTARG=x86
-    ARCHI=x86
+	echo "Using: $NDK_ROOT/toolchains/x86-${TOOL_VER}/prebuilt/${HOSTPLAT}/bin"
+	export PATH="${NDK_ROOT}/toolchains/x86-${TOOL_VER}/prebuilt/${HOSTPLAT}/bin/:$PATH"
+#specify assembler for x86 SSE3, but ffts's sse.s needs 64bit x86.
+#intel atom z2xxx and the old atoms are 32bit, so 64bit x86 in android can't work in
+#most atom devices.
+#http://forum.cvapp.org/viewtopic.php?f=13&t=423&sid=4c47343b1de899f9e1b0d157d04d0af1
+#	export  CCAS="${TARGPLAT}-as"
+#	export  CCASFLAGS="--64 -march=i686+sse3"
+#	export  CCASFLAGS="--64"
+
   ;;
   mips)
   ## probably wrong
     TARGPLAT=mipsel-linux-android
     CONFTARG=mips
-    ARCHI=mips
   ;;
   *) echo $0: Unknown target; exit
 esac
-echo ARCHI=$ARCHI
-
 #: ${NDK_ROOT:?}
-
-echo "Using: $NDK_ROOT/toolchains/${TARGPLAT}-${TOOL_VER}/prebuilt/${HOSTPLAT}/bin"
-export ARCHI
-#export PATH="$NDK_ROOT/toolchains/${TARGPLAT}-${TOOL_VER}/prebuilt/${HOSTPLAT}/bin/:\
-#$NDK_ROOT/toolchains/${TARGPLAT}-${TOOL_VER}/prebuilt/${HOSTPLAT}/${TARGPLAT}/bin/:$PATH"
-export PATH="${NDK_ROOT}/toolchains/${TARGPLAT}-${TOOL_VER}/prebuilt/${HOSTPLAT}/bin/:$PATH"
 echo $PATH
+
 export SYS_ROOT="${NDK_ROOT}/platforms/${ANDROID_APIVER}/arch-${ARCHI}/"
 export CC="${TARGPLAT}-gcc --sysroot=$SYS_ROOT"
 export LD="${TARGPLAT}-ld"
@@ -100,29 +110,51 @@ export ARCH=${AR}
 export RANLIB="${TARGPLAT}-ranlib"
 export STRIP="${TARGPLAT}-strip"
 #export CFLAGS="-Os -fPIE"
-export CFLAGS="-Os -fPIE --sysroot=$SYS_ROOT"
-export CXXFLAGS="-fPIE --sysroot=$SYS_ROOT"
+export CFLAGS="-Os -fPIE -fPIC --sysroot=$SYS_ROOT"
+export CXXFLAGS="-fPIE -fPIC --sysroot=$SYS_ROOT"
 export FORTRAN="${TARGPLAT}-gfortran --sysroot=$SYS_ROOT"
 
 #!!! quite importnat for cmake to define the NDK's fortran compiler.!!!
 #Don't let cmake decide it.
 export FC=${FORTRAN}
 
+case $ARCHI in
+  arm)
+	if [ -f make.inc.armv7-a ]; then
+	cp -f make.inc.armv7-a make.inc
+	fi
 
-if [ -f make.inc.armv7-a ]; then
-cp -f make.inc.armv7-a make.inc
-fi
+	if [ ! -d build_NDK_$ARCHI ]; then
+	mkdir build_NDK_$ARCHI
+	else
+	rm -rf build_NDK_$ARCHI/*
+	fi
+	pushd build_NDK_$ARCHI
 
-if [ ! -d build_and ]; then
-mkdir build_and
-else
-rm -rf build_and/*
-fi
-pushd build_and
+	cmake -DCMAKE_TOOLCHAIN_FILE=${LAPACK_SRC}/android.toolchain.cmake -DANDROID_NATIVE_API_LEVEL=${ANDROID_APIVER} \
+	-DANDROID_NDK=${NDK_ROOT} -DANDROID_TOOLCHAIN_NAME=${TARGPLAT}-${TOOL_VER} \
+	-DCMAKE_BUILD_TYPE=Release -DANDROID_ABI="armeabi-v7a with VFPV3" ..
+  ;;
+  x86)
+	if [ -f make.inc.NDK-x86 ]; then
+	cp -f make.inc.NDK-x86 make.inc
+	fi
 
-cmake -DCMAKE_TOOLCHAIN_FILE=${LAPACK_SRC}/android.toolchain.cmake -DANDROID_NATIVE_API_LEVEL=${ANDROID_APIVER} \
--DANDROID_NDK=${NDK_ROOT} -DANDROID_TOOLCHAIN_NAME=${TARGPLAT}-${TOOL_VER} \
--DCMAKE_BUILD_TYPE=Release -DANDROID_ABI="armeabi-v7a with VFPV3" ..
+	if [ ! -d build_NDK_$ARCHI ]; then
+	mkdir build_NDK_$ARCHI
+	else
+	rm -rf build_NDK_$ARCHI/*
+	fi
+	pushd build_NDK_$ARCHI
+
+	cmake -DCMAKE_TOOLCHAIN_FILE=${LAPACK_SRC}/android.toolchain.cmake -DANDROID_NATIVE_API_LEVEL=${ANDROID_APIVER} \
+	-DANDROID_NDK=${NDK_ROOT} -DANDROID_TOOLCHAIN_NAME=x86-${TOOL_VER} \
+	-DCMAKE_BUILD_TYPE=Release -DANDROID_ABI="x86" ..
+  ;;
+  mips)
+  ;;
+  *) echo $0: Unknown target; exit
+esac
 
 make -j${CORE_COUNT}
 #make

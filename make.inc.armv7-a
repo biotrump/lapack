@@ -26,7 +26,7 @@ NOOPT    = -O0 -fPIE -fPIC -mfloat-abi=softfp -marm -march=armv7-a -mfpu=vfp3 -D
 #LOADER   = gfortran
 LOADER = $(FORTRAN)
 #LOADER = $(CC)
-LOADOPTS = -lgfortran -lm -fPIE -pie
+LOADOPTS = -lgfortran -lm -pie
 #
 # Timer for the SECOND and DSECND routines
 #
@@ -53,7 +53,7 @@ TIMER    = INT_ETIME
 #
 #CC = ${CC}
 #!!!-DHAVE_LAPACK_CONFIG_H  -DLAPACK_COMPLEX_STRUCTURE : to avoid complex.h missing!!!
-CFLAGS += -D_POSIX_C_SOURCE=200112L -std=c99 -O3 -DHAVE_LAPACK_CONFIG_H  -DLAPACK_COMPLEX_STRUCTURE -fPIE
+CFLAGS += -D_POSIX_C_SOURCE=200112L -std=c99 -O3 -DHAVE_LAPACK_CONFIG_H  -DLAPACK_COMPLEX_STRUCTURE
 
 #
 #  The archiver and the flag(s) to use when building archive (library)
@@ -81,11 +81,6 @@ BLASLIB      = ../../librefblas.a
 CBLASLIB     = ../../libcblas.a
 #Using ATLAS
 #BLASLIB		= ../../libf77refblas.a
-#CBLASLIB     = ../../libcblas.a
-#BLASLIB = /home/thomas/build/libFLAME/blis/lib/armv7a/libblis.a
-#BLASLIB = /home/thomas/build/libFLAME/blis/lib/cortex-a9/libblis.a
-#CBLASLIB = /home/thomas/build/libFLAME/blis/lib/cortex-a9/libblis.a
-#BLASLIB = $(BLAS_LIB)
 LAPACKLIB    = liblapack.a
 TMGLIB       = libtmglib.a
 LAPACKELIB   = liblapacke.a

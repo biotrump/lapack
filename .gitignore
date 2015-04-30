@@ -35,7 +35,7 @@
 *.exe
 *.out
 *.app
-*.i*86
+#*.i*86
 *.x86_64
 *.hex
 
@@ -43,6 +43,8 @@
 make.inc
 build_x86
 build_and
+build_NDK*
+
 # CMake
 CMakeCache.txt
 CMakeFiles
