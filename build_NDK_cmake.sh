@@ -22,7 +22,9 @@ CYGWIN*)
   *) echo $0: Unknown platform; exit
 esac
 
+if [ -z "${LAPACK_SRC}" ];then
 export LAPACK_SRC=`pwd`
+fi
 
 # Modify INSTALL_DIR to suit your situation
 #Lollipop	5.0 - 5.1	API level 21, 22
@@ -42,9 +44,13 @@ export LAPACK_SRC=`pwd`
 #NDK_ROOT=${NDK_ROOT:-/home/thomas/aosp/NDK/android-ndk-r10d}
 #export NDK_ROOT
 #gofortran is supported in r9
-export NDK_ROOT=${HOME}/NDK/android-ndk-r9
+if [ -z "${NDK_ROOT_FORTRAN}"  ]; then
+	export NDK_ROOT=${HOME}/NDK/android-ndk-r9
+else
+	export NDK_ROOT=${NDK_ROOT_FORTRAN}
+fi
 export ANDROID_NDK=${NDK_ROOT}
-
+	
 if [[ ${NDK_ROOT} =~ .*"-r9".* ]]
 then
 #ANDROID_APIVER=android-8
@@ -60,12 +66,18 @@ ANDROID_APIVER=android-14
 TOOL_VER="4.9"
 fi
 
-if [ $# -ge 1 ]; then
+if [ "$#" -eq 0 ]; then
+	if [ "${TARGET_ARCH}" == "arm" ]; then
+		export ARCHI=${TARGET_ARCH}
+	elif [ "${TARGET_ARCH}" == "x86_32" ]; then
+		export ARCHI=${TARGET_ARCH}
+	else
+		export ARCHI=arm
+	fi	
+elif [ $# -ge 1 ]; then
 	export ARCHI=$1
-else
-#default
-	export ARCHI=arm
 fi
+
 echo ARCHI=$ARCHI
 
 #default is arm
@@ -118,38 +130,37 @@ export FORTRAN="${TARGPLAT}-gfortran --sysroot=$SYS_ROOT"
 #Don't let cmake decide it.
 export FC=${FORTRAN}
 
+if [ -z "${LAPACK_OUT}" ];then
+export LAPACK_OUT=build_NDK_$ARCHI
+fi
+
+if [ ! -d $LAPACK_OUT ]; then
+mkdir -p $LAPACK_OUT
+else
+rm -rf $LAPACK_OUT/*
+fi
+	
 case $ARCHI in
   arm)
 	if [ -f make.inc.armv7-a ]; then
-	cp -f make.inc.armv7-a make.inc
+		cp -f make.inc.armv7-a make.inc
 	fi
 
-	if [ ! -d build_NDK_$ARCHI ]; then
-	mkdir build_NDK_$ARCHI
-	else
-	rm -rf build_NDK_$ARCHI/*
-	fi
-	pushd build_NDK_$ARCHI
+	pushd $LAPACK_OUT
 
 	cmake -DCMAKE_TOOLCHAIN_FILE=${LAPACK_SRC}/android.toolchain.cmake -DANDROID_NATIVE_API_LEVEL=${ANDROID_APIVER} \
 	-DANDROID_NDK=${NDK_ROOT} -DANDROID_TOOLCHAIN_NAME=${TARGPLAT}-${TOOL_VER} \
-	-DCMAKE_BUILD_TYPE=Release -DANDROID_ABI="armeabi-v7a with VFPV3" ..
+	-DCMAKE_BUILD_TYPE=Release -DANDROID_ABI="armeabi-v7a with VFPV3" ${LAPACK_SRC}
   ;;
   x86)
 	if [ -f make.inc.NDK-x86 ]; then
 	cp -f make.inc.NDK-x86 make.inc
 	fi
-
-	if [ ! -d build_NDK_$ARCHI ]; then
-	mkdir build_NDK_$ARCHI
-	else
-	rm -rf build_NDK_$ARCHI/*
-	fi
-	pushd build_NDK_$ARCHI
-
+	pushd $LAPACK_OUT
+	
 	cmake -DCMAKE_TOOLCHAIN_FILE=${LAPACK_SRC}/android.toolchain.cmake -DANDROID_NATIVE_API_LEVEL=${ANDROID_APIVER} \
 	-DANDROID_NDK=${NDK_ROOT} -DANDROID_TOOLCHAIN_NAME=x86-${TOOL_VER} \
-	-DCMAKE_BUILD_TYPE=Release -DANDROID_ABI="x86" ..
+	-DCMAKE_BUILD_TYPE=Release -DANDROID_ABI="x86" ${LAPACK_SRC}
   ;;
   mips)
   ;;
@@ -157,5 +168,4 @@ case $ARCHI in
 esac
 
 make -j${CORE_COUNT}
-#make
-
+popd
